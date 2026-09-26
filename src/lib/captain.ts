@@ -19,6 +19,13 @@ export type CaptainOrder = {
   delivery_fee_iqd?: number | null;
   address_id?: string | null;
   items?: CaptainOrderItem[];
+  store?: {
+    name?: string | null;
+    address?: string | null;
+    city?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+  } | null;
 };
 
 export async function claimOrder(orderId: string) {
@@ -69,7 +76,7 @@ export async function getCaptainOrders(): Promise<CaptainOrder[]> {
 
   const { data, error } = await supabase
     .from('orders')
-    .select('id,status,total_iqd,created_at,updated_at,delivered_at,delivery_fee_iqd,address_id,captain_id,store_id,customer_id,delivery_address:delivery_addresses(address,label,city,latitude,longitude),items:order_items(product_id,product_name,quantity,unit_price_iqd)')
+    .select('id,status,total_iqd,created_at,updated_at,delivered_at,delivery_fee_iqd,address_id,captain_id,store_id,customer_id,delivery_address:delivery_addresses(address,label,city,latitude,longitude),items:order_items(product_id,product_name,quantity,unit_price_iqd),store:stores(name,address,city,latitude,longitude)')
     .eq('captain_id', user.user.id)
     .in('status', ['assigned_to_captain', 'picked_up', 'on_the_way', 'delivered'])
     .order('created_at', { ascending: false });
