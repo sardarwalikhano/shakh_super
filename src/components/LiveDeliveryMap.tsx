@@ -152,17 +152,6 @@ export default function LiveDeliveryMap({ store, captain, destination, onRouteIn
   }, [store, captain, destination, onRouteInfo]);
 
   return (
-
-    if (points.length > 1) {
-      const bounds = L.latLngBounds(points.map(([, p]) => [p.latitude, p.longitude] as [number, number]));
-      map.fitBounds(bounds.pad(0.18), { animate: false, maxZoom: 16 });
-    } else if (points.length === 1) {
-      map.setView([points[0][1].latitude, points[0][1].longitude], 16, { animate: false });
-    }
-
-    requestAnimationFrame(() => map.invalidateSize());
-  }, [store, captain, destination]);
-
   return (
     <div className="liveDeliveryMap">
       <div ref={mapRef} className="liveDeliveryMapCanvas" aria-label="نەخشەی شوێنی گەیاندن" />
