@@ -21,10 +21,11 @@ export async function transitionOrderStatus(orderId: string, nextStatus: OrderSt
   return data;
 }
 
-export async function getMyNotifications(limit = 30) {
+export async function getMyNotifications(userId: string, limit = 30) {
   const { data, error } = await supabase
     .from('notifications')
     .select('id,title,body,type,is_read,data,created_at')
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(limit);
 
@@ -32,11 +33,12 @@ export async function getMyNotifications(limit = 30) {
   return data ?? [];
 }
 
-export async function markNotificationRead(notificationId: string) {
+export async function markNotificationRead(userId: string, notificationId: string) {
   const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
-    .eq('id', notificationId);
+    .eq('id', notificationId)
+    .eq('user_id', userId);
 
   if (error) throw error;
 }
