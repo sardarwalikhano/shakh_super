@@ -2,6 +2,7 @@ import React from 'react';
 import { Package, ShoppingBag, TrendingUp, Store, Plus, RefreshCw } from 'lucide-react';
 import VendorLiveOrders from './VendorLiveOrders';
 import './vendor-dashboard.css';
+import ProductPostComposer from './ProductPostComposer';
 
 type VendorDashboardProps = {
   storeId?: string;
@@ -10,6 +11,8 @@ type VendorDashboardProps = {
   pendingOrders?: number;
   todaySales?: number;
   onRefresh?: () => void;
+  userId?: string;
+  role?: string;
 };
 
 export default function VendorDashboard({
@@ -19,6 +22,8 @@ export default function VendorDashboard({
   pendingOrders = 0,
   todaySales = 0,
   onRefresh,
+  userId,
+  role,
 }: VendorDashboardProps) {
   return (
     <section className="vendor-dashboard" dir="rtl">
@@ -40,6 +45,7 @@ export default function VendorDashboard({
         <article><Store /><span>دۆخی دوکان</span><strong className="is-live">چالاک</strong></article>
       </div>
       {storeId ? <VendorLiveOrders storeId={storeId} /> : <div className="vendor-dashboard__empty"><ShoppingBag size={42} /><h3>دوکانەکەت دیاری نەکراوە</h3><p>بۆ پیشاندانی ئۆردەرە زیندووەکان، دەبێت ناسنامەی دوکان بۆ داشبۆرد بنێردرێت.</p></div>}
+      {userId && role && <ProductPostComposer userId={userId} role={role} onSaved={onRefresh} />}
     </section>
   );
 }
