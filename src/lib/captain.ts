@@ -9,7 +9,7 @@ export async function claimOrder(orderId: string) {
 export async function updateOrderStatus(orderId: string, status: string) {
   const { data, error } = await supabase.rpc('transition_order_status', {
     p_order_id: orderId,
-    p_status: status,
+    p_next_status: status,
   });
   if (error) throw error;
   return data;
