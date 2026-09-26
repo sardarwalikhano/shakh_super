@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { RefreshCw, Truck, PackageCheck, MapPin, Clock3 } from 'lucide-react';
+import { claimOrder, getAvailableCaptainOrders, markOrderDelivered, markOrderOnTheWay, updateOrderStatus } from '../lib/captain';
 
 type CaptainOrder = {
   id: string;
@@ -28,42 +29,32 @@ export default function CaptainDashboard() {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('orders')
-      .select('id,status,total_iqd,created_at,delivery_fee_iqd,address_id')
-      .in('status', ['pending', 'assigned_to_captain', 'picked_up', 'on_the_way'])
-      .order('created_at', { ascending: false });
-    if (error) setMessage('نەتوانرا داواکارییەکان بخوێندرێنەوە.');
-    else setOrders((data || []) as CaptainOrder[]);
+    const data = await getAvailableCaptainOrders();
+    setOrders((data || []) as CaptainOrder[]);
     setLoading(false);
   };
 
   useEffect(() => {
-    load();
+    void load();
     const channel = supabase
       .channel('captain-orders-live')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, load)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => void load())
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => { void supabase.removeChannel(channel); };
   }, []);
 
-  const claim = async (id: string) => {
+  const run = async (id: string, action: () => Promise<unknown>, success: string) => {
     setBusy(id);
     setMessage('');
-    const { error } = await supabase.rpc('claim_order', { p_order_id: id });
-    if (error) setMessage(error.message || 'وەرگرتنی داواکاری سەرکەوتوو نەبوو.');
-    else setMessage('داواکارییەکە بە سەرکەوتوویی وەرگیرا.');
-    await load();
-    setBusy(null);
-  };
-
-  const setStatus = async (id: string, status: string) => {
-    setBusy(id);
-    const { error } = await supabase.from('orders').update({ status }).eq('id', id);
-    if (error) setMessage(error.message || 'گۆڕینی دۆخ سەرکەوتوو نەبوو.');
-    else setMessage('دۆخی داواکاری نوێ کرایەوە.');
-    await load();
-    setBusy(null);
+    try {
+      await action();
+      setMessage(success);
+      await load();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'کردارەکە سەرکەوتوو نەبوو.');
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
@@ -74,7 +65,7 @@ export default function CaptainDashboard() {
           <h2><Truck size={24} /> داشبۆردی کاپتن</h2>
           <p>داواکارییە نوێکان ببینە و دۆخی گەیاندنەکانت بە شێوەی زیندوو نوێ بکەرەوە.</p>
         </div>
-        <button className="plain" onClick={load} disabled={loading}><RefreshCw size={18} /></button>
+        <button className="plain" onClick={() => void load()} disabled={loading}><RefreshCw size={18} /></button>
       </div>
 
       {message && <div className="msg">{message}</div>}
@@ -84,17 +75,14 @@ export default function CaptainDashboard() {
           <div className="empty"><PackageCheck size={38} /><h3>هیچ داواکارییەکی چالاک نییە</h3><p>کاتێک داواکارییەکی نوێ هەبێت، لێرە دەردەکەوێت.</p></div>
         ) : orders.map(order => (
           <article className="orderCard" key={order.id}>
-            <div className="orderCardTop">
-              <strong>داواکاری #{order.id.slice(0, 8)}</strong>
-              <span>{labels[order.status] || order.status}</span>
-            </div>
+            <div className="orderCardTop"><strong>داواکاری #{order.id.slice(0, 8)}</strong><span>{labels[order.status] || order.status}</span></div>
             <div className="orderMeta"><Clock3 size={16} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</div>
             <div className="orderMeta"><MapPin size={16} /> ناونیشانی گەیاندن لە وردەکارییەکانی داواکاری</div>
             <div className="orderTotal">{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</div>
-            {order.status === 'pending' && <button className="primary full" disabled={busy === order.id} onClick={() => claim(order.id)}>{busy === order.id ? 'چاوەڕوان بە...' : 'وەرگرتنی داواکاری'}</button>}
-            {order.status === 'assigned_to_captain' && <button className="primary full" disabled={busy === order.id} onClick={() => setStatus(order.id, 'picked_up')}>وەرگرتن لە دوکان</button>}
-            {order.status === 'picked_up' && <button className="primary full" disabled={busy === order.id} onClick={() => setStatus(order.id, 'on_the_way')}>دەستپێکردنی گەیاندن</button>}
-            {order.status === 'on_the_way' && <button className="primary full" disabled={busy === order.id} onClick={() => setStatus(order.id, 'delivered')}>تەواوکردنی گەیاندن</button>}
+            {order.status === 'pending' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => claimOrder(order.id), 'داواکارییەکە بە سەرکەوتوویی وەرگیرا.')}>{busy === order.id ? 'چاوەڕوان بە...' : 'وەرگرتنی داواکاری'}</button>}
+            {order.status === 'assigned_to_captain' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => updateOrderStatus(order.id, 'picked_up'), 'دۆخی داواکاری نوێ کرایەوە.')}>وەرگرتن لە دوکان</button>}
+            {order.status === 'picked_up' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => markOrderOnTheWay(order.id), 'گەیاندن دەستی پێکرد.')}>دەستپێکردنی گەیاندن</button>}
+            {order.status === 'on_the_way' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => markOrderDelivered(order.id), 'گەیاندن بە سەرکەوتوویی تەواو بوو.')}>تەواوکردنی گەیاندن</button>}
           </article>
         ))}
       </div>
