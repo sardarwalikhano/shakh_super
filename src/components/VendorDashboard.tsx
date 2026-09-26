@@ -3,6 +3,7 @@ import { Package, ShoppingBag, TrendingUp, Store, Plus, RefreshCw } from 'lucide
 import VendorLiveOrders from './VendorLiveOrders';
 import './vendor-dashboard.css';
 import ProductPostComposer from './ProductPostComposer';
+import ProductManagement from './ProductManagement';
 
 type VendorDashboardProps = {
   storeId?: string;
@@ -45,7 +46,7 @@ export default function VendorDashboard({
         <article><Store /><span>دۆخی دوکان</span><strong className="is-live">چالاک</strong></article>
       </div>
       {storeId ? <VendorLiveOrders storeId={storeId} /> : <div className="vendor-dashboard__empty"><ShoppingBag size={42} /><h3>دوکانەکەت دیاری نەکراوە</h3><p>بۆ پیشاندانی ئۆردەرە زیندووەکان، دەبێت ناسنامەی دوکان بۆ داشبۆرد بنێردرێت.</p></div>}
-      {userId && role && <ProductPostComposer userId={userId} role={role} onSaved={onRefresh} />}
+      {userId && role && <><ProductPostComposer userId={userId} role={role} onSaved={onRefresh} /><ProductManagement userId={userId} role={role} onChanged={onRefresh} /></>}
     </section>
   );
 }
