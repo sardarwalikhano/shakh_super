@@ -3,7 +3,7 @@ import { CalendarDays, CheckCircle2, CreditCard, FileText, Plane, Plus, ShieldCh
 import { supabase } from '../lib/supabase';
 
 type Props = { userId: string; role: string };
-type Trip = { id:string; agency_id:string; title:string; destination:string; departure_date:string; return_date?:string|null; total_price_iqd:number; booking_fee_iqd:number; capacity?:number|null; available_seats?:number|null; status:string };
+type Trip = { id:string; agency_id:string; title:string; destination:string; departure_date:string; return_date?:string|null; total_price_iqd:number; booking_fee_iqd:number; capacity?:number|null; available_seats?:number|null; hotel_details?:string|null; transport_details?:string|null; passport_note?:string|null; description?:string|null; images?:string[]; status:string };
 type Booking = { id:string; trip_id:string; agency_id:string; customer_id:string; passenger_name:string; phone?:string|null; passport_number?:string|null; passport_issue_date?:string|null; booking_fee_iqd:number; booking_payment_status:string; travel_payment_iqd:number; travel_payment_due_date?:string|null; travel_payment_status:string; status:string };
 type Payment = { id:string; booking_id:string; agency_id:string; payment_kind:string; amount_iqd:number; status:string; due_date?:string|null };
 
