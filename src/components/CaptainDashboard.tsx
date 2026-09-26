@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { RefreshCw, Truck, PackageCheck, MapPin, Clock3 } from 'lucide-react';
 import { claimOrder, getAvailableCaptainOrders, getCaptainOrders, getCaptainCustomerContact, markOrderDelivered, markOrderOnTheWay, updateOrderStatus } from '../lib/captain';
@@ -51,6 +51,9 @@ export default function CaptainDashboard() {
   const [onlineBusy, setOnlineBusy] = useState(false);
   const [contacts, setContacts] = useState<Record<string, { full_name: string | null; phone: string | null } | null>>({});
   const [contactBusy, setContactBusy] = useState<string | null>(null);
+  const [locationTrackingOrderId, setLocationTrackingOrderId] = useState<string | null>(null);
+  const watchIdsRef = useRef<Record<string, number>>({});
+  const lastLocationSentRef = useRef<Record<string, number>>({});
 
   const load = async () => {
     setLoading(true);
@@ -99,6 +102,83 @@ export default function CaptainDashboard() {
     }
     setOnlineBusy(false);
   };
+
+
+  const startLocationTracking = async (orderId: string) => {
+    if (watchIdsRef.current[orderId] != null) {
+      setLocationTrackingOrderId(orderId);
+      return;
+    }
+    if (!('geolocation' in navigator)) {
+      setMessage('ئەم ئامێرە پشتگیری شوێنکەوتنی جی پی ئەس ناکات.');
+      return;
+    }
+    const { data: authData } = await supabase.auth.getUser();
+    if (!authData.user) {
+      setMessage('پێویستە بچیتە ژوورەوە.');
+      return;
+    }
+
+    setMessage('داوای مۆڵەتی شوێن دەکرێت...');
+    const watchId = navigator.geolocation.watchPosition(
+      async (position) => {
+        const now = Date.now();
+        const lastSent = lastLocationSentRef.current[orderId] || 0;
+        if (now - lastSent < 10000) return;
+        lastLocationSentRef.current[orderId] = now;
+
+        const { error } = await supabase.from('delivery_tracking_locations').upsert({
+          order_id: orderId,
+          captain_id: authData.user.id,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy_m: position.coords.accuracy ?? null,
+          heading: position.coords.heading ?? null,
+          speed_mps: position.coords.speed ?? null,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'order_id' });
+
+        if (error) {
+          setMessage(error.message);
+          return;
+        }
+        setLocationTrackingOrderId(orderId);
+        setMessage('شوێنی کاپتن بۆ کڕیار نوێ کرایەوە.');
+      },
+      (error) => {
+        const reason = error.code === error.PERMISSION_DENIED
+          ? 'مۆڵەتی شوێن دانراو نییە.'
+          : error.code === error.POSITION_UNAVAILABLE
+            ? 'شوێنی ئێستا بەردەست نییە.'
+            : 'وەرگرتنی شوێن کاتی زۆری برد.';
+        setMessage(reason + ' تکایە شوێنی ئامێر چالاک بکە.');
+      },
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 },
+    );
+
+    watchIdsRef.current[orderId] = watchId;
+    setLocationTrackingOrderId(orderId);
+    setMessage('شوێنکەوتنی نەخشە چالاک کرا.');
+  };
+
+  const stopLocationTracking = async (orderId: string, removeRemote = true) => {
+    const watchId = watchIdsRef.current[orderId];
+    if (watchId != null) {
+      navigator.geolocation.clearWatch(watchId);
+      delete watchIdsRef.current[orderId];
+    }
+    delete lastLocationSentRef.current[orderId];
+    if (removeRemote) {
+      await supabase.from('delivery_tracking_locations').delete().eq('order_id', orderId);
+    }
+    setLocationTrackingOrderId((current) => current === orderId ? null : current);
+  };
+
+  useEffect(() => {
+    return () => {
+      Object.values(watchIdsRef.current).forEach((watchId) => navigator.geolocation?.clearWatch(watchId));
+    };
+  }, []);
 
   const todayKey = new Date().toLocaleDateString('en-CA');
   const completedOrders = orders.filter((order) => order.status === 'delivered');
@@ -218,8 +298,15 @@ export default function CaptainDashboard() {
 
             {order.status === 'ready_for_pickup' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => claimOrder(order.id), 'ئۆردەرەکە بە سەرکەوتوویی بۆ تۆ وەرگیرا.')}>{busy === order.id ? 'چاوەڕوان بە...' : 'وەرگرتنی ئۆردەر'}</button>}
             {order.status === 'assigned_to_captain' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => updateOrderStatus(order.id, 'picked_up'), 'ئۆردەرەکە لە دوکان وەرگیرا.')}>وەرگرتن لە دوکان</button>}
-            {order.status === 'picked_up' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => markOrderOnTheWay(order.id), 'گەیاندن دەستی پێکرد.')}>دەستپێکردنی گەیاندن</button>}
-            {order.status === 'on_the_way' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => markOrderDelivered(order.id), 'گەیاندن بە سەرکەوتوویی تەواو بوو.')}>تەواوکردنی گەیاندن</button>}
+            {order.status === 'picked_up' && <button className="primary full" disabled={busy === order.id} onClick={async () => { await run(order.id, () => markOrderOnTheWay(order.id), 'گەیاندن دەستی پێکرد.'); await startLocationTracking(order.id); }}>دەستپێکردنی گەیاندن و شوێنکەوتن</button>}
+            {order.status === 'on_the_way' && locationTrackingOrderId !== order.id && <button className="plain full" type="button" onClick={() => void startLocationTracking(order.id)}>چالاککردنی شوێنکەوتنی نەخشە</button>}
+            {locationTrackingOrderId === order.id && (
+              <div className="liveTrackingStatus" role="status">
+                <div><span className="liveTrackingDot" /> شوێنی کاپتن زیندووە</div>
+                <button type="button" className="plain" onClick={() => void stopLocationTracking(order.id, false)}>وەستاندن</button>
+              </div>
+            )}
+            {order.status === 'on_the_way' && <button className="primary full" disabled={busy === order.id} onClick={async () => { await run(order.id, () => markOrderDelivered(order.id), 'گەیاندن بە سەرکەوتوویی تەواو بوو.'); await stopLocationTracking(order.id, true); }}>تەواوکردنی گەیاندن</button>}
             {order.status !== 'delivered' && (
               <>
                 {!contacts[order.id] && <button className="plain full" type="button" disabled={contactBusy === order.id} onClick={() => void loadCustomerContact(order.id)}>
