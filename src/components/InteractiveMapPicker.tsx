@@ -65,7 +65,7 @@ export default function InteractiveMapPicker({ value, onChange }: InteractiveMap
       mapInstanceRef.current = null;
       markerRef.current = null;
     };
-  }, [value]);
+  }, []);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
