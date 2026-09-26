@@ -15,6 +15,7 @@ export type CaptainOrder = {
   total_iqd: number;
   created_at: string;
   updated_at?: string | null;
+  delivered_at?: string | null;
   delivery_fee_iqd?: number | null;
   address_id?: string | null;
   items?: CaptainOrderItem[];
@@ -68,7 +69,7 @@ export async function getCaptainOrders(): Promise<CaptainOrder[]> {
 
   const { data, error } = await supabase
     .from('orders')
-    .select('id,status,total_iqd,created_at,updated_at,delivery_fee_iqd,address_id,captain_id,store_id,customer_id,delivery_address:delivery_addresses(address,label,city,latitude,longitude),items:order_items(product_id,product_name,quantity,unit_price_iqd)')
+    .select('id,status,total_iqd,created_at,updated_at,delivered_at,delivery_fee_iqd,address_id,captain_id,store_id,customer_id,delivery_address:delivery_addresses(address,label,city,latitude,longitude),items:order_items(product_id,product_name,quantity,unit_price_iqd)')
     .eq('captain_id', user.user.id)
     .in('status', ['assigned_to_captain', 'picked_up', 'on_the_way', 'delivered'])
     .order('created_at', { ascending: false });
