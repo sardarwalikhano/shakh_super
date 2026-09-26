@@ -1,5 +1,5 @@
-const CACHE_NAME = 'shakh-v1.5.1';
-const APP_SHELL = ['/', '/manifest.webmanifest', '/icon.svg'];
+const CACHE_NAME = 'shakh-v1.8.0';
+const APP_SHELL = ['/', '/manifest.webmanifest', '/icon.svg', '/version.json'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
