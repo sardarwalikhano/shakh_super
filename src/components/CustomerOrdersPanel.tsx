@@ -9,6 +9,11 @@ type CustomerOrder = {
   total_iqd: number;
   created_at: string;
   store_id: string | null;
+  subtotal_iqd: number;
+  delivery_fee_iqd: number;
+  platform_fee_iqd: number;
+  discount_iqd: number;
+  items: { product_id: string | null; product_name: string; quantity: number; unit_price_iqd: number }[];
 };
 
 type NotificationItem = {
@@ -51,11 +56,23 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
     setError(null);
     try {
       const [{ data: orderData, error: orderError }, notificationData] = await Promise.all([
-        supabase.from('orders').select('id,status,total_iqd,created_at,store_id').eq('customer_id', userId).order('created_at', { ascending: false }).limit(30),
+        supabase.from('orders').select('id,status,total_iqd,created_at,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,discount_iqd,order_items(product_id,product_name,quantity,unit_price_iqd)').eq('customer_id', userId).order('created_at', { ascending: false }).limit(30),
         getMyNotifications(userId, 30),
       ]);
       if (orderError) throw orderError;
-      const nextOrders = (orderData ?? []) as CustomerOrder[];
+      const nextOrders = (orderData ?? []).map((order: any) => ({
+        ...order,
+        subtotal_iqd: Number(order.subtotal_iqd || 0),
+        delivery_fee_iqd: Number(order.delivery_fee_iqd || 0),
+        platform_fee_iqd: Number(order.platform_fee_iqd || 0),
+        discount_iqd: Number(order.discount_iqd || 0),
+        items: (order.order_items ?? []).map((item: any) => ({
+          product_id: item.product_id ?? null,
+          product_name: item.product_name,
+          quantity: Number(item.quantity),
+          unit_price_iqd: Number(item.unit_price_iqd),
+        })),
+      })) as CustomerOrder[];
       setOrders(nextOrders);
       setNotifications(notificationData as NotificationItem[]);
       setSelectedId((current) => current && nextOrders.some((order) => order.id === current) ? current : nextOrders[0]?.id ?? null);
@@ -116,6 +133,23 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
           {selected ? (
             <>
               <div className="tracking-card__top"><div><span>داواکاری</span><h3>#{selected.id.slice(0, 8)}</h3></div><Truck size={28} /></div>
+              {selected.items.length > 0 && (
+                <div className="summary" style={{ marginBottom: 12 }}>
+                  {selected.items.map((item, index) => (
+                    <div key={item.product_id ?? index}>
+                      <span>{item.product_name} × {item.quantity.toLocaleString('ku-IQ')}</span>
+                      <b>{(item.unit_price_iqd * item.quantity).toLocaleString('ku-IQ')} د.ع</b>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="summary" style={{ marginBottom: 12 }}>
+                <div><span>کۆی بەرهەم</span><b>{selected.subtotal_iqd.toLocaleString('ku-IQ')} د.ع</b></div>
+                <div><span>گەیاندن</span><b>{selected.delivery_fee_iqd.toLocaleString('ku-IQ')} د.ع</b></div>
+                <div><span>خزمەتی شاخ</span><b>{selected.platform_fee_iqd.toLocaleString('ku-IQ')} د.ع</b></div>
+                {selected.discount_iqd > 0 && <div><span>داشکاندن</span><b>-{selected.discount_iqd.toLocaleString('ku-IQ')} د.ع</b></div>}
+                <div className="grand"><span>کۆی گشتی</span><b>{Number(selected.total_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
+              </div>
               <div className="tracking-card__timeline">
                 {steps.map(([key, label], index) => {
                   const active = index <= stepIndex(selected.status);
