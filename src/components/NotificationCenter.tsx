@@ -12,9 +12,7 @@ type NotificationItem = {
   created_at: string;
 };
 
-type NotificationCenterProps = {
-  userId: string;
-};
+type NotificationCenterProps = { userId: string };
 
 export default function NotificationCenter({ userId }: NotificationCenterProps) {
   const [items, setItems] = useState<NotificationItem[]>([]);
@@ -23,17 +21,18 @@ export default function NotificationCenter({ userId }: NotificationCenterProps) 
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
+    if (!userId) return;
     setLoading(true);
     setError(null);
     try {
-      const data = await getMyNotifications();
+      const data = await getMyNotifications(userId);
       setItems(data as NotificationItem[]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'نەتوانرا ئاگادارکردنەوەکان بهێنرێن.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     void load();
@@ -45,7 +44,7 @@ export default function NotificationCenter({ userId }: NotificationCenterProps) 
   const read = async (id: string) => {
     setBusy(id);
     try {
-      await markNotificationRead(id);
+      await markNotificationRead(userId, id);
       setItems((current) => current.map((item) => item.id === id ? { ...item, is_read: true } : item));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'نەتوانرا ئاگادارکردنەوەکە بخوێندرێتەوە.');
