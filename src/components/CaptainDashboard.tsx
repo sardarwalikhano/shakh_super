@@ -18,6 +18,13 @@ type CaptainOrder = {
     quantity: number;
     unit_price_iqd: number;
   }[];
+  store?: {
+    name?: string | null;
+    address?: string | null;
+    city?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+  } | null;
   delivery_address?: {
     address?: string | null;
     label?: string | null;
@@ -181,7 +188,20 @@ export default function CaptainDashboard() {
                 ))}
               </div>
             )}
-            <div className="orderMeta"><MapPin size={16} /> {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
+            <div className="orderMeta"><MapPin size={16} /> دوکان: {order.store?.name || 'دوکان دیاری نەکراوە'}{order.store?.address ? ' — ' + order.store.address : ''}{order.store?.city ? ' — ' + order.store.city : ''}</div>
+            {order.store?.latitude != null && order.store?.longitude != null && (
+              <button
+                className="plain full"
+                type="button"
+                onClick={() => {
+                  const url = 'https://www.google.com/maps/search/?api=1&query=' + order.store!.latitude + ',' + order.store!.longitude;
+                  window.open(url, '_blank', 'noopener,noreferrer');
+                }}
+              >
+                کردنەوەی شوێنی دوکان لە نەخشە
+              </button>
+            )}
+            <div className="orderMeta"><MapPin size={16} /> گەیاندن: {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
             {order.delivery_address?.latitude != null && order.delivery_address?.longitude != null && (
               <button
                 className="plain full"
@@ -245,7 +265,16 @@ export default function CaptainDashboard() {
                     ))}
                   </div>
                 )}
-                <div className="orderMeta"><MapPin size={16} /> {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
+                <div className="orderMeta"><MapPin size={16} /> دوکان: {order.store?.name || 'دوکان دیاری نەکراوە'}{order.store?.address ? ' — ' + order.store.address : ''}{order.store?.city ? ' — ' + order.store.city : ''}</div>
+                {order.store?.latitude != null && order.store?.longitude != null && (
+                  <button className="plain full" type="button" onClick={() => {
+                    const url = 'https://www.google.com/maps/search/?api=1&query=' + order.store!.latitude + ',' + order.store!.longitude;
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                  }}>
+                    کردنەوەی شوێنی دوکان لە نەخشە
+                  </button>
+                )}
+                <div className="orderMeta"><MapPin size={16} /> گەیاندن: {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
                 <div className="orderTotal">{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</div>
               </article>
             ))}
