@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Bell, Check, CheckCheck, Clock3, MapPin, Package, RefreshCw, Truck } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { getMyNotifications, markNotificationRead, subscribeToMyNotifications } from '../lib/orderTracking';
+import LiveDeliveryMap from './LiveDeliveryMap';
 
 type CustomerOrder = {
   id: string;
@@ -57,15 +58,6 @@ const steps = [
 function stepIndex(status: string) {
   const index = steps.findIndex(([key]) => key === status);
   return index < 0 ? 0 : index;
-}
-
-function mapEmbedUrl(latitude: number, longitude: number) {
-  const delta = 0.008;
-  const west = longitude - delta;
-  const south = latitude - delta;
-  const east = longitude + delta;
-  const north = latitude + delta;
-  return `https://www.openstreetmap.org/export/embed.html?bbox=${west},${south},${east},${north}&layer=mapnik&marker=${latitude},${longitude}`;
 }
 
 function googleMapsUrl(latitude: number, longitude: number) {
@@ -275,15 +267,12 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                     <div className="liveTrackingEmpty">چاوەڕوانی شوێنی زیندووی کاپتن...</div>
                   ) : trackingLocation ? (
                     <>
-                      <div className="mapPreview liveMapPreview">
-                        <iframe
-                          title="شوێنی زیندووی کاپتن"
-                          src={mapEmbedUrl(trackingLocation.latitude, trackingLocation.longitude)}
-                          loading="lazy"
-                          referrerPolicy="no-referrer-when-downgrade"
-                        />
-                        <a href={googleMapsUrl(trackingLocation.latitude, trackingLocation.longitude)} target="_blank" rel="noreferrer">کردنەوەی شوێنی کاپتن لە نەخشە</a>
-                      </div>
+                      <LiveDeliveryMap
+                        store={selected.store?.latitude != null && selected.store?.longitude != null ? { latitude: Number(selected.store.latitude), longitude: Number(selected.store.longitude) } : null}
+                        captain={{ latitude: trackingLocation.latitude, longitude: trackingLocation.longitude }}
+                        destination={selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null ? { latitude: Number(selected.delivery_address.latitude), longitude: Number(selected.delivery_address.longitude) } : null}
+                      />
+                      <a className="plain full liveMapExternalLink" href={googleMapsUrl(trackingLocation.latitude, trackingLocation.longitude)} target="_blank" rel="noreferrer">کردنەوەی شوێنی کاپتن لە نەخشەی گووگڵ</a>
                       <div className="liveTrackingMeta">
                         <span><span className="liveTrackingDot" /> کاپتن لە ڕێگادایە</span>
                         {trackingLocation.accuracy_m != null && <span>دروستی نزیکەی {Math.round(trackingLocation.accuracy_m).toLocaleString('ku-IQ')} مەتر</span>}
