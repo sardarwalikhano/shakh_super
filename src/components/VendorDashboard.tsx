@@ -28,7 +28,7 @@ export default function VendorDashboard({
 }: VendorDashboardProps) {
   const [resolvedStoreId,setResolvedStoreId]=useState(storeId||'');
   const [postAnchor,setPostAnchor]=useState<HTMLDivElement|null>(null);
-  useEffect(()=>{let live=true;if(storeId){setResolvedStoreId(storeId);return()=>{live=false}};if(!userId||!role)return;const category:Record<string,string>={restaurant_vendor:'restaurant',supermarket_vendor:'supermarket',fashion_vendor:'fashion',vendor:'daily',electronics_vendor:'electronics',jewelry_vendor:'jewelry'}[role]||'';if(!category)return;import('../lib/supabase').then(({supabase})=>supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',category).eq('is_active',true).limit(1).maybeSingle()).then(({data})=>{if(live&&data){setResolvedStoreId(data.id);}}).catch(()=>{});return()=>{live=false}},[storeId,userId,role]);
+  useEffect(()=>{let live=true;if(storeId){setResolvedStoreId(storeId);return()=>{live=false}};if(!userId||!role)return;const categoryMap:Record<string,string>={restaurant_vendor:'restaurant',supermarket_vendor:'supermarket',fashion_vendor:'fashion',vendor:'daily',electronics_vendor:'electronics',jewelry_vendor:'jewelry'};const category=categoryMap[role]||'';if(!category)return;import('../lib/supabase').then(({supabase})=>supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',category).eq('is_active',true).limit(1).maybeSingle()).then(({data})=>{if(live&&data){setResolvedStoreId(data.id);}}).catch(()=>{});return()=>{live=false}},[storeId,userId,role]);
   return (
     <section className="vendor-dashboard" dir="rtl">
       <div className="vendor-dashboard__header">
