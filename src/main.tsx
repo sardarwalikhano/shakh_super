@@ -60,7 +60,7 @@ function App(){
    return <CustomerOrdersPanel userId={user.id}/>;
   }
   if(dashboardView==='store'){
-   if(role==='restaurant_vendor'||role==='fashion_vendor')return <VendorDashboard onRefresh={()=>void loadProducts()} productCount={products.length} pendingOrders={orders.filter(o=>o.status==='pending').length} todaySales={orders.reduce((s,o)=>s+Number(o.total_iqd||0),0)}/>;
+   if(['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role))return <VendorDashboard userId={user.id} role={role} onRefresh={()=>void loadProducts()} productCount={products.length} pendingOrders={orders.filter(o=>o.status==='pending').length} todaySales={orders.reduce((s,o)=>s+Number(o.total_iqd||0),0)}/>;
    if(role==='car_dealer')return <VehicleShowroomModule userId={user.id} role={role}/>;
    if(role==='umrah_agency')return <UmrahBookingModule userId={user.id} role={role}/>;
    if(role==='super_admin'||role==='admin')return <SuperAdminOrderMonitor/>;
