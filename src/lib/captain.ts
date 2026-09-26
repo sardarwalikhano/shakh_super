@@ -11,6 +11,21 @@ export async function claimOrder(orderId: string) {
   return data;
 }
 
+
+export type CaptainCustomerContact = {
+  full_name: string | null;
+  phone: string | null;
+};
+
+export async function getCaptainCustomerContact(orderId: string): Promise<CaptainCustomerContact | null> {
+  const { data, error } = await supabase.rpc('get_captain_customer_contact', {
+    p_order_id: orderId,
+  });
+  if (error) throw error;
+  const row = Array.isArray(data) ? data[0] : data;
+  return row ?? null;
+}
+
 export async function updateOrderStatus(orderId: string, status: CaptainOrderStatus) {
   const { data, error } = await supabase.rpc('transition_order_status', {
     p_order_id: orderId,
