@@ -9,6 +9,7 @@ type CaptainOrder = {
   total_iqd: number;
   created_at: string;
   updated_at?: string | null;
+  delivered_at?: string | null;
   delivery_fee_iqd?: number;
   address_id?: string;
   items?: {
@@ -97,7 +98,7 @@ export default function CaptainDashboard() {
   const activeOrders = orders.filter((order) => order.status !== 'delivered');
   const deliveredToday = completedOrders.filter(
     (order) =>
-      new Date(order.updated_at || order.created_at).toLocaleDateString('en-CA') === todayKey,
+      new Date(order.delivered_at || order.updated_at || order.created_at).toLocaleDateString('en-CA') === todayKey,
   );
   const deliveryEarningsToday = deliveredToday.reduce(
     (sum, order) => sum + Number(order.delivery_fee_iqd || 0),
@@ -232,7 +233,7 @@ export default function CaptainDashboard() {
             {completedOrders.slice(0, 20).map(order => (
               <article className="orderCard" key={order.id}>
                 <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status]}</span></div>
-                <div className="orderMeta"><Clock3 size={16} /> گەیەندرا: {new Date(order.updated_at || order.created_at).toLocaleString('ku-IQ')}</div>
+                <div className="orderMeta"><Clock3 size={16} /> گەیەندرا: {new Date(order.delivered_at || order.updated_at || order.created_at).toLocaleString('ku-IQ')}</div>
                 {order.items && order.items.length > 0 && (
                   <div style={{ display: 'grid', gap: 6, margin: '10px 0' }}>
                     {order.items.map((item, index) => (
