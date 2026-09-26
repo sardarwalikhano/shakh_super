@@ -18,9 +18,7 @@ type Product={id:string;store_id:string;name_ku:string;name_ar?:string;name_en?:
 type CartItem={id?:string;product_id:string;store_id:string;name:string;price:number;quantity:number;image_url?:string|null};
 type Order={id:string;status:string;total_iqd:number;created_at:string;store_id?:string};
 type DashboardView='home'|'orders'|'delivery'|'store'|'wallet'|'cars'|'umrah';
-type SignupRole=string;
-
-const signupRoles:{value:SignupRole;label:string;icon:string}[]=[
+const signupRoles=[
  {value:'customer',label:'کڕیار',icon:'👤'},
  {value:'restaurant_vendor',label:'چێشتخانە',icon:'🍽️'},
  {value:'supermarket_vendor',label:'سوپەرمارکێت',icon:'🛒'},
@@ -40,7 +38,7 @@ function PasswordReset(){
 }
 
 function App(){
- const [products,setProducts]=useState<Product[]>([]);const [search,setSearch]=useState('');const [cart,setCart]=useState<CartItem[]>([]);const [cartOpen,setCartOpen]=useState(false);const [checkoutOpen,setCheckoutOpen]=useState(false);const [dashboard,setDashboard]=useState(false);const [dashboardView,setDashboardView]=useState<DashboardView>('home');const [address,setAddress]=useState('');const [auth,setAuth]=useState(false);const [authMode,setAuthMode]=useState<'login'|'signup'|'reset'>('login');const [email,setEmail]=useState('');const [password,setPassword]=useState('');const [name,setName]=useState('');const [signupRole,setSignupRole]=useState<SignupRole>('customer');const [message,setMessage]=useState('');const [user,setUser]=useState<User|null>(null);const [role,setRole]=useState('customer');const [orders,setOrders]=useState<Order[]>([]);const [busy,setBusy]=useState(false);
+ const [products,setProducts]=useState<Product[]>([]);const [search,setSearch]=useState('');const [cart,setCart]=useState<CartItem[]>([]);const [cartOpen,setCartOpen]=useState(false);const [checkoutOpen,setCheckoutOpen]=useState(false);const [dashboard,setDashboard]=useState(false);const [dashboardView,setDashboardView]=useState<DashboardView>('home');const [address,setAddress]=useState('');const [auth,setAuth]=useState(false);const [authMode,setAuthMode]=useState<'login'|'signup'|'reset'>('login');const [email,setEmail]=useState('');const [password,setPassword]=useState('');const [name,setName]=useState('');const [signupRole,setSignupRole]=useState('customer');const [message,setMessage]=useState('');const [user,setUser]=useState<User|null>(null);const [role,setRole]=useState('customer');const [orders,setOrders]=useState<Order[]>([]);const [busy,setBusy]=useState(false);
  const loadProducts=async()=>{if(!supabase)return;const {data,error}=await supabase.from('products').select('id,store_id,name_ku,name_ar,name_en,price_iqd,sale_price_iqd,image_url,is_available,stores(name),categories(name)').eq('is_available',true).order('created_at',{ascending:false});if(!error&&data)setProducts((data as any[]).map(p=>({...p,store_name:p.stores?.name,category:p.categories?.name})))};
  const loadCart=async(u:User)=>{if(!supabase)return;const {data:c}=await supabase.from('carts').select('id').eq('user_id',u.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();if(!c){setCart([]);return}const {data:items}=await supabase.from('cart_items').select('id,product_id,quantity,unit_price_iqd,products(store_id,name_ku,image_url)').eq('cart_id',c.id);setCart((items as any[]||[]).map(i=>({id:i.id,product_id:i.product_id,store_id:i.products?.store_id,name:i.products?.name_ku||'بەرهەم',price:Number(i.unit_price_iqd),quantity:i.quantity,image_url:i.products?.image_url})))};
  const loadProfile=async(u:User)=>{if(!supabase)return;const {data}=await supabase.from('profiles').select('role').eq('id',u.id).maybeSingle();setRole(data?.role||'customer')};
