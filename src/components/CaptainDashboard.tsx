@@ -118,6 +118,18 @@ export default function CaptainDashboard() {
             <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status] || order.status}</span></div>
             <div className="orderMeta"><Clock3 size={16} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</div>
             <div className="orderMeta"><MapPin size={16} /> {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
+            {order.delivery_address?.latitude != null && order.delivery_address?.longitude != null && (
+              <button
+                className="plain full"
+                type="button"
+                onClick={() => {
+                  const url = 'https://www.google.com/maps/search/?api=1&query=' + order.delivery_address!.latitude + ',' + order.delivery_address!.longitude;
+                  window.open(url, '_blank', 'noopener,noreferrer');
+                }}
+              >
+                کردنەوەی شوێنی گەیاندن لە نەخشە
+              </button>
+            )}
             <div className="orderTotal">{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</div>
 
             {order.status === 'ready_for_pickup' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => claimOrder(order.id), 'ئۆردەرەکە بە سەرکەوتوویی بۆ تۆ وەرگیرا.')}>{busy === order.id ? 'چاوەڕوان بە...' : 'وەرگرتنی ئۆردەر'}</button>}
