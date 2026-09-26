@@ -1,0 +1,25 @@
+/* ڕووکاری پڕۆفشنالی شاخ — لایەی نوێی دیزاین */
+:root{--shakh-orange:#ff6a00;--shakh-orange-2:#ff9b42;--shakh-navy:#071a33;--shakh-blue:#123b68;--shakh-cream:#fff8ef}
+body{background:radial-gradient(circle at 5% 0%,#fff1df 0,transparent 28%),radial-gradient(circle at 100% 10%,#e8f1ff 0,transparent 30%),linear-gradient(180deg,#f8fafc,#f2f5f9)!important;color:var(--shakh-navy)}
+header{background:rgba(255,255,255,.84)!important;border-bottom:1px solid rgba(7,26,51,.08)!important;box-shadow:0 10px 35px rgba(7,26,51,.06)}
+.nav{min-height:88px!important;gap:14px!important}
+.logo:before{content:'شاخ'!important;width:54px!important;height:54px!important;border-radius:18px!important;background:linear-gradient(145deg,#ffbd78,#ff5a00)!important;font-size:17px!important;box-shadow:0 15px 35px rgba(255,106,0,.28)!important}
+.logo b{font-size:28px!important;letter-spacing:-1px}.logo span{font-size:11px!important}
+.search{height:56px!important;border-radius:19px!important;background:rgba(248,250,252,.92)!important;border-color:rgba(7,26,51,.08)!important;box-shadow:inset 0 1px 0 #fff}
+.search input{font-size:14px!important}.search:focus-within{border-color:#ff9b42!important;box-shadow:0 0 0 5px rgba(255,106,0,.10),0 10px 35px rgba(7,26,51,.07)!important}
+.plain,.cart{width:50px!important;height:50px!important;border-radius:17px!important;background:#fff!important;box-shadow:0 8px 24px rgba(7,26,51,.07)!important}.plain:hover,.cart:hover{transform:translateY(-3px) scale(1.02)!important}
+.loginBtn{border-radius:17px!important;background:linear-gradient(135deg,#173e68,#071a33)!important;padding:13px 19px!important;box-shadow:0 14px 30px rgba(7,26,51,.20)!important}
+.hero{margin-top:28px!important;min-height:470px;padding:76px 82px!important;border-radius:42px!important;background:linear-gradient(135deg,#fff 0%,#fff9f2 53%,#edf5ff 100%)!important;box-shadow:0 35px 100px rgba(7,26,51,.10)!important;border:1px solid rgba(255,255,255,.9)}
+.hero:after{content:'خۆراک  •  بازاڕ  •  جل و بەرگ  •  پێداویستی';position:absolute;right:75px;bottom:28px;color:#a0adbd;font-size:11px;font-weight:800;letter-spacing:.3px}
+.hero h1{font-weight:900!important;letter-spacing:-3px!important}.hero p{font-size:19px!important;max-width:650px}.eyebrow{background:rgba(255,106,0,.09)!important;border-color:rgba(255,106,0,.18)!important;color:#d95800!important}
+.primary{border-radius:18px!important;background:linear-gradient(135deg,#ffad58,#ff6200)!important;padding:15px 25px!important;box-shadow:0 18px 40px rgba(255,106,0,.28)!important}
+.heroOrb{width:350px!important;height:350px!important;border-radius:45% 55% 50% 50%!important;background:radial-gradient(circle at 30% 25%,#ffd59e,#ff8a2b 45%,#ff5b00)!important;box-shadow:0 45px 100px rgba(255,106,0,.30)!important}
+.section{margin-top:76px!important}.title h2{font-weight:900!important}.title span{box-shadow:0 7px 20px rgba(255,106,0,.07)}
+.grid{gap:22px!important}.card{border-radius:27px!important;background:rgba(255,255,255,.92)!important;box-shadow:0 14px 42px rgba(7,26,51,.08)!important}.card:hover{transform:translateY(-9px)!important;box-shadow:0 30px 65px rgba(7,26,51,.15)!important}
+.pic{height:225px!important;background:linear-gradient(145deg,#fff1df,#edf4ff)!important}.pic span{filter:drop-shadow(0 18px 20px rgba(7,26,51,.16))!important}.body h3{font-weight:900!important}.buy button{border-radius:14px!important;background:rgba(255,106,0,.09)!important}.buy button:hover{background:var(--shakh-orange)!important}
+.features div{border-radius:25px!important;background:rgba(255,255,255,.88)!important;box-shadow:0 14px 40px rgba(7,26,51,.07)!important}.features svg{border-radius:15px!important}
+footer{background:radial-gradient(circle at 85% 0%,#174c80 0,transparent 30%),linear-gradient(135deg,#06172d,#0d3155)!important}
+.modal{background:rgba(3,12,25,.72)!important}.auth{border:1px solid rgba(255,255,255,.7);box-shadow:0 45px 120px rgba(0,0,0,.30)!important}.mark{background:linear-gradient(145deg,#ffb86b,#ff5d00)!important;box-shadow:0 14px 30px rgba(255,106,0,.22)}
+.cartPanel,.dashboardPanel{border-radius:32px!important}.dashboardGrid{gap:22px!important}.orderCard{border-radius:25px!important;box-shadow:0 15px 40px rgba(7,26,51,.08)!important}
+@media(max-width:720px){.hero{min-height:390px!important;padding:42px 24px!important}.hero:after{right:24px;bottom:20px;font-size:9px}.hero h1{letter-spacing:-2px!important}.pic{height:155px!important}.nav{min-height:78px!important}}
+@media(max-width:520px){.hero:after{display:none}.hero{margin-top:12px!important;border-radius:30px!important}.logo b{font-size:23px!important}.search{border-radius:15px!important}}
