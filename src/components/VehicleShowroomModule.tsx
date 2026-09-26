@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Car, CheckCircle2, CreditCard, Plus, ShieldCheck, XCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import ShakhCarsMarketplace from './ShakhCarsMarketplace';
 
 type Listing = {
   id: string; showroom_id: string; owner_id: string; title: string; make: string; model: string;
@@ -15,7 +16,8 @@ const statusLabel: Record<string,string> = {
   rejected: 'ڕەتکراوەتەوە', sold: 'فرۆشراوە', archived: 'ئەرشیفکراو'
 };
 
-export default function VehicleShowroomModule({ userId, isAdmin = false }: Props) {
+export default function VehicleShowroomModule({ userId, isAdmin = false, role = 'customer' }: Props) {
+  if (!isAdmin && role !== 'car_dealer') return <ShakhCarsMarketplace />;
   const [listings, setListings] = useState<Listing[]>([]);
   const [showroom, setShowroom] = useState<any>(null);
   const [loading, setLoading] = useState(true);
