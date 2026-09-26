@@ -81,3 +81,12 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .mapLegendStore{background:#163f6b}.mapLegendCaptain{background:#ff6b16}.mapLegendDestination{background:#2f8f5b}
 .liveMapExternalLink{display:flex;justify-content:center;align-items:center;text-decoration:none;height:auto;min-height:42px;margin-top:8px}
 @media(max-width:720px){.liveDeliveryMapCanvas{height:235px}.liveDeliveryMapLegend{gap:8px;font-size:10px}}
+
+
+.etaCard{margin-top:12px;border:1px solid #e4eaf0;border-radius:16px;background:linear-gradient(145deg,#fffaf5,#f7fbff);padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.etaCard>div{display:grid;grid-template-columns:22px 1fr;column-gap:6px;align-items:center;padding:9px;border-radius:12px;background:rgba(255,255,255,.72);border:1px solid #edf1f4}
+.etaCard>div svg{grid-row:span 2;color:var(--orange);width:18px}
+.etaCard>div span{font-size:10px;color:#8290a1}
+.etaCard>div strong{font-size:14px;color:var(--navy);margin-top:2px}
+.etaCard>small{grid-column:1/-1;color:#8693a4;font-size:10px;line-height:1.7}
+@media(max-width:520px){.etaCard{grid-template-columns:1fr}.etaCard>small{grid-column:auto}}
