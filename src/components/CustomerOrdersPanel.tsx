@@ -13,6 +13,8 @@ type CustomerOrder = {
   delivery_fee_iqd: number;
   platform_fee_iqd: number;
   discount_iqd: number;
+  payment_status: string;
+  payment_method: string | null;
   items: { product_id: string | null; product_name: string; quantity: number; unit_price_iqd: number }[];
 };
 
@@ -56,7 +58,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
     setError(null);
     try {
       const [{ data: orderData, error: orderError }, notificationData] = await Promise.all([
-        supabase.from('orders').select('id,status,total_iqd,created_at,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,discount_iqd,order_items(product_id,product_name,quantity,unit_price_iqd)').eq('customer_id', userId).order('created_at', { ascending: false }).limit(30),
+        supabase.from('orders').select('id,status,total_iqd,created_at,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,discount_iqd,payment_status,payment_method,order_items(product_id,product_name,quantity,unit_price_iqd)').eq('customer_id', userId).order('created_at', { ascending: false }).limit(30),
         getMyNotifications(userId, 30),
       ]);
       if (orderError) throw orderError;
@@ -66,6 +68,8 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
         delivery_fee_iqd: Number(order.delivery_fee_iqd || 0),
         platform_fee_iqd: Number(order.platform_fee_iqd || 0),
         discount_iqd: Number(order.discount_iqd || 0),
+        payment_status: order.payment_status ?? 'pending',
+        payment_method: order.payment_method ?? null,
         items: (order.order_items ?? []).map((item: any) => ({
           product_id: item.product_id ?? null,
           product_name: item.product_name,
@@ -144,6 +148,8 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                 </div>
               )}
               <div className="summary" style={{ marginBottom: 12 }}>
+                <div><span>دۆخی پارەدان</span><b>{selected.payment_status === 'paid' ? 'پارەدراوە' : selected.payment_status === 'failed' ? 'سەرکەوتوو نەبوو' : selected.payment_status === 'refunded' ? 'گەڕێندرایەوە' : 'چاوەڕوانی پارەدان'}</b></div>
+                <div><span>شێوازی پارەدان</span><b>{selected.payment_method === 'cash' ? 'کاش' : selected.payment_method || 'دیاری نەکراوە'}</b></div>
                 <div><span>کۆی بەرهەم</span><b>{selected.subtotal_iqd.toLocaleString('ku-IQ')} د.ع</b></div>
                 <div><span>گەیاندن</span><b>{selected.delivery_fee_iqd.toLocaleString('ku-IQ')} د.ع</b></div>
                 <div><span>خزمەتی شاخ</span><b>{selected.platform_fee_iqd.toLocaleString('ku-IQ')} د.ع</b></div>
