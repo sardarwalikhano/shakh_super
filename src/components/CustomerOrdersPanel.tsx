@@ -9,6 +9,8 @@ type CustomerOrder = {
   total_iqd: number;
   created_at: string;
   store_id: string | null;
+  captain_id: string | null;
+  address_id: string | null;
   subtotal_iqd: number;
   delivery_fee_iqd: number;
   platform_fee_iqd: number;
@@ -16,6 +18,19 @@ type CustomerOrder = {
   payment_status: string;
   payment_method: string | null;
   items: { product_id: string | null; product_name: string; quantity: number; unit_price_iqd: number }[];
+  store: { name?: string | null; address?: string | null; city?: string | null; latitude?: number | null; longitude?: number | null } | null;
+  delivery_address: { address?: string | null; label?: string | null; city?: string | null; latitude?: number | null; longitude?: number | null } | null;
+};
+
+type TrackingLocation = {
+  order_id: string;
+  captain_id: string;
+  latitude: number;
+  longitude: number;
+  accuracy_m: number | null;
+  heading: number | null;
+  speed_mps: number | null;
+  updated_at: string;
 };
 
 type NotificationItem = {
@@ -44,6 +59,30 @@ function stepIndex(status: string) {
   return index < 0 ? 0 : index;
 }
 
+function mapEmbedUrl(latitude: number, longitude: number) {
+  const delta = 0.008;
+  const west = longitude - delta;
+  const south = latitude - delta;
+  const east = longitude + delta;
+  const north = latitude + delta;
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${west},${south},${east},${north}&layer=mapnik&marker=${latitude},${longitude}`;
+}
+
+function googleMapsUrl(latitude: number, longitude: number) {
+  return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+}
+
+function googleDirectionsUrl(originLatitude: number, originLongitude: number, destinationLatitude: number, destinationLongitude: number) {
+  return `https://www.google.com/maps/dir/?api=1&origin=${originLatitude},${originLongitude}&destination=${destinationLatitude},${destinationLongitude}`;
+}
+
+function formatTrackingAge(updatedAt: string) {
+  const seconds = Math.max(0, Math.round((Date.now() - new Date(updatedAt).getTime()) / 1000));
+  if (seconds < 60) return `نوێکراوە ${seconds} چرکە پێش`;
+  const minutes = Math.round(seconds / 60);
+  return `نوێکراوە ${minutes} خولەک پێش`;
+}
+
 export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -51,6 +90,8 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [unreadOnly, setUnreadOnly] = useState(false);
+  const [trackingLocation, setTrackingLocation] = useState<TrackingLocation | null>(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
 
   const load = useCallback(async () => {
     if (!userId) return;
@@ -58,7 +99,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
     setError(null);
     try {
       const [{ data: orderData, error: orderError }, notificationData] = await Promise.all([
-        supabase.from('orders').select('id,status,total_iqd,created_at,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,discount_iqd,payment_status,payment_method,order_items(product_id,product_name,quantity,unit_price_iqd)').eq('customer_id', userId).order('created_at', { ascending: false }).limit(30),
+        supabase.from('orders').select('id,status,total_iqd,created_at,store_id,captain_id,address_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,discount_iqd,payment_status,payment_method,order_items(product_id,product_name,quantity,unit_price_iqd),store:stores(name,address,city,latitude,longitude),delivery_address:delivery_addresses(address,label,city,latitude,longitude)').eq('customer_id', userId).order('created_at', { ascending: false }).limit(30),
         getMyNotifications(userId, 30),
       ]);
       if (orderError) throw orderError;
@@ -70,6 +111,8 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
         discount_iqd: Number(order.discount_iqd || 0),
         payment_status: order.payment_status ?? 'pending',
         payment_method: order.payment_method ?? null,
+        store: Array.isArray(order.store) ? (order.store[0] ?? null) : (order.store ?? null),
+        delivery_address: Array.isArray(order.delivery_address) ? (order.delivery_address[0] ?? null) : (order.delivery_address ?? null),
         items: (order.order_items ?? []).map((item: any) => ({
           product_id: item.product_id ?? null,
           product_name: item.product_name,
@@ -101,6 +144,46 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   }, [load, userId]);
 
   const selected = useMemo(() => orders.find((order) => order.id === selectedId) ?? null, [orders, selectedId]);
+
+  useEffect(() => {
+    setTrackingLocation(null);
+    if (!selectedId) return;
+    let active = true;
+    setTrackingLoading(true);
+
+    const loadTracking = async () => {
+      const { data, error } = await supabase
+        .from('delivery_tracking_locations')
+        .select('order_id,captain_id,latitude,longitude,accuracy_m,heading,speed_mps,updated_at')
+        .eq('order_id', selectedId)
+        .maybeSingle();
+      if (!active) return;
+      if (error) {
+        setTrackingLoading(false);
+        return;
+      }
+      setTrackingLocation((data as TrackingLocation | null) ?? null);
+      setTrackingLoading(false);
+    };
+
+    void loadTracking();
+    const channel = supabase
+      .channel(`delivery-tracking-${selectedId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'delivery_tracking_locations', filter: `order_id=eq.${selectedId}` }, (payload) => {
+        if (!active) return;
+        if (payload.eventType === 'DELETE') {
+          setTrackingLocation(null);
+          return;
+        }
+        setTrackingLocation(payload.new as TrackingLocation);
+      })
+      .subscribe();
+
+    return () => {
+      active = false;
+      void supabase.removeChannel(channel);
+    };
+  }, [selectedId]);
   const visibleNotifications = useMemo(() => unreadOnly ? notifications.filter((item) => !item.is_read) : notifications, [notifications, unreadOnly]);
   const unreadCount = notifications.filter((item) => !item.is_read).length;
 
@@ -177,6 +260,53 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                 })}
               </div>
               <div className="tracking-card__footer"><MapPin size={17} /><span>شوێنی گەیاندن لە زانیارییەکانی ئۆردەرەکە پارێزراوە.</span></div>
+
+              {(selected.status === 'assigned_to_captain' || selected.status === 'picked_up' || selected.status === 'on_the_way') && (
+                <div className="liveDeliveryMapCard">
+                  <div className="liveDeliveryMapHeader">
+                    <div>
+                      <span className="customer-orders-panel__eyebrow"><MapPin size={15} /> نەخشەی گەیاندن</span>
+                      <strong>{trackingLocation ? 'شوێنی کاپتن زیندوە' : 'شوێنی کاپتن هێشتا نەنێردراوە'}</strong>
+                    </div>
+                    {trackingLocation && <small>{formatTrackingAge(trackingLocation.updated_at)}</small>}
+                  </div>
+
+                  {trackingLoading ? (
+                    <div className="liveTrackingEmpty">چاوەڕوانی شوێنی زیندووی کاپتن...</div>
+                  ) : trackingLocation ? (
+                    <>
+                      <div className="mapPreview liveMapPreview">
+                        <iframe
+                          title="شوێنی زیندووی کاپتن"
+                          src={mapEmbedUrl(trackingLocation.latitude, trackingLocation.longitude)}
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                        />
+                        <a href={googleMapsUrl(trackingLocation.latitude, trackingLocation.longitude)} target="_blank" rel="noreferrer">کردنەوەی شوێنی کاپتن لە نەخشە</a>
+                      </div>
+                      <div className="liveTrackingMeta">
+                        <span><span className="liveTrackingDot" /> کاپتن لە ڕێگادایە</span>
+                        {trackingLocation.accuracy_m != null && <span>دروستی نزیکەی {Math.round(trackingLocation.accuracy_m).toLocaleString('ku-IQ')} مەتر</span>}
+                      </div>
+                      {selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null && (
+                        <div className="liveTrackingActions">
+                          <a className="plain" href={googleDirectionsUrl(trackingLocation.latitude, trackingLocation.longitude, selected.delivery_address.latitude, selected.delivery_address.longitude)} target="_blank" rel="noreferrer">ڕێگای کاپتن بۆ ناونیشان</a>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="liveTrackingEmpty">
+                      <strong>{selected.status === 'assigned_to_captain' ? 'کاپتن دیاریکراوە؛ چاوەڕوانی وەرگرتنی شوێنە.' : 'کاپتن هێشتا شوێنی زیندووی خۆی نەناردووە.'}</strong>
+                      <span>کاتێک شوێن نێردرا، لێرە بە شێوەی زیندوو نوێ دەبێتەوە.</span>
+                    </div>
+                  )}
+
+                  {selected.store?.latitude != null && selected.store?.longitude != null && selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null && (
+                    <a className="plain full liveStoreMapLink" href={googleDirectionsUrl(selected.store.latitude, selected.store.longitude, selected.delivery_address.latitude, selected.delivery_address.longitude)} target="_blank" rel="noreferrer">بینینی ڕێگای دوکان تا ناونیشانی گەیاندن</a>
+                  )}
+                </div>
+              )}
+
               {selected.status === 'pending' && <button type="button" className="reset" onClick={() => void cancelOrder(selected.id)} style={{ marginTop: 10 }}>هەڵوەشاندنەوەی ئۆردەر</button>}
             </>
           ) : <div className="empty">ئۆردەرێک هەڵبژێرە بۆ بینینی Tracking.</div>}
