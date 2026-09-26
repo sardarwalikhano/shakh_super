@@ -68,11 +68,30 @@ function googleDirectionsUrl(originLatitude: number, originLongitude: number, de
   return `https://www.google.com/maps/dir/?api=1&origin=${originLatitude},${originLongitude}&destination=${destinationLatitude},${destinationLongitude}`;
 }
 
-function formatTrackingAge(updatedAt: string) {
-  const seconds = Math.max(0, Math.round((Date.now() - new Date(updatedAt).getTime()) / 1000));
+function formatTrackingAge(updatedAt: string, now = Date.now()) {
+  const seconds = Math.max(0, Math.round((now - new Date(updatedAt).getTime()) / 1000));
   if (seconds < 60) return `نوێکراوە ${seconds} چرکە پێش`;
   const minutes = Math.round(seconds / 60);
   return `نوێکراوە ${minutes} خولەک پێش`;
+}
+
+function distanceKm(a: { latitude: number; longitude: number }, b: { latitude: number; longitude: number }) {
+  const earthRadiusKm = 6371;
+  const lat1 = (a.latitude * Math.PI) / 180;
+  const lat2 = (b.latitude * Math.PI) / 180;
+  const dLat = lat2 - lat1;
+  const dLon = ((b.longitude - a.longitude) * Math.PI) / 180;
+  const haversine = Math.sin(dLat / 2) ** 2
+    + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+}
+
+function estimateEtaMinutes(distance: number, speedMps: number | null) {
+  const speedKmh = speedMps != null && speedMps >= 1 && speedMps <= 15
+    ? speedMps * 3.6
+    : 25;
+  const estimatedRoadKm = distance * 1.25;
+  return Math.min(120, Math.max(1, Math.ceil((estimatedRoadKm / speedKmh) * 60)));
 }
 
 export default function CustomerOrdersPanel({ userId }: { userId: string }) {
@@ -84,6 +103,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   const [unreadOnly, setUnreadOnly] = useState(false);
   const [trackingLocation, setTrackingLocation] = useState<TrackingLocation | null>(null);
   const [trackingLoading, setTrackingLoading] = useState(false);
+  const [trackingClock, setTrackingClock] = useState(() => Date.now());
 
   const load = useCallback(async () => {
     if (!userId) return;
@@ -176,7 +196,24 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
       void supabase.removeChannel(channel);
     };
   }, [selectedId]);
+  useEffect(() => {
+    if (!trackingLocation) return;
+    const interval = window.setInterval(() => setTrackingClock(Date.now()), 15000);
+    return () => window.clearInterval(interval);
+  }, [trackingLocation]);
+
   const visibleNotifications = useMemo(() => unreadOnly ? notifications.filter((item) => !item.is_read) : notifications, [notifications, unreadOnly]);
+
+  const trackingDestination = selected?.delivery_address?.latitude != null && selected.delivery_address?.longitude != null
+    ? { latitude: Number(selected.delivery_address.latitude), longitude: Number(selected.delivery_address.longitude) }
+    : null;
+  const trackingDistance = trackingLocation && trackingDestination
+    ? distanceKm(
+        { latitude: trackingLocation.latitude, longitude: trackingLocation.longitude },
+        trackingDestination,
+      )
+    : null;
+  const trackingEtaMinutes = trackingDistance != null ? estimateEtaMinutes(trackingDistance, trackingLocation?.speed_mps ?? null) : null;
   const unreadCount = notifications.filter((item) => !item.is_read).length;
 
   const cancelOrder = async (orderId: string) => {
@@ -260,7 +297,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                       <span className="customer-orders-panel__eyebrow"><MapPin size={15} /> نەخشەی گەیاندن</span>
                       <strong>{trackingLocation ? 'شوێنی کاپتن زیندوە' : 'شوێنی کاپتن هێشتا نەنێردراوە'}</strong>
                     </div>
-                    {trackingLocation && <small>{formatTrackingAge(trackingLocation.updated_at)}</small>}
+                    {trackingLocation && <small>{formatTrackingAge(trackingLocation.updated_at, trackingClock)}</small>}
                   </div>
 
                   {trackingLoading ? (
@@ -277,6 +314,13 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                         <span><span className="liveTrackingDot" /> کاپتن لە ڕێگادایە</span>
                         {trackingLocation.accuracy_m != null && <span>دروستی نزیکەی {Math.round(trackingLocation.accuracy_m).toLocaleString('ku-IQ')} مەتر</span>}
                       </div>
+                      {trackingDistance != null && (
+                        <div className="etaCard">
+                          <div><Truck size={18} /><span>دووری تا شوێنی کڕیار</span><strong>{trackingDistance < 1 ? `${Math.round(trackingDistance * 1000).toLocaleString('ku-IQ')} مەتر` : `${trackingDistance.toFixed(1)} کیلۆمەتر`}</strong></div>
+                          <div><Clock3 size={18} /><span>کاتی خەمڵێنراوی گەیشتن</span><strong>{trackingEtaMinutes?.toLocaleString('ku-IQ')} خولەک</strong></div>
+                          <small>ئەم کاتە خەمڵێنراوەیە و بە پێی شوێن و خێرایی نوێ دەبێتەوە.</small>
+                        </div>
+                      )}
                       {selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null && (
                         <div className="liveTrackingActions">
                           <a className="plain" href={googleDirectionsUrl(trackingLocation.latitude, trackingLocation.longitude, selected.delivery_address.latitude, selected.delivery_address.longitude)} target="_blank" rel="noreferrer">ڕێگای کاپتن بۆ ناونیشان</a>
