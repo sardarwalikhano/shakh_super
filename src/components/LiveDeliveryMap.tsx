@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { fetchDrivingRoute, type RouteResult } from '../lib/routing';
 
 type Point = {
   latitude: number;
@@ -11,14 +12,18 @@ type LiveDeliveryMapProps = {
   store?: Point | null;
   captain?: Point | null;
   destination?: Point | null;
+  onRouteInfo?: (route: RouteResult | null) => void;
 };
 
 const DEFAULT_CENTER: Point = { latitude: 36.1911, longitude: 44.0092 };
 
-export default function LiveDeliveryMap({ store, captain, destination }: LiveDeliveryMapProps) {
+export default function LiveDeliveryMap({ store, captain, destination, onRouteInfo }: LiveDeliveryMapProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const layersRef = useRef<L.LayerGroup | null>(null);
+  const routeLayerRef = useRef<L.GeoJSON | null>(null);
+  const [routeLoading, setRouteLoading] = useState(false);
+  const routeRequestIdRef = useRef(0);
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -42,9 +47,11 @@ export default function LiveDeliveryMap({ store, captain, destination }: LiveDel
     requestAnimationFrame(() => map.invalidateSize());
 
     return () => {
+      routeRequestIdRef.current += 1;
       map.remove();
       mapInstanceRef.current = null;
       layersRef.current = null;
+      routeLayerRef.current = null;
     };
   }, []);
 
@@ -54,6 +61,9 @@ export default function LiveDeliveryMap({ store, captain, destination }: LiveDel
     if (!map || !layers) return;
 
     layers.clearLayers();
+    routeLayerRef.current?.remove();
+    routeLayerRef.current = null;
+    onRouteInfo?.(null);
 
     const points: Array<[string, Point, string, string]> = [];
     if (store) points.push(['store', store, 'دوکان', 'shop']);
@@ -84,17 +94,64 @@ export default function LiveDeliveryMap({ store, captain, destination }: LiveDel
       ).addTo(layers);
     }
 
-    if (captain && destination) {
-      L.polyline(
-        [[captain.latitude, captain.longitude], [destination.latitude, destination.longitude]],
-        { color: '#ff6b16', weight: 4, dashArray: '8 8', opacity: 0.68 },
-      ).addTo(layers);
-    } else if (store && destination) {
-      L.polyline(
-        [[store.latitude, store.longitude], [destination.latitude, destination.longitude]],
-        { color: '#738195', weight: 3, dashArray: '6 8', opacity: 0.45 },
-      ).addTo(layers);
+    const routePoints = captain && destination
+      ? [captain, destination]
+      : store && destination
+        ? [store, destination]
+        : null;
+
+    let cancelled = false;
+    const requestId = ++routeRequestIdRef.current;
+
+    if (routePoints) {
+      setRouteLoading(true);
+      const controller = new AbortController();
+
+      void fetchDrivingRoute(routePoints, controller.signal)
+        .then((route) => {
+          if (cancelled || requestId !== routeRequestIdRef.current) return;
+          routeLayerRef.current = L.geoJSON(route.geometry, {
+            style: {
+              color: '#ff6b16',
+              weight: 5,
+              opacity: 0.82,
+            },
+          }).addTo(map);
+          onRouteInfo?.(route);
+          const routeBounds = routeLayerRef.current.getBounds();
+          if (routeBounds.isValid()) {
+            map.fitBounds(routeBounds.pad(0.16), { animate: false, maxZoom: 16 });
+          }
+        })
+        .catch((error: unknown) => {
+          if (cancelled || requestId !== routeRequestIdRef.current || (error instanceof DOMException && error.name === 'AbortError')) return;
+          onRouteInfo?.(null);
+        })
+        .finally(() => {
+          if (!cancelled && requestId === routeRequestIdRef.current) setRouteLoading(false);
+        });
+
+      requestAnimationFrame(() => map.invalidateSize());
+
+      return () => {
+        cancelled = true;
+        controller.abort();
+      };
     }
+
+    setRouteLoading(false);
+
+    if (points.length > 1) {
+      const bounds = L.latLngBounds(points.map(([, p]) => [p.latitude, p.longitude] as [number, number]));
+      map.fitBounds(bounds.pad(0.18), { animate: false, maxZoom: 16 });
+    } else if (points.length === 1) {
+      map.setView([points[0][1].latitude, points[0][1].longitude], 16, { animate: false });
+    }
+
+    requestAnimationFrame(() => map.invalidateSize());
+  }, [store, captain, destination, onRouteInfo]);
+
+  return (
 
     if (points.length > 1) {
       const bounds = L.latLngBounds(points.map(([, p]) => [p.latitude, p.longitude] as [number, number]));
@@ -109,6 +166,7 @@ export default function LiveDeliveryMap({ store, captain, destination }: LiveDel
   return (
     <div className="liveDeliveryMap">
       <div ref={mapRef} className="liveDeliveryMapCanvas" aria-label="نەخشەی شوێنی گەیاندن" />
+      {routeLoading && <div className="liveDeliveryRouteStatus">ڕێگای ئۆتۆمبێل خەمڵێنراوە...</div>}
       <div className="liveDeliveryMapLegend" aria-label="ڕوونکردنەوەی نیشانەکانی نەخشە">
         {store && <span><i className="mapLegendDot mapLegendStore" /> دوکان</span>}
         {captain && <span><i className="mapLegendDot mapLegendCaptain" /> کاپتن</span>}
