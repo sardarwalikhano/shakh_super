@@ -8,6 +8,7 @@ type CaptainOrder = {
   status: string;
   total_iqd: number;
   created_at: string;
+  updated_at?: string | null;
   delivery_fee_iqd?: number;
   address_id?: string;
   delivery_address?: {
@@ -89,7 +90,8 @@ export default function CaptainDashboard() {
   const completedOrders = orders.filter((order) => order.status === 'delivered');
   const activeOrders = orders.filter((order) => order.status !== 'delivered');
   const deliveredToday = completedOrders.filter(
-    (order) => new Date(order.created_at).toLocaleDateString('en-CA') === todayKey,
+    (order) =>
+      new Date(order.updated_at || order.created_at).toLocaleDateString('en-CA') === todayKey,
   );
   const deliveryEarningsToday = deliveredToday.reduce(
     (sum, order) => sum + Number(order.delivery_fee_iqd || 0),
@@ -213,7 +215,7 @@ export default function CaptainDashboard() {
             {completedOrders.slice(0, 20).map(order => (
               <article className="orderCard" key={order.id}>
                 <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status]}</span></div>
-                <div className="orderMeta"><Clock3 size={16} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</div>
+                <div className="orderMeta"><Clock3 size={16} /> گەیەندرا: {new Date(order.updated_at || order.created_at).toLocaleString('ku-IQ')}</div>
                 <div className="orderMeta"><MapPin size={16} /> {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
                 <div className="orderTotal">{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</div>
               </article>
