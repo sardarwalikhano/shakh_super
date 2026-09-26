@@ -5,6 +5,9 @@ export type CaptainOrderStatus = 'assigned_to_captain' | 'picked_up' | 'on_the_w
 export async function claimOrder(orderId: string) {
   const { data, error } = await supabase.rpc('claim_order', { p_order_id: orderId });
   if (error) throw error;
+  if (data !== true) {
+    throw new Error('ئەم ئۆردەرە پێشتر لەلایەن کاپتنێکی ترەوە وەرگیراوە.');
+  }
   return data;
 }
 
