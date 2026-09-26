@@ -152,7 +152,6 @@ export default function LiveDeliveryMap({ store, captain, destination, onRouteIn
   }, [store, captain, destination, onRouteInfo]);
 
   return (
-  return (
     <div className="liveDeliveryMap">
       <div ref={mapRef} className="liveDeliveryMapCanvas" aria-label="نەخشەی شوێنی گەیاندن" />
       {routeLoading && <div className="liveDeliveryRouteStatus">ڕێگای ئۆتۆمبێل خەمڵێنراوە...</div>}
