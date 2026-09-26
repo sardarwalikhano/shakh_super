@@ -9,6 +9,22 @@ export type CaptainOrderItem = {
   unit_price_iqd: number;
 };
 
+export type CaptainStore = {
+  name?: string | null;
+  address?: string | null;
+  city?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+};
+
+export type CaptainDeliveryAddress = {
+  address?: string | null;
+  label?: string | null;
+  city?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+};
+
 export type CaptainOrder = {
   id: string;
   status: string;
@@ -19,14 +35,19 @@ export type CaptainOrder = {
   delivery_fee_iqd?: number | null;
   address_id?: string | null;
   items?: CaptainOrderItem[];
-  store?: {
-    name?: string | null;
-    address?: string | null;
-    city?: string | null;
-    latitude?: number | null;
-    longitude?: number | null;
-  } | null;
+  store?: CaptainStore | null;
+  delivery_address?: CaptainDeliveryAddress | null;
 };
+
+function normalizeCaptainOrder(row: any): CaptainOrder {
+  return {
+    ...row,
+    store: Array.isArray(row.store) ? (row.store[0] ?? null) : (row.store ?? null),
+    delivery_address: Array.isArray(row.delivery_address)
+      ? (row.delivery_address[0] ?? null)
+      : (row.delivery_address ?? null),
+  };
+}
 
 export async function claimOrder(orderId: string) {
   const { data, error } = await supabase.rpc('claim_order', { p_order_id: orderId });
@@ -82,7 +103,7 @@ export async function getCaptainOrders(): Promise<CaptainOrder[]> {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []).map(normalizeCaptainOrder);
 }
 
 export async function getAvailableCaptainOrders(): Promise<CaptainOrder[]> {
@@ -94,5 +115,5 @@ export async function getAvailableCaptainOrders(): Promise<CaptainOrder[]> {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []).map(normalizeCaptainOrder);
 }
