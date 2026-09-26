@@ -3,6 +3,7 @@ import { Bell, Check, CheckCheck, Clock3, MapPin, Package, RefreshCw, Truck } fr
 import { supabase } from '../lib/supabase';
 import { getMyNotifications, markNotificationRead, subscribeToMyNotifications } from '../lib/orderTracking';
 import LiveDeliveryMap from './LiveDeliveryMap';
+import type { RouteResult } from '../lib/routing';
 
 type CustomerOrder = {
   id: string;
@@ -104,6 +105,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   const [trackingLocation, setTrackingLocation] = useState<TrackingLocation | null>(null);
   const [trackingLoading, setTrackingLoading] = useState(false);
   const [trackingClock, setTrackingClock] = useState(() => Date.now());
+  const [routeInfo, setRouteInfo] = useState<RouteResult | null>(null);
 
   const load = useCallback(async () => {
     if (!userId) return;
@@ -159,6 +161,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
 
   useEffect(() => {
     setTrackingLocation(null);
+    setRouteInfo(null);
     if (!selectedId) return;
     let active = true;
     setTrackingLoading(true);
@@ -213,7 +216,8 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
         trackingDestination,
       )
     : null;
-  const trackingEtaMinutes = trackingDistance != null ? estimateEtaMinutes(trackingDistance, trackingLocation?.speed_mps ?? null) : null;
+  const trackingEtaMinutes = routeInfo?.durationMinutes ?? (trackingDistance != null ? estimateEtaMinutes(trackingDistance, trackingLocation?.speed_mps ?? null) : null);
+  const trackingRouteDistance = routeInfo?.distanceKm ?? trackingDistance;
   const unreadCount = notifications.filter((item) => !item.is_read).length;
 
   const cancelOrder = async (orderId: string) => {
@@ -308,17 +312,18 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                         store={selected.store?.latitude != null && selected.store?.longitude != null ? { latitude: Number(selected.store.latitude), longitude: Number(selected.store.longitude) } : null}
                         captain={{ latitude: trackingLocation.latitude, longitude: trackingLocation.longitude }}
                         destination={selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null ? { latitude: Number(selected.delivery_address.latitude), longitude: Number(selected.delivery_address.longitude) } : null}
+                        onRouteInfo={setRouteInfo}
                       />
                       <a className="plain full liveMapExternalLink" href={googleMapsUrl(trackingLocation.latitude, trackingLocation.longitude)} target="_blank" rel="noreferrer">کردنەوەی شوێنی کاپتن لە نەخشەی گووگڵ</a>
                       <div className="liveTrackingMeta">
                         <span><span className="liveTrackingDot" /> کاپتن لە ڕێگادایە</span>
                         {trackingLocation.accuracy_m != null && <span>دروستی نزیکەی {Math.round(trackingLocation.accuracy_m).toLocaleString('ku-IQ')} مەتر</span>}
                       </div>
-                      {trackingDistance != null && (
+                      {trackingRouteDistance != null && (
                         <div className="etaCard">
-                          <div><Truck size={18} /><span>دووری تا شوێنی کڕیار</span><strong>{trackingDistance < 1 ? `${Math.round(trackingDistance * 1000).toLocaleString('ku-IQ')} مەتر` : `${trackingDistance.toFixed(1)} کیلۆمەتر`}</strong></div>
+                          <div><Truck size={18} /><span>دووری تا شوێنی کڕیار</span><strong>{trackingRouteDistance < 1 ? `${Math.round(trackingRouteDistance * 1000).toLocaleString('ku-IQ')} مەتر` : `${trackingRouteDistance.toFixed(1)} کیلۆمەتر`}</strong></div>
                           <div><Clock3 size={18} /><span>کاتی خەمڵێنراوی گەیشتن</span><strong>{trackingEtaMinutes?.toLocaleString('ku-IQ')} خولەک</strong></div>
-                          <small>ئەم کاتە خەمڵێنراوەیە و بە پێی شوێن و خێرایی نوێ دەبێتەوە.</small>
+                          <small>{routeInfo ? 'کاتی ڕێگا لەسەر تۆڕی شەقامەکان خەمڵێنراوە و بە نوێبوونەوەی شوێنی کاپتن نوێ دەکرێتەوە.' : 'کاتی خەمڵێنراوەی fallback ـە و تا routing بەردەست بێت بەکاردێت.'}</small>
                         </div>
                       )}
                       {selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null && (
