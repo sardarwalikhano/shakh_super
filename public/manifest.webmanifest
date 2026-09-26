@@ -1,7 +1,8 @@
 {
+  "id": "/",
   "name": "شاخ — بازاڕی هەموو شت",
   "short_name": "شاخ",
-  "description": "خواردن، سوپرمارکێت، جل و بەرگ و پێداویستییە ڕۆژانەکان لە یەک شوێن.",
+  "description": "خواردن، سووپەرمارکێت، جل و بەرگ و پێداویستییە ڕۆژانەکان لە یەک شوێن.",
   "lang": "ku",
   "dir": "rtl",
   "start_url": "/",
@@ -12,6 +13,6 @@
   "background_color": "#07111f",
   "categories": ["shopping", "food", "business"],
   "icons": [
-    {"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+    {"src":"/icon.svg","sizes":"192x192 512x512","type":"image/svg+xml","purpose":"any maskable"}
   ]
 }
