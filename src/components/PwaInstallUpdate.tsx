@@ -16,16 +16,20 @@ export default function PwaInstallUpdate(){
  const [updateReady,setUpdateReady]=useState(false);
  const [registration,setRegistration]=useState<ServiceWorkerRegistration|null>(null);
  const [standalone,setStandalone]=useState(false);
+ const [version,setVersion]=useState('v1.8.0');
+ const [checking,setChecking]=useState(false);
+ const [status,setStatus]=useState('');
 
  useEffect(()=>{
   setStandalone(isStandalone());
+  fetch('/version.json?ts='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(data?.version)setVersion(String(data.version))}).catch(()=>{});
   if(!('serviceWorker' in navigator))return;
 
   const onInstall=(event:Event)=>{
    event.preventDefault();
    setInstallEvent(event as BeforeInstallPromptEvent);
   };
-  const appInstalled=()=>{setInstallEvent(null);setStandalone(true)};
+  const appInstalled=()=>{setInstallEvent(null);setStandalone(true);setStatus('ئەپی شاخ بە سەرکەوتوویی دامەزرا.');};
   window.addEventListener('beforeinstallprompt',onInstall);
   window.addEventListener('appinstalled',appInstalled);
 
@@ -75,11 +79,35 @@ export default function PwaInstallUpdate(){
   if(installEvent){
    await installEvent.prompt();
    const result=await installEvent.userChoice;
-   if(result.outcome==='accepted')setStandalone(true);
+   if(result.outcome==='accepted'){
+    setStandalone(true);
+    setStatus('ئەپی شاخ دامەزرا.');
+   }else{
+    setStatus('دامەزراندن هەڵنەبژێردرا.');
+   }
    setInstallEvent(null);
    return;
   }
   setInstallHelp(true);
+ };
+
+ const checkForUpdate=async()=>{
+  if(!registration)return setStatus('خزمەتی نوێکردنەوە هێشتا ئامادە نییە.');
+  setChecking(true);
+  setStatus('');
+  try{
+   await registration.update();
+   if(registration.waiting){
+    setUpdateReady(true);
+    setStatus('وەشانی نوێ ئامادەیە.');
+   }else{
+    setStatus('هیچ وەشانی نوێ نەدۆزرایەوە.');
+   }
+  }catch{
+   setStatus('پشکنینی وەشانی نوێ سەرکەوتوو نەبوو.');
+  }finally{
+   setChecking(false);
+  }
  };
 
  const update=async()=>{
@@ -92,25 +120,43 @@ export default function PwaInstallUpdate(){
  };
 
  return <>
-  {!standalone&&<button type="button" onClick={install} style={{position:'fixed',bottom:18,right:18,zIndex:100,border:0,borderRadius:16,background:'linear-gradient(135deg,#ff9b4a,#ff6b16)',color:'#fff',padding:'12px 16px',fontWeight:900,boxShadow:'0 18px 40px rgba(255,107,22,.28)',display:'flex',alignItems:'center',gap:8}}>
-   <Download size={18}/><span>دامەزراندنی ئەپی شاخ</span>
-  </button>}
+  <div id="app-install" className="pwaPanel">
+   <div className="pwaPanelMain">
+    <div className="pwaBadge"><Download size={18}/></div>
+    <div>
+     <b>ئەپی شاخ</b>
+     <small>وەشانی {version} · دامەزراندن و ئەپدەیتی خۆکار</small>
+    </div>
+   </div>
+   <div className="pwaPanelActions">
+    {!standalone&&<button type="button" className="primary" onClick={install}>
+     <Download size={17}/> دامەزراندنی ئەپ
+    </button>}
+    <button type="button" className="plain" onClick={()=>void checkForUpdate()} disabled={checking||!registration}>
+     <RefreshCw size={17}/> {checking?'پشکنین...':'پشکنینی وەشانی نوێ'}
+    </button>
+    {updateReady&&<button type="button" className="primary" onClick={()=>void update()}>
+     <RefreshCw size={17}/> ئەپدەیتی ئێستا
+    </button>}
+   </div>
+   {status&&<small className="pwaStatus">{status}</small>}
+  </div>
 
   {installHelp&&<div className="modal"><div className="auth" style={{maxWidth:460}}>
    <button className="x" onClick={()=>setInstallHelp(false)}>×</button>
    <div className="mark">شاخ</div>
    <h2>دامەزراندنی ئەپی شاخ</h2>
-   <p>لە وێبگەڕەکەدا لیستی هەڵبژاردنەکان بکەرەوە و «دامەزراندنی ئەپ» یان «زیادکردن بۆ سەرەتا» هەڵبژێرە.</p>
+   <p>لە مێنیوی وێبگەڕەکەدا «دامەزراندنی ئەپ» یان «زیادکردن بۆ سەرەتا» هەڵبژێرە. لە ئایفۆن، لە مێنیوی هاوبەشکردن «زیادکردن بۆ سەرەتا» هەڵبژێرە.</p>
    <button className="primary full" onClick={()=>setInstallHelp(false)}>باشە</button>
   </div></div>}
 
-  {updateReady&&<div style={{position:'fixed',top:92,left:'50%',transform:'translateX(-50%)',zIndex:100,background:'#081a33',color:'#fff',borderRadius:16,padding:'12px 14px',boxShadow:'0 18px 50px rgba(8,26,51,.25)',display:'flex',alignItems:'center',gap:10,width:'min(92vw,560px)'}}>
+  {updateReady&&<div className="pwaUpdateBar">
    <RefreshCw size={19}/>
-   <div style={{flex:1}}>
-    <b style={{display:'block'}}>وەشانی نوێی شاخ بەردەستە</b>
-    <small style={{opacity:.78}}>ئەپە دامەزراوەکەت هەر لەسەر خۆی نوێ دەکرێتەوە؛ پێویست بە دابەزاندنەوەی دووبارە نییە.</small>
+   <div className="pwaUpdateText">
+    <b>وەشانی نوێی شاخ بەردەستە</b>
+    <small>بە یەک کرتە ئەپەکە نوێ بکەرەوە.</small>
    </div>
-   <button type="button" className="primary" onClick={update}>نوێکردنەوە</button>
+   <button type="button" className="primary" onClick={()=>void update()}>نوێکردنەوە</button>
    <button type="button" className="plain" onClick={()=>setUpdateReady(false)} aria-label="داخستن"><X size={16}/></button>
   </div>}
  </>;
