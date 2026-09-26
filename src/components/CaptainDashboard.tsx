@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { RefreshCw, Truck, PackageCheck, MapPin, Clock3 } from 'lucide-react';
-import { claimOrder, getAvailableCaptainOrders, getCaptainOrders, markOrderDelivered, markOrderOnTheWay, updateOrderStatus } from '../lib/captain';
+import { claimOrder, getAvailableCaptainOrders, getCaptainOrders, getCaptainCustomerContact, markOrderDelivered, markOrderOnTheWay, updateOrderStatus } from '../lib/captain';
 
 type CaptainOrder = {
   id: string;
@@ -34,6 +34,8 @@ export default function CaptainDashboard() {
   const [message, setMessage] = useState('');
   const [isOnline, setIsOnline] = useState(false);
   const [onlineBusy, setOnlineBusy] = useState(false);
+  const [contacts, setContacts] = useState<Record<string, { full_name: string | null; phone: string | null } | null>>({});
+  const [contactBusy, setContactBusy] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -93,6 +95,20 @@ export default function CaptainDashboard() {
     (sum, order) => sum + Number(order.delivery_fee_iqd || 0),
     0,
   );
+
+  const loadCustomerContact = async (orderId: string) => {
+    setContactBusy(orderId);
+    setMessage('');
+    try {
+      const contact = await getCaptainCustomerContact(orderId);
+      setContacts((current) => ({ ...current, [orderId]: contact }));
+      if (!contact) setMessage('زانیاری پەیوەندیی کڕیار بەردەست نییە.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'نەتوانرا زانیاریی کڕیار وەرگیرێت.');
+    } finally {
+      setContactBusy(null);
+    }
+  };
 
   const run = async (id: string, action: () => Promise<unknown>, success: string) => {
     setBusy(id);
@@ -164,6 +180,23 @@ export default function CaptainDashboard() {
             {order.status === 'assigned_to_captain' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => updateOrderStatus(order.id, 'picked_up'), 'ئۆردەرەکە لە دوکان وەرگیرا.')}>وەرگرتن لە دوکان</button>}
             {order.status === 'picked_up' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => markOrderOnTheWay(order.id), 'گەیاندن دەستی پێکرد.')}>دەستپێکردنی گەیاندن</button>}
             {order.status === 'on_the_way' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => markOrderDelivered(order.id), 'گەیاندن بە سەرکەوتوویی تەواو بوو.')}>تەواوکردنی گەیاندن</button>}
+            {order.status !== 'delivered' && (
+              <>
+                {!contacts[order.id] && <button className="plain full" type="button" disabled={contactBusy === order.id} onClick={() => void loadCustomerContact(order.id)}>
+                  {contactBusy === order.id ? 'وەرگرتنی زانیاری...' : 'پیشاندانی پەیوەندیی کڕیار'}
+                </button>}
+                {contacts[order.id] && (
+                  <div className="orderMeta">
+                    <span>کڕیار: {contacts[order.id]?.full_name || 'ناوی دیاری نەکراوە'}</span>
+                    {contacts[order.id]?.phone ? (
+                      <a href={'tel:' + contacts[order.id]?.phone}>{contacts[order.id]?.phone}</a>
+                    ) : (
+                      <span>ژمارەی مۆبایل بەردەست نییە</span>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
           </article>
         ))}
       </div>
