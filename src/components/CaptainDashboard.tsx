@@ -10,6 +10,13 @@ type CaptainOrder = {
   created_at: string;
   delivery_fee_iqd?: number;
   address_id?: string;
+  delivery_address?: {
+    address?: string | null;
+    label?: string | null;
+    city?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+  } | null;
 };
 
 const labels: Record<string, string> = {
@@ -110,7 +117,7 @@ export default function CaptainDashboard() {
           <article className="orderCard" key={order.id}>
             <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status] || order.status}</span></div>
             <div className="orderMeta"><Clock3 size={16} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</div>
-            <div className="orderMeta"><MapPin size={16} /> ناونیشانی گەیاندن لە وردەکارییەکانی ئۆردەر</div>
+            <div className="orderMeta"><MapPin size={16} /> {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
             <div className="orderTotal">{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</div>
 
             {order.status === 'ready_for_pickup' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => claimOrder(order.id), 'ئۆردەرەکە بە سەرکەوتوویی بۆ تۆ وەرگیرا.')}>{busy === order.id ? 'چاوەڕوان بە...' : 'وەرگرتنی ئۆردەر'}</button>}
