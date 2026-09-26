@@ -46,12 +46,13 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   const [unreadOnly, setUnreadOnly] = useState(false);
 
   const load = useCallback(async () => {
+    if (!userId) return;
     setLoading(true);
     setError(null);
     try {
       const [{ data: orderData, error: orderError }, notificationData] = await Promise.all([
         supabase.from('orders').select('id,status,total_iqd,created_at,store_id').eq('customer_id', userId).order('created_at', { ascending: false }).limit(30),
-        getMyNotifications(30),
+        getMyNotifications(userId, 30),
       ]);
       if (orderError) throw orderError;
       const nextOrders = (orderData ?? []) as CustomerOrder[];
@@ -83,7 +84,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   const unreadCount = notifications.filter((item) => !item.is_read).length;
 
   const readNotification = async (id: string) => {
-    await markNotificationRead(id);
+    await markNotificationRead(userId, id);
     setNotifications((current) => current.map((item) => item.id === id ? { ...item, is_read: true } : item));
   };
 
