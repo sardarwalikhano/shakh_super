@@ -104,6 +104,20 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   const visibleNotifications = useMemo(() => unreadOnly ? notifications.filter((item) => !item.is_read) : notifications, [notifications, unreadOnly]);
   const unreadCount = notifications.filter((item) => !item.is_read).length;
 
+  const cancelOrder = async (orderId: string) => {
+    if (!window.confirm('دڵنیایت لە هەڵوەشاندنەوەی ئەم ئۆردەرە؟')) return;
+    setError(null);
+    const { error: cancelError } = await supabase.rpc('transition_order_status', {
+      p_order_id: orderId,
+      p_next_status: 'cancelled',
+    });
+    if (cancelError) {
+      setError(cancelError.message);
+      return;
+    }
+    await load();
+  };
+
   const readNotification = async (id: string) => {
     await markNotificationRead(userId, id);
     setNotifications((current) => current.map((item) => item.id === id ? { ...item, is_read: true } : item));
@@ -163,6 +177,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                 })}
               </div>
               <div className="tracking-card__footer"><MapPin size={17} /><span>شوێنی گەیاندن لە زانیارییەکانی ئۆردەرەکە پارێزراوە.</span></div>
+              {selected.status === 'pending' && <button type="button" className="reset" onClick={() => void cancelOrder(selected.id)} style={{ marginTop: 10 }}>هەڵوەشاندنەوەی ئۆردەر</button>}
             </>
           ) : <div className="empty">ئۆردەرێک هەڵبژێرە بۆ بینینی Tracking.</div>}
         </div>
