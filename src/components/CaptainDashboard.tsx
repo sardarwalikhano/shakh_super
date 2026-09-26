@@ -206,15 +206,17 @@ export default function CaptainDashboard() {
     }
   };
 
-  const run = async (id: string, action: () => Promise<unknown>, success: string) => {
+  const run = async (id: string, action: () => Promise<unknown>, success: string): Promise<boolean> => {
     setBusy(id);
     setMessage('');
     try {
       await action();
       setMessage(success);
       await load();
+      return true;
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'کردارەکە سەرکەوتوو نەبوو.');
+      return false;
     } finally {
       setBusy(null);
     }
@@ -298,7 +300,7 @@ export default function CaptainDashboard() {
 
             {order.status === 'ready_for_pickup' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => claimOrder(order.id), 'ئۆردەرەکە بە سەرکەوتوویی بۆ تۆ وەرگیرا.')}>{busy === order.id ? 'چاوەڕوان بە...' : 'وەرگرتنی ئۆردەر'}</button>}
             {order.status === 'assigned_to_captain' && <button className="primary full" disabled={busy === order.id} onClick={() => void run(order.id, () => updateOrderStatus(order.id, 'picked_up'), 'ئۆردەرەکە لە دوکان وەرگیرا.')}>وەرگرتن لە دوکان</button>}
-            {order.status === 'picked_up' && <button className="primary full" disabled={busy === order.id} onClick={async () => { await run(order.id, () => markOrderOnTheWay(order.id), 'گەیاندن دەستی پێکرد.'); await startLocationTracking(order.id); }}>دەستپێکردنی گەیاندن و شوێنکەوتن</button>}
+            {order.status === 'picked_up' && <button className="primary full" disabled={busy === order.id} onClick={async () => { const ok = await run(order.id, () => markOrderOnTheWay(order.id), 'گەیاندن دەستی پێکرد.'); if (ok) await startLocationTracking(order.id); }}>دەستپێکردنی گەیاندن و شوێنکەوتن</button>}
             {order.status === 'on_the_way' && locationTrackingOrderId !== order.id && <button className="plain full" type="button" onClick={() => void startLocationTracking(order.id)}>چالاککردنی شوێنکەوتنی نەخشە</button>}
             {locationTrackingOrderId === order.id && (
               <div className="liveTrackingStatus" role="status">
