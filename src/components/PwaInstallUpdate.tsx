@@ -37,7 +37,7 @@ export default function PwaInstallUpdate(){
   let timer:number|undefined;
   let cleanupRegistration=()=>{};
 
-  navigator.serviceWorker.getRegistration('/').then(reg=>{
+  navigator.serviceWorker.register('/sw.js',{scope:'/'}).then(reg=>{
    if(!active||!reg)return;
    setRegistration(reg);
 
