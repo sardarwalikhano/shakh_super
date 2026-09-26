@@ -83,8 +83,16 @@ export default function CaptainDashboard() {
     setOnlineBusy(false);
   };
 
-  const activeOrders = orders.filter((order) => order.status !== 'delivered');
+  const todayKey = new Date().toLocaleDateString('en-CA');
   const completedOrders = orders.filter((order) => order.status === 'delivered');
+  const activeOrders = orders.filter((order) => order.status !== 'delivered');
+  const deliveredToday = completedOrders.filter(
+    (order) => new Date(order.created_at).toLocaleDateString('en-CA') === todayKey,
+  );
+  const deliveryEarningsToday = deliveredToday.reduce(
+    (sum, order) => sum + Number(order.delivery_fee_iqd || 0),
+    0,
+  );
 
   const run = async (id: string, action: () => Promise<unknown>, success: string) => {
     setBusy(id);
@@ -113,11 +121,19 @@ export default function CaptainDashboard() {
 
       {message && <div className="msg">{message}</div>}
 
-      {!loading && orders.length > 0 && (
+      {!loading && (
         <div className="dashboardGrid" style={{ marginBottom: 20 }}>
           <div className="orderCard">
-            <strong>ئۆردەرە چالاکەکان: {activeOrders.length}</strong>
-            <span style={{ marginInlineStart: 12 }}>گەیەندراوەکان: {completedOrders.length}</span>
+            <span className="eyebrow">ئۆردەرە چالاکەکان</span>
+            <strong style={{ fontSize: 28 }}>{activeOrders.length}</strong>
+          </div>
+          <div className="orderCard">
+            <span className="eyebrow">گەیەندراوەکانی ئەمڕۆ</span>
+            <strong style={{ fontSize: 28 }}>{deliveredToday.length}</strong>
+          </div>
+          <div className="orderCard">
+            <span className="eyebrow">کرێی گەیاندنی ئەمڕۆ</span>
+            <strong style={{ fontSize: 22 }}>{deliveryEarningsToday.toLocaleString('ku-IQ')} دینار</strong>
           </div>
         </div>
       )}
