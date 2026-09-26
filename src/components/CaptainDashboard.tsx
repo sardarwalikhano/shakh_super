@@ -25,6 +25,8 @@ export default function CaptainDashboard() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState('');
+  const [isOnline, setIsOnline] = useState(false);
+  const [onlineBusy, setOnlineBusy] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -41,12 +43,38 @@ export default function CaptainDashboard() {
 
   useEffect(() => {
     void load();
+    const loadCaptainState = async () => {
+      const { data: authData } = await supabase.auth.getUser();
+      if (!authData.user) return;
+      const { data, error } = await supabase.from('captains').select('is_online').eq('user_id', authData.user.id).maybeSingle();
+      if (!error) setIsOnline(Boolean(data?.is_online));
+    };
+    void loadCaptainState();
     const channel = supabase
       .channel('captain-orders-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => void load())
       .subscribe();
     return () => { void supabase.removeChannel(channel); };
   }, []);
+
+  const toggleOnline = async () => {
+    const { data: authData } = await supabase.auth.getUser();
+    if (!authData.user) {
+      setMessage('پێویستە بچیتە ژوورەوە.');
+      return;
+    }
+    setOnlineBusy(true);
+    setMessage('');
+    const next = !isOnline;
+    const { error } = await supabase.from('captains').update({ is_online: next }).eq('user_id', authData.user.id);
+    if (error) setMessage(error.message);
+    else {
+      setIsOnline(next);
+      setMessage(next ? 'کاپتن ئێستا ئۆنلاینە و دەتوانێت ئۆردەر وەربگرێت.' : 'کاپتن ئێستا ئۆفلاینە.');
+      await load();
+    }
+    setOnlineBusy(false);
+  };
 
   const run = async (id: string, action: () => Promise<unknown>, success: string) => {
     setBusy(id);
