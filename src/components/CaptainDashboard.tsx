@@ -11,6 +11,12 @@ type CaptainOrder = {
   updated_at?: string | null;
   delivery_fee_iqd?: number;
   address_id?: string;
+  items?: {
+    product_id: string | null;
+    product_name: string;
+    quantity: number;
+    unit_price_iqd: number;
+  }[];
   delivery_address?: {
     address?: string | null;
     label?: string | null;
@@ -163,6 +169,17 @@ export default function CaptainDashboard() {
           <article className="orderCard" key={order.id}>
             <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status] || order.status}</span></div>
             <div className="orderMeta"><Clock3 size={16} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</div>
+            {order.items && order.items.length > 0 && (
+              <div style={{ display: 'grid', gap: 6, margin: '10px 0' }}>
+                {order.items.map((item, index) => (
+                  <div className="orderMeta" key={item.product_id || index}>
+                    <span>{item.product_name}</span>
+                    <span>× {item.quantity}</span>
+                    <strong>{(Number(item.unit_price_iqd) * Number(item.quantity)).toLocaleString('ku-IQ')} دینار</strong>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="orderMeta"><MapPin size={16} /> {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
             {order.delivery_address?.latitude != null && order.delivery_address?.longitude != null && (
               <button
@@ -216,6 +233,17 @@ export default function CaptainDashboard() {
               <article className="orderCard" key={order.id}>
                 <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status]}</span></div>
                 <div className="orderMeta"><Clock3 size={16} /> گەیەندرا: {new Date(order.updated_at || order.created_at).toLocaleString('ku-IQ')}</div>
+                {order.items && order.items.length > 0 && (
+                  <div style={{ display: 'grid', gap: 6, margin: '10px 0' }}>
+                    {order.items.map((item, index) => (
+                      <div className="orderMeta" key={item.product_id || index}>
+                        <span>{item.product_name}</span>
+                        <span>× {item.quantity}</span>
+                        <strong>{(Number(item.unit_price_iqd) * Number(item.quantity)).toLocaleString('ku-IQ')} دینار</strong>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="orderMeta"><MapPin size={16} /> {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
                 <div className="orderTotal">{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</div>
               </article>
