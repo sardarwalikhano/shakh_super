@@ -83,6 +83,9 @@ export default function CaptainDashboard() {
     setOnlineBusy(false);
   };
 
+  const activeOrders = orders.filter((order) => order.status !== 'delivered');
+  const completedOrders = orders.filter((order) => order.status === 'delivered');
+
   const run = async (id: string, action: () => Promise<unknown>, success: string) => {
     setBusy(id);
     setMessage('');
@@ -110,10 +113,19 @@ export default function CaptainDashboard() {
 
       {message && <div className="msg">{message}</div>}
 
+      {!loading && orders.length > 0 && (
+        <div className="dashboardGrid" style={{ marginBottom: 20 }}>
+          <div className="orderCard">
+            <strong>ئۆردەرە چالاکەکان: {activeOrders.length}</strong>
+            <span style={{ marginInlineStart: 12 }}>گەیەندراوەکان: {completedOrders.length}</span>
+          </div>
+        </div>
+      )}
+
       <div className="dashboardGrid">
-        {loading ? <div className="empty">چاوەڕوان بە...</div> : orders.length === 0 ? (
+        {loading ? <div className="empty">چاوەڕوان بە...</div> : activeOrders.length === 0 ? (
           <div className="empty"><PackageCheck size={38} /><h3>هیچ ئۆردەرێکی چالاک نییە</h3><p>کاتێک ئۆردەرێکی ئامادەی گەیاندن هەبێت، لێرە دەردەکەوێت.</p></div>
-        ) : orders.map(order => (
+        ) : activeOrders.map(order => (
           <article className="orderCard" key={order.id}>
             <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status] || order.status}</span></div>
             <div className="orderMeta"><Clock3 size={16} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</div>
@@ -139,6 +151,27 @@ export default function CaptainDashboard() {
           </article>
         ))}
       </div>
+
+      {!loading && completedOrders.length > 0 && (
+        <>
+          <div className="dashboardHeader" style={{ marginTop: 28 }}>
+            <div>
+              <span className="eyebrow">مێژووی گەیاندن</span>
+              <h3><PackageCheck size={20} /> {completedOrders.length} ئۆردەری گەیەندراو</h3>
+            </div>
+          </div>
+          <div className="dashboardGrid">
+            {completedOrders.slice(0, 20).map(order => (
+              <article className="orderCard" key={order.id}>
+                <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status]}</span></div>
+                <div className="orderMeta"><Clock3 size={16} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</div>
+                <div className="orderMeta"><MapPin size={16} /> {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
+                <div className="orderTotal">{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</div>
+              </article>
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }
