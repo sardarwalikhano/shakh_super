@@ -1,39 +1,48 @@
 import { supabase } from './supabase';
 
-export async function getVendorOrders() {
+export type VendorOrder = {
+  id: string;
+  status: string;
+  store_id: string;
+  subtotal_iqd: number;
+  delivery_fee_iqd: number;
+  platform_fee_iqd: number;
+  total_iqd: number;
+  created_at: string;
+};
+
+export async function getVendorOrders(storeId: string) {
   const { data, error } = await supabase
     .from('orders')
-    .select('*')
+    .select('id,status,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,total_iqd,created_at')
+    .eq('store_id', storeId)
     .order('created_at', { ascending: false });
+
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as VendorOrder[];
 }
 
-export async function acceptVendorOrder(orderId: string) {
-  const { data, error } = await supabase
-    .from('orders')
-    .update({ status: 'accepted' })
-    .eq('id', orderId)
-    .select()
-    .single();
-  if (error) throw error;
-  return data;
-}
+export async function updateVendorOrderStatus(orderId: string, status: string) {
+  const { data, error } = await supabase.rpc('transition_order_status', {
+    p_order_id: orderId,
+    p_new_status: status,
+  });
 
-export async function markOrderReady(orderId: string) {
-  const { data, error } = await supabase
-    .from('orders')
-    .update({ status: 'ready_for_pickup' })
-    .eq('id', orderId)
-    .select()
-    .single();
   if (error) throw error;
   return data;
 }
 
-export function subscribeToVendorOrders(onChange: () => void) {
-  return supabase
-    .channel('vendor-orders')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, onChange)
+export function subscribeToVendorOrders(storeId: string, onChange: (payload: unknown) => void) {
+  const channel = supabase
+    .channel(`vendor-orders-${storeId}`)
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'orders', filter: `store_id=eq.${storeId}` },
+      onChange,
+    )
     .subscribe();
+
+  return () => {
+    void supabase.removeChannel(channel);
+  };
 }
