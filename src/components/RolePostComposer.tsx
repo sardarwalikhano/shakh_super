@@ -175,7 +175,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    {busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Send size={17}/> بڵاوکردنەوەی پۆست</>}
   </button>
 
-  {message&&<div className={message.includes('سەرکەوت')?'postComposerMessage success':'postComposerMessage'} role="alert">{message}</div>}
+  {message&&<div className={message.includes('سەرکەوت')?'postComposerMessage success':'postComposerMessage'} role="alert" aria-live="polite">{message}</div>}
   <small className="postComposerFoot"><CheckCircle2 size={14}/> پۆستەکان لە داتابەیسی شاخ هەڵدەگیرێن و Realtime ـیش چالاکە.</small>
  </section>;
 }
