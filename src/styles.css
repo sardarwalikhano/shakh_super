@@ -208,3 +208,37 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
  .postFormGrid{grid-template-columns:1fr}.postCategoryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .postLivePreviewCard{grid-template-columns:78px 1fr}.postLivePreviewImage{height:78px}.postUploadDrop.hasImage img{height:170px}
 }
+
+
+/* SHAKH public post feed UI/UX */
+.postFeed{padding-top:8px}
+.postFeedTitle{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.postFeedTitle>div{min-width:0}
+.postFeedFilters{display:flex;align-items:center;gap:7px;overflow-x:auto;padding:3px 0 9px;margin-bottom:8px;scrollbar-width:none}
+.postFeedFilters::-webkit-scrollbar{display:none}
+.postFeedFilters>button{flex:0 0 auto;border:1px solid #e3eaf0;background:#fff;color:#566a7f;border-radius:999px;padding:8px 12px;font-size:10px;font-weight:900;cursor:pointer}
+.postFeedFilters>button.active{background:#fff4ea;border-color:#ff9851;color:#c25500}
+.postFeedGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.postFeedCard{overflow:hidden;border:1px solid #e5ebf1;border-radius:18px;background:#fff;box-shadow:0 9px 25px rgba(7,26,51,.05);transition:transform .18s ease,box-shadow .18s ease}
+.postFeedCard:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(7,26,51,.08)}
+.postFeedImage{position:relative;height:185px;background:linear-gradient(145deg,#fff0df,#edf5ff);display:grid;place-items:center;color:#a0afbd;overflow:hidden}
+.postFeedImage img{width:100%;height:100%;object-fit:cover}
+.postFeedBadge,.postFeedNew{position:absolute;top:10px;padding:6px 9px;border-radius:999px;font-size:9px;font-weight:950;backdrop-filter:blur(7px)}
+.postFeedBadge{right:10px;background:rgba(255,255,255,.9);color:#bd5003}
+.postFeedNew{left:10px;background:#ff6a00;color:#fff}
+.postFeedBody{padding:12px}
+.postFeedMeta{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#8a97a6;font-size:9px}
+.postFeedMeta span{display:inline-flex;align-items:center;gap:4px;color:#79899a}
+.postFeedBody h3{margin:7px 0 4px;color:var(--navy);font-size:15px;line-height:1.45}
+.postFeedBody p{margin:0;color:#6f7f91;font-size:10px;line-height:1.8;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.postFeedPublisher{display:flex;align-items:center;gap:5px;margin-top:9px;color:#65758a;font-size:9px;font-weight:800}
+.postFeedFooter{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:9px;border-top:1px solid #eff2f5}
+.postFeedFooter strong{display:inline-flex;align-items:center;gap:4px;color:#e15d09;font-size:11px}
+.postFeedFooter>span{padding:4px 7px;border-radius:999px;background:#f0faf3;color:#2c7549;font-size:8px;font-weight:900}
+.postFeedFooter>small{color:#9aa6b2;font-size:9px}
+.postFeedMore{display:flex;justify-content:center;margin-top:15px}
+.postFeedMessage{margin-top:10px}
+.postFeedEmpty{min-height:175px;margin-top:10px;border:1px dashed #dbe4ed;border-radius:18px;background:#fbfcfe;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#7f8c9b;text-align:center}
+.postFeedEmpty strong{font-size:12px;color:#5c6f83}.postFeedEmpty small{font-size:9px}
+@media(max-width:900px){.postFeedGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.postFeedGrid{grid-template-columns:1fr}.postFeedImage{height:200px}.postFeedTitle{align-items:center}.postFeedBody h3{font-size:14px}}
