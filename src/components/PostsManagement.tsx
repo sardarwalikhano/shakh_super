@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react';
-import {CheckCircle2,Edit3,Eye,EyeOff,RefreshCw,Search,ShieldAlert,Trash2,X} from 'lucide-react';
+import {CheckCircle2,Edit3,Eye,EyeOff,RefreshCw,Search,Share2,ShieldAlert,Trash2,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
 type Props={userId:string;role:string};
@@ -159,7 +159,7 @@ export default function PostsManagement({userId,role}:Props){
   await load();
  };
 
- const deletePost=async(post:Post)=>{
+ const sharePost=async(post:Post)=>{\n  const url=window.location.origin+'#post-'+post.id;\n  try{\n   if(navigator.share){await navigator.share({title:post.title,text:post.content||post.title,url});}\n   else{await navigator.clipboard.writeText(url);setMessage('لینکی پۆستەکە کۆپی کرا.');}\n  }catch(error){\n   if(error instanceof DOMException&&error.name==='AbortError')return;\n   setMessage('نەتوانرا پۆستەکە share بکرێت.');\n  }\n };\n\n const deletePost=async(post:Post)=>{
   if(!window.confirm('دڵنیایت لە سڕینەوەی ئەم پۆستە؟'))return;
   setBusyId(post.id);
   const {error}=await supabase.from('posts').delete().eq('id',post.id);
@@ -234,7 +234,7 @@ export default function PostsManagement({userId,role}:Props){
       {post.rejection_reason&&<small className="postsManagementReason">هۆکاری ڕەتکردنەوە: {post.rejection_reason}</small>}
       {post.price_iqd!=null&&<strong className="postsManagementPrice">{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>}
       <div className="postsManagementActions">
-       <button type="button" onClick={()=>startEdit(post)} disabled={disabled}><Edit3 size={15}/> دەستکاری</button>
+       <button type="button" onClick={()=>startEdit(post)} disabled={disabled}><Edit3 size={15}/> دەستکاری</button>\n       <button type="button" onClick={()=>void sharePost(post)} disabled={disabled}><Share2 size={15}/> هاوبەشکردن</button>
        {post.visibility==='public'
         ?<button type="button" onClick={()=>void changeVisibility(post,'private')} disabled={disabled}><EyeOff size={15}/> شارکردنەوە</button>
         :<button type="button" onClick={()=>void changeVisibility(post,'public')} disabled={disabled}><Eye size={15}/> بڵاوکردنەوە</button>}
