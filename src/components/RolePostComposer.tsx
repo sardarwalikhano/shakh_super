@@ -34,6 +34,9 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
 
  const isPriceVisible=useMemo(()=>postType==='marketplace'||postType==='car'||postType==='umrah',[postType]);
  const ready=Boolean(title.trim()&&(!isPriceVisible||Number(price)>0));
+ const hasChanges=Boolean(
+  file||title.trim()||content.trim()||price.trim()||city!=='هەولێر'||postType!==cfg.types[0].value
+ );
 
  const chooseFile=(next?:File)=>{
   if(!next)return;
@@ -169,7 +172,10 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    </div>
   </div>}
 
-  <button type="button" className="postResetButton" disabled={busy} onClick={()=>{clearImage();setTitle('');setContent('');setPrice('');setCity('هەولێر');setMessage('فۆڕمەکە پاک کرایەوە.')}}>پاککردنەوەی فۆڕم</button>
+  <button type="button" className="postResetButton" disabled={busy||!hasChanges} onClick={()=>{
+   if(!window.confirm('دڵنیایت؟ هەموو گۆڕانکارییەکانی فۆڕمەکە لەدەست دەچێت.'))return;
+   clearImage();setTitle('');setContent('');setPrice('');setCity('هەولێر');setPostType(cfg.types[0].value);setMessage('فۆڕمەکە پاک کرایەوە.');
+  }}>پاککردنەوەی فۆڕم</button>
 
   <button type="button" className="primary postPublishButton" disabled={busy||!ready} onClick={()=>void submit()}>
    {busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Send size={17}/> بڵاوکردنەوەی پۆست</>}
