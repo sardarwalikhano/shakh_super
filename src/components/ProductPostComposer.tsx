@@ -228,7 +228,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    <label className="postField">{cfg.typeLabel}<input value={form.type} onChange={e=>update({type:e.target.value})} placeholder="نموونە: کەباب / قەمیس"/></label>
    {cfg.brand&&<label className="postField">مارکە<input value={form.brand} onChange={e=>update({brand:e.target.value})} placeholder="مارکە"/></label>}
    {cfg.size&&<label className="postField">قەبارە<input value={form.size} onChange={e=>update({size:e.target.value})} placeholder="سایز"/></label>}
-   <label className="postField">نرخ بە د.ع<input value={form.price} onChange={e=>update({price:e.target.value.replace(/[^0-9]/g,'')})} inputMode="numeric" placeholder="مثال: ١٥٠٠٠"/></label>
+   <label className="postField">نرخ بە د.ع<input value={form.price} onChange={e=>update({price:e.target.value.replace(/[^0-9]/g,'')})} inputMode="numeric" placeholder="نموونە: ١٥٠٠٠"/></label>
   </div>
 
   <label className="postField">
