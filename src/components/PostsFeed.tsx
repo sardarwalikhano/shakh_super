@@ -60,18 +60,23 @@ function postShareUrl(postId:string){
  return url.toString();
 }
 
-async function sharePost(post:Post){
+async function sharePost(post:Post):Promise<'shared'|'copied'|'cancelled'|'failed'>{
  const url=postShareUrl(post.id);
  const shareData={title:post.title,text:post.content||post.title,url};
  try{
   if(typeof navigator.share==='function'){
    await navigator.share(shareData);
-   return;
+   return 'shared';
   }
-  if(navigator.clipboard)await navigator.clipboard.writeText(url);
+  if(navigator.clipboard){
+   await navigator.clipboard.writeText(url);
+   return 'copied';
+  }
+  return 'failed';
  }catch(error){
-  if(error instanceof DOMException&&error.name==='AbortError')return;
+  if(error instanceof DOMException&&error.name==='AbortError')return 'cancelled';
   console.warn('Post sharing failed',error);
+  return 'failed';
  }
 }
 
@@ -192,7 +197,11 @@ export default function PostsFeed(){
      {selectedPost.content&&<p>{selectedPost.content}</p>}
      <div className="postDetailsPublisher"><UserRound size={15}/><span>{selectedPost.publisher_name||'بڵاوکەرەوە'}</span></div>
      {selectedPost.price_iqd!=null&&<strong className="postDetailsPrice"><WalletCards size={15}/>{Number(selectedPost.price_iqd).toLocaleString('en-US')} د.ع</strong>}
-     <button type="button" className="primary postDetailsShare" onClick={()=>void sharePost(selectedPost)}><Share2 size={15}/> هاوبەشکردنی پۆست</button>
+     <button type="button" className="primary postDetailsShare" onClick={async()=>{
+   const result=await sharePost(selectedPost);
+   if(result==='copied')setMessage('لینکی پۆستەکە کۆپی کرا.');
+   else if(result==='failed')setMessage('نەتوانرا لینکەکە هاوبەش بکرێت.');
+  }}><Share2 size={15}/> هاوبەشکردنی پۆست</button>
     </div>
    </div>
   </div>}
