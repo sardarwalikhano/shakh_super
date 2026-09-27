@@ -251,3 +251,6 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 
 .postResetButton{width:100%;margin-top:9px;min-height:40px;border:1px solid #e1e8ef;border-radius:11px;background:#fff;color:#66798c;font-size:10px;font-weight:900;cursor:pointer}
 .postResetButton:hover{background:#f8fafc;color:#425a72}
+
+
+.postComposer button:focus-visible,.postComposer input:focus-visible,.postComposer textarea:focus-visible,.postCategory:focus-visible,.postResetButton:focus-visible,.postPreviewToggle:focus-visible{outline:3px solid rgba(255,106,0,.22);outline-offset:2px}
