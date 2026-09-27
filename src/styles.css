@@ -627,3 +627,22 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
  .cartCheckoutButton{min-height:50px}
 }
 
+
+
+/* SHAKH checkout address premium UI */
+.checkoutPanel{width:min(620px,100%);max-height:min(90vh,820px);overflow:auto}
+.checkoutIcon{margin-bottom:6px}
+.checkoutPanel>p{margin-top:6px}
+.checkoutPanel .savedAddressList{background:#f8fafc}
+.checkoutPanel .savedAddress{cursor:pointer;transition:.15s ease}
+.checkoutPanel .savedAddress:hover{border-color:#ffc18f;transform:translateY(-1px)}
+.checkoutPanel>input{width:100%;height:48px;border:1px solid #dfe5ec;border-radius:13px;margin:9px 0;padding:0 14px;outline:0;background:#fbfcfe;color:var(--navy);font:inherit}
+.checkoutPanel>input:focus{border-color:#ff9a55;box-shadow:0 0 0 3px rgba(255,106,0,.09);background:#fff}
+.checkoutPanel>.plain.full{min-height:46px;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid #dfe6ef;background:#f8fafc;border-radius:13px;text-decoration:none}
+.checkoutPanel>.primary.full{min-height:48px}
+@media(max-width:600px){
+ .checkoutPanel{width:100%;max-height:94vh;padding:20px 16px;border-radius:24px}
+ .checkoutPanel>input{height:50px}
+ .checkoutPanel>.plain.full,.checkoutPanel>.primary.full{min-height:50px}
+}
+
