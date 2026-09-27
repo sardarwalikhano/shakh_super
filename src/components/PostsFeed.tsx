@@ -88,6 +88,7 @@ export default function PostsFeed(){
  const pageSize=12;
  const [message,setMessage]=useState('');
  const [selectedPost,setSelectedPost]=useState<Post|null>(null);
+ const [shareMessage,setShareMessage]=useState('');
  const [,setTimeTick]=useState(0);
 
  useEffect(()=>{
@@ -97,6 +98,7 @@ export default function PostsFeed(){
 
  const openPost=(post:Post)=>{
   setSelectedPost(post);
+  setShareMessage('');
   const url=new URL(window.location.href);
   url.search='';
   url.searchParams.set('post',post.id);
@@ -106,6 +108,7 @@ export default function PostsFeed(){
 
  const closePost=()=>{
   setSelectedPost(null);
+  setShareMessage('');
   const url=new URL(window.location.href);
   url.searchParams.delete('post');
   url.hash='shakh-posts';
@@ -151,6 +154,13 @@ export default function PostsFeed(){
   }
  },[posts,selectedPost]);
 
+ useEffect(()=>{
+  if(!selectedPost)return;
+  const fresh=posts.find(post=>post.id===selectedPost.id);
+  if(fresh)setSelectedPost(current=>current?.id===fresh.id?fresh:current);
+  else closePost();
+ },[posts]);
+
  useEffect(()=>{if(!selectedPost)return;const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')closePost()};window.addEventListener('keydown',onKeyDown);return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)}},[selectedPost]);
 
  return <section className="section postFeed" id="shakh-posts">
@@ -194,20 +204,23 @@ export default function PostsFeed(){
   {shown.length<filtered.length&&<div className="postFeedMore"><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}
   {message&&<div className="msg postFeedMessage" role="alert" aria-live="polite">{message}</div>}
   {selectedPost&&<div className="postDetailsBackdrop" role="presentation" onClick={closePost}>
-   <div className="postDetailsModal" role="dialog" aria-modal="true" aria-label={selectedPost.title} onClick={event=>event.stopPropagation()}>
+   <div className="postDetailsModal" role="dialog" aria-modal="true" aria-labelledby="post-details-title" onClick={event=>event.stopPropagation()}>
     <button type="button" className="postDetailsClose" onClick={closePost} aria-label="داخستن"><span>×</span></button>
     <div className="postDetailsImage" role="img" aria-label={selectedPost.title}>{postImage(selectedPost.images)?<img src={postImage(selectedPost.images)||''} alt={selectedPost.title} loading="lazy" decoding="async"/>:<ImageIcon size={46}/>}</div>
     <div className="postDetailsBody">
      <div className="postDetailsMeta"><span>{labelFor(selectedPost.post_type,selectedPost.label)}</span><small>{selectedPost.city||'هەولێر'}</small></div>
-     <h3>{selectedPost.title}</h3>
+     <h3 id="post-details-title">{selectedPost.title}</h3>
      {selectedPost.content&&<p>{selectedPost.content}</p>}
      <div className="postDetailsPublisher"><UserRound size={15}/><span>{selectedPost.publisher_name||'بڵاوکەرەوە'}</span></div>
      {selectedPost.price_iqd!=null&&<strong className="postDetailsPrice"><WalletCards size={15}/>{Number(selectedPost.price_iqd).toLocaleString('en-US')} د.ع</strong>}
      <button type="button" className="primary postDetailsShare" onClick={async()=>{
    const result=await sharePost(selectedPost);
-   if(result==='copied')setMessage('لینکی پۆستەکە کۆپی کرا.');
-   else if(result==='failed')setMessage('نەتوانرا لینکەکە هاوبەش بکرێت.');
+   if(result==='shared')setShareMessage('پۆستەکە بە سەرکەوتوویی هاوبەش کرا.');
+   else if(result==='copied')setShareMessage('لینکی پۆستەکە کۆپی کرا.');
+   else if(result==='failed')setShareMessage('نەتوانرا لینکەکە هاوبەش بکرێت.');
+   else setShareMessage('');
   }}><Share2 size={15}/> هاوبەشکردنی پۆست</button>
+     {shareMessage&&<div className="msg" role="status" aria-live="polite">{shareMessage}</div>}
     </div>
    </div>
   </div>}
