@@ -146,6 +146,17 @@ export default function PostsManagement({userId,role}:Props){
   return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)};
  },[editing]);
 
+ useEffect(()=>{
+  if(!rejectingPost)return;
+  const previousOverflow=document.body.style.overflow;
+  document.body.style.overflow='hidden';
+  const onKeyDown=(event:KeyboardEvent)=>{
+   if(event.key==='Escape'&&busyId!==rejectingPost.id){setRejectingPost(null);setRejectReason('');}
+  };
+  window.addEventListener('keydown',onKeyDown);
+  return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)};
+ },[rejectingPost,busyId]);
+
  const refreshPosts=()=>{
   if(editing&&hasEditChanges&&!window.confirm('گۆڕانکارییەکانی پۆست پاشەکەوت نەکراون. دڵنیایت دەتەوێت داتا دووبارە بار بکرێت؟'))return;
   void load();
