@@ -71,7 +71,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview)},[preview]);
 
  const selectedCategory=cfg.cats.find(item=>item.slug===category)||cfg.cats[0];
- const ready=Boolean(form.name.trim()&&form.type.trim()&&form.price&&(!cfg.brand||form.brand.trim())&&(!cfg.size||form.size.trim()));
+ const ready=Boolean(form.name.trim()&&form.type.trim()&&Number(form.price)>0&&(!cfg.brand||form.brand.trim())&&(!cfg.size||form.size.trim()));
  const descriptionCount=form.description.length;
 
  const update=(patch:Partial<FormState>)=>setForm(current=>({...current,...patch}));
@@ -107,7 +107,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    owner_id:userId,
    name:form.storeName.trim(),
    category:cfg.storeCategory,
-   city:'هەولێر',
+   city:form.city||'هەولێر',
    is_active:true
   }).select('id').single();
   if(error)throw error;
