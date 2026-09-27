@@ -31,6 +31,8 @@ const STATUS_FILTERS=[
  {value:'rejected',label:'ڕەتکراوە'}
 ];
 
+const IRAQ_CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
+
 const ROLE_FILTERS=[
  {value:'all',label:'هەموو ڕۆڵەکان'},
  {value:'customer',label:'کڕیار'},
@@ -169,7 +171,11 @@ export default function PostsManagement({userId,role}:Props){
  };
 
  const sharePost=async(post:Post)=>{
-  const url=window.location.origin+'#post-'+post.id;
+  const urlObject=new URL(window.location.href);
+  urlObject.search='';
+  urlObject.searchParams.set('post',post.id);
+  urlObject.hash='shakh-posts';
+  const url=urlObject.toString();
   try{
    if(navigator.share){await navigator.share({title:post.title,text:post.content||post.title,url});}
    else{await navigator.clipboard.writeText(url);setMessage('لینکی پۆستەکە کۆپی کرا.');}
@@ -241,7 +247,7 @@ export default function PostsManagement({userId,role}:Props){
     const img=imageOf(post.images);
     const disabled=busyId===post.id;
     return <article className="postsManagementItem" key={post.id}>
-     <div className="postsManagementImage">{img?<img src={img} alt={post.title}/>:<span>{labelOf(post).slice(0,1)}</span>}</div>
+     <div className="postsManagementImage">{img?<img src={img} alt={post.title} loading="lazy" decoding="async"/>:<span>{labelOf(post).slice(0,1)}</span>}</div>
      <div className="postsManagementBody">
       <div className="postsManagementMeta"><span>{labelOf(post)}</span><small>{new Date(post.created_at).toLocaleString('ku-IQ')}</small>{updatedLabel(post)&&<small>{updatedLabel(post)}</small>}</div>
       <h4>{post.title}</h4>
@@ -275,11 +281,11 @@ export default function PostsManagement({userId,role}:Props){
    <h2>دەستکاریکردنی پۆست</h2>
    <p>زانیاریی پۆستەکە بگۆڕە و پاشەکەوتی بکە.</p>
    {imageOf(editing.images)&&<div className="postsEditImage"><img src={imageOf(editing.images)||''} alt={editing.title}/></div>}
-   <label>سەردێڕ<input value={editTitle} onChange={e=>setEditTitle(e.target.value)}/></label>
-   <label>ناوەڕۆک<textarea rows={5} value={editContent} onChange={e=>setEditContent(e.target.value)}/></label>
+   <label>سەردێڕ<input maxLength={100} value={editTitle} onChange={e=>setEditTitle(e.target.value)}/></label>
+   <label>ناوەڕۆک<textarea rows={5} maxLength={500} value={editContent} onChange={e=>setEditContent(e.target.value)}/></label>
    <div className="postsEditGrid">
-    <label>نرخ بە د.ع<input inputMode="numeric" value={editPrice} onChange={e=>setEditPrice(e.target.value.replace(/[^0-9]/g,''))}/></label>
-    <label>شار<input value={editCity} onChange={e=>setEditCity(e.target.value)}/></label>
+    <label>نرخ بە د.ع<input inputMode="numeric" maxLength={14} value={editPrice} onChange={e=>setEditPrice(e.target.value.replace(/[^0-9]/g,''))}/></label>
+    <label>شار<select value={editCity} onChange={e=>setEditCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item} value={item}>{item}</option>)}</select></label>
    </div>
    <button type="button" className="primary full" disabled={busyId===editing.id} onClick={()=>void saveEdit()}>{busyId===editing.id?'پاشەکەوت دەکرێت...':'پاشەکەوتکردن'}</button>
   </div></div>}
