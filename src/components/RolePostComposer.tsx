@@ -39,6 +39,8 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    if(!title.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');
    setBusy(true);setMessage('');
    let imageUrl:string|null=null;
+   const {data:profile}=await supabase.from('profiles').select('full_name').eq('id',userId).maybeSingle();
+   const publisherName=(profile as any)?.full_name||cfg.label;
    if(file){
     const path=userId+'/posts/'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
     const {error:upErr}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});
@@ -54,7 +56,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
     city:city.trim()||'هەولێر',
     status:role==='admin'||role==='super_admin'?'approved':'approved',
     section:postType,
-    publisher_name:undefined,
+    publisher_name:publisherName,
     post_type:postType,
     publisher_role:role,
     label:cfg.label,
