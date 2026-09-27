@@ -243,7 +243,7 @@ export default function PostsManagement({userId,role}:Props){
   await load();
  };
 
- return <section className="orderCard postsManagement" style={{marginTop:18}}>
+ return <section id="shakh-post-management" className="orderCard postsManagement" style={{marginTop:18}}>
   <div className="postsManagementHead">
    <div>
     <span className="eyebrow">بەڕێوەبردنی پۆست</span>
