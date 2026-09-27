@@ -126,7 +126,8 @@ export default function PostsManagement({userId,role}:Props){
   });
  },[posts,statusFilter,roleFilter,query,isAdmin]);
 
- const filterCount=(value:string)=>posts.filter(post=>value==='all'||(value==='public'&&post.status==='approved'&&post.visibility==='public')||(value==='private'&&post.visibility!=='public')||(value==='pending'&&post.status==='pending')||(value==='rejected'&&post.status==='rejected')).length;
+ const matchesStatus=(post:Post,value:string)=>value==='all'||(value==='public'&&post.status==='approved'&&post.visibility==='public')||(value==='private'&&post.visibility!=='public')||(value==='pending'&&post.status==='pending')||(value==='rejected'&&post.status==='rejected');
+ const filterCount=(value:string)=>posts.filter(post=>matchesStatus(post,value)&&(!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter)).length;
 
  const totalPages=Math.max(1,Math.ceil(filtered.length/pageSize));
  const currentPage=Math.min(page,totalPages);
@@ -142,6 +143,11 @@ export default function PostsManagement({userId,role}:Props){
   window.addEventListener('keydown',onKeyDown);
   return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)};
  },[editing]);
+
+ const refreshPosts=()=>{
+  if(editing&&hasEditChanges&&!window.confirm('گۆڕانکارییەکانی پۆست پاشەکەوت نەکراون. دڵنیایت دەتەوێت داتا دووبارە بار بکرێت؟'))return;
+  void load();
+ };
 
  const startEdit=(post:Post)=>{
   setEditing(post);
@@ -244,7 +250,7 @@ export default function PostsManagement({userId,role}:Props){
     <h3 style={{margin:'6px 0 3px'}}>{isAdmin?'بەڕێوەبردنی هەموو پۆستەکان':'پۆستەکانی من'}</h3>
     <small>{isAdmin?'پشکنین و پەسەندکردنی پۆستەکان':'دەستکاری و کۆنترۆڵی پۆستەکانت'}</small>
    </div>
-   <button type="button" className="plain" onClick={()=>void load()} disabled={loading}><RefreshCw size={17}/></button>
+   <button type="button" className="plain" onClick={refreshPosts} disabled={loading} aria-label="نوێکردنەوەی پۆستەکان"><RefreshCw size={17}/></button>
   </div>
 
   <div className="postsManagementStats">
