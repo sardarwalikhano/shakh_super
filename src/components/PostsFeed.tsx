@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react';
-import {Filter,Image as ImageIcon,MapPin,RefreshCw,Tag,UserRound,WalletCards} from 'lucide-react';
+import {Filter,Image as ImageIcon,MapPin,RefreshCw,Share2,Tag,UserRound,WalletCards} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
 type Post={
@@ -97,7 +97,7 @@ export default function PostsFeed(){
    !filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>{filter==='all'?'هێشتا پۆستێکی بڵاوکراوە نییە.':'لەو بەشەدا پۆستێک نییە.'}</small></div>:
    <div className="postFeedGrid">{shown.map(post=>{
     const img=postImage(post.images);
-    return <article className="postFeedCard" key={post.id}>
+    return <article className="postFeedCard" key={post.id} id={'post-'+post.id}>
      <div className="postFeedImage">
       {img?<img src={img} alt={post.title}/>:<ImageIcon size={40}/>}
       <span className="postFeedBadge">{labelFor(post.post_type,post.label)}</span>
