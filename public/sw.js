@@ -1,10 +1,11 @@
-const CACHE_NAME = 'shakh-v1.8.0';
+const CACHE_NAME = 'shakh-v1.9.5';
 const APP_SHELL = ['/', '/manifest.webmanifest', '/icon.svg', '/version.json'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting())
   );
 });
 
