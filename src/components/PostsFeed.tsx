@@ -89,6 +89,11 @@ export default function PostsFeed(){
  const [message,setMessage]=useState('');
  const [selectedPost,setSelectedPost]=useState<Post|null>(null);
 
+ useEffect(()=>{
+  const timer=window.setInterval(()=>setPosts(current=>current.length?[...current]:current),60000);
+  return()=>window.clearInterval(timer);
+ },[]);
+
  const openPost=(post:Post)=>{
   setSelectedPost(post);
   const url=new URL(window.location.href);
