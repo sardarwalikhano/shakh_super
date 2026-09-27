@@ -102,8 +102,10 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .postsManagementStats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .postsManagementStats span{padding:7px 10px;border:1px solid #e7edf3;border-radius:999px;background:#f9fbfd;color:#6e7c8e;font-size:11px;font-weight:800}
 .postsManagementStats b{color:#0a2342}
-.postsSearch{display:flex;align-items:center;gap:8px;border:1px solid #e5ebf2;background:#fff;border-radius:14px;padding:0 11px}
+.postsSearch{display:flex;align-items:center;gap:8px;border:1px solid #e5ebf2;background:#fff;border-radius:14px;padding:0 8px 0 11px}
 .postsSearch input{border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;width:100%;height:42px}
+.postsSearchClear{width:32px;height:32px;flex:0 0 32px;border:1px solid #e4eaf0;border-radius:9px;background:#f8fafc;color:#647489;display:grid;place-items:center;cursor:pointer}
+.postsSearchClear:hover{background:#fff4ea;color:#c65800;border-color:#ffd0ad}
 .postsFilters{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
 .postsFilters button,.postsFilters select{border:1px solid #e4eaf0;background:#fff;color:#54667b;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800;cursor:pointer}
 .postsFilters button.active{border-color:#ff9b4a;background:#fff4ea;color:#c65800}
