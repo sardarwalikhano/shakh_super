@@ -59,6 +59,7 @@ export default function PostsFeed(){
  const [page,setPage]=useState(1);
  const pageSize=12;
  const [message,setMessage]=useState('');
+ const [selectedPost,setSelectedPost]=useState<Post|null>(null);
 
  const load=async()=>{
   setLoading(true);
@@ -108,7 +109,7 @@ export default function PostsFeed(){
    !filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>{filter==='all'?'هێشتا پۆستێکی بڵاوکراوە نییە.':'لەو بەشەدا پۆستێک نییە.'}</small></div>:
    <div className="postFeedGrid">{shown.map(post=>{
     const img=postImage(post.images);
-    return <article className="postFeedCard" key={post.id} id={'post-'+post.id}>
+    return <article className="postFeedCard" key={post.id} id={'post-'+post.id} tabIndex={0} role="button" onClick={()=>setSelectedPost(post)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSelectedPost(post)}}}>
      <div className="postFeedImage">
       {img?<img src={img} alt={post.title}/>:<ImageIcon size={40}/>}
       <span className="postFeedBadge">{labelFor(post.post_type,post.label)}</span>
@@ -130,5 +131,19 @@ export default function PostsFeed(){
 
   {shown.length<filtered.length&&<div className="postFeedMore"><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}
   {message&&<div className="msg postFeedMessage" role="alert">{message}</div>}
+  {selectedPost&&<div className="postDetailsBackdrop" role="presentation" onClick={()=>setSelectedPost(null)}>
+   <div className="postDetailsModal" role="dialog" aria-modal="true" aria-label={selectedPost.title} onClick={event=>event.stopPropagation()}>
+    <button type="button" className="postDetailsClose" onClick={()=>setSelectedPost(null)} aria-label="داخستن"><span>×</span></button>
+    <div className="postDetailsImage">{postImage(selectedPost.images)?<img src={postImage(selectedPost.images)||''} alt={selectedPost.title}/>:<ImageIcon size={46}/>}</div>
+    <div className="postDetailsBody">
+     <div className="postDetailsMeta"><span>{labelFor(selectedPost.post_type,selectedPost.label)}</span><small>{selectedPost.city||'هەولێر'}</small></div>
+     <h3>{selectedPost.title}</h3>
+     {selectedPost.content&&<p>{selectedPost.content}</p>}
+     <div className="postDetailsPublisher"><UserRound size={15}/><span>{selectedPost.publisher_name||'بڵاوکەرەوە'}</span></div>
+     {selectedPost.price_iqd!=null&&<strong className="postDetailsPrice"><WalletCards size={15}/>{Number(selectedPost.price_iqd).toLocaleString('en-US')} د.ع</strong>}
+     <button type="button" className="primary postDetailsShare" onClick={()=>void sharePost(selectedPost)}><Tag size={15}/> هاوبەشکردنی پۆست</button>
+    </div>
+   </div>
+  </div>}
  </section>;
 }
