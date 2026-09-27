@@ -94,7 +94,7 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
    ||Boolean(file);
  },[profile,name,phone,city,language,file]);
 
- useEffect(()=>{onDirtyChange?.(hasChanges);return()=>onDirtyChange?.(false);},[hasChanges,onDirtyChange]);
+ useEffect(()=>{onDirtyChange?.(hasChanges);return()=>onDirtyChange?.(false);},[hasChanges]);
 
  const chooseAvatar=(next?:File)=>{
   if(!next)return;
