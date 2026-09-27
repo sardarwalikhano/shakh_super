@@ -83,6 +83,8 @@ export default function PostsManagement({userId,role}:Props){
  const [editContent,setEditContent]=useState('');
  const [editPrice,setEditPrice]=useState('');
  const [editCity,setEditCity]=useState('');
+ const [rejectingPost,setRejectingPost]=useState<Post|null>(null);
+ const [rejectReason,setRejectReason]=useState('');
  const pageSize=12;
 
  const load=async()=>{
@@ -224,23 +226,28 @@ export default function PostsManagement({userId,role}:Props){
   setMessage('پۆستەکە سڕایەوە.');
  };
 
- const moderate=async(post:Post,nextStatus:'approved'|'rejected')=>{
+ const moderate=async(post:Post,nextStatus:'approved'|'rejected',reasonOverride='')=>{
   if(!isAdmin)return;
-  let reason='';
-  if(nextStatus==='rejected'){
-   reason=window.prompt('هۆکاری ڕەتکردنەوە بنووسە:')||'';
-   if(!reason.trim())return;
-  }
+  const reason=reasonOverride.trim();
+  if(nextStatus==='rejected'&&!reason)return;
   setBusyId(post.id);
   const {error}=await supabase.from('posts').update({
    status:nextStatus,
-   rejection_reason:nextStatus==='rejected'?reason.trim():null,
+   rejection_reason:nextStatus==='rejected'?reason:null,
    visibility:nextStatus==='approved'?'public':post.visibility
   }).eq('id',post.id);
   setBusyId('');
   if(error){setMessage(error.message);return;}
+  setRejectingPost(null);
+  setRejectReason('');
   setMessage(nextStatus==='approved'?'پۆستەکە پەسەند کرا.':'پۆستەکە ڕەتکرایەوە.');
   await load();
+ };
+
+ const openReject=({post}:{post:Post})=>{
+  if(!isAdmin||busyId===post.id)return;
+  setRejectReason('');
+  setRejectingPost(post);
  };
 
  return <section id="shakh-post-management" className="orderCard postsManagement" style={{marginTop:18}}>
@@ -294,7 +301,7 @@ export default function PostsManagement({userId,role}:Props){
        {post.visibility==='public'
         ?<button type="button" onClick={()=>void changeVisibility(post,'private')} disabled={disabled}><EyeOff size={15}/> شارکردنەوە</button>
         :<button type="button" onClick={()=>void changeVisibility(post,'public')} disabled={disabled}><Eye size={15}/> بڵاوکردنەوە</button>}
-       {isAdmin&&post.status==='pending'&&<><button type="button" onClick={()=>void moderate(post,'approved')} disabled={disabled}><CheckCircle2 size={15}/> پەسەند</button><button type="button" onClick={()=>void moderate(post,'rejected')} disabled={disabled}><ShieldAlert size={15}/> ڕەتکردنەوە</button></>}
+       {isAdmin&&post.status==='pending'&&<><button type="button" onClick={()=>void moderate(post,'approved')} disabled={disabled}><CheckCircle2 size={15}/> پەسەند</button><button type="button" onClick={()=>openReject({post})} disabled={disabled}><ShieldAlert size={15}/> ڕەتکردنەوە</button></>}
        <button type="button" className="danger" onClick={()=>void deletePost(post)} disabled={disabled}><Trash2 size={15}/> سڕینەوە</button>
       </div>
      </div>
@@ -304,6 +311,29 @@ export default function PostsManagement({userId,role}:Props){
   {filtered.length>pageSize&&<div className="postsPagination"><button type="button" disabled={currentPage<=1} onClick={()=>setPage(value=>Math.max(1,value-1))}>پێشوو</button><span>{currentPage} / {totalPages}</span><button type="button" disabled={currentPage>=totalPages} onClick={()=>setPage(value=>Math.min(totalPages,value+1))}>دواتر</button></div>}
   {message&&<div className="msg postsManagementMessage" role="status" aria-live="polite">{message}</div>}
 
+  {rejectingPost&&<div className="postsRejectBackdrop" role="presentation" onClick={()=>{if(busyId)return;setRejectingPost(null);setRejectReason('')}}>
+   <div className="postsRejectDialog" role="dialog" aria-modal="true" aria-labelledby="posts-reject-title" onClick={event=>event.stopPropagation()}>
+    <div className="postsEditDialogHead">
+     <div>
+      <span className="eyebrow">بەڕێوەبردنی پۆست</span>
+      <h2 id="posts-reject-title">ڕەتکردنەوەی پۆست</h2>
+      <p>تکایە هۆکارەکە بنووسە بۆ ئەوەی بۆ بڵاوکەرەوەکە ڕوون بێت.</p>
+     </div>
+     <button type="button" className="postsEditClose" onClick={()=>{setRejectingPost(null);setRejectReason('')}} aria-label="داخستن"><X size={18}/></button>
+    </div>
+    <div className="postsRejectTarget"><strong>{rejectingPost.title}</strong><small>{labelOf(rejectingPost)} · {rejectingPost.publisher_name||'بڵاوکەرەوە'}</small></div>
+    <label className="postsEditField">هۆکاری ڕەتکردنەوە
+     <textarea rows={5} maxLength={300} value={rejectReason} onChange={e=>setRejectReason(e.target.value)} placeholder="نموونە: زانیاریی نرخ یان وێنە تەواو نییە..." autoFocus aria-describedby="reject-reason-count"/>
+     <small id="reject-reason-count">{rejectReason.length}/300</small>
+    </label>
+    <div className="postsEditDialogFoot">
+     <small className={rejectReason.trim()?'postsEditDirty':'postsEditSaved'}>{rejectReason.trim()?'هۆکار ئامادەیە':'هۆکار پێویستە'}</small>
+     <button type="button" className="plain postsEditCancel" onClick={()=>{setRejectingPost(null);setRejectReason('')}} disabled={busyId===rejectingPost.id}>پاشگەزبوونەوە</button>
+     <button type="button" className="primary postsEditSave postsRejectSubmit" disabled={busyId===rejectingPost.id||!rejectReason.trim()} onClick={()=>void moderate(rejectingPost,'rejected',rejectReason)}>{busyId===rejectingPost.id?'ڕەتکردنەوە دەکرێت...':'ڕەتکردنەوەی پۆست'}</button>
+    </div>
+   </div>
+  </div>}
+ 
   {editing&&<div className="postsEditBackdrop" role="presentation" onClick={closeEditor}>
    <div className="postsEditDialog" role="dialog" aria-modal="true" aria-labelledby="posts-edit-title" onClick={event=>event.stopPropagation()}>
     <div className="postsEditDialogHead">
