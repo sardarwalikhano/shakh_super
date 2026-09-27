@@ -558,3 +558,43 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .card:focus-visible{outline:3px solid rgba(255,106,0,.24);outline-offset:3px}
 .card[role="button"]{cursor:pointer}
 
+
+
+/* SHAKH product details premium modal */
+.productDetailsBackdrop{position:fixed;inset:0;z-index:70;padding:16px;display:grid;place-items:center;background:rgba(4,15,30,.74);backdrop-filter:blur(14px)}
+.productDetailsModal{position:relative;width:min(780px,100%);max-height:min(88vh,780px);overflow:auto;background:#fff;border-radius:26px;box-shadow:0 35px 100px rgba(0,0,0,.32);display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.9fr);direction:rtl}
+.productDetailsClose{position:absolute;top:12px;left:12px;z-index:3;width:40px;height:40px;border:1px solid rgba(15,34,58,.08);border-radius:12px;background:rgba(255,255,255,.94);color:#30445e;display:grid;place-items:center;font-size:24px;cursor:pointer;box-shadow:0 8px 20px rgba(7,26,51,.12)}
+.productDetailsClose:hover{background:#fff4ea;color:#c45800;border-color:#ffc08e}
+.productDetailsClose:focus-visible{outline:3px solid rgba(255,106,0,.24);outline-offset:2px}
+.productDetailsImage{min-height:430px;background:linear-gradient(145deg,#fff1df,#eef5ff);display:grid;place-items:center;overflow:hidden;color:#a0afbd}
+.productDetailsImage img{width:100%;height:100%;min-height:430px;max-height:650px;object-fit:cover;display:block}
+.productDetailsPlaceholder{font-size:74px;filter:drop-shadow(0 18px 18px rgba(21,34,56,.14))}
+.productDetailsBody{padding:30px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.productDetailsMeta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+.productDetailsMeta span{padding:6px 10px;border-radius:999px;background:#fff4ea;color:#c25500;font-size:10px;font-weight:900}
+.productDetailsMeta small{color:#7d8a9b;font-size:10px}
+.productDetailsBody h2{margin:0;color:var(--navy);font-size:25px;line-height:1.45}
+.productDetailsType{margin:8px 0 0;color:#6c7d90;font-size:12px;line-height:1.8}
+.productDetailsPriceRow{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:20px;padding:15px;border:1px solid #edf1f5;border-radius:16px;background:#fbfcfe}
+.productDetailsPriceRow span{color:#8390a1;font-size:10px}
+.productDetailsPriceRow strong{color:#d85c08;font-size:23px}
+.productDetailsStats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.productDetailsStats>div{display:grid;gap:3px;padding:12px;border-radius:14px;background:#f8fafc;border:1px solid #edf1f5}
+.productDetailsStats small{color:#8a97a7;font-size:9px}
+.productDetailsStats b{color:#24384f;font-size:12px}
+.productDetailsAdd{min-height:48px;margin-top:16px}
+@media(max-width:720px){
+ .productDetailsBackdrop{padding:0;align-items:end}
+ .productDetailsModal{width:100%;max-height:92vh;border-radius:24px 24px 0 0;grid-template-columns:1fr;grid-template-rows:minmax(230px,38vh) auto}
+ .productDetailsImage,.productDetailsImage img{min-height:230px;max-height:38vh}
+ .productDetailsBody{padding:20px 18px 24px}
+ .productDetailsBody h2{font-size:20px}
+}
+@media(max-width:420px){
+ .productDetailsModal{grid-template-rows:220px auto}
+ .productDetailsImage,.productDetailsImage img{min-height:220px;max-height:220px}
+ .productDetailsBody{padding:17px 14px 20px}
+ .productDetailsClose{top:9px;left:9px;width:38px;height:38px}
+ .productDetailsPriceRow strong{font-size:20px}
+}
+
