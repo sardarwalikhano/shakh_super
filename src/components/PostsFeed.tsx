@@ -52,6 +52,21 @@ function timeLabel(createdAt:string){
  return `${days} ڕۆژ لەمەوبەر`;
 }
 
+async function sharePost(post:Post){
+ const url=`${window.location.origin}/#shakh-posts?post=${encodeURIComponent(post.id)}`;
+ const shareData={title:post.title,text:post.content||post.title,url};
+ try{
+  if(typeof navigator.share==='function'){
+   await navigator.share(shareData);
+   return;
+  }
+  if(navigator.clipboard)await navigator.clipboard.writeText(url);
+ }catch(error){
+  if(error instanceof DOMException&&error.name==='AbortError')return;
+  console.warn('Post sharing failed',error);
+ }
+}
+
 export default function PostsFeed(){
  const [posts,setPosts]=useState<Post[]>([]);
  const [filter,setFilter]=useState('all');
