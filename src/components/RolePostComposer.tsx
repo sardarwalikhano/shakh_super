@@ -13,6 +13,8 @@ const CONFIG:Record<string,{types:{value:string;label:string}[];heading:string;l
  super_admin:{types:[{value:'announcement',label:'ئاگاداری'},{value:'support',label:'پشتگیری'}],heading:'پۆستی بەڕێوەبەر',label:'بەڕێوبەری باڵا'}
 };
 
+const IRAQ_CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
+
 const typeIcons:Record<string,string>={general:'💬',marketplace:'🛍️',delivery:'🛵',car:'🚗',umrah:'🕋',announcement:'📢',support:'🛟'};
 
 export default function RolePostComposer({userId,role,onSaved}:Props){
@@ -137,7 +139,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
 
   <div className="postFormGrid">
    {isPriceVisible&&<label className="postField">نرخ بە د.ع<input value={price} onChange={e=>setPrice(e.target.value.replace(/[^0-9]/g,''))} inputMode="numeric" placeholder="نموونە: ٢٥٠٠٠"/></label>}
-   <label className="postField">شار<input value={city} onChange={e=>setCity(e.target.value)} placeholder="هەولێر"/></label>
+   <label className="postField">شار<select value={city} onChange={e=>setCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item} value={item}>{item}</option>)}</select></label>
   </div>
 
   <div className="postUploadBox">
