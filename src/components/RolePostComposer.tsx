@@ -54,7 +54,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
     city:city.trim()||'هەولێر',
     status:role==='admin'||role==='super_admin'?'approved':'approved',
     section:postType,
-    publisher_name:cfg.label,
+    publisher_name:undefined,
     post_type:postType,
     publisher_role:role,
     label:cfg.label,
