@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {Camera,CheckCircle2,FileText,Languages,MapPin,RefreshCw,Save,ShieldCheck,UserRound} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
-type Props={userId:string;role:string;onOpenPosts?:()=>void};
+type Props={userId:string;role:string;onOpenPosts?:()=>void;onDirtyChange?:(dirty:boolean)=>void};
 
 type ProfileRow={
  id:string;
@@ -40,7 +40,7 @@ const LANGUAGE_LABELS:{value:ProfileRow['language'];label:string;icon:string}[]=
  {value:'en',label:'English',icon:'EN'}
 ];
 
-export default function ProfilePanel({userId,role,onOpenPosts}:Props){
+export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Props){
  const [profile,setProfile]=useState<ProfileRow|null>(null);
  const [name,setName]=useState('');
  const [phone,setPhone]=useState('');
@@ -93,6 +93,8 @@ export default function ProfilePanel({userId,role,onOpenPosts}:Props){
    ||language!==(profile.language||'ku')
    ||Boolean(file);
  },[profile,name,phone,city,language,file]);
+
+ useEffect(()=>{onDirtyChange?.(hasChanges);return()=>onDirtyChange?.(false);},[hasChanges,onDirtyChange]);
 
  const chooseAvatar=(next?:File)=>{
   if(!next)return;
