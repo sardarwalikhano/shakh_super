@@ -1,11 +1,22 @@
 import React,{useEffect,useMemo,useState} from 'react';
-import {Filter,RefreshCw,Image as ImageIcon,Tag,UserRound} from 'lucide-react';
+import {Filter,Image as ImageIcon,MapPin,RefreshCw,Tag,UserRound,WalletCards} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
 type Post={
- id:string;author_id:string;title:string;content?:string|null;images?:unknown;price_iqd?:number|null;
- city?:string|null;status:string;created_at:string;publisher_name?:string|null;
- post_type?:string|null;publisher_role?:string|null;label?:string|null;visibility:string;
+ id:string;
+ author_id:string;
+ title:string;
+ content?:string|null;
+ images?:unknown;
+ price_iqd?:number|null;
+ city?:string|null;
+ status:string;
+ created_at:string;
+ publisher_name?:string|null;
+ post_type?:string|null;
+ publisher_role?:string|null;
+ label?:string|null;
+ visibility:string;
 };
 
 const TYPES=[
@@ -19,14 +30,15 @@ const TYPES=[
  {value:'announcement',label:'ئاگاداری'}
 ];
 
-const labelFor=(type?:string|null,label?:string|null)=>{
- if(label)return label;
- return TYPES.find(x=>x.value===type)?.label||'گشتی';
-};
+const labelFor=(type?:string|null,label?:string|null)=>label||TYPES.find(item=>item.value===type)?.label||'گشتی';
 
 function postImage(images:unknown){
  if(Array.isArray(images)&&images.length&&typeof images[0]==='string')return images[0] as string;
  return null;
+}
+
+function isNew(createdAt:string){
+ return Date.now()-new Date(createdAt).getTime()<24*60*60*1000;
 }
 
 export default function PostsFeed(){
@@ -44,7 +56,11 @@ export default function PostsFeed(){
    .select('id,author_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility')
    .order('created_at',{ascending:false})
    .limit(200);
-  if(error){setMessage('نەتوانرا پۆستەکان وەرگیرێن.');setLoading(false);return;}
+  if(error){
+   setMessage('نەتوانرا پۆستەکان وەرگیرێن.');
+   setLoading(false);
+   return;
+  }
   setPosts((data||[]) as Post[]);
   setMessage('');
   setLoading(false);
@@ -58,45 +74,50 @@ export default function PostsFeed(){
   return()=>{void supabase.removeChannel(channel)};
  },[]);
 
- const filtered=useMemo(()=>filter==='all'?posts:posts.filter(p=>p.post_type===filter),[posts,filter]);
+ const filtered=useMemo(()=>filter==='all'?posts:posts.filter(post=>post.post_type===filter),[posts,filter]);
  const shown=filtered.slice(0,page*pageSize);
+
  useEffect(()=>{setPage(1)},[filter]);
 
- return <section className="section" id="shakh-posts">
-  <div className="title">
-   <span>پۆستەکانی شاخ</span>
-   <h2>پۆستە نوێکان و پیشەییەکان</h2>
+ return <section className="section postFeed" id="shakh-posts">
+  <div className="title postFeedTitle">
+   <div>
+    <span>پۆستەکانی شاخ</span>
+    <h2>نوێترین ناوەڕۆک لە بازاڕی شاخ</h2>
+   </div>
+   <button type="button" className="plain" onClick={()=>void load()} disabled={loading} aria-label="نوێکردنەوەی پۆستەکان"><RefreshCw size={17}/></button>
   </div>
 
-  <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center',marginBottom:16}}>
-   <Filter size={18}/>
-   {TYPES.map(t=><button key={t.value} type="button" onClick={()=>setFilter(t.value)}
-    style={{border:filter===t.value?'2px solid #ff6a00':'1px solid #e7ecf2',background:filter===t.value?'#fff4ea':'#fff',borderRadius:999,padding:'8px 14px',fontWeight:800,color:'#081a33'}}>
-    {t.label}
-   </button>)}
-   <button type="button" className="plain" onClick={()=>void load()} disabled={loading}><RefreshCw size={17}/></button>
+  <div className="postFeedFilters" role="tablist" aria-label="فلتەری بەشەکان">
+   <Filter size={17}/>
+   {TYPES.map(item=><button key={item.value} type="button" role="tab" aria-selected={filter===item.value} className={filter===item.value?'active':''} onClick={()=>setFilter(item.value)}>{item.label}</button>)}
   </div>
 
-  {loading&&!posts.length?<div className="empty"><RefreshCw size={38}/><h3>پۆستەکان بار دەکرێن...</h3></div>:
-   !filtered.length?<div className="empty"><Tag size={40}/><h3>هیچ پۆستێک نەدۆزرایەوە</h3><p>{filter==='all'?'هێشتا پۆستێک بڵاونەکراوەتەوە.':'لەو بەشەدا پۆستێک نییە.'}</p></div>:
-   <div className="grid">{shown.map(p=>{
-    const img=postImage(p.images);
-    return <article className="card" key={p.id}>
-     <div className="pic">{img?<img src={img} alt={p.title}/>:<ImageIcon size={42}/>}</div>
-     <div className="body">
-      <div style={{display:'flex',justifyContent:'space-between',gap:8,alignItems:'center'}}>
-       <small>{labelFor(p.post_type,p.label)}</small>
-       <small>{p.city||'هەولێر'}</small>
+  {loading&&!posts.length?<div className="postFeedEmpty"><RefreshCw size={35}/><strong>پۆستەکان بار دەکرێن...</strong><small>کەمێک چاوەڕوان بە.</small></div>:
+   !filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>{filter==='all'?'هێشتا پۆستێکی بڵاوکراوە نییە.':'لەو بەشەدا پۆستێک نییە.'}</small></div>:
+   <div className="postFeedGrid">{shown.map(post=>{
+    const img=postImage(post.images);
+    return <article className="postFeedCard" key={post.id}>
+     <div className="postFeedImage">
+      {img?<img src={img} alt={post.title}/>:<ImageIcon size={40}/>}
+      <span className="postFeedBadge">{labelFor(post.post_type,post.label)}</span>
+      {isNew(post.created_at)&&<span className="postFeedNew">نوێ</span>}
+     </div>
+     <div className="postFeedBody">
+      <div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{new Date(post.created_at).toLocaleDateString('ku-IQ')}</small></div>
+      <h3>{post.title}</h3>
+      {post.content&&<p>{post.content}</p>}
+      <div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div>
+      <div className="postFeedFooter">
+       {post.price_iqd!=null?<strong><WalletCards size={14}/>{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>:<small>بێ نرخ</small>}
+       <span>{post.status==='approved'?'پەسەندکراو':'چاوەڕوان'}</span>
       </div>
-      <h3>{p.title}</h3>
-      {p.content&&<p style={{margin:'6px 0',lineHeight:1.7}}>{p.content}</p>}
-      <small style={{display:'flex',gap:6,alignItems:'center'}}><UserRound size={14}/>{p.publisher_name||'بڵاوکەرەوە'}</small>
-      {p.price_iqd!=null&&<div className="buy"><b>{Number(p.price_iqd).toLocaleString('en-US')} د.ع</b></div>}
      </div>
     </article>;
    })}</div>
   }
-  {shown.length<filtered.length&&<div style={{display:'flex',justifyContent:'center',marginTop:16}}><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}
-  {message&&<div className="msg" style={{marginTop:10}}>{message}</div>}
+
+  {shown.length<filtered.length&&<div className="postFeedMore"><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}
+  {message&&<div className="msg postFeedMessage" role="alert">{message}</div>}
  </section>;
 }
