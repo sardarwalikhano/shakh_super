@@ -275,7 +275,7 @@ export default function PostsManagement({userId,role}:Props){
    <div className="postsManagementList">{pageItems.map(post=>{
     const img=imageOf(post.images);
     const disabled=busyId===post.id;
-    return <article className="postsManagementItem" key={post.id}>
+    return <article className="postsManagementItem" id={'managed-post-'+post.id} key={post.id}>
      <div className="postsManagementImage">{img?<img src={img} alt={post.title} loading="lazy" decoding="async"/>:<span>{labelOf(post).slice(0,1)}</span>}</div>
      <div className="postsManagementBody">
       <div className="postsManagementMeta"><span>{labelOf(post)}</span><small>{new Date(post.created_at).toLocaleString('ku-IQ')}</small>{updatedLabel(post)&&<small>{updatedLabel(post)}</small>}</div>
