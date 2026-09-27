@@ -58,7 +58,13 @@ const steps = [
 
 function stepIndex(status: string) {
   const index = steps.findIndex(([key]) => key === status);
-  return index < 0 ? 0 : index;
+  return index;
+}
+
+function statusLabel(status: string) {
+  if (status === 'cancelled') return 'هەڵوەشێنراوەتەوە';
+  if (status === 'failed') return 'سەرکەوتوو نەبوو';
+  return steps.find(([key]) => key === status)?.[1] ?? status;
 }
 
 function googleMapsUrl(latitude: number, longitude: number) {
@@ -256,7 +262,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
         <div className="customer-orders-panel__orders">
           {loading ? <div className="empty">چاوەڕوان بە...</div> : orders.length === 0 ? <div className="empty"><Package size={38} /><strong>هێشتا هیچ ئۆردەرێکت نییە</strong></div> : orders.map((order) => (
             <button key={order.id} type="button" className={`customer-order-card ${selectedId === order.id ? 'is-selected' : ''}`} onClick={() => setSelectedId(order.id)}>
-              <div><strong>#{order.id.slice(0, 8)}</strong><span>{steps.find(([key]) => key === order.status)?.[1] ?? order.status}</span></div>
+              <div><strong>#{order.id.slice(0, 8)}</strong><span>{statusLabel(order.status)}</span></div>
               <small><Clock3 size={14} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</small>
               <b>{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</b>
             </button>
@@ -286,12 +292,16 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                 {selected.discount_iqd > 0 && <div><span>داشکاندن</span><b>-{selected.discount_iqd.toLocaleString('ku-IQ')} د.ع</b></div>}
                 <div className="grand"><span>کۆی گشتی</span><b>{Number(selected.total_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
               </div>
-              <div className="tracking-card__timeline">
-                {steps.map(([key, label], index) => {
-                  const active = index <= stepIndex(selected.status);
-                  return <div className={`tracking-step ${active ? 'is-active' : ''}`} key={key}><span>{active ? <Check size={15} /> : index + 1}</span><div><strong>{label}</strong>{key === selected.status && <small>دۆخی ئێستا</small>}</div></div>;
-                })}
-              </div>
+              {selected.status === 'cancelled' ? (
+                <div className="trackingCancelled" role="status"><span><Check size={16}/></span><div><strong>ئەم ئۆردەرە هەڵوەشێنراوەتەوە</strong><small>هەموو قۆناغەکانی گەیاندن وەستانراون.</small></div></div>
+              ) : (
+                <div className="tracking-card__timeline">
+                  {steps.map(([key, label], index) => {
+                    const active = index <= stepIndex(selected.status);
+                    return <div className={`tracking-step ${active ? 'is-active' : ''}`} key={key}><span>{active ? <Check size={15} /> : index + 1}</span><div><strong>{label}</strong>{key === selected.status && <small>دۆخی ئێستا</small>}</div></div>;
+                  })}
+                </div>
+              )}
               <div className="tracking-card__footer"><MapPin size={17} /><span>شوێنی گەیاندن لە زانیارییەکانی ئۆردەرەکە پارێزراوە.</span></div>
 
               {(selected.status === 'assigned_to_captain' || selected.status === 'picked_up' || selected.status === 'on_the_way') && (
