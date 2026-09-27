@@ -85,6 +85,14 @@ export default function ProfilePanel({userId,role,onOpenPosts}:Props){
 
  const displayName=useMemo(()=>name.trim()||'بەکارهێنەری شاخ',[name]);
  const roleLabel=ROLE_LABELS[role]||'بەکارهێنەر';
+ const hasChanges=useMemo(()=>{
+  if(!profile)return Boolean(file);
+  return name.trim()!==(profile.full_name||'')
+   ||phone.trim()!==(profile.phone||'')
+   ||city!==(profile.city||'هەولێر')
+   ||language!==(profile.language||'ku')
+   ||Boolean(file);
+ },[profile,name,phone,city,language,file]);
 
  const chooseAvatar=(next?:File)=>{
   if(!next)return;
@@ -204,8 +212,8 @@ export default function ProfilePanel({userId,role,onOpenPosts}:Props){
   </div>
 
   <div className="profileSaveRow">
-   <small>گۆڕانکارییەکان لە داتابەیسی شاخ پاشەکەوت دەکرێن.</small>
-   <button type="button" className="primary profileSaveButton" onClick={()=>void save()} disabled={saving}>
+   <small className={hasChanges?'profileDirtyText':'profileSavedText'}>{hasChanges?'گۆڕانکارییە نوێکانت هەن؛ پاشەکەوتیان بکە.':'هەموو گۆڕانکارییەکان پاشەکەوت کراون.'}</small>
+   <button type="button" className="primary profileSaveButton" onClick={()=>void save()} disabled={saving||!hasChanges}>
     {saving?<><RefreshCw size={17}/> پاشەکەوت دەکرێت...</>:<><Save size={17}/> پاشەکەوتکردنی پرۆفایل</>}
    </button>
   </div>
