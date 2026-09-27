@@ -259,3 +259,5 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 
 .postDetailsClose:focus-visible,.postDetailsShare:focus-visible{outline:3px solid rgba(255,106,0,.24);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.postCategory:hover,.postFeedCard:hover{transform:none}.postDetailsBackdrop{backdrop-filter:none}}
+
+.postComposer button:disabled,.postsManagementActions button:disabled,.postFeedFilters button:disabled{opacity:.55;cursor:not-allowed}
