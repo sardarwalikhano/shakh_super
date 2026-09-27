@@ -196,8 +196,8 @@ export default function ProfilePanel({userId,role,onOpenPosts}:Props){
      </button>)}</div>}
   </div>
 
-  <div className="profileSectionTitle compact"><div><span>زمانی ئەپ</span><h3>زمانی پەڕەکان هەڵبژێرە</h3></div></div>
-  <div className="profileLanguageGrid" role="radiogroup" aria-label="زمانی ئەپ">
+  <div className="profileSectionTitle compact"><div><span>پەسەندی زمان</span><h3>زمانی هەژمار هەڵبژێرە</h3></div></div>
+  <div className="profileLanguageGrid" role="radiogroup" aria-label="پەسەندی زمانی هەژمار">
    {LANGUAGE_LABELS.map(item=><button type="button" key={item.value} role="radio" aria-checked={language===item.value} className={language===item.value?'active':''} onClick={()=>setLanguage(item.value)}>
     <b>{item.icon}</b><span>{item.label}</span>{language===item.value&&<CheckCircle2 size={17}/>}
    </button>)}
