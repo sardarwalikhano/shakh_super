@@ -272,7 +272,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    {busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Store size={17}/> بڵاوکردنەوەی بەرهەم و پۆست</>}
   </button>
 
-  {message&&<div className={message.includes('سەرکەوت')?'postComposerMessage success':'postComposerMessage'} role="alert">{message}</div>}
+  {message&&<div className={message.includes('سەرکەوت')?'postComposerMessage success':'postComposerMessage'} role="alert" aria-live="polite">{message}</div>}
   <small className="postComposerFoot"><CheckCircle2 size={14}/> زانیارییەکان بە ڕاستەوخۆ لە داتابەیسی شاخ هەڵدەگیرێن.</small>
  </section>;
 }
