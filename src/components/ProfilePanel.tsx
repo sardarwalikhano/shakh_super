@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {Camera,CheckCircle2,FileText,Languages,MapPin,RefreshCw,Save,ShieldCheck,UserRound} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
-type Props={userId:string;role:string};
+type Props={userId:string;role:string;onOpenPosts?:()=>void};
 
 type ProfileRow={
  id:string;
@@ -13,6 +13,8 @@ type ProfileRow={
  city:string|null;
  language:'ku'|'ar'|'en';
 };
+
+type PostSummary={id:string;title:string;status:string;created_at:string;visibility:string;post_type:string|null;};
 
 const IRAQ_CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
 
@@ -38,7 +40,7 @@ const LANGUAGE_LABELS:{value:ProfileRow['language'];label:string;icon:string}[]=
  {value:'en',label:'English',icon:'EN'}
 ];
 
-export default function ProfilePanel({userId,role}:Props){
+export default function ProfilePanel({userId,role,onOpenPosts}:Props){
  const [profile,setProfile]=useState<ProfileRow|null>(null);
  const [name,setName]=useState('');
  const [phone,setPhone]=useState('');
@@ -48,6 +50,7 @@ export default function ProfilePanel({userId,role}:Props){
  const [file,setFile]=useState<File|null>(null);
  const [preview,setPreview]=useState('');
  const [postCount,setPostCount]=useState(0);
+ const [latestPosts,setLatestPosts]=useState<PostSummary[]>([]);
  const [loading,setLoading]=useState(true);
  const [saving,setSaving]=useState(false);
  const [message,setMessage]=useState('');
@@ -55,9 +58,10 @@ export default function ProfilePanel({userId,role}:Props){
  const load=async()=>{
   setLoading(true);
   setMessage('');
-  const [{data,error},{count:countValue}]=await Promise.all([
+  const [{data,error},{count:countValue},{data:latest}]=await Promise.all([
    supabase.from('profiles').select('id,full_name,email,phone,avatar_url,city,language').eq('id',userId).maybeSingle(),
-   supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',userId)
+   supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',userId),
+   supabase.from('posts').select('id,title,status,created_at,visibility,post_type').eq('author_id',userId).order('created_at',{ascending:false}).limit(3)
   ]);
   if(error){
    setMessage('نەتوانرا زانیاریی پرۆفایل وەرگیرێت.');
@@ -72,6 +76,7 @@ export default function ProfilePanel({userId,role}:Props){
   setLanguage(next?.language||'ku');
   setAvatarUrl(next?.avatar_url||'');
   setPostCount(countValue||0);
+  setLatestPosts((latest||[]) as PostSummary[]);
   setLoading(false);
  };
 
@@ -175,6 +180,20 @@ export default function ProfilePanel({userId,role}:Props){
    <label className="profileField">ژمارەی تەلەفون<input maxLength={20} value={phone} onChange={e=>setPhone(e.target.value)} inputMode="tel" placeholder="+964 7xx xxx xxxx"/></label>
    <label className="profileField profileFieldWide">ئیمەیڵ<input value={profile?.email||''} readOnly aria-readonly="true"/></label>
    <label className="profileField">شار<select value={city} onChange={e=>setCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item} value={item}>{item}</option>)}</select></label>
+  </div>
+
+  <div className="profilePostSection">
+   <div className="profileSectionTitle compact">
+    <div><span>ناوەڕۆکی من</span><h3>دوایین پۆستەکان</h3></div>
+    <button type="button" className="profilePostsLink" onClick={()=>onOpenPosts?.()} disabled={!onOpenPosts}>بینینی هەموو پۆستەکان <FileText size={14}/></button>
+   </div>
+   {!latestPosts.length
+    ?<div className="profilePostsEmpty"><FileText size={20}/><span>هێشتا هیچ پۆستێکت نییە.</span></div>
+    :<div className="profilePostsList">{latestPosts.map(post=><button type="button" className="profilePostRow" key={post.id} onClick={()=>onOpenPosts?.()} disabled={!onOpenPosts}>
+      <span className="profilePostDot" aria-hidden="true"/>
+      <span className="profilePostInfo"><b>{post.title}</b><small>{post.post_type||'گشتی'} · {new Date(post.created_at).toLocaleDateString('ku-IQ')}</small></span>
+      <span className={'profilePostStatus '+(post.status==='approved'&&post.visibility==='public'?'ok':post.status==='rejected'?'bad':'wait')}>{post.status==='approved'?(post.visibility==='public'?'بڵاوکراوە':'شاراوە'):post.status==='rejected'?'ڕەتکراوە':'چاوەڕوان'}</span>
+     </button>)}</div>}
   </div>
 
   <div className="profileSectionTitle compact"><div><span>زمانی ئەپ</span><h3>زمانی پەڕەکان هەڵبژێرە</h3></div></div>
