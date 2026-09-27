@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {CheckCircle2,Edit3,Eye,EyeOff,RefreshCw,Search,Share2,ShieldAlert,Trash2,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
-type Props={userId:string;role:string};
+type Props={userId:string;role:string;focusRequest?:{postId:string;nonce:number}|null};
 
 type Post={
  id:string;
@@ -68,7 +68,7 @@ const updatedLabel=(post:Post)=>{
  return updated-created>60000?`نوێکراوە: ${new Date(post.updated_at).toLocaleString('ku-IQ')}`:'';
 };
 
-export default function PostsManagement({userId,role}:Props){
+export default function PostsManagement({userId,role,focusRequest}:Props){
  const isAdmin=role==='admin'||role==='super_admin';
  const [posts,setPosts]=useState<Post[]>([]);
  const [loading,setLoading]=useState(true);
@@ -136,6 +136,26 @@ export default function PostsManagement({userId,role}:Props){
  const pageItems=filtered.slice((currentPage-1)*pageSize,currentPage*pageSize);
 
  useEffect(()=>{setPage(1)},[statusFilter,roleFilter,query]);
+
+ useEffect(()=>{
+  if(!focusRequest?.postId||!posts.length)return;
+  const index=posts.findIndex(post=>post.id===focusRequest.postId);
+  if(index<0){
+   setMessage('ئەم پۆستە لە لیستی ئێستەدا نییە یان مۆڵەتی بینینی نییە.');
+   return;
+  }
+  setQuery('');
+  setStatusFilter('all');
+  if(isAdmin)setRoleFilter('all');
+  setPage(Math.floor(index/pageSize)+1);
+  window.setTimeout(()=>{
+   const target=document.getElementById('managed-post-'+focusRequest.postId);
+   if(!target)return;
+   target.scrollIntoView({behavior:'smooth',block:'center'});
+   target.classList.add('profilePostJump');
+   window.setTimeout(()=>target.classList.remove('profilePostJump'),1800);
+  },50);
+ },[focusRequest?.nonce,posts,isAdmin]);
 
  useEffect(()=>{
   if(!editing)return;
