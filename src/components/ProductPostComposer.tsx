@@ -91,6 +91,8 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
   setMessage('');
  };
 
+ const handleDrop=(event:React.DragEvent<HTMLLabelElement>)=>{event.preventDefault();pick(event.dataTransfer.files?.[0]);};
+
  const clearImage=()=>{
   if(preview)URL.revokeObjectURL(preview);
   setFile(null);
@@ -238,7 +240,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
 
   <div className="postUploadBox">
    <div className="postUploadHead"><div><b>وێنەی بەرهەم</b><small>JPG، PNG یان WEBP · تا ٥ MB</small></div><ImagePlus size={20}/></div>
-   <label className={preview?'postUploadDrop hasImage':'postUploadDrop'}>
+   <label className={preview?'postUploadDrop hasImage':'postUploadDrop'} onDragOver={event=>event.preventDefault()} onDrop={handleDrop}>
     <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>pick(e.target.files?.[0])}/>
     {preview?<><img src={preview} alt={form.name||'پێشبینینی بەرهەم'}/><span className="postUploadOverlay">گۆڕینی وێنە</span></>:<><Upload size={24}/><b>وێنە هەڵبژێرە</b><small>کلیک بکە و وێنەی بەرهەم هەڵبژێرە</small></>}
    </label>
