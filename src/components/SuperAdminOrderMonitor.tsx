@@ -77,16 +77,16 @@ export default function SuperAdminOrderMonitor() {
 
       {error && <div className="msg">{error}</div>}
 
-      <div className="dashboardGrid" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
+      <div className="orderMonitorStats dashboardGrid">
         <div className="orderCard"><Package size={22} /><strong>{orders.length}</strong><span>کۆی ئۆردەر</span></div>
         <div className="orderCard"><Truck size={22} /><strong>{active}</strong><span>ئۆردەری چالاک</span></div>
         <div className="orderCard"><Store size={22} /><strong>{delivered}</strong><span>گەیەندراوە</span></div>
       </div>
 
-      <div className="orderCard" style={{ marginTop: 16 }}>
-        <div className="orderMeta"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="گەڕان بە ID ـی ئۆردەر..." /></div>
-        <div className="orderMeta">
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+      <div className="orderMonitorControls orderCard">
+        <label className="orderMonitorSearch"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="گەڕان بە ID ـی ئۆردەر..." aria-label="گەڕان بە ID ـی ئۆردەر" /></label>
+        <div className="orderMonitorFilterRow">
+          <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="فلتەری دۆخی ئۆردەر">
             <option value="all">هەموو دۆخەکان</option>
             {Object.entries(STATUS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
           </select>
@@ -94,7 +94,7 @@ export default function SuperAdminOrderMonitor() {
         </div>
       </div>
 
-      <div className="dashboardGrid">
+      <div className="orderMonitorList dashboardGrid">
         {loading ? <div className="empty">چاوەڕوان بە...</div> : filtered.length === 0 ? <div className="empty">هیچ ئۆردەرێک نەدۆزرایەوە.</div> : filtered.map((order) => (
           <article className="orderCard" key={order.id}>
             <div className="orderCardTop"><strong>#{order.id.slice(0, 8)}</strong><span>{STATUS[order.status] || order.status}</span></div>
