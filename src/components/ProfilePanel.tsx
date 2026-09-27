@@ -95,7 +95,18 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
  },[profile,name,phone,city,language,file]);
 
  useEffect(()=>{onDirtyChange?.(hasChanges);},[hasChanges,onDirtyChange]);
- useEffect(()=>()=>{onDirtyChange?.(false);},[onDirtyChange]);
+ useEffect(()=>()=>{
+  onDirtyChange?.(false);
+ },[onDirtyChange]);
+ useEffect(()=>{
+  if(!hasChanges||saving)return;
+  const onBeforeUnload=(event:BeforeUnloadEvent)=>{
+   event.preventDefault();
+   event.returnValue='';
+  };
+  window.addEventListener('beforeunload',onBeforeUnload);
+  return()=>window.removeEventListener('beforeunload',onBeforeUnload);
+ },[hasChanges,saving]);
 
  const refreshProfile=()=>{
   if(hasChanges&&!window.confirm('گۆڕانکارییەکانی پرۆفایل پاشەکەوت نەکراون. دڵنیایت دەتەوێت زانیاریی کۆن دووبارە بار بکرێتەوە؟'))return;
