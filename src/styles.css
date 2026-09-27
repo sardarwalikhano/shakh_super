@@ -519,3 +519,9 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
  .notification-item>button{width:32px;height:32px}
 }
 
+
+
+.trackingCancelled{display:flex;align-items:center;gap:10px;margin:14px 0;padding:13px;border:1px solid #f0d7d5;border-radius:15px;background:#fff5f4;color:#9b3d37}
+.trackingCancelled>span{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;background:#f3d4d1;color:#a33a33;flex:0 0 auto}
+.trackingCancelled>div{display:grid;gap:2px}.trackingCancelled strong{font-size:11px}.trackingCancelled small{font-size:9px;line-height:1.6;color:#a56c67}
+
