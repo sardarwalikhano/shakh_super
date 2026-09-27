@@ -1,4 +1,4 @@
-import React,{useEffect,useMemo,useState} from 'react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {Filter,Image as ImageIcon,MapPin,RefreshCw,Share2,Tag,UserRound,WalletCards} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
@@ -89,6 +89,7 @@ export default function PostsFeed(){
  const [message,setMessage]=useState('');
  const [selectedPost,setSelectedPost]=useState<Post|null>(null);
  const [shareMessage,setShareMessage]=useState('');
+ const closeButtonRef=useRef<HTMLButtonElement|null>(null);
  const [,setTimeTick]=useState(0);
 
  useEffect(()=>{
@@ -161,7 +162,7 @@ export default function PostsFeed(){
   else closePost();
  },[posts]);
 
- useEffect(()=>{if(!selectedPost)return;const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')closePost()};window.addEventListener('keydown',onKeyDown);return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)}},[selectedPost]);
+ useEffect(()=>{if(!selectedPost)return;const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')closePost()};window.addEventListener('keydown',onKeyDown);window.setTimeout(()=>closeButtonRef.current?.focus(),0);return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)}},[selectedPost]);
 
  return <section className="section postFeed" id="shakh-posts">
   <div className="title postFeedTitle">
@@ -205,7 +206,7 @@ export default function PostsFeed(){
   {message&&<div className="msg postFeedMessage" role="alert" aria-live="polite">{message}</div>}
   {selectedPost&&<div className="postDetailsBackdrop" role="presentation" onClick={closePost}>
    <div className="postDetailsModal" role="dialog" aria-modal="true" aria-labelledby="post-details-title" onClick={event=>event.stopPropagation()}>
-    <button type="button" className="postDetailsClose" onClick={closePost} aria-label="داخستن"><span>×</span></button>
+    <button ref={closeButtonRef} type="button" className="postDetailsClose" onClick={closePost} aria-label="داخستنی وردەکاریی پۆست"><span>×</span></button>
     <div className="postDetailsImage" role="img" aria-label={selectedPost.title}>{postImage(selectedPost.images)?<img src={postImage(selectedPost.images)||''} alt={selectedPost.title} loading="lazy" decoding="async"/>:<ImageIcon size={46}/>}</div>
     <div className="postDetailsBody">
      <div className="postDetailsMeta"><span>{labelFor(selectedPost.post_type,selectedPost.label)}</span><small>{selectedPost.city||'هەولێر'}</small></div>
