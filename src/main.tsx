@@ -13,6 +13,7 @@ import ShakhStorePostComposer from './components/ShakhStorePostComposer';
 import PwaInstallUpdate from './components/PwaInstallUpdate';
 import PostsFeed from './components/PostsFeed';
 import RolePostComposer from './components/RolePostComposer';
+import PostsManagement from './components/PostsManagement';
 
 const url=import.meta.env.VITE_SUPABASE_URL as string|undefined;
 const key=import.meta.env.VITE_SUPABASE_ANON_KEY as string|undefined;
