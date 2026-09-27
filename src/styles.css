@@ -90,3 +90,47 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .etaCard>div strong{font-size:14px;color:var(--navy);margin-top:2px}
 .etaCard>small{grid-column:1/-1;color:#8693a4;font-size:10px;line-height:1.7}
 @media(max-width:520px){.etaCard{grid-template-columns:1fr}.etaCard>small{grid-column:auto}}
+
+/* SHAKH post management — additive responsive layer */
+.postsManagement{overflow:hidden}
+.postsManagementHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.postsManagementTools{display:grid;gap:10px;margin-top:16px}
+.postsManagementStats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.postsManagementStats span{padding:7px 10px;border:1px solid #e7edf3;border-radius:999px;background:#f9fbfd;color:#6e7c8e;font-size:11px;font-weight:800}
+.postsManagementStats b{color:#0a2342}
+.postsSearch{display:flex;align-items:center;gap:8px;border:1px solid #e5ebf2;background:#fff;border-radius:14px;padding:0 11px}
+.postsSearch input{border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;width:100%;height:42px}
+.postsFilters{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.postsFilters button,.postsFilters select{border:1px solid #e4eaf0;background:#fff;color:#54667b;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800;cursor:pointer}
+.postsFilters button.active{border-color:#ff9b4a;background:#fff4ea;color:#c65800}
+.postsFilters select{border-radius:12px}
+.postsManagementList{display:grid;gap:12px;margin-top:14px}
+.postsManagementItem{display:grid;grid-template-columns:92px 1fr;gap:13px;padding:12px;border:1px solid #e7edf3;border-radius:18px;background:#fff}
+.postsManagementImage{width:92px;height:92px;border-radius:14px;overflow:hidden;background:linear-gradient(145deg,#fff1df,#edf4ff);display:grid;place-items:center;color:#ff6a00;font-weight:900;font-size:28px}
+.postsManagementImage img{width:100%;height:100%;object-fit:cover}
+.postsManagementBody{min-width:0}
+.postsManagementMeta,.postsManagementStatus{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.postsManagementMeta{justify-content:space-between}
+.postsManagementMeta>span{font-size:11px;font-weight:900;color:#c85c0a}
+.postsManagementMeta small,.postsManagementStatus small{color:#8290a1;font-size:10px}
+.postsManagementBody h4{margin:7px 0 3px;color:#0a2342;font-size:15px}
+.postsManagementBody p{margin:0;color:#66778d;font-size:11px;line-height:1.8;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.postsManagementStatus{margin-top:8px}
+.postsManagementStatus b{font-size:10px;padding:5px 8px;border-radius:999px}
+.postsManagementStatus b.ok{background:#edf9f0;color:#277345}.postsManagementStatus b.bad{background:#fff0f0;color:#ad3434}.postsManagementStatus b.wait{background:#fff7e7;color:#a86b00}
+.postsManagementReason{display:block;margin-top:6px;color:#a85f00;font-size:10px;line-height:1.7}
+.postsManagementPrice{display:inline-block;margin-top:7px;color:#0a2342;font-size:13px}
+.postsManagementActions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.postsManagementActions button{display:inline-flex;align-items:center;gap:5px;border:1px solid #e1e8ef;background:#f8fafc;color:#4a6077;border-radius:10px;padding:7px 9px;font-size:10px;font-weight:900;cursor:pointer}
+.postsManagementActions button:hover{background:#fff4ea;color:#c65800}
+.postsManagementActions button.danger{color:#a52c2c;background:#fff6f6;border-color:#f0d2d2}
+.postsManagementMessage{margin-top:10px}
+.postsPagination{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:15px}
+.postsPagination button{border:1px solid #e2e9f0;background:#fff;border-radius:11px;padding:8px 12px;font-weight:900;color:#51657b}
+.postsPagination button:disabled{opacity:.45;cursor:not-allowed}
+.postsEditGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){
+ .postsManagementItem{grid-template-columns:1fr}.postsManagementImage{width:100%;height:170px}
+ .postsEditGrid{grid-template-columns:1fr}
+ .postsManagementActions{display:grid;grid-template-columns:1fr 1fr}.postsManagementActions button{justify-content:center}
+}
