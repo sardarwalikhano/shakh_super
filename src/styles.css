@@ -254,3 +254,18 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 
 
 .postComposer button:focus-visible,.postComposer input:focus-visible,.postComposer textarea:focus-visible,.postCategory:focus-visible,.postResetButton:focus-visible,.postPreviewToggle:focus-visible{outline:3px solid rgba(255,106,0,.22);outline-offset:2px}
+
+/* SHAKH public post details */
+.postFeedCard{cursor:pointer}
+.postDetailsBackdrop{position:fixed;inset:0;z-index:80;background:rgba(3,19,37,.58);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:18px}
+.postDetailsModal{position:relative;width:min(720px,100%);max-height:min(86vh,760px);overflow:auto;border-radius:24px;background:#fff;box-shadow:0 28px 70px rgba(2,18,38,.25)}
+.postDetailsClose{position:absolute;top:12px;left:12px;z-index:2;width:38px;height:38px;border:1px solid rgba(255,255,255,.7);border-radius:12px;background:rgba(3,19,37,.72);color:#fff;display:grid;place-items:center;cursor:pointer}
+.postDetailsClose span{font-size:26px;line-height:1}
+.postDetailsImage{height:310px;background:linear-gradient(145deg,#fff0df,#edf5ff);display:grid;place-items:center;color:#9eacbb;overflow:hidden}
+.postDetailsImage img{width:100%;height:100%;object-fit:cover}
+.postDetailsBody{padding:18px}.postDetailsMeta{display:flex;justify-content:space-between;gap:10px;align-items:center;color:#7e8d9e;font-size:10px}
+.postDetailsMeta span{padding:6px 9px;border-radius:999px;background:#fff3e9;color:#bd5003;font-weight:950}.postDetailsBody h3{margin:10px 0 5px;color:var(--navy);font-size:22px}
+.postDetailsBody p{margin:0;color:#66778b;font-size:12px;line-height:1.9;white-space:pre-wrap}.postDetailsPublisher{display:flex;align-items:center;gap:6px;margin-top:12px;color:#566b80;font-size:10px;font-weight:850}
+.postDetailsPrice{display:inline-flex;align-items:center;gap:5px;margin-top:12px;color:#e05c00;font-size:14px}.postDetailsShare{display:flex;justify-content:center;align-items:center;gap:7px;width:100%;margin-top:15px!important}
+.postFeedCard:focus-visible{outline:3px solid rgba(255,106,0,.22);outline-offset:3px}
+@media(max-width:600px){.postDetailsBackdrop{padding:9px}.postDetailsModal{border-radius:19px;max-height:90vh}.postDetailsImage{height:230px}.postDetailsBody{padding:14px}.postDetailsBody h3{font-size:18px}}
