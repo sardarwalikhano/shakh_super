@@ -1,4 +1,4 @@
-import React,{useEffect,useMemo,useState} from 'react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {Camera,CheckCircle2,FileText,Languages,MapPin,RefreshCw,Save,ShieldCheck,UserRound} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
@@ -54,6 +54,8 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
  const [loading,setLoading]=useState(true);
  const [saving,setSaving]=useState(false);
  const [message,setMessage]=useState('');
+ const hasChangesRef=useRef(false);
+ const savingRef=useRef(false);
 
  const load=async()=>{
   setLoading(true);
@@ -86,14 +88,14 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
  useEffect(()=>{
   const channel=supabase.channel('shakh-profile-live-'+userId)
    .on('postgres_changes',{event:'*',schema:'public',table:'profiles',filter:'id=eq.'+userId},()=>{
-    if(!hasChanges&&!saving)void load();
+    if(!hasChangesRef.current&&!savingRef.current)void load();
    })
    .on('postgres_changes',{event:'*',schema:'public',table:'posts',filter:'author_id=eq.'+userId},()=>{
-    if(!hasChanges&&!saving)void load();
+    if(!hasChangesRef.current&&!savingRef.current)void load();
    })
    .subscribe();
   return()=>{void supabase.removeChannel(channel)};
- },[userId,hasChanges,saving]);
+ },[userId]);
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview)},[preview]);
 
  const displayName=useMemo(()=>name.trim()||'بەکارهێنەری شاخ',[name]);
@@ -107,7 +109,7 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
    ||Boolean(file);
  },[profile,name,phone,city,language,file]);
 
- useEffect(()=>{onDirtyChange?.(hasChanges);},[hasChanges,onDirtyChange]);
+ useEffect(()=>{onDirtyChange?.(hasChanges);hasChangesRef.current=hasChanges;},[hasChanges,onDirtyChange]);
  useEffect(()=>()=>{
   onDirtyChange?.(false);
  },[onDirtyChange]);
@@ -120,6 +122,7 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
   window.addEventListener('beforeunload',onBeforeUnload);
   return()=>window.removeEventListener('beforeunload',onBeforeUnload);
  },[hasChanges,saving]);
+ useEffect(()=>{savingRef.current=saving;},[saving]);
 
  const refreshProfile=()=>{
   if(hasChanges&&!window.confirm('گۆڕانکارییەکانی پرۆفایل پاشەکەوت نەکراون. دڵنیایت دەتەوێت زانیاریی کۆن دووبارە بار بکرێتەوە؟'))return;
