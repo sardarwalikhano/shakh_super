@@ -37,6 +37,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
  const submit=async()=>{
   try{
    if(!title.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');
+   if(price&&(!/^\\d+$/.test(price)||Number(price)<=0))return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
    setBusy(true);setMessage('');
    let imageUrl:string|null=null;
    const {data:profile}=await supabase.from('profiles').select('full_name').eq('id',userId).maybeSingle();
