@@ -88,9 +88,10 @@ export default function PostsFeed(){
  const pageSize=12;
  const [message,setMessage]=useState('');
  const [selectedPost,setSelectedPost]=useState<Post|null>(null);
+ const [,setTimeTick]=useState(0);
 
  useEffect(()=>{
-  const timer=window.setInterval(()=>setPosts(current=>current.length?[...current]:current),60000);
+  const timer=window.setInterval(()=>setTimeTick(value=>value+1),60000);
   return()=>window.clearInterval(timer);
  },[]);
 
