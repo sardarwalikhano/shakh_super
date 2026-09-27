@@ -27,8 +27,9 @@ const POST_META:Record<string,{postType:string;label:string}>={
  jewelry_vendor:{postType:'marketplace',label:'جواکاری'}
 };
 
-type FormState={storeName:string;type:string;brand:string;name:string;size:string;price:string;description:string;available:boolean};
-const initialForm=(storeName=''):FormState=>({storeName,type:'',brand:'',name:'',size:'',price:'',description:'',available:true});
+type FormState={storeName:string;type:string;brand:string;name:string;size:string;price:string;description:string;available:boolean;city:string};
+const IRAQ_CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
+const initialForm=(storeName='',city='هەولێر'):FormState=>({storeName,type:'',brand:'',name:'',size:'',price:'',description:'',available:true,city});
 
 export default function ProductPostComposer({userId,role,onSaved}:Props){
  const cfg=CONFIG[role as Role];
@@ -171,7 +172,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
      content:form.description.trim()||null,
      images:imageUrl?[imageUrl]:[],
      price_iqd:Number(form.price),
-     city:'هەولێر',
+     city:form.city||'هەولێر',
      status:'approved',
      section:category,
      publisher_name:publisherName,
@@ -185,7 +186,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
 
    const storeName=form.storeName;
    clearImage();
-   setForm(initialForm(storeName));
+   setForm(initialForm(storeName,form.city));
    setShowPreview(true);
    setMessage('بەرهەمەکە و پۆستەکە بە سەرکەوتوویی بڵاوکرانەوە.');
    onSaved?.();
@@ -257,7 +258,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    <div className="postLivePreviewCard">
     <div className="postLivePreviewImage">{preview?<img src={preview} alt=""/>:<ImagePlus size={34}/>}</div>
     <div className="postLivePreviewBody">
-     <small>{cfg.label} · {selectedCategory.label}</small>
+     <small>{cfg.label} · {selectedCategory.label} · {form.city}</small>
      <h4>{form.name.trim()||'ناوی بەرهەمەکەت لێرە دەردەکەوێت'}</h4>
      <p>{form.description.trim()||'وەسفی بەرهەمەکەت لێرە پیشان دەدرێت.'}</p>
      <div className="postLivePreviewPrice">{form.price?Number(form.price).toLocaleString('en-US'):'٠'} د.ع</div>
