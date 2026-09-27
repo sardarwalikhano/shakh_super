@@ -82,7 +82,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
 
  const pick=(next?:File)=>{
   if(!next)return;
-  if(!next.type.startsWith('image/')){
+  if(!['image/jpeg','image/png','image/webp'].includes(next.type)){
    setMessage('تەنها فایلێکی وێنە هەڵبژێرە.');
    return;
   }
@@ -246,7 +246,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
   <div className="postUploadBox">
    <div className="postUploadHead"><div><b>وێنەی بەرهەم</b><small>JPG، PNG یان WEBP · تا ٥ MB</small></div><ImagePlus size={20}/></div>
    <label className={preview?'postUploadDrop hasImage':'postUploadDrop'} onDragOver={event=>event.preventDefault()} onDrop={handleDrop}>
-    <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>pick(e.target.files?.[0])}/>
+    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>pick(e.target.files?.[0])}/>
     {preview?<><img src={preview} alt={form.name||'پێشبینینی بەرهەم'}/><span className="postUploadOverlay">گۆڕینی وێنە</span></>:<><Upload size={24}/><b>وێنە هەڵبژێرە</b><small>کلیک بکە و وێنەی بەرهەم هەڵبژێرە</small></>}
    </label>
    {preview&&<button type="button" className="postRemoveImage" onClick={clearImage}><X size={15}/> سڕینەوەی وێنە</button>}
