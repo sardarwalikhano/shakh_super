@@ -48,7 +48,7 @@ export default function PostsManagement({userId,role}:Props){
  const [busyId,setBusyId]=useState('');
  const [message,setMessage]=useState('');
  const [query,setQuery]=useState('');
- const [filter,setFilter]=useState('all');
+ const [filter,setFilter]=useState('all');\n const [roleFilter,setRoleFilter]=useState('all');
  const [page,setPage]=useState(1);\n const pageSize=12;\n const [editing,setEditing]=useState<Post|null>(null);
  const [editTitle,setEditTitle]=useState('');
  const [editContent,setEditContent]=useState('');
@@ -80,9 +80,9 @@ export default function PostsManagement({userId,role}:Props){
     || (filter==='pending'&&p.status==='pending')
     || (filter==='rejected'&&p.status==='rejected');
    const hay=[p.title,p.content,p.publisher_name,p.city,postLabel(p)].filter(Boolean).join(' ').toLowerCase();
-   return matchesFilter&&(!q||hay.includes(q));
+   return matchesRole&&matchesFilter&&(!q||hay.includes(q));
   });
- },[posts,filter,query]);
+ },[posts,filter,roleFilter,query]);
 
  const startEdit=(p:Post)=>{
   setEditing(p);
@@ -159,7 +159,7 @@ export default function PostsManagement({userId,role}:Props){
 
   <div className="postsManagementStats"><span>هەموو: <b>{posts.length}</b></span><span>بڵاوکراوە: <b>{posts.filter(p=>p.status==='approved'&&p.visibility==='public').length}</b></span><span>چاوەڕوان: <b>{posts.filter(p=>p.status==='pending').length}</b></span><span>شاراوە: <b>{posts.filter(p=>p.visibility!=='public').length}</b></span></div>\n\n  <div className="postsManagementTools">
    <div className="postsSearch"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="گەڕان لە پۆستەکان..."/></div>
-   <div className="postsFilters">{FILTERS.map(f=><button key={f.value} type="button" className={filter===f.value?'active':''} onClick={()=>setFilter(f.value)}>{f.label}</button>)}</div>
+   <div className="postsFilters">{isAdmin&&<select value={roleFilter} onChange={e=>setRoleFilter(e.target.value)} aria-label="فلتەری ڕۆڵ"><option value="all">هەموو ڕۆڵەکان</option><option value="customer">کڕیار</option><option value="restaurant_vendor">چێشتخانە</option><option value="supermarket_vendor">سووپەرمارکێت</option><option value="fashion_vendor">جلوبەرگ</option><option value="electronics_vendor">ئەلیکترۆنیات</option><option value="jewelry_vendor">جواکاری</option><option value="vendor">بازاڕ</option><option value="car_dealer">ئۆتۆمبێل</option><option value="umrah_agency">عومرە</option><option value="captain">کاپتن</option></select>}{FILTERS.map(f=><button key={f.value} type="button" className={filter===f.value?'active':''} onClick={()=>setFilter(f.value)}>{f.label}</button>)}</div>
   </div>
 
   {loading?<div className="empty"><RefreshCw size={36}/><h3>پۆستەکان بار دەکرێن...</h3></div>:
