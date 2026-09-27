@@ -131,7 +131,7 @@ export default function PostsFeed(){
   }
 
   {shown.length<filtered.length&&<div className="postFeedMore"><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}
-  {message&&<div className="msg postFeedMessage" role="alert">{message}</div>}
+  {message&&<div className="msg postFeedMessage" role="alert" aria-live="polite">{message}</div>}
   {selectedPost&&<div className="postDetailsBackdrop" role="presentation" onClick={()=>setSelectedPost(null)}>
    <div className="postDetailsModal" role="dialog" aria-modal="true" aria-label={selectedPost.title} onClick={event=>event.stopPropagation()}>
     <button type="button" className="postDetailsClose" onClick={()=>setSelectedPost(null)} aria-label="داخستن"><span>×</span></button>
