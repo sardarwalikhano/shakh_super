@@ -90,7 +90,7 @@ export default function PostsFeed(){
  const shown=filtered.slice(0,page*pageSize);
 
  useEffect(()=>{setPage(1)},[filter]);
- useEffect(()=>{if(!selectedPost)return;const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')setSelectedPost(null)};window.addEventListener('keydown',onKeyDown);return()=>window.removeEventListener('keydown',onKeyDown)},[selectedPost]);
+ useEffect(()=>{if(!selectedPost)return;const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')setSelectedPost(null)};window.addEventListener('keydown',onKeyDown);return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)}},[selectedPost]);
 
  return <section className="section postFeed" id="shakh-posts">
   <div className="title postFeedTitle">
