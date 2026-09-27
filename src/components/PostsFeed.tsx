@@ -106,6 +106,8 @@ export default function PostsFeed(){
   const {data,error}=await supabase
    .from('posts')
    .select('id,author_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility')
+   .eq('status','approved')
+   .eq('visibility','public')
    .order('created_at',{ascending:false})
    .limit(200);
   if(error){
@@ -190,7 +192,7 @@ export default function PostsFeed(){
      {selectedPost.content&&<p>{selectedPost.content}</p>}
      <div className="postDetailsPublisher"><UserRound size={15}/><span>{selectedPost.publisher_name||'بڵاوکەرەوە'}</span></div>
      {selectedPost.price_iqd!=null&&<strong className="postDetailsPrice"><WalletCards size={15}/>{Number(selectedPost.price_iqd).toLocaleString('en-US')} د.ع</strong>}
-     <button type="button" className="primary postDetailsShare" onClick={()=>void sharePost(selectedPost)}><Tag size={15}/> هاوبەشکردنی پۆست</button>
+     <button type="button" className="primary postDetailsShare" onClick={()=>void sharePost(selectedPost)}><Share2 size={15}/> هاوبەشکردنی پۆست</button>
     </div>
    </div>
   </div>}
