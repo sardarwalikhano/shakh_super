@@ -194,7 +194,7 @@ export default function PostsManagement({userId,role}:Props){
   }
   {visible.length>pageSize&&<div className="postsPagination"><button type="button" disabled={currentPage<=1} onClick={()=>setPage(p=>Math.max(1,p-1))}>پێشوو</button><span>{currentPage} / {totalPages}</span><button type="button" disabled={currentPage>=totalPages} onClick={()=>setPage(p=>Math.min(totalPages,p+1))}>دواتر</button></div>}\n  {message&&<div className="msg postsManagementMessage">{message}</div>}
 
-  {editing&&<div className="modal"><div className="auth" style={{maxWidth:620}}>
+  {editing&&<div className="modal" role="dialog" aria-modal="true" aria-label="دەستکاریکردنی پۆست"><div className="auth" style={{maxWidth:620}}>
    <button type="button" className="x" onClick={()=>setEditing(null)}><X size={18}/></button>
    <div className="mark"><Edit3 size={20}/></div>
    <h2>دەستکاریکردنی پۆست</h2>
