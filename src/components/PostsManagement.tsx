@@ -124,6 +124,8 @@ export default function PostsManagement({userId,role}:Props){
   });
  },[posts,statusFilter,roleFilter,query,isAdmin]);
 
+ const filterCount=(value:string)=>posts.filter(post=>value==='all'||(value==='public'&&post.status==='approved'&&post.visibility==='public')||(value==='private'&&post.visibility!=='public')||(value==='pending'&&post.status==='pending')||(value==='rejected'&&post.status==='rejected')).length;
+
  const totalPages=Math.max(1,Math.ceil(filtered.length/pageSize));
  const currentPage=Math.min(page,totalPages);
  const pageItems=filtered.slice((currentPage-1)*pageSize,currentPage*pageSize);
@@ -229,7 +231,7 @@ export default function PostsManagement({userId,role}:Props){
     {isAdmin&&<select value={roleFilter} onChange={e=>setRoleFilter(e.target.value)} aria-label="فلتەری ڕۆڵ">
      {ROLE_FILTERS.map(item=><option key={item.value} value={item.value}>{item.label}</option>)}
     </select>}
-    {STATUS_FILTERS.map(item=><button key={item.value} type="button" className={statusFilter===item.value?'active':''} onClick={()=>setStatusFilter(item.value)}>{item.label}</button>)}
+    {STATUS_FILTERS.map(item=><button key={item.value} type="button" className={statusFilter===item.value?'active':''} onClick={()=>setStatusFilter(item.value)}>{item.label} ({filterCount(item.value)})</button>)}
    </div>
   </div>
 
