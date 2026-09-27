@@ -305,7 +305,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .profileLanguageGrid button svg{margin-inline-start:auto}
 .profileSaveRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:2px}
 .profileSaveRow small{color:#8390a3}
-.profileSaveButton{min-width:210px}
+.profileSaveButton{min-width:210px}.profileSaveButton:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}.profileDirtyText{color:#9a5b00;font-weight:800}.profileSavedText{color:#2f8050}
 .profileUploadHint{display:flex;align-items:center;gap:7px;padding:10px 12px;border-radius:12px;background:#fff7e8;color:#8a5a00;font-size:12px;font-weight:800}
 .profileMessage{padding:12px 14px;border-radius:13px;background:#fff0ef;color:#b2382e;font-size:13px;font-weight:800}
 .profileMessage.success{background:#edf9f1;color:#1f7a43}
