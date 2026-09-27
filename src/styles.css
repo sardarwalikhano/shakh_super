@@ -256,3 +256,6 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .postComposer button:focus-visible,.postComposer input:focus-visible,.postComposer textarea:focus-visible,.postCategory:focus-visible,.postResetButton:focus-visible,.postPreviewToggle:focus-visible{outline:3px solid rgba(255,106,0,.22);outline-offset:2px}
 
 .postsEditImage{margin:10px 0;border:1px solid #e6edf3;border-radius:14px;overflow:hidden;background:#f8fafc}.postsEditImage img{display:block;width:100%;max-height:230px;object-fit:cover}.postsEditImage:focus-within{outline:2px solid rgba(255,106,0,.2);outline-offset:2px}
+
+.postDetailsClose:focus-visible,.postDetailsShare:focus-visible{outline:3px solid rgba(255,106,0,.24);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.postCategory:hover,.postFeedCard:hover{transform:none}.postDetailsBackdrop{backdrop-filter:none}}
