@@ -219,8 +219,9 @@ export default function PostsManagement({userId,role}:Props){
   urlObject.hash='shakh-posts';
   const url=urlObject.toString();
   try{
-   if(navigator.share){await navigator.share({title:post.title,text:post.content||post.title,url});}
-   else{await navigator.clipboard.writeText(url);setMessage('لینکی پۆستەکە کۆپی کرا.');}
+   if(navigator.share){await navigator.share({title:post.title,text:post.content||post.title,url});setMessage('پۆستەکە بە سەرکەوتوویی هاوبەش کرا.');}
+   else if(navigator.clipboard){await navigator.clipboard.writeText(url);setMessage('لینکی پۆستەکە کۆپی کرا.');}
+   else{setMessage('ئامرازێکی هاوبەشکردن لەم وێبگەڕەدا بەردەست نییە.');}
   }catch(error){
    if(error instanceof DOMException&&error.name==='AbortError')return;
    setMessage('نەتوانرا پۆستەکە share بکرێت.');
