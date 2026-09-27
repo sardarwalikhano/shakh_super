@@ -274,6 +274,7 @@ export default function PostsManagement({userId,role}:Props){
    <div className="mark"><Edit3 size={20}/></div>
    <h2>دەستکاریکردنی پۆست</h2>
    <p>زانیاریی پۆستەکە بگۆڕە و پاشەکەوتی بکە.</p>
+   {imageOf(editing.images)&&<div className="postsEditImage"><img src={imageOf(editing.images)||''} alt={editing.title}/></div>}
    <label>سەردێڕ<input value={editTitle} onChange={e=>setEditTitle(e.target.value)}/></label>
    <label>ناوەڕۆک<textarea rows={5} value={editContent} onChange={e=>setEditContent(e.target.value)}/></label>
    <div className="postsEditGrid">
