@@ -134,6 +134,15 @@ export default function PostsManagement({userId,role}:Props){
 
  useEffect(()=>{setPage(1)},[statusFilter,roleFilter,query]);
 
+ useEffect(()=>{
+  if(!editing)return;
+  const previousOverflow=document.body.style.overflow;
+  document.body.style.overflow='hidden';
+  const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')setEditing(null)};
+  window.addEventListener('keydown',onKeyDown);
+  return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)};
+ },[editing]);
+
  const startEdit=(post:Post)=>{
   setEditing(post);
   setEditTitle(post.title);
@@ -275,19 +284,40 @@ export default function PostsManagement({userId,role}:Props){
   {filtered.length>pageSize&&<div className="postsPagination"><button type="button" disabled={currentPage<=1} onClick={()=>setPage(value=>Math.max(1,value-1))}>پێشوو</button><span>{currentPage} / {totalPages}</span><button type="button" disabled={currentPage>=totalPages} onClick={()=>setPage(value=>Math.min(totalPages,value+1))}>دواتر</button></div>}
   {message&&<div className="msg postsManagementMessage" role="status" aria-live="polite">{message}</div>}
 
-  {editing&&<div className="modal" role="dialog" aria-modal="true" aria-label="دەستکاریکردنی پۆست"><div className="auth" style={{maxWidth:620}}>
-   <button type="button" className="x" onClick={()=>setEditing(null)}><X size={18}/></button>
-   <div className="mark"><Edit3 size={20}/></div>
-   <h2>دەستکاریکردنی پۆست</h2>
-   <p>زانیاریی پۆستەکە بگۆڕە و پاشەکەوتی بکە.</p>
-   {imageOf(editing.images)&&<div className="postsEditImage"><img src={imageOf(editing.images)||''} alt={editing.title}/></div>}
-   <label>سەردێڕ<input maxLength={100} value={editTitle} onChange={e=>setEditTitle(e.target.value)}/></label>
-   <label>ناوەڕۆک<textarea rows={5} maxLength={500} value={editContent} onChange={e=>setEditContent(e.target.value)}/></label>
-   <div className="postsEditGrid">
-    <label>نرخ بە د.ع<input inputMode="numeric" maxLength={14} value={editPrice} onChange={e=>setEditPrice(e.target.value.replace(/[^0-9]/g,''))}/></label>
-    <label>شار<select value={editCity} onChange={e=>setEditCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item} value={item}>{item}</option>)}</select></label>
+  {editing&&<div className="postsEditBackdrop" role="presentation" onClick={()=>setEditing(null)}>
+   <div className="postsEditDialog" role="dialog" aria-modal="true" aria-labelledby="posts-edit-title" onClick={event=>event.stopPropagation()}>
+    <div className="postsEditDialogHead">
+     <div>
+      <span className="eyebrow">دەستکاریکردن</span>
+      <h2 id="posts-edit-title">نوێکردنەوەی پۆست</h2>
+      <p>گۆڕانکارییەکان پاشەکەوت بکە بۆ جێگیرکردنیان.</p>
+     </div>
+     <button type="button" className="postsEditClose" onClick={()=>setEditing(null)} aria-label="داخستن"><X size={18}/></button>
+    </div>
+    {imageOf(editing.images)&&<div className="postsEditImage"><img src={imageOf(editing.images)||''} alt={editing.title}/></div>}
+    <div className="postsEditFields">
+     <label className="postsEditField">سەردێڕ
+      <input maxLength={100} value={editTitle} onChange={e=>setEditTitle(e.target.value)} aria-describedby="edit-title-count"/>
+      <small id="edit-title-count">{editTitle.length}/100</small>
+     </label>
+     <label className="postsEditField">ناوەڕۆک
+      <textarea rows={5} maxLength={500} value={editContent} onChange={e=>setEditContent(e.target.value)} aria-describedby="edit-content-count"/>
+      <small id="edit-content-count">{editContent.length}/500</small>
+     </label>
+     <div className="postsEditGrid">
+      <label className="postsEditField">نرخ بە د.ع
+       <input inputMode="numeric" maxLength={14} value={editPrice} onChange={e=>setEditPrice(e.target.value.replace(/[^0-9]/g,''))}/>
+       <small>{editPrice.length}/14</small>
+      </label>
+      <label className="postsEditField">شار
+       <select value={editCity} onChange={e=>setEditCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item} value={item}>{item}</option>)}</select>
+      </label>
+     </div>
+    </div>
+    <div className="postsEditDialogFoot">
+     <button type="button" className="plain postsEditCancel" onClick={()=>setEditing(null)} disabled={busyId===editing.id}>پاشگەزبوونەوە</button>
+     <button type="button" className="primary postsEditSave" disabled={busyId===editing.id} onClick={()=>void saveEdit()}>{busyId===editing.id?'پاشەکەوت دەکرێت...':'پاشەکەوتکردن'}</button>
+    </div>
    </div>
-   <button type="button" className="primary full" disabled={busyId===editing.id} onClick={()=>void saveEdit()}>{busyId===editing.id?'پاشەکەوت دەکرێت...':'پاشەکەوتکردن'}</button>
-  </div></div>}
- </section>;
+  </div>}</section>;
 }
