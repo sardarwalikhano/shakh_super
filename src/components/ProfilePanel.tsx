@@ -58,12 +58,12 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
  const load=async()=>{
   setLoading(true);
   setMessage('');
-  const [{data,error},{count:countValue},{data:latest}]=await Promise.all([
+  const [{data,error:profileError},{count:countValue,error:countError},{data:latest,error:latestError}]=await Promise.all([
    supabase.from('profiles').select('id,full_name,email,phone,avatar_url,city,language').eq('id',userId).maybeSingle(),
    supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',userId),
    supabase.from('posts').select('id,title,status,created_at,visibility,post_type').eq('author_id',userId).order('created_at',{ascending:false}).limit(3)
   ]);
-  if(error){
+  if(profileError){
    setMessage('نەتوانرا زانیاریی پرۆفایل وەرگیرێت.');
    setLoading(false);
    return;
@@ -77,10 +77,23 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
   setAvatarUrl(next?.avatar_url||'');
   setPostCount(countValue||0);
   setLatestPosts((latest||[]) as PostSummary[]);
+  if(countError||latestError)setMessage('پرۆفایل بارکرا، بەڵام نوێترین زانیاریی پۆستەکان بە تەواوی وەرنەگیرا.');
   setLoading(false);
  };
 
  useEffect(()=>{void load();},[userId]);
+
+ useEffect(()=>{
+  const channel=supabase.channel('shakh-profile-live-'+userId)
+   .on('postgres_changes',{event:'*',schema:'public',table:'profiles',filter:'id=eq.'+userId},()=>{
+    if(!hasChanges&&!saving)void load();
+   })
+   .on('postgres_changes',{event:'*',schema:'public',table:'posts',filter:'author_id=eq.'+userId},()=>{
+    if(!hasChanges&&!saving)void load();
+   })
+   .subscribe();
+  return()=>{void supabase.removeChannel(channel)};
+ },[userId,hasChanges,saving]);
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview)},[preview]);
 
  const displayName=useMemo(()=>name.trim()||'بەکارهێنەری شاخ',[name]);
