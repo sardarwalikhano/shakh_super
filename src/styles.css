@@ -548,3 +548,8 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
  .orderMonitorList{gap:12px}
 }
 
+
+
+.dashboardDirtyBadge{display:inline-flex;align-items:center;margin-top:7px;padding:5px 9px;border-radius:999px;background:#fff4df;color:#9a5b00;font-size:9px;font-weight:900}
+@media(max-width:520px){.dashboardDirtyBadge{font-size:8px}}
+
