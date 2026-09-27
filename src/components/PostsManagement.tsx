@@ -138,7 +138,7 @@ export default function PostsManagement({userId,role}:Props){
   if(!editing)return;
   const previousOverflow=document.body.style.overflow;
   document.body.style.overflow='hidden';
-  const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')setEditing(null)};
+  const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')closeEditor()};
   window.addEventListener('keydown',onKeyDown);
   return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)};
  },[editing]);
@@ -150,6 +150,20 @@ export default function PostsManagement({userId,role}:Props){
   setEditPrice(post.price_iqd==null?'':String(post.price_iqd));
   setEditCity(post.city||'هەولێر');
   setMessage('');
+ };
+
+ const hasEditChanges=useMemo(()=>{
+  if(!editing)return false;
+  return editTitle.trim()!==editing.title
+   ||editContent.trim()!==(editing.content||'')
+   ||editPrice!==(editing.price_iqd==null?'':String(editing.price_iqd))
+   ||editCity!==(editing.city||'هەولێر');
+ },[editing,editTitle,editContent,editPrice,editCity]);
+
+ const closeEditor=()=>{
+  if(busyId)return;
+  if(hasEditChanges&&!window.confirm('گۆڕانکارییەکان پاشەکەوت نەکراون. دڵنیایت دەتەوێت دەستکارییەکە دابخەیت؟'))return;
+  setEditing(null);
  };
 
  const saveEdit=async()=>{
@@ -284,7 +298,7 @@ export default function PostsManagement({userId,role}:Props){
   {filtered.length>pageSize&&<div className="postsPagination"><button type="button" disabled={currentPage<=1} onClick={()=>setPage(value=>Math.max(1,value-1))}>پێشوو</button><span>{currentPage} / {totalPages}</span><button type="button" disabled={currentPage>=totalPages} onClick={()=>setPage(value=>Math.min(totalPages,value+1))}>دواتر</button></div>}
   {message&&<div className="msg postsManagementMessage" role="status" aria-live="polite">{message}</div>}
 
-  {editing&&<div className="postsEditBackdrop" role="presentation" onClick={()=>setEditing(null)}>
+  {editing&&<div className="postsEditBackdrop" role="presentation" onClick={closeEditor}>
    <div className="postsEditDialog" role="dialog" aria-modal="true" aria-labelledby="posts-edit-title" onClick={event=>event.stopPropagation()}>
     <div className="postsEditDialogHead">
      <div>
@@ -292,7 +306,7 @@ export default function PostsManagement({userId,role}:Props){
       <h2 id="posts-edit-title">نوێکردنەوەی پۆست</h2>
       <p>گۆڕانکارییەکان پاشەکەوت بکە بۆ جێگیرکردنیان.</p>
      </div>
-     <button type="button" className="postsEditClose" onClick={()=>setEditing(null)} aria-label="داخستن"><X size={18}/></button>
+     <button type="button" className="postsEditClose" onClick={closeEditor} aria-label="داخستن"><X size={18}/></button>
     </div>
     {imageOf(editing.images)&&<div className="postsEditImage"><img src={imageOf(editing.images)||''} alt={editing.title}/></div>}
     <div className="postsEditFields">
@@ -315,8 +329,9 @@ export default function PostsManagement({userId,role}:Props){
      </div>
     </div>
     <div className="postsEditDialogFoot">
-     <button type="button" className="plain postsEditCancel" onClick={()=>setEditing(null)} disabled={busyId===editing.id}>پاشگەزبوونەوە</button>
-     <button type="button" className="primary postsEditSave" disabled={busyId===editing.id} onClick={()=>void saveEdit()}>{busyId===editing.id?'پاشەکەوت دەکرێت...':'پاشەکەوتکردن'}</button>
+     <small className={hasEditChanges?'postsEditDirty':'postsEditSaved'}>{hasEditChanges?'گۆڕانکاریی نەخزراو هەیە':'هیچ گۆڕانکارییەکی تازە نییە'}</small>
+     <button type="button" className="plain postsEditCancel" onClick={closeEditor} disabled={busyId===editing.id}>پاشگەزبوونەوە</button>
+     <button type="button" className="primary postsEditSave" disabled={busyId===editing.id||!hasEditChanges} onClick={()=>void saveEdit()}>{busyId===editing.id?'پاشەکەوت دەکرێت...':hasEditChanges?'پاشەکەوتکردن':'هەموو گۆڕانکارییەکان پاشەکەوت کراون'}</button>
     </div>
    </div>
   </div>}</section>;
