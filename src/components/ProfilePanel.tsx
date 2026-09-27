@@ -199,9 +199,9 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
   <div className="profileSectionTitle"><div><span>زانیاریی کەسی</span><h3>پرۆفایلەکەت نوێ بکەرەوە</h3></div><small>ئیمەیڵ لێرە تەنها بۆ خوێندنەوەیە.</small></div>
 
   <div className="profileFormGrid">
-   <label className="profileField">ناوی تەواو<input maxLength={80} value={name} onChange={e=>setName(e.target.value)} placeholder="ناوی تەواو"/></label>
-   <label className="profileField">ژمارەی تەلەفون<input maxLength={20} value={phone} onChange={e=>setPhone(e.target.value)} inputMode="tel" placeholder="+964 7xx xxx xxxx"/></label>
-   <label className="profileField profileFieldWide">ئیمەیڵ<input value={profile?.email||''} readOnly aria-readonly="true"/></label>
+   <label className="profileField">ناوی تەواو<input maxLength={80} autoComplete="name" value={name} onChange={e=>setName(e.target.value)} placeholder="ناوی تەواو"/></label>
+   <label className="profileField">ژمارەی تەلەفون<input maxLength={20} autoComplete="tel" value={phone} onChange={e=>setPhone(e.target.value)} inputMode="tel" placeholder="+964 7xx xxx xxxx"/></label>
+   <label className="profileField profileFieldWide">ئیمەیڵ<input value={profile?.email||''} readOnly aria-readonly="true" autoComplete="email"/></label>
    <label className="profileField">شار<select value={city} onChange={e=>setCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item} value={item}>{item}</option>)}</select></label>
   </div>
 
