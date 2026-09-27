@@ -96,6 +96,11 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
 
  useEffect(()=>{onDirtyChange?.(hasChanges);return()=>onDirtyChange?.(false);},[hasChanges]);
 
+ const refreshProfile=()=>{
+  if(hasChanges&&!window.confirm('گۆڕانکارییەکانی پرۆفایل پاشەکەوت نەکراون. دڵنیایت دەتەوێت زانیاریی کۆن دووبارە بار بکرێتەوە؟'))return;
+  void load();
+ };
+
  const chooseAvatar=(next?:File)=>{
   if(!next)return;
   if(!['image/jpeg','image/png','image/webp'].includes(next.type)){
@@ -174,7 +179,7 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
     <p>{profile?.email||''}</p>
     <span className="profileRoleBadge">{roleLabel}</span>
    </div>
-   <button type="button" className="plain profileRefresh" onClick={()=>void load()} disabled={loading||saving} aria-label="نوێکردنەوەی پرۆفایل"><RefreshCw size={17}/></button>
+   <button type="button" className="plain profileRefresh" onClick={refreshProfile} disabled={loading||saving} aria-label="نوێکردنەوەی پرۆفایل"><RefreshCw size={17}/></button>
   </div>
 
   <div className="profileStats">
