@@ -157,7 +157,7 @@ export default function PostsManagement({userId,role}:Props){
    <button type="button" className="plain" onClick={()=>void load()} disabled={loading}><RefreshCw size={17}/></button>
   </div>
 
-  <div className="postsManagementTools">
+  <div className="postsManagementStats"><span>هەموو: <b>{posts.length}</b></span><span>بڵاوکراوە: <b>{posts.filter(p=>p.status==='approved'&&p.visibility==='public').length}</b></span><span>چاوەڕوان: <b>{posts.filter(p=>p.status==='pending').length}</b></span><span>شاراوە: <b>{posts.filter(p=>p.visibility!=='public').length}</b></span></div>\n\n  <div className="postsManagementTools">
    <div className="postsSearch"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="گەڕان لە پۆستەکان..."/></div>
    <div className="postsFilters">{FILTERS.map(f=><button key={f.value} type="button" className={filter===f.value?'active':''} onClick={()=>setFilter(f.value)}>{f.label}</button>)}</div>
   </div>
