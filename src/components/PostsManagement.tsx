@@ -69,7 +69,7 @@ export default function PostsManagement({userId,role}:Props){
   setLoading(false);
  };
 
- useEffect(()=>{void load()},[userId,role]);
+ useEffect(()=>{\n  void load();\n  const channel=supabase.channel('shakh-post-management-'+userId)\n   .on('postgres_changes',{event:'*',schema:'public',table:'posts'},()=>{void load()})\n   .subscribe();\n  return()=>{void supabase.removeChannel(channel)};\n },[userId,role]);
 
  const visible=useMemo(()=>{
   const q=query.trim().toLowerCase();
