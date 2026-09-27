@@ -598,3 +598,32 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
  .productDetailsPriceRow strong{font-size:20px}
 }
 
+
+
+/* SHAKH cart premium UI */
+.cartPanel{max-height:min(88vh,820px);overflow:auto}
+.cartHead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:8px}
+.cartHead>div{display:grid;gap:2px}.cartHead>div>span{font-size:10px;color:#ff6a00;font-weight:900}.cartHead h2{margin:2px 0;color:var(--navy);font-size:24px}.cartHead small{color:#8794a5;font-size:10px}
+.cartHeadIcon{width:46px;height:46px;padding:11px;border-radius:14px;background:#fff0e4;color:#ff6a00}
+.cartList{max-height:46vh;overflow:auto;padding-inline-end:2px}
+.cartRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #edf1f5}
+.cartItemInfo{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.cartItemInfo>img,.cartItemPlaceholder{width:58px;height:58px;flex:0 0 auto;border-radius:13px;object-fit:cover;background:linear-gradient(145deg,#fff1e0,#eef5ff);display:grid;place-items:center;color:#9baabd;font-size:25px}
+.cartItemInfo>div{display:grid;gap:4px;min-width:0}.cartItemInfo b{color:#24374e;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cartItemInfo small{color:#8a97a7;font-size:9px}
+.qty{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.qty button{border:1px solid #e1e8ef!important;background:#f8fafc!important;color:#50657b!important;width:36px!important;height:36px!important;border-radius:10px!important}
+.qty button:hover{background:#fff4ea!important;border-color:#ffc18e!important;color:#c65a05!important}
+.qty .danger{color:#b23932!important;background:#fff3f2!important;border-color:#f1d2cf!important}
+.qty b{min-width:24px;text-align:center;color:var(--navy);font-size:12px}
+.cartSummary{margin-top:14px}.cartCheckoutButton{min-height:48px;margin-top:14px}
+@media(max-width:600px){
+ .cartPanel{max-height:94vh;padding:20px 16px;border-radius:24px}
+ .cartHead h2{font-size:21px}
+ .cartList{max-height:42vh}
+ .cartRow{align-items:flex-start;flex-direction:column}
+ .cartItemInfo{width:100%}
+ .qty{width:100%;justify-content:flex-start}
+ .qty button{width:40px!important;height:40px!important}
+ .cartCheckoutButton{min-height:50px}
+}
+
