@@ -263,6 +263,8 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    </div>
   </div>}
 
+  <button type="button" className="postResetButton" disabled={busy} onClick={()=>{clearImage();setForm(initialForm(form.storeName));setMessage('فۆڕمەکە پاک کرایەوە.')}}>پاککردنەوەی فۆڕم</button>
+
   <button type="button" className="primary postPublishButton" disabled={busy||!ready} onClick={()=>void submit()}>
    {busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Store size={17}/> بڵاوکردنەوەی بەرهەم و پۆست</>}
   </button>
