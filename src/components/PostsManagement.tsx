@@ -49,7 +49,7 @@ export default function PostsManagement({userId,role}:Props){
  const [message,setMessage]=useState('');
  const [query,setQuery]=useState('');
  const [filter,setFilter]=useState('all');
- const [editing,setEditing]=useState<Post|null>(null);
+ const [page,setPage]=useState(1);\n const pageSize=12;\n const [editing,setEditing]=useState<Post|null>(null);
  const [editTitle,setEditTitle]=useState('');
  const [editContent,setEditContent]=useState('');
  const [editPrice,setEditPrice]=useState('');
@@ -164,7 +164,7 @@ export default function PostsManagement({userId,role}:Props){
 
   {loading?<div className="empty"><RefreshCw size={36}/><h3>پۆستەکان بار دەکرێن...</h3></div>:
    !visible.length?<div className="empty"><ShieldAlert size={36}/><h3>هیچ پۆستێک نییە</h3><p>پۆستە گونجاوەکان لەگەڵ گەڕان و فلتەرەکەت دەردەکەون.</p></div>:
-   <div className="postsManagementList">{visible.map(p=>{
+   <div className="postsManagementList">{pageItems.map(p=>{
     const img=imageOf(p.images);
     const disabled=busyId===p.id;
     return <article className="postsManagementItem" key={p.id}>
@@ -192,7 +192,7 @@ export default function PostsManagement({userId,role}:Props){
     </article>
    })}</div>
   }
-  {message&&<div className="msg postsManagementMessage">{message}</div>}
+  {visible.length>pageSize&&<div className="postsPagination"><button type="button" disabled={currentPage<=1} onClick={()=>setPage(p=>Math.max(1,p-1))}>پێشوو</button><span>{currentPage} / {totalPages}</span><button type="button" disabled={currentPage>=totalPages} onClick={()=>setPage(p=>Math.min(totalPages,p+1))}>دواتر</button></div>}\n  {message&&<div className="msg postsManagementMessage">{message}</div>}
 
   {editing&&<div className="modal"><div className="auth" style={{maxWidth:620}}>
    <button type="button" className="x" onClick={()=>setEditing(null)}><X size={18}/></button>
