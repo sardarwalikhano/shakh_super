@@ -148,14 +148,20 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
   setStatusFilter('all');
   if(isAdmin)setRoleFilter('all');
   setPage(Math.floor(index/pageSize)+1);
-  window.setTimeout(()=>{
-   const target=document.getElementById('managed-post-'+focusRequest.postId);
-   if(!target)return;
-   target.scrollIntoView({behavior:'smooth',block:'center'});
-   target.classList.add('profilePostJump');
-   window.setTimeout(()=>target.classList.remove('profilePostJump'),1800);
-  },50);
  },[focusRequest?.nonce,posts,isAdmin]);
+
+ useEffect(()=>{
+  if(!focusRequest?.postId)return;
+  const target=pageItems.find(post=>post.id===focusRequest.postId);
+  if(!target)return;
+  window.setTimeout(()=>{
+   const element=document.getElementById('managed-post-'+focusRequest.postId);
+   if(!element)return;
+   element.scrollIntoView({behavior:'smooth',block:'center'});
+   element.classList.add('profilePostJump');
+   window.setTimeout(()=>element.classList.remove('profilePostJump'),1800);
+  },0);
+ },[focusRequest?.nonce,pageItems]);
 
  useEffect(()=>{
   if(!editing)return;
