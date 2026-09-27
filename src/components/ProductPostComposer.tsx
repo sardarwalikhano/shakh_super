@@ -73,6 +73,10 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const selectedCategory=cfg.cats.find(item=>item.slug===category)||cfg.cats[0];
  const ready=Boolean(form.name.trim()&&form.type.trim()&&Number(form.price)>0&&(!cfg.brand||form.brand.trim())&&(!cfg.size||form.size.trim()));
  const descriptionCount=form.description.length;
+ const hasChanges=Boolean(
+  file||form.type.trim()||form.name.trim()||form.brand.trim()||form.size.trim()
+  ||form.price.trim()||form.description.trim()||!form.available||category!==cfg.cats[0].slug
+ );
 
  const update=(patch:Partial<FormState>)=>setForm(current=>({...current,...patch}));
 
@@ -266,7 +270,10 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    </div>
   </div>}
 
-  <button type="button" className="postResetButton" disabled={busy} onClick={()=>{clearImage();setForm(initialForm(form.storeName));setMessage('فۆڕمەکە پاک کرایەوە.')}}>پاککردنەوەی فۆڕم</button>
+  <button type="button" className="postResetButton" disabled={busy||!hasChanges} onClick={()=>{
+   if(!window.confirm('دڵنیایت؟ هەموو گۆڕانکارییەکانی فۆڕمەکە لەدەست دەچێت.'))return;
+   clearImage();setForm(initialForm(form.storeName,form.city));setCategory(cfg.cats[0].slug);setMessage('فۆڕمەکە پاک کرایەوە.');
+  }}>پاککردنەوەی فۆڕم</button>
 
   <button type="button" className="primary postPublishButton" disabled={busy||!ready} onClick={()=>void submit()}>
    {busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Store size={17}/> بڵاوکردنەوەی بەرهەم و پۆست</>}
