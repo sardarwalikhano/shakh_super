@@ -682,3 +682,34 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .profileUploadCancel:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:520px){.profileUploadHint{align-items:flex-start;flex-wrap:wrap}.profileUploadHint>span{flex-basis:calc(100% - 27px)}.profileUploadCancel{width:100%;margin-top:2px}}
 
+
+
+/* SHAKH keyboard focus states — additive accessibility layer */
+.profilePostRow:focus-visible,
+.profileLanguageGrid button:focus-visible,
+.profilePostsLink:focus-visible,
+.profileSaveButton:focus-visible,
+.profileAvatarButton:focus-visible,
+.postsFilters button:focus-visible,
+.postsFilters select:focus-visible,
+.postsManagementActions button:focus-visible,
+.postsPagination button:focus-visible,
+.postsEditClose:focus-visible,
+.postsEditCancel:focus-visible,
+.postsEditSave:focus-visible,
+.postsRejectSubmit:focus-visible,
+.postsSearchClear:focus-visible,
+.postFeedFilters>button:focus-visible,
+.postFeedCard:focus-visible,
+.postDetailsClose:focus-visible,
+.postDetailsShare:focus-visible{
+ outline:3px solid rgba(255,106,0,.28);
+ outline-offset:2px;
+}
+.postFeedCard:focus-visible{
+ transform:translateY(-2px);
+ box-shadow:0 14px 32px rgba(7,26,51,.10);
+}
+@media (prefers-reduced-motion:reduce){
+ .postFeedCard:focus-visible{transform:none}
+}
