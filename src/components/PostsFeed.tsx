@@ -32,7 +32,9 @@ function postImage(images:unknown){
 export default function PostsFeed(){
  const [posts,setPosts]=useState<Post[]>([]);
  const [filter,setFilter]=useState('all');
- const [loading,setLoading]=useState(true);\n const [page,setPage]=useState(1);\n const pageSize=12;
+ const [loading,setLoading]=useState(true);
+ const [page,setPage]=useState(1);
+ const pageSize=12;
  const [message,setMessage]=useState('');
 
  const load=async()=>{
@@ -56,7 +58,9 @@ export default function PostsFeed(){
   return()=>{void supabase.removeChannel(channel)};
  },[]);
 
- const filtered=useMemo(()=>filter==='all'?posts:posts.filter(p=>p.post_type===filter),[posts,filter]);\n const shown=filtered.slice(0,page*pageSize);\n useEffect(()=>{setPage(1)},[filter]);
+ const filtered=useMemo(()=>filter==='all'?posts:posts.filter(p=>p.post_type===filter),[posts,filter]);
+ const shown=filtered.slice(0,page*pageSize);
+ useEffect(()=>{setPage(1)},[filter]);
 
  return <section className="section" id="shakh-posts">
   <div className="title">
@@ -92,6 +96,7 @@ export default function PostsFeed(){
     </article>;
    })}</div>
   }
-  {shown.length<filtered.length&&<div style={{display:'flex',justifyContent:'center',marginTop:16}}><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}\n  {message&&<div className="msg" style={{marginTop:10}}>{message}</div>}
+  {shown.length<filtered.length&&<div style={{display:'flex',justifyContent:'center',marginTop:16}}><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}
+  {message&&<div className="msg" style={{marginTop:10}}>{message}</div>}
  </section>;
 }
