@@ -165,6 +165,8 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    </div>
   </div>}
 
+  <button type="button" className="postResetButton" disabled={busy} onClick={()=>{clearImage();setTitle('');setContent('');setPrice('');setCity('هەولێر');setMessage('فۆڕمەکە پاک کرایەوە.')}}>پاککردنەوەی فۆڕم</button>
+
   <button type="button" className="primary postPublishButton" disabled={busy||!ready} onClick={()=>void submit()}>
    {busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Send size={17}/> بڵاوکردنەوەی پۆست</>}
   </button>
