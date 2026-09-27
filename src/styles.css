@@ -423,3 +423,21 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
  .profilePostRow{padding:10px}
  .profilePostInfo b{font-size:12px}
 }
+
+
+/* SHAKH post management mobile UX refinement */
+.postsManagementTools{position:sticky;top:-1px;z-index:8;padding:10px 0 8px;background:linear-gradient(180deg,#fff 82%,rgba(255,255,255,0))}
+.postsSearch:focus-within{border-color:#ff9a55;box-shadow:0 0 0 3px rgba(255,106,0,.08)}
+.postsFilters button:focus-visible,.postsFilters select:focus-visible,.postsManagementActions button:focus-visible,.postsSearch input:focus-visible{outline:3px solid rgba(255,106,0,.2);outline-offset:2px}
+.postsManagementActions button{min-height:38px}
+@media(max-width:600px){
+ .postsManagementTools{margin-inline:-4px;padding-inline:4px}
+ .postsFilters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+ .postsFilters::-webkit-scrollbar{display:none}
+ .postsFilters button,.postsFilters select{flex:0 0 auto;min-height:38px}
+ .postsManagementActions{grid-template-columns:1fr 1fr;gap:8px}
+ .postsManagementActions button{min-height:42px}
+ .postsManagementStats{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}
+ .postsManagementStats::-webkit-scrollbar{display:none}
+ .postsManagementStats span{flex:0 0 auto}
+}
