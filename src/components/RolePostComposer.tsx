@@ -33,7 +33,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview)},[preview]);
 
  const isPriceVisible=useMemo(()=>postType==='marketplace'||postType==='car'||postType==='umrah',[postType]);
- const ready=Boolean(title.trim()&&(!isPriceVisible||price));
+ const ready=Boolean(title.trim()&&(!isPriceVisible||Number(price)>0));
 
  const chooseFile=(next?:File)=>{
   if(!next)return;
