@@ -135,7 +135,7 @@ export default function PostsFeed(){
   {selectedPost&&<div className="postDetailsBackdrop" role="presentation" onClick={()=>setSelectedPost(null)}>
    <div className="postDetailsModal" role="dialog" aria-modal="true" aria-label={selectedPost.title} onClick={event=>event.stopPropagation()}>
     <button type="button" className="postDetailsClose" onClick={()=>setSelectedPost(null)} aria-label="داخستن"><span>×</span></button>
-    <div className="postDetailsImage">{postImage(selectedPost.images)?<img src={postImage(selectedPost.images)||''} alt={selectedPost.title}/>:<ImageIcon size={46}/>}</div>
+    <div className="postDetailsImage" role="img" aria-label={selectedPost.title}>{postImage(selectedPost.images)?<img src={postImage(selectedPost.images)||''} alt={selectedPost.title}/>:<ImageIcon size={46}/>}</div>
     <div className="postDetailsBody">
      <div className="postDetailsMeta"><span>{labelFor(selectedPost.post_type,selectedPost.label)}</span><small>{selectedPost.city||'هەولێر'}</small></div>
      <h3>{selectedPost.title}</h3>
