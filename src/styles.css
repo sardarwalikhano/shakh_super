@@ -320,3 +320,26 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
  .profileSaveRow{flex-direction:column;align-items:stretch}
  .profileSaveButton{width:100%;min-width:0}
 }
+
+
+.profilePostSection{display:grid;gap:10px}
+.profilePostsLink{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:#ff6a00;font-weight:900;font-size:12px;cursor:pointer;padding:6px 0}
+.profilePostsLink:disabled{opacity:.5;cursor:default}
+.profilePostsList{display:grid;gap:8px}
+.profilePostRow{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;width:100%;padding:11px 12px;text-align:right;border:1px solid #e8edf4;border-radius:14px;background:#fff;cursor:pointer}
+.profilePostRow:hover{border-color:#ffd5b8;background:#fffaf5}
+.profilePostDot{width:9px;height:9px;border-radius:50%;background:#ff6a00}
+.profilePostInfo{display:grid;gap:3px;min-width:0}
+.profilePostInfo b{color:#203047;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profilePostInfo small{color:#8a97a9}
+.profilePostStatus{font-size:10px;font-weight:900;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.profilePostStatus.ok{background:#edf9f1;color:#1f7a43}
+.profilePostStatus.bad{background:#fff0ef;color:#b2382e}
+.profilePostStatus.wait{background:#fff7e8;color:#8a5a00}
+.profilePostsEmpty{display:flex;align-items:center;gap:9px;padding:14px;border:1px dashed #dfe6ef;border-radius:14px;color:#8794a7;font-size:12px;font-weight:800}
+@media (max-width:700px){
+ .profileSectionTitle{align-items:flex-start;flex-direction:column}
+ .profilePostsLink{padding-top:0}
+ .profilePostRow{grid-template-columns:auto 1fr;align-items:start}
+ .profilePostStatus{grid-column:2;justify-self:start}
+}
