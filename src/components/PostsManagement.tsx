@@ -59,6 +59,13 @@ const imageOf=(images:unknown)=>{
 
 const labelOf=(post:Post)=>post.label||typeLabels[post.post_type||'']||'گشتی';
 
+const updatedLabel=(post:Post)=>{
+ if(!post.updated_at)return '';
+ const created=new Date(post.created_at).getTime();
+ const updated=new Date(post.updated_at).getTime();
+ return updated-created>60000?`نوێکراوە: ${new Date(post.updated_at).toLocaleString('ku-IQ')}`:'';
+};
+
 export default function PostsManagement({userId,role}:Props){
  const isAdmin=role==='admin'||role==='super_admin';
  const [posts,setPosts]=useState<Post[]>([]);
@@ -223,7 +230,7 @@ export default function PostsManagement({userId,role}:Props){
     return <article className="postsManagementItem" key={post.id}>
      <div className="postsManagementImage">{img?<img src={img} alt={post.title}/>:<span>{labelOf(post).slice(0,1)}</span>}</div>
      <div className="postsManagementBody">
-      <div className="postsManagementMeta"><span>{labelOf(post)}</span><small>{new Date(post.created_at).toLocaleString('ku-IQ')}</small></div>
+      <div className="postsManagementMeta"><span>{labelOf(post)}</span><small>{new Date(post.created_at).toLocaleString('ku-IQ')}</small>{updatedLabel(post)&&<small>{updatedLabel(post)}</small>}</div>
       <h4>{post.title}</h4>
       {post.content&&<p>{post.content}</p>}
       <div className="postsManagementStatus">
