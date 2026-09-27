@@ -268,7 +268,7 @@ export default function PostsManagement({userId,role}:Props){
     <h3 style={{margin:'6px 0 3px'}}>{isAdmin?'بەڕێوەبردنی هەموو پۆستەکان':'پۆستەکانی من'}</h3>
     <small>{isAdmin?'پشکنین و پەسەندکردنی پۆستەکان':'دەستکاری و کۆنترۆڵی پۆستەکانت'}</small>
    </div>
-   <button type="button" className="plain" onClick={refreshPosts} disabled={loading} aria-label="نوێکردنەوەی پۆستەکان"><RefreshCw size={17}/></button>
+   <button type="button" className="plain" onClick={refreshPosts} disabled={loading||!!busyId} aria-label="نوێکردنەوەی پۆستەکان"><RefreshCw size={17}/></button>
   </div>
 
   <div className="postsManagementStats">
@@ -358,7 +358,7 @@ export default function PostsManagement({userId,role}:Props){
     {imageOf(editing.images)&&<div className="postsEditImage"><img src={imageOf(editing.images)||''} alt={editing.title}/></div>}
     <div className="postsEditFields">
      <label className="postsEditField">سەردێڕ
-      <input maxLength={100} value={editTitle} onChange={e=>setEditTitle(e.target.value)} aria-describedby="edit-title-count"/>
+      <input maxLength={100} autoFocus value={editTitle} onChange={e=>setEditTitle(e.target.value)} aria-describedby="edit-title-count"/>
       <small id="edit-title-count">{editTitle.length}/100</small>
      </label>
      <label className="postsEditField">ناوەڕۆک
