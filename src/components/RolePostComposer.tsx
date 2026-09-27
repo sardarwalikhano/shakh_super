@@ -138,7 +138,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
   </label>
 
   <div className="postFormGrid">
-   {isPriceVisible&&<label className="postField">نرخ بە د.ع<input aria-label="نرخ بە دیناری عێراقی" value={price} onChange={e=>setPrice(e.target.value.replace(/[^0-9]/g,''))} inputMode="numeric" placeholder="نموونە: ٢٥٠٠٠"/></label>}
+   {isPriceVisible&&<label className="postField">نرخ بە د.ع<input aria-label="نرخ بە دیناری عێراقی" maxLength={14} value={price} onChange={e=>setPrice(e.target.value.replace(/[^0-9]/g,''))} inputMode="numeric" placeholder="نموونە: ٢٥٠٠٠"/></label>}
    <label className="postField">شار<select value={city} onChange={e=>setCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item} value={item}>{item}</option>)}</select></label>
   </div>
 
