@@ -118,6 +118,13 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
   setMessage('');
  };
 
+ const clearAvatarDraft=()=>{
+  setFile(null);
+  if(preview)URL.revokeObjectURL(preview);
+  setPreview('');
+  setMessage('');
+ };
+
  const uploadAvatar=async()=>{
   if(!file)return avatarUrl||null;
   const extension=file.type.split('/')[1]||'jpeg';
@@ -226,7 +233,7 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
    </button>
   </div>
 
-  {file&&<div className="profileUploadHint"><Camera size={15}/> وێنەی نوێ هەڵبژێردراوە؛ پاشەکەوتکردن بۆ جێگیرکردنی وێنەکە پێویستە.</div>}
+  {file&&<div className="profileUploadHint"><Camera size={15}/><span>وێنەی نوێ هەڵبژێردراوە؛ پاشەکەوتکردن بۆ جێگیرکردنی وێنەکە پێویستە.</span><button type="button" className="profileUploadCancel" onClick={clearAvatarDraft} disabled={saving}>هەڵوەشاندنەوە</button></div>}
   {message&&<div className={message.includes('سەرکەوت')?'profileMessage success':'profileMessage'} role="alert" aria-live="polite">{message}</div>}
  </section>;
 }
