@@ -32,7 +32,7 @@ function postImage(images:unknown){
 export default function PostsFeed(){
  const [posts,setPosts]=useState<Post[]>([]);
  const [filter,setFilter]=useState('all');
- const [loading,setLoading]=useState(true);
+ const [loading,setLoading]=useState(true);\n const [page,setPage]=useState(1);\n const pageSize=12;
  const [message,setMessage]=useState('');
 
  const load=async()=>{
@@ -41,7 +41,7 @@ export default function PostsFeed(){
    .from('posts')
    .select('id,author_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility')
    .order('created_at',{ascending:false})
-   .limit(100);
+   .limit(200);
   if(error){setMessage('نەتوانرا پۆستەکان وەرگیرێن.');setLoading(false);return;}
   setPosts((data||[]) as Post[]);
   setMessage('');
@@ -56,7 +56,7 @@ export default function PostsFeed(){
   return()=>{void supabase.removeChannel(channel)};
  },[]);
 
- const filtered=useMemo(()=>filter==='all'?posts:posts.filter(p=>p.post_type===filter),[posts,filter]);
+ const filtered=useMemo(()=>filter==='all'?posts:posts.filter(p=>p.post_type===filter),[posts,filter]);\n const shown=filtered.slice(0,page*pageSize);\n useEffect(()=>{setPage(1)},[filter]);
 
  return <section className="section" id="shakh-posts">
   <div className="title">
@@ -75,7 +75,7 @@ export default function PostsFeed(){
 
   {loading&&!posts.length?<div className="empty"><RefreshCw size={38}/><h3>پۆستەکان بار دەکرێن...</h3></div>:
    !filtered.length?<div className="empty"><Tag size={40}/><h3>هیچ پۆستێک نەدۆزرایەوە</h3><p>{filter==='all'?'هێشتا پۆستێک بڵاونەکراوەتەوە.':'لەو بەشەدا پۆستێک نییە.'}</p></div>:
-   <div className="grid">{filtered.map(p=>{
+   <div className="grid">{shown.map(p=>{
     const img=postImage(p.images);
     return <article className="card" key={p.id}>
      <div className="pic">{img?<img src={img} alt={p.title}/>:<ImageIcon size={42}/>}</div>
@@ -92,6 +92,6 @@ export default function PostsFeed(){
     </article>;
    })}</div>
   }
-  {message&&<div className="msg" style={{marginTop:10}}>{message}</div>}
+  {shown.length<filtered.length&&<div style={{display:'flex',justifyContent:'center',marginTop:16}}><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}\n  {message&&<div className="msg" style={{marginTop:10}}>{message}</div>}
  </section>;
 }
