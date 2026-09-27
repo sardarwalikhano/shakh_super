@@ -280,7 +280,7 @@ export default function PostsManagement({userId,role}:Props){
   </div>
 
   <div className="postsManagementTools">
-   <div className="postsSearch"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="گەڕان لە پۆستەکان..."/></div>
+   <div className="postsSearch"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="گەڕان لە پۆستەکان..." aria-label="گەڕان لە پۆستەکان"/>{query&&<button type="button" className="postsSearchClear" onClick={()=>setQuery('')} aria-label="پاککردنەوەی گەڕان"><X size={15}/></button>}</div>
    <div className="postsFilters">
     {isAdmin&&<select value={roleFilter} onChange={e=>setRoleFilter(e.target.value)} aria-label="فلتەری ڕۆڵ">
      {ROLE_FILTERS.map(item=><option key={item.value} value={item.value}>{item.label}</option>)}
