@@ -247,3 +247,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .postFeedPublisher{position:relative}
 .postFeedShare{margin-inline-start:auto;width:30px;height:30px;border:1px solid #e4eaf0;border-radius:9px;background:#fff;color:#60758a;display:grid;place-items:center;cursor:pointer}
 .postFeedShare:hover{background:#fff4ea;color:#c65800;border-color:#ffbd86}
+
+
+.postResetButton{width:100%;margin-top:9px;min-height:40px;border:1px solid #e1e8ef;border-radius:11px;background:#fff;color:#66798c;font-size:10px;font-weight:900;cursor:pointer}
+.postResetButton:hover{background:#f8fafc;color:#425a72}
