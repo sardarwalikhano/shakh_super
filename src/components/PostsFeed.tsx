@@ -76,6 +76,23 @@ export default function PostsFeed(){
  const [message,setMessage]=useState('');
  const [selectedPost,setSelectedPost]=useState<Post|null>(null);
 
+ const openPost=(post:Post)=>{
+  setSelectedPost(post);
+  const url=new URL(window.location.href);
+  url.search='';
+  url.searchParams.set('post',post.id);
+  url.hash='shakh-posts';
+  window.history.replaceState(null,'',url.pathname+url.search+url.hash);
+ };
+
+ const closePost=()=>{
+  setSelectedPost(null);
+  const url=new URL(window.location.href);
+  url.searchParams.delete('post');
+  url.hash='shakh-posts';
+  window.history.replaceState(null,'',url.pathname+url.search+url.hash);
+ };
+
  const load=async()=>{
   setLoading(true);
   const {data,error}=await supabase
@@ -105,6 +122,14 @@ export default function PostsFeed(){
  const shown=filtered.slice(0,page*pageSize);
 
  useEffect(()=>{setPage(1)},[filter]);
+ useEffect(()=>{
+  const postId=new URLSearchParams(window.location.search).get('post');
+  if(postId&&!selectedPost){
+   const match=posts.find(post=>post.id===postId);
+   if(match)setSelectedPost(match);
+  }
+ },[posts,selectedPost]);
+
  useEffect(()=>{if(!selectedPost)return;const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape')setSelectedPost(null)};window.addEventListener('keydown',onKeyDown);return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKeyDown)}},[selectedPost]);
 
  return <section className="section postFeed" id="shakh-posts">
@@ -125,7 +150,7 @@ export default function PostsFeed(){
    !filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>{filter==='all'?'هێشتا پۆستێکی بڵاوکراوە نییە.':'لەو بەشەدا پۆستێک نییە.'}</small></div>:
    <div className="postFeedGrid">{shown.map(post=>{
     const img=postImage(post.images);
-    return <article className="postFeedCard" key={post.id} id={'post-'+post.id} tabIndex={0} role="button" onClick={()=>setSelectedPost(post)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSelectedPost(post)}}}>
+    return <article className="postFeedCard" key={post.id} id={'post-'+post.id} tabIndex={0} role="button" onClick={()=>openPost(post)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSelectedPost(post)}}}>
      <div className="postFeedImage">
       {img?<img src={img} alt={post.title}/>:<ImageIcon size={40}/>}
       <span className="postFeedBadge">{labelFor(post.post_type,post.label)}</span>
@@ -147,9 +172,9 @@ export default function PostsFeed(){
 
   {shown.length<filtered.length&&<div className="postFeedMore"><button type="button" className="plain" onClick={()=>setPage(value=>value+1)}>زیاتر پیشاندان</button></div>}
   {message&&<div className="msg postFeedMessage" role="alert" aria-live="polite">{message}</div>}
-  {selectedPost&&<div className="postDetailsBackdrop" role="presentation" onClick={()=>setSelectedPost(null)}>
+  {selectedPost&&<div className="postDetailsBackdrop" role="presentation" onClick={closePost}>
    <div className="postDetailsModal" role="dialog" aria-modal="true" aria-label={selectedPost.title} onClick={event=>event.stopPropagation()}>
-    <button type="button" className="postDetailsClose" onClick={()=>setSelectedPost(null)} aria-label="داخستن"><span>×</span></button>
+    <button type="button" className="postDetailsClose" onClick={closePost} aria-label="داخستن"><span>×</span></button>
     <div className="postDetailsImage" role="img" aria-label={selectedPost.title}>{postImage(selectedPost.images)?<img src={postImage(selectedPost.images)||''} alt={selectedPost.title}/>:<ImageIcon size={46}/>}</div>
     <div className="postDetailsBody">
      <div className="postDetailsMeta"><span>{labelFor(selectedPost.post_type,selectedPost.label)}</span><small>{selectedPost.city||'هەولێر'}</small></div>
