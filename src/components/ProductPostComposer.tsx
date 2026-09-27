@@ -217,7 +217,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    </div>
   )}
 
-  {!storeId&&<label className="postField">ناوی دوکان<input value={form.storeName} onChange={e=>update({storeName:e.target.value})} placeholder={cfg.label}/></label>}
+  {!storeId&&<label className="postField">ناوی دوکان<input maxLength={100} value={form.storeName} onChange={e=>update({storeName:e.target.value})} placeholder={cfg.label}/></label>}
 
   <div className="postComposerLabel">کەتەگۆری</div>
   <div className="postCategoryGrid">
