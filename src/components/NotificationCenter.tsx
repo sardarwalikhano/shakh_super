@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Bell, CheckCheck, Clock3, Package, RefreshCw } from 'lucide-react';
+import { Bell, CheckCheck, Clock3, Package, RefreshCw, ShieldCheck, Tag } from 'lucide-react';
 import { getMyNotifications, markNotificationRead, subscribeToMyNotifications } from '../lib/orderTracking';
 
 type NotificationItem = {
@@ -71,18 +71,20 @@ export default function NotificationCenter({ userId }: NotificationCenterProps) 
       {loading ? (
         <div className="notification-center__empty"><RefreshCw className="animate-spin" /><span>ئاگادارکردنەوەکان بار دەکرێن...</span></div>
       ) : items.length === 0 ? (
-        <div className="notification-center__empty"><Bell size={40} /><strong>هیچ ئاگادارکردنەوەیەک نییە</strong><span>کاتێک ئۆردەرەکەت نوێ بکرێتەوە، لێرە دەردەکەوێت.</span></div>
+        <div className="notification-center__empty"><Bell size={40} /><strong>هیچ ئاگادارکردنەوەیەک نییە</strong><span>کاتێک ئۆردەر، پۆست یان هەژمارەکەت نوێ بکرێتەوە، لێرە دەردەکەوێت.</span></div>
       ) : (
         <div className="notification-center__list">
           {items.map((item) => {
             const orderId = typeof item.data?.order_id === 'string' ? item.data.order_id : null;
+            const postId = typeof item.data?.post_id === 'string' ? item.data.post_id : null;
+            const Icon = item.type === 'post_moderation' ? ShieldCheck : postId ? Tag : Package;
             return (
               <article key={item.id} className={`notification-center__item ${item.is_read ? 'is-read' : 'is-unread'}`}>
-                <div className="notification-center__icon"><Package size={20} /></div>
+                <div className="notification-center__icon"><Icon size={20} /></div>
                 <div className="notification-center__content">
                   <div className="notification-center__title-row"><strong>{item.title}</strong>{!item.is_read && <span>نوێ</span>}</div>
                   {item.body && <p>{item.body}</p>}
-                  <small><Clock3 size={14} /> {new Date(item.created_at).toLocaleString('ku-IQ')}{orderId ? ` · #${orderId.slice(0, 8)}` : ''}</small>
+                  <small><Clock3 size={14} /> {new Date(item.created_at).toLocaleString('ku-IQ')}{orderId ? ` · ئۆردەر #${orderId.slice(0, 8)}` : ''}{postId ? ` · پۆست #${postId.slice(0, 8)}` : ''}</small>
                 </div>
                 {!item.is_read && <button type="button" onClick={() => void read(item.id)} disabled={busy === item.id} aria-label="خوێندراوە بکە"><CheckCheck size={18} /></button>}
               </article>
