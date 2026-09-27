@@ -41,6 +41,17 @@ function isNew(createdAt:string){
  return Date.now()-new Date(createdAt).getTime()<24*60*60*1000;
 }
 
+function timeLabel(createdAt:string){
+ const diff=Math.max(0,Date.now()-new Date(createdAt).getTime());
+ const minutes=Math.floor(diff/60000);
+ if(minutes<1)return 'ئێستا';
+ if(minutes<60)return `${minutes} خولەک لەمەوبەر`;
+ const hours=Math.floor(minutes/60);
+ if(hours<24)return `${hours} کاتژمێر لەمەوبەر`;
+ const days=Math.floor(hours/24);
+ return `${days} ڕۆژ لەمەوبەر`;
+}
+
 export default function PostsFeed(){
  const [posts,setPosts]=useState<Post[]>([]);
  const [filter,setFilter]=useState('all');
@@ -104,7 +115,7 @@ export default function PostsFeed(){
       {isNew(post.created_at)&&<span className="postFeedNew">نوێ</span>}
      </div>
      <div className="postFeedBody">
-      <div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{new Date(post.created_at).toLocaleDateString('ku-IQ')}</small></div>
+      <div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{timeLabel(post.created_at)}</small></div>
       <h3>{post.title}</h3>
       {post.content&&<p>{post.content}</p>}
       <div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div>
