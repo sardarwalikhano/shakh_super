@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {Camera,CheckCircle2,FileText,Languages,MapPin,RefreshCw,Save,ShieldCheck,UserRound} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
-type Props={userId:string;role:string;onOpenPosts?:()=>void;onDirtyChange?:(dirty:boolean)=>void};
+type Props={userId:string;role:string;onOpenPosts?:(postId?:string)=>void;onDirtyChange?:(dirty:boolean)=>void};
 
 type ProfileRow={
  id:string;
@@ -205,7 +205,7 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
    </div>
    {!latestPosts.length
     ?<div className="profilePostsEmpty"><FileText size={20}/><span>هێشتا هیچ پۆستێکت نییە.</span></div>
-    :<div className="profilePostsList">{latestPosts.map(post=><button type="button" className="profilePostRow" key={post.id} onClick={()=>onOpenPosts?.()} disabled={!onOpenPosts}>
+    :<div className="profilePostsList">{latestPosts.map(post=><button type="button" className="profilePostRow" key={post.id} onClick={()=>onOpenPosts?.(post.id)} disabled={!onOpenPosts}>
       <span className="profilePostDot" aria-hidden="true"/>
       <span className="profilePostInfo"><b>{post.title}</b><small>{post.post_type||'گشتی'} · {new Date(post.created_at).toLocaleDateString('ku-IQ')}</small></span>
       <span className={'profilePostStatus '+(post.status==='approved'&&post.visibility==='public'?'ok':post.status==='rejected'?'bad':'wait')}>{post.status==='approved'?(post.visibility==='public'?'بڵاوکراوە':'شاراوە'):post.status==='rejected'?'ڕەتکراوە':'چاوەڕوان'}</span>
