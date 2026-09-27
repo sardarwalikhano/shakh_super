@@ -55,7 +55,7 @@ function App(){
  const google=async()=>{if(!supabase)return setMessage('پەیوەندی بە خزمەتگوزاری بەردەست نییە.');const {error}=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});if(error)setMessage(error.message)};
  const reset=async()=>{if(!supabase||!email)return setMessage('تکایە ئیمەیڵەکەت بنووسە.');const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password'});setMessage(error?.message||'لینکی گۆڕینی وشەی نهێنی بۆ ئیمەیڵەکەت نێردرا.')};
  const signout=async()=>{await supabase?.auth.signOut();setAuth(false);setDashboard(false);setDashboardView('home')};
- const openDashboard=(view:DashboardView='home')=>{setDashboardView(view);setDashboard(true);if(user)void loadOrders(user)};
+ const openDashboard=(view:DashboardView='home')=>{if(!user){setAuthMode('login');setAuth(true);setMessage('بۆ بینینی داشبۆرد، تکایە سەرەتا بچۆ ژوورەوە.');return}setDashboardView(view);setDashboard(true);void loadOrders(user)};
  const roleLabel=role==='super_admin'?'بەڕێوبەری باڵا':role==='admin'?'بەڕێوبەر':['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role)?'خاوەن دوکان':role==='captain'?'کاپتن':role==='car_dealer'?'پێشانگای ئۆتۆمبێل':role==='umrah_agency'?'کۆمپانیای حەج و عومرە':'کڕیار';
  const dashboardModule=()=>{
   if(!user)return null;
@@ -99,7 +99,7 @@ function App(){
  <nav className="mobileBottomNav" aria-label="ناوبەری خێرای مۆبایل">
   <button type="button" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}><Home size={18}/><span>سەرەکی</span></button>
   <button type="button" onClick={()=>user?openDashboard('orders'):(setAuthMode('login'),setAuth(true))}><PackageCheck size={18}/><span>داواکاری</span></button>
-  <button type="button" onClick={()=>user&&role==='captain'?openDashboard('delivery'):openDashboard('delivery')}><Truck size={18}/><span>گەیاندن</span></button>
+  <button type="button" onClick={()=>openDashboard('delivery')}><Truck size={18}/><span>گەیاندن</span></button>
   <button type="button" onClick={()=>user?openDashboard('wallet'):(setAuthMode('login'),setAuth(true))}><Wallet size={18}/><span>جزدان</span></button>
   <button type="button" onClick={()=>user?openDashboard('profile'):(setAuthMode('login'),setAuth(true))}><UserIcon size={18}/><span>هەژمار</span></button>
  </nav>
