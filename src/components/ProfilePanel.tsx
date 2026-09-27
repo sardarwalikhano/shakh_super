@@ -94,7 +94,8 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
    ||Boolean(file);
  },[profile,name,phone,city,language,file]);
 
- useEffect(()=>{onDirtyChange?.(hasChanges);return()=>onDirtyChange?.(false);},[hasChanges]);
+ useEffect(()=>{onDirtyChange?.(hasChanges);},[hasChanges,onDirtyChange]);
+ useEffect(()=>()=>{onDirtyChange?.(false);},[onDirtyChange]);
 
  const refreshProfile=()=>{
   if(hasChanges&&!window.confirm('گۆڕانکارییەکانی پرۆفایل پاشەکەوت نەکراون. دڵنیایت دەتەوێت زانیاریی کۆن دووبارە بار بکرێتەوە؟'))return;
@@ -220,7 +221,7 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
 
   <div className="profileSaveRow">
    <small className={hasChanges?'profileDirtyText':'profileSavedText'}>{hasChanges?'گۆڕانکارییە نوێکانت هەن؛ پاشەکەوتیان بکە.':'هەموو گۆڕانکارییەکان پاشەکەوت کراون.'}</small>
-   <button type="button" className="primary profileSaveButton" onClick={()=>void save()} disabled={saving||!hasChanges}>
+   <button type="button" className="primary profileSaveButton" onClick={()=>void save()} disabled={saving||!hasChanges} aria-busy={saving}>
     {saving?<><RefreshCw size={17}/> پاشەکەوت دەکرێت...</>:<><Save size={17}/> پاشەکەوتکردنی پرۆفایل</>}
    </button>
   </div>
