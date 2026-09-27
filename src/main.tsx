@@ -16,6 +16,7 @@ import RolePostComposer from './components/RolePostComposer';
 import PostsManagement from './components/PostsManagement';
 import NotificationCenter from './components/NotificationCenter';
 import ProfilePanel from './components/ProfilePanel';
+import WalletPanel from './components/WalletPanel';
 
 const url=import.meta.env.VITE_SUPABASE_URL as string|undefined;
 const key=import.meta.env.VITE_SUPABASE_ANON_KEY as string|undefined;
@@ -77,6 +78,7 @@ function App(){
   if(dashboardView==='cars')return <VehicleShowroomModule userId={user.id} isAdmin={role==='super_admin'||role==='admin'} role={role}/>
   if(dashboardView==='umrah')return <UmrahBookingModule userId={user.id} role={role}/>;
   if(dashboardView==='notifications')return <NotificationCenter userId={user.id}/>;
+  if(dashboardView==='wallet')return <WalletPanel userId={user.id}/>;
   if(dashboardView==='profile')return <ProfilePanel userId={user.id} role={role} onOpenPosts={()=>setDashboardView('home')}/>;
   return null;
  };
