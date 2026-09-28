@@ -6,6 +6,8 @@ const url=import.meta.env.VITE_SUPABASE_URL as string|undefined;
 const key=import.meta.env.VITE_SUPABASE_ANON_KEY as string|undefined;
 const supabase=url&&key?createClient(url,key):null;
 
+const SHOE_SIZES=['35','36','37','38','39','40','41','42','43','44','45','46'];
+
 const sections=[
  {value:'restaurant',label:'🍽️ چێشتخانە'},
  {value:'supermarket',label:'🛒 سوپەرمارکێت'},
@@ -36,7 +38,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
  const [content,setContent]=useState('');
  const [price,setPrice]=useState('');
  const [city,setCity]=useState('هەولێر');
- const [details,setDetails]=useState({type:'',audience:'',size:'',color:'',condition:'',brand:'',shoeSize:'',model:'',material:'',karat:''});
+ const [details,setDetails]=useState({type:'',audience:'',size:'',color:'',condition:'',brand:'',shoeSize:'',shoeSizes:[] as string[],model:'',material:'',karat:''});
  const [files,setFiles]=useState<File[]>([]);
  const [previews,setPreviews]=useState<string[]>([]);
  const [busy,setBusy]=useState(false);
@@ -77,6 +79,8 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
   if(isFashion&&!details.size)return setMessage('تکایە قەبارە دیاری بکە.');
   if(isFashion&&!details.color)return setMessage('تکایە ڕەنگ دیاری بکە.');
   if(isFashion&&!details.condition)return setMessage('تکایە حاڵەتی جلوبەرگ دیاری بکە.');
+  if(isFashion&&details.type==='پێلاو'&&details.shoeSizes.length===0)return setMessage('تکایە لانیکەم یەک ژمارەی پێلاو هەڵبژێرە.');
+  if(isFashion&&details.type!=='پێلاو'&&!details.size)return setMessage('تکایە قەبارەی جلوبەرگ دیاری بکە.');
   if(isFood&&!details.type)return setMessage('تکایە جۆری خواردن دیاری بکە.');
   if(isElectronics&&!details.type)return setMessage('تکایە جۆری ئامێر دیاری بکە.');
   if(isJewelry&&!details.type)return setMessage('تکایە جۆری جواهرات دیاری بکە.');
