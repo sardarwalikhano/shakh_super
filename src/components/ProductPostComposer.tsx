@@ -44,31 +44,82 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const hasChanges=Boolean(files.length||form.type.trim()||form.name.trim()||form.brand.trim()||form.size.trim()||form.price.trim()||form.description.trim()||!form.available||category!==cfg.cats[0].slug||Object.values(fashion).some(Boolean));
  const chooseFiles=(list:FileList|null)=>{if(!list?.length)return;const incoming=Array.from(list).slice(0,6-files.length).filter(file=>['image/jpeg','image/png','image/webp'].includes(file.type)&&file.size<=5*1024*1024);if(!incoming.length)return;setFiles(v=>[...v,...incoming]);setPreviews(v=>[...v,...incoming.map(file=>URL.createObjectURL(file))]);};
  const removeImage=(index:number)=>{URL.revokeObjectURL(previews[index]||'');setFiles(v=>v.filter((_,i)=>i!==index));setPreviews(v=>v.filter((_,i)=>i!==index));};
- const getStore=async()=>{if(storeId)return storeId;if(!form.storeName.trim())throw new Error('ناوی دوکان بنووسە.');const {data,error}=await supabase.from('stores').insert({owner_id:userId,name:form.storeName.trim(),category:cfg.storeCategory,city:form.city||'هەولێر',is_active:true}).select('id').single();if(error)throw error;setStoreId(data.id);return data.id;};
- const submit=async()=>{try{if(!ready)return setMessage('تکایە هەموو خانە پێویستەکان پڕ بکەرەوە.');if(!/^\d+$/.test(form.price)||Number(form.price)<=0)return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');if(isFashion&&!fashion.audience)return setMessage('تکایە بۆ کێیە دیاری بکە.');if(isFashion&&!fashion.clothingType)return setMessage('تکایە جۆری جلوبەرگ دیاری بکە.');setBusy(true);setMessage('');const sid=await getStore();const {data:cat,error:categoryError}=await supabase.from('categories').select('id').eq('slug',category).single();if(categoryError)throw categoryError;
-   const imageUrls:string[]=[];for(const [index,file] of files.entries()){const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;const {error}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);}
+ const getStore=async()=>{
+  if(storeId)return {id:storeId,created:false};
+  if(!form.storeName.trim())throw new Error('ناوی دوکان بنووسە.');
+  const {data,error}=await supabase.from('stores').insert({owner_id:userId,name:form.storeName.trim(),category:cfg.storeCategory,city:form.city||'هەولێر',is_active:true}).select('id').single();
+  if(error)throw error;
+  setStoreId(data.id);
+  setForm(v=>({...v,storeName:form.storeName.trim()}));
+  return {id:data.id,created:true};
+ };
+ const submit=async()=>{
+  const uploadedPaths:string[]=[];
+  let createdProductId:string|null=null;
+  let createdStoreId:string|null=null;
+  try{
+   if(!ready)return setMessage('تکایە هەموو خانە پێویستەکان پڕ بکەرەوە.');
+   if(!/^\d+$/.test(form.price)||Number(form.price)<=0)return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
+   if(isFashion&&!fashion.audience)return setMessage('تکایە بۆ کێیە دیاری بکە.');
+   if(isFashion&&!fashion.clothingType)return setMessage('تکایە جۆری جلوبەرگ دیاری بکە.');
+   setBusy(true);setMessage('');
+
+   const store=await getStore();
+   const sid=store.id;
+   if(store.created)createdStoreId=sid;
+
+   const {data:cat,error:categoryError}=await supabase.from('categories').select('id').eq('slug',category).single();
+   if(categoryError)throw categoryError;
+
+   const imageUrls:string[]=[];
+   for(const [index,file] of files.entries()){
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;
+    const {error:uploadError}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});
+    if(uploadError)throw uploadError;
+    uploadedPaths.push(path);
+    imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
+   }
+
    const fashionDetails=isFashion?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,size:fashion.size,color:fashion.color,shoe_size:fashion.shoeSize||null,condition:fashion.condition,brand:fashion.brand||null}:{};
    const productName=form.name.trim();
-   let createdProductId:string|null=null;
-   const cleanupUploads=async()=>{if(imageUrls.length){const uploadedPaths=imageUrls.map(url=>{const marker='/storage/v1/object/public/products/';const index=url.indexOf(marker);return index>=0?decodeURIComponent(url.slice(index+marker.length)):''}).filter(Boolean);if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths)}};
-   try{
-    const {data:createdProduct,error}=await supabase.from('products').insert({store_id:sid,category_id:cat.id,name_ku:productName,name_ar:productName,name_en:productName,description_ku:form.description.trim()||null,price_iqd:Number(form.price),product_type:form.type.trim(),brand:isFashion?fashion.brand.trim()||null:form.brand.trim()||null,size:isFashion?fashion.size.trim()||null:form.size.trim()||null,image_url:imageUrls[0]||null,stock:form.available?1:0,is_available:form.available,variants:[{section:role,category,...fashionDetails}]}).select('id').single();
-    if(error)throw error;
-    createdProductId=createdProduct.id;
-    const meta=POST_META[role];
-    if(meta){
-     const {data:profile}=await supabase.from('profiles').select('full_name').eq('id',userId).maybeSingle();
-     const publisherName=(profile as {full_name?:string|null}|null)?.full_name||form.storeName.trim()||meta.label;
-     const {error:postError}=await supabase.from('posts').insert({author_id:userId,store_id:sid,title:productName,content:form.description.trim()||null,images:imageUrls,price_iqd:Number(form.price),city:form.city||'هەولێر',status:'approved',section:meta.postType==='fashion'?'fashion':category,publisher_name:publisherName,post_type:meta.postType,publisher_role:role,label:meta.label,visibility:'public',listing_details:fashionDetails});
-     if(postError)throw postError;
-    }
-   }catch(error){
-    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId).eq('store_id',sid);
-    await cleanupUploads();
-    throw error;
+
+   const {data:createdProduct,error:productError}=await supabase.from('products').insert({
+    store_id:sid,category_id:cat.id,name_ku:productName,name_ar:productName,name_en:productName,
+    description_ku:form.description.trim()||null,price_iqd:Number(form.price),product_type:form.type.trim(),
+    brand:isFashion?fashion.brand.trim()||null:form.brand.trim()||null,
+    size:isFashion?fashion.size.trim()||null:form.size.trim()||null,
+    image_url:imageUrls[0]||null,stock:form.available?1:0,is_available:form.available,
+    variants:[{section:role,category,...fashionDetails}]
+   }).select('id').single();
+   if(productError)throw productError;
+   createdProductId=createdProduct.id;
+
+   const meta=POST_META[role];
+   if(meta){
+    const {data:profile}=await supabase.from('profiles').select('full_name').eq('id',userId).maybeSingle();
+    const publisherName=(profile as {full_name?:string|null}|null)?.full_name||form.storeName.trim()||meta.label;
+    const {error:postError}=await supabase.from('posts').insert({
+     author_id:userId,store_id:sid,title:productName,content:form.description.trim()||null,images:imageUrls,
+     price_iqd:Number(form.price),city:form.city||'هەولێر',status:'approved',
+     section:meta.postType==='fashion'?'fashion':category,publisher_name:publisherName,post_type:meta.postType,
+     publisher_role:role,label:meta.label,visibility:'public',listing_details:fashionDetails
+    });
+    if(postError)throw postError;
    }
-   setForm(v=>({...initialForm(v.city),storeName:v.storeName}));setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);setFashionState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});setCategory(cfg.cats[0].slug);setShowPreview(true);setMessage('بەرهەمەکە و پۆستەکە بە سەرکەوتوویی بڵاوکرانەوە.');onSaved?.();
-  }catch(error:unknown){setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.')}finally{setBusy(false)}};
+
+   setForm(v=>({...initialForm(v.city),storeName:v.storeName}));
+   setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);
+   setFashionState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});
+   setCategory(cfg.cats[0].slug);setShowPreview(true);
+   setMessage('بەرهەمەکە و پۆستەکە بە سەرکەوتوویی بڵاوکرانەوە.');onSaved?.();
+  }catch(error:unknown){
+   if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId).eq('store_id',createdStoreId||storeId);
+   if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
+   if(createdStoreId)await supabase.from('stores').delete().eq('id',createdStoreId).eq('owner_id',userId);
+   setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');
+  }finally{setBusy(false)}
+ };
  return <section className="orderCard postComposer" aria-label="پۆستکردنی بەرهەم">
   <div className="postComposerHead"><div><span className="eyebrow"><Sparkles size={13}/> پۆستکردنی پیشەیی</span><h3>{cfg.heading}</h3><p>{cfg.label} · لەگەڵ شاخ دەگەیتە لوتکە</p></div><div className="postComposerBadge"><PackagePlus size={21}/><span>{cfg.label}</span></div></div>
   {!storeId&&<div className="postComposerNotice"><Store size={17}/><div><b>{storeLoading?'دۆزینەوەی دوکان...':'دوکانەکەت دیاری نەکراوە'}</b><small>{storeLoading?'زانیاریی دوکانەکەت پشکنین دەکرێت.':'ناوی دوکان بنووسە بۆ دروستکردنی دوکان.'}</small></div></div>}
