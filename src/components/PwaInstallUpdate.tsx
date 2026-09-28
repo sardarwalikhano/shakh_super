@@ -16,7 +16,7 @@ export default function PwaInstallUpdate(){
  const [updateReady,setUpdateReady]=useState(false);
  const [registration,setRegistration]=useState<ServiceWorkerRegistration|null>(null);
  const [standalone,setStandalone]=useState(false);
- const [version,setVersion]=useState('v1.9.5');
+ const [version,setVersion]=useState('v1.9.6');
  const [checking,setChecking]=useState(false);
  const [status,setStatus]=useState('');
 
