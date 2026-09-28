@@ -108,7 +108,7 @@ function App(){
    <div><b>پشتگیری</b><p className="footerSupport">هەر کێشەیەکت هەیە، لە بەشی ئاگادارکردنەوە و داشبۆرد بەدواداچوون بکە.</p></div>
   </div>
   <PwaInstallUpdate/>
-  <div className="siteFooterBottom"><span>© ٢٠٢٦ شاخ — هەموو مافەکان پارێزراون</span><span>وەشان ١.٨.٠</span></div>
+  <div className="siteFooterBottom"><span>© ٢٠٢٦ شاخ — هەموو مافەکان پارێزراون</span><span>وەشان ١.٩.٥</span></div>
  </footer></main>
  <nav className="mobileBottomNav" aria-label="ناوبەری خێرای مۆبایل">
   <button type="button" className={!dashboard?'active':''} onClick={()=>{setDashboard(false);setDashboardView('home');window.scrollTo({top:0,behavior:'smooth'})}}><Home size={18}/><span>سەرەکی</span></button>
