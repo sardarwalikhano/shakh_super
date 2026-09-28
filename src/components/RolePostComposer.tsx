@@ -151,7 +151,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
  const selectField=(label:string,value:string,options:string[],onChange:(value:string)=>void)=>
    <label className="postField"><span>{label}</span><select value={value} onChange={e=>onChange(e.target.value)}><option value="">هەڵبژێرە</option>{options.map(item=><option key={item} value={item}>{item}</option>)}</select></label>;
 
- return <section className="orderCard postComposer" aria-label="پۆستکردن">
+ return <section className="orderCard postComposer" aria-label="پۆستکردن" aria-busy={busy}>
    <div className="postComposerHead">
      <div><span className="eyebrow"><Sparkles size={13}/> پۆستکردنی پیشەیی</span><h3>{cfg.heading}</h3><p>{cfg.label} · لەگەڵ شاخ دەگەیتە لوتکە</p></div>
      <div className="postComposerBadge"><Tag size={21}/><span>{cfg.label}</span></div>
@@ -208,7 +208,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    <div className="postUploadBox">
      <div className="postUploadHead"><div><b>{isCar?'وێنەکانی ئۆتۆمبێل':isFashion?'وێنەکانی جلوبەرگ':'وێنەکانی پۆست'}</b><small>{files.length}/6 · JPG، PNG یان WEBP · هەر وێنە تا ٥ MB</small></div><ImagePlus size={20}/></div>
      <label className="postUploadDrop postUploadMulti" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();chooseFiles(e.dataTransfer.files)}}>
-       <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={e=>chooseFiles(e.target.files)}/>
+       <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={e=>{chooseFiles(e.target.files);e.currentTarget.value=''}} aria-label="زیادکردنی وێنەی پۆست"/>
        <ImagePlus size={24}/><b>{files.length?'زیادکردنی وێنەی تر':'تا ٦ وێنە زیاد بکە'}</b><small>وێنەکان بکێشە و دابنێ یان کلیک بکە</small>
      </label>
      {previews.length>0&&<div className="postImageGallery">{previews.map((src,index)=><div className="postImageGalleryItem" key={src}><img src={src} alt="" /><button type="button" onClick={()=>removeImage(index)} aria-label="سڕینەوەی وێنە"><X size={15}/></button><span>{index+1}</span></div>)}</div>}
