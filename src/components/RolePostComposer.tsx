@@ -4,18 +4,23 @@ import {supabase} from '../lib/supabase';
 
 type Props={userId:string;role:string;onSaved?:()=>void};
 
-const CONFIG:Record<string,{types:{value:string;label:string}[];heading:string;label:string}> = {
+type RoleConfig={types:{value:string;label:string}[];heading:string;label:string};
+
+const CONFIG:Record<string,RoleConfig> = {
  customer:{types:[{value:'general',label:'گشتی'},{value:'marketplace',label:'بازاڕ'}],heading:'پۆستی نوێ',label:'کڕیار'},
  captain:{types:[{value:'delivery',label:'گەیاندن'}],heading:'پۆستی گەیاندن',label:'کاپتن'},
+ restaurant_vendor:{types:[{value:'restaurant',label:'خواردن'},{value:'marketplace',label:'بازاڕ'}],heading:'پۆستی ڕێستوران',label:'فرۆشیاری خواردن'},
+ fashion_vendor:{types:[{value:'fashion',label:'جلوبەرگ'},{value:'marketplace',label:'بازاڕ'}],heading:'پۆستی جلوبەرگ',label:'فرۆشیاری جلوبەرگ'},
  car_dealer:{types:[{value:'car',label:'ئۆتۆمبێل'}],heading:'پۆستی ئۆتۆمبێل',label:'پێشانگای ئۆتۆمبێل'},
- umrah_agency:{types:[{value:'umrah',label:'عومرە'}],heading:'پۆستی عومرە',label:'کۆمپانیای عومرە'},
- admin:{types:[{value:'announcement',label:'ئاگاداری'},{value:'support',label:'پشتگیری'}],heading:'پۆستی بەڕێوەبەر',label:'بەڕێوبەر'},
- super_admin:{types:[{value:'announcement',label:'ئاگاداری'},{value:'support',label:'پشتگیری'}],heading:'پۆستی بەڕێوەبەر',label:'بەڕێوبەری باڵا'}
+ umrah_agency:{types:[{value:'umrah',label:'عومرە'}],heading:'پۆستی عومرە',label:'ئاژانسی عومرە'},
+ admin:{types:[{value:'announcement',label:'ئاگاداری'},{value:'support',label:'پشتگیری'}],heading:'پۆستی بەڕێوەبەر',label:'بەڕێوەبەر'},
+ super_admin:{types:[{value:'announcement',label:'ئاگاداری'},{value:'support',label:'پشتگیری'}],heading:'پۆستی بەڕێوەبەری باڵا',label:'بەڕێوەبەری باڵا'},
+ support:{types:[{value:'support',label:'پشتگیری'},{value:'announcement',label:'ئاگاداری'}],heading:'پۆستی پشتگیری',label:'تیمی پشتگیری'}
 };
 
 const IRAQ_CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
 
-const typeIcons:Record<string,string>={general:'💬',marketplace:'🛍️',delivery:'🛵',car:'🚗',umrah:'🕋',announcement:'📢',support:'🛟'};
+const typeIcons:Record<string,string>={general:'💬',marketplace:'🛍️',delivery:'🛵',restaurant:'🍽️',fashion:'👕',car:'🚗',umrah:'🕋',announcement:'📢',support:'🛟'};
 
 export default function RolePostComposer({userId,role,onSaved}:Props){
  const cfg=CONFIG[role]||CONFIG.customer;
