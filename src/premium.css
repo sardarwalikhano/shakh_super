@@ -87,3 +87,5 @@ footer{background:radial-gradient(circle at 85% 0%,#174c80 0,transparent 30%),li
 
 /* Dynamic category switching */
 .postHubGridPersistent{margin-bottom:18px!important}.postHubCard.active{border-color:rgba(255,106,0,.36)!important;background:linear-gradient(145deg,#fff6eb,#fff)!important;box-shadow:0 16px 35px rgba(255,106,0,.12)!important}.postHubCard[aria-pressed="true"] .postHubArrow{color:#ff6a00!important}@media(max-width:720px){.postHubGridPersistent{margin-bottom:14px!important}}
+
+.postHubHeader .postHubBack{gap:7px!important;display:inline-flex!important;align-items:center!important}

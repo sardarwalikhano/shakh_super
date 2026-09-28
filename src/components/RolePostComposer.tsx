@@ -13,7 +13,7 @@ const CONFIG:Record<string,RoleConfig>={
  car_dealer:{types:[{value:'car',label:'ئۆتۆمبێل'}],heading:'SHAKH Cars',label:'پێشانگای ئۆتۆمبێل'},
  umrah_agency:{types:[{value:'umrah',label:'عومرە'}],heading:'پۆستی عومرە',label:'ئاژانسی عومرە'},
  admin:{types:[{value:'announcement',label:'ئاگاداری'},{value:'support',label:'پشتگیری'}],heading:'پۆستی بەڕێوەبەر',label:'بەڕێوەبەر'},
- super_admin:{types:[{value:'announcement',label:'ئاگاداری'},{value:'support',label:'پشتگیری'}],heading:'پۆستی بەڕێوەبەری باڵا',label:'بەڕێوەبەری باڵا'},
+ super_admin:{types:[{value:'announcement',label:'ئاگاداری'},{value:'support',label:'پشتگیری'},{value:'delivery',label:'گەیاندن'},{value:'car',label:'ئۆتۆمبێل'},{value:'umrah',label:'عومرە'}],heading:'پۆستی بەڕێوەبەری باڵا',label:'بەڕێوەبەری باڵا'},
  support:{types:[{value:'support',label:'پشتگیری'},{value:'announcement',label:'ئاگاداری'}],heading:'پۆستی پشتگیری',label:'تیمی پشتگیری'}
 };
 
