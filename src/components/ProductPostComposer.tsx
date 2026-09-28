@@ -36,7 +36,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const [fashion,setFashionState]=useState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});
  const isFashion=role==='fashion_vendor';
  const selectedCategory=cfg.cats.find(item=>item.slug===category)||cfg.cats[0];
- useEffect(()=>{let live=true;setStoreLoading(true);(async()=>{const {data}=await supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',cfg.storeCategory).eq('is_active',true).limit(1);if(!live)return;if(error){setMessage('نەتوانرا دوکانەکەت وەرگیرێت. تکایە دووبارە هەوڵ بدەرەوە.');setStoreLoading(false);return}const store=data?.[0];if(store){setStoreId(store.id);setForm(v=>({...v,storeName:store.name||''}))}setStoreLoading(false)})();return()=>{live=false}},[userId,cfg.storeCategory]);
+ useEffect(()=>{let live=true;setStoreLoading(true);(async()=>{const {data,error}=await supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',cfg.storeCategory).eq('is_active',true).limit(1);if(!live)return;if(error){setMessage('نەتوانرا دوکانەکەت وەرگیرێت. تکایە دووبارە هەوڵ بدەرەوە.');setStoreLoading(false);return}const store=data?.[0];if(store){setStoreId(store.id);setForm(v=>({...v,storeName:store.name||''}))}setStoreLoading(false)})();return()=>{live=false}},[userId,cfg.storeCategory]);
  useEffect(()=>{previewsRef.current=previews},[previews]);useEffect(()=>()=>{previewsRef.current.forEach(URL.revokeObjectURL)},[]);
  const update=(patch:Partial<FormState>)=>setForm(v=>({...v,...patch}));
  const setFashion=(key:keyof typeof fashion,value:string)=>setFashionState(v=>({...v,[key]:value}));
