@@ -3,6 +3,7 @@ import { Bell, Check, CheckCheck, Clock3, MapPin, Package, RefreshCw, Truck } fr
 import { supabase } from '../lib/supabase';
 import { getMyNotifications, markNotificationRead, subscribeToMyNotifications } from '../lib/orderTracking';
 import LiveDeliveryMap from './LiveDeliveryMap';
+import OrderReviewCard from './OrderReviewCard';
 import type { RouteResult } from '../lib/routing';
 
 type CustomerOrder = {
@@ -354,6 +355,14 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                   )}
                 </div>
               )}
+
+              <OrderReviewCard
+                userId={userId}
+                orderId={selected.id}
+                storeId={selected.store_id}
+                storeName={selected.store?.name}
+                eligible={selected.status === 'delivered'}
+              />
 
               {selected.status === 'pending' && <button type="button" className="reset" onClick={() => void cancelOrder(selected.id)} style={{ marginTop: 10 }}>هەڵوەشاندنەوەی ئۆردەر</button>}
             </>
