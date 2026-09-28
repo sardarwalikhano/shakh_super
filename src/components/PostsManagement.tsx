@@ -46,6 +46,7 @@ const ROLE_FILTERS=[
  {value:'car_dealer',label:'ئۆتۆمبێل'},
  {value:'umrah_agency',label:'عومرە'},
  {value:'captain',label:'کاپتن'},
+ {value:'support',label:'پشتگیری'},
  {value:'admin',label:'بەڕێوبەر'},
  {value:'super_admin',label:'بەڕێوبەری باڵا'}
 ];
