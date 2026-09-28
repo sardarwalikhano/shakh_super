@@ -16,7 +16,7 @@ export default function PwaInstallUpdate(){
  const [updateReady,setUpdateReady]=useState(false);
  const [registration,setRegistration]=useState<ServiceWorkerRegistration|null>(null);
  const [standalone,setStandalone]=useState(false);
- const [version,setVersion]=useState('v1.9.6');
+ const [version,setVersion]=useState('v1.9.7');
  const [checking,setChecking]=useState(false);
  const [status,setStatus]=useState('');
 
@@ -122,7 +122,7 @@ export default function PwaInstallUpdate(){
  return <>
   <div id="app-install" className="pwaPanel">
    <div className="pwaPanelMain">
-    <div className="pwaBadge"><Download size={18}/></div>
+    <img className="pwaLogo" src="/shakh-logo.svg?v=1.9.7" alt="SHAKH SUPER — شاخ" />
     <div>
      <b>ئەپی شاخ</b>
      <small>وەشانی {version} · دامەزراندن و ئەپدەیتی خۆکار</small>
@@ -144,7 +144,7 @@ export default function PwaInstallUpdate(){
 
   {installHelp&&<div className="modal"><div className="auth" style={{maxWidth:460}}>
    <button className="x" onClick={()=>setInstallHelp(false)}>×</button>
-   <div className="mark">شاخ</div>
+   <img className="pwaHelpLogo" src="/shakh-logo.svg?v=1.9.7" alt="SHAKH SUPER — شاخ" />
    <h2>دامەزراندنی ئەپی شاخ</h2>
    <p>لە مێنیوی وێبگەڕەکەدا «دامەزراندنی ئەپ» یان «زیادکردن بۆ سەرەتا» هەڵبژێرە. لە ئایفۆن، لە مێنیوی هاوبەشکردن «زیادکردن بۆ سەرەتا» هەڵبژێرە.</p>
    <button className="primary full" onClick={()=>setInstallHelp(false)}>باشە</button>

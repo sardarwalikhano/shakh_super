@@ -10,9 +10,9 @@
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#123b68",
-  "background_color": "#07111f",
+  "background_color": "#ffffff",
   "categories": ["shopping", "food", "business"],
   "icons": [
-    {"src":"/shakh-logo.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+    {"src":"/shakh-logo.svg?v=1.9.7","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ]
 }
