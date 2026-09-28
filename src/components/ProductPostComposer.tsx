@@ -33,14 +33,13 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const [category,setCategory]=useState(cfg.cats[0].slug),[storeId,setStoreId]=useState(''),[storeLoading,setStoreLoading]=useState(true);
  const [files,setFiles]=useState<File[]>([]),[previews,setPreviews]=useState<string[]>([]);
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[showPreview,setShowPreview]=useState(true);
- const [fashion,setFashion]=useState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});
+ const [fashion,setFashionState]=useState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});
  const isFashion=role==='fashion_vendor';
  const selectedCategory=cfg.cats.find(item=>item.slug===category)||cfg.cats[0];
  useEffect(()=>{let live=true;setStoreLoading(true);(async()=>{const {data}=await supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',cfg.storeCategory).eq('is_active',true).limit(1).maybeSingle();if(!live)return;if(data){setStoreId(data.id);setForm(v=>({...v,storeName:data.name||''}))}setStoreLoading(false)})();return()=>{live=false}},[userId,cfg.storeCategory]);
  useEffect(()=>()=>{previews.forEach(URL.revokeObjectURL)},[previews]);
  const update=(patch:Partial<FormState>)=>setForm(v=>({...v,...patch}));
  const setFashion=(key:keyof typeof fashion,value:string)=>setFashionState(v=>({...v,[key]:value}));
- function setFashionState(vOrFn:((v:typeof fashion)=>typeof fashion)|typeof fashion){setFashion(v=>typeof vOrFn==='function'?vOrFn(v):vOrFn)}
  const ready=Boolean(form.name.trim()&&form.type.trim()&&Number(form.price)>0&&(!cfg.brand||form.brand.trim())&&(!cfg.size||form.size.trim())&&(!isFashion||fashion.audience&&fashion.clothingType&&fashion.size&&fashion.color&&fashion.condition));
  const hasChanges=Boolean(files.length||form.type.trim()||form.name.trim()||form.brand.trim()||form.size.trim()||form.price.trim()||form.description.trim()||!form.available||category!==cfg.cats[0].slug||Object.values(fashion).some(Boolean));
  const chooseFiles=(list:FileList|null)=>{if(!list?.length)return;const incoming=Array.from(list).slice(0,6-files.length).filter(file=>['image/jpeg','image/png','image/webp'].includes(file.type)&&file.size<=5*1024*1024);if(!incoming.length)return;setFiles(v=>[...v,...incoming]);setPreviews(v=>[...v,...incoming.map(file=>URL.createObjectURL(file))]);};
