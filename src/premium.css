@@ -100,3 +100,12 @@ footer{background:radial-gradient(circle at 85% 0%,#174c80 0,transparent 30%),li
 .productVariantBox>b{display:block;color:#071a33;font-size:14px;font-weight:950}
 .productVariantBox small{display:block;margin-top:9px;color:#7c8999;font-size:10px;line-height:1.7}
 @media(max-width:520px){.shoeSizePicker{gap:6px}.shoeSizeChip{min-width:44px;padding:9px 10px}}
+
+.dashboardPanel .postPublishingHub{display:block!important;visibility:visible!important;width:100%!important;box-sizing:border-box!important;margin-inline:0!important}
+.dashboardPanel{box-sizing:border-box!important}
+.dashHeadActions{display:flex;align-items:center;gap:8px}
+.dashboardLogoutButton{min-height:44px;padding:0 14px;border:1px solid rgba(255,106,0,.16);border-radius:13px;background:#fff5ed;color:#d95800;display:inline-flex;align-items:center;justify-content:center;gap:7px;font:inherit;font-size:11px;font-weight:950;cursor:pointer}
+.dashboardLogoutButton:hover{background:#ff6a00;color:#fff}
+.dashboardLogoutButton:focus-visible{outline:3px solid rgba(255,106,0,.18);outline-offset:2px}
+@media(max-width:720px){.dashHeadActions{width:100%;justify-content:space-between}.dashboardLogoutButton{flex:1;min-height:46px}.dashboardPanel .postPublishingHub{margin-top:16px!important}}
+@media(max-width:520px){.dashboardLogoutButton{font-size:12px}}
