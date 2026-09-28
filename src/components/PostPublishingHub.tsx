@@ -63,15 +63,19 @@ export default function PostPublishingHub({userId,role,onSaved}:Props){
    {selected&&<button type="button" className="plain postHubBack" onClick={()=>setSelected(null)}><ArrowRight size={16}/> گەڕانەوە بۆ کاتەگۆرییەکان</button>}
   </div>
 
-  {!selected?<div className="postHubGrid">
-   {categories.map(item=>{const Icon=item.icon||iconMap[item.value]||LayoutGrid;return <button key={item.id} type="button" className="postHubCard" onClick={()=>setSelected(item)}>
+  <div className="postHubGrid postHubGridPersistent">
+   {categories.map(item=>{const Icon=item.icon||iconMap[item.value]||LayoutGrid;return <button key={item.id} type="button" className={selected?.id===item.id?'postHubCard active':'postHubCard'} aria-pressed={selected?.id===item.id} onClick={()=>setSelected(item)}>
     <span className="postHubIcon"><Icon size={24}/></span>
     <span className="postHubCardText"><b>{item.label}</b><small>{item.description}</small></span>
     <ArrowRight size={17} className="postHubArrow"/>
    </button>})}
-  </div>:selected.kind==='store'
-   ?<ShakhStorePostComposer key={selected.id} userId={userId} initialSection={selected.value} hideSectionSelector onBack={()=>setSelected(null)}/>
-   :<RolePostComposer key={selected.id} userId={userId} role={role} initialType={selected.value} hideTypeSelector onBack={()=>setSelected(null)} onSaved={onSaved}/>
-  }
+  </div>
+
+  {selected&&<div className="postHubSelectedForm">
+   {selected.kind==='store'
+    ?<ShakhStorePostComposer key={selected.id} userId={userId} initialSection={selected.value} hideSectionSelector onBack={()=>setSelected(null)}/>
+    :<RolePostComposer key={selected.id} userId={userId} role={role} initialType={selected.value} hideTypeSelector onBack={()=>setSelected(null)} onSaved={onSaved}/>
+   }
+  </div>}
  </section>;
 }

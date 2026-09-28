@@ -38,6 +38,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  const cfg=CONFIG[role]||CONFIG.customer;
  const defaultType=initialType&&cfg.types.some(item=>item.value===initialType)?initialType:cfg.types[0].value;
  const [postType,setPostType]=useState(defaultType);
+ useEffect(()=>{setPostType(defaultType);setMessage('')},[defaultType]);
  const [title,setTitle]=useState('');
  const [content,setContent]=useState('');
  const [price,setPrice]=useState('');

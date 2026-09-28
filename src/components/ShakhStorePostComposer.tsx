@@ -31,6 +31,7 @@ const CATEGORY_SLUGS:Record<string,string>={
 
 export default function ShakhStorePostComposer({userId,initialSection='marketplace',hideSectionSelector=false,onBack}:{userId:string;initialSection?:string;hideSectionSelector?:boolean;onBack?:()=>void}){
  const [section,setSection]=useState(initialSection);
+ useEffect(()=>{setSection(initialSection);setMessage('')},[initialSection]);
  const [title,setTitle]=useState('');
  const [content,setContent]=useState('');
  const [price,setPrice]=useState('');
