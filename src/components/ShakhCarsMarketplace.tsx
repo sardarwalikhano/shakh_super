@@ -31,13 +31,13 @@ export default function ShakhCarsMarketplace(){
   <div className="title"><div><span>SHAKH CARS</span><h2><Car size={25} style={{verticalAlign:'middle'}}/> بازاڕی ئۆتۆمبێلی شاخ</h2></div><small>پۆستە پەسەندکراوەکان</small></div>
   <div className="orderCard" style={{marginBottom:18}}>
    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}><SlidersHorizontal size={18}/><b>گەڕان و فلتەر</b></div>
-   <div style={{display:'grid',gridTemplateColumns:'2fr repeat(3,1fr)',gap:8}}>
+   <div className="carsMarketplaceFilterGrid">
     <label style={{display:'flex',alignItems:'center',gap:7}}><Search size={16}/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="مارکە، مۆدێل یان تریم"/></label>
     <select value={make} onChange={e=>setMake(e.target.value)}><option value="all">هەموو مارکەکان</option>{options('make').map(x=><option key={x}>{x}</option>)}</select>
     <select value={condition} onChange={e=>setCondition(e.target.value)}><option value="all">نوێ و بەکارهاتوو</option><option value="new">نوێ</option><option value="used">بەکارهاتوو</option></select>
     <select value={body} onChange={e=>setBody(e.target.value)}><option value="all">هەموو جۆرە جەستەکان</option>{options('body_type').map(x=><option key={x}>{x}</option>)}</select>
    </div>
-   <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:8,marginTop:8}}>
+   <div className="carsMarketplacePriceGrid">
     <select value={city} onChange={e=>setCity(e.target.value)}><option value="all">هەموو شارەکان</option>{options('city').map(x=><option key={x}>{x}</option>)}</select>
     <input value={min} onChange={e=>setMin(e.target.value)} inputMode="numeric" placeholder="کەمترین نرخ"/>
     <input value={max} onChange={e=>setMax(e.target.value)} inputMode="numeric" placeholder="زۆرترین نرخ"/>
