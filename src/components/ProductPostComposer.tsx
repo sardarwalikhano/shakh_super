@@ -25,6 +25,7 @@ const POST_META:Record<string,{postType:string;label:string}>={
 };
 const CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
 const FASHION_OPTIONS={audience:['پیاوان','ئافرەتان','منداڵان','هەمووان'],condition:['نوێ','بەکارهاتوو'],colors:['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'],sizes:['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'],types:['تیشێرت','کراس','پانتۆڵ','جین','جاکەت','پۆشاک','جلوبەرگی وەرزشی','پێلاو','جانتا','ئاکسسوارات','کۆمەڵە جلوبەرگ']};
+const SHOE_SIZES=['35','36','37','38','39','40','41','42','43','44','45','46'];
 const initialForm=(city='هەولێر'):FormState=>({storeName:'',type:'',brand:'',name:'',size:'',price:'',description:'',available:true,city});
 
 export default function ProductPostComposer({userId,role,onSaved}:Props){
@@ -33,14 +34,15 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const [category,setCategory]=useState(cfg.cats[0].slug),[storeId,setStoreId]=useState(''),[storeLoading,setStoreLoading]=useState(true);
  const [files,setFiles]=useState<File[]>([]),[previews,setPreviews]=useState<string[]>([]);const previewsRef=useRef<string[]>([]);
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[showPreview,setShowPreview]=useState(true);
- const [fashion,setFashionState]=useState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});
+ const [fashion,setFashionState]=useState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',shoeSizes:[] as string[],condition:'',brand:''});
  const isFashion=role==='fashion_vendor';
  const selectedCategory=cfg.cats.find(item=>item.slug===category)||cfg.cats[0];
  useEffect(()=>{let live=true;setStoreLoading(true);(async()=>{const {data,error}=await supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',cfg.storeCategory).eq('is_active',true).limit(1);if(!live)return;if(error){setMessage('نەتوانرا دوکانەکەت وەرگیرێت. تکایە دووبارە هەوڵ بدەرەوە.');setStoreLoading(false);return}const store=data?.[0];if(store){setStoreId(store.id);setForm(v=>({...v,storeName:store.name||''}))}setStoreLoading(false)})();return()=>{live=false}},[userId,cfg.storeCategory]);
  useEffect(()=>{previewsRef.current=previews},[previews]);useEffect(()=>()=>{previewsRef.current.forEach(URL.revokeObjectURL)},[]);
  const update=(patch:Partial<FormState>)=>setForm(v=>({...v,...patch}));
  const setFashion=(key:keyof typeof fashion,value:string)=>setFashionState(v=>({...v,[key]:value}));
- const ready=Boolean(form.name.trim()&&form.type.trim()&&Number(form.price)>0&&(!cfg.brand||form.brand.trim())&&(!cfg.size||form.size.trim())&&(!isFashion||fashion.audience&&fashion.clothingType&&fashion.size&&fashion.color&&fashion.condition));
+ const toggleShoeSize=(size:string)=>setFashionState(v=>({...v,shoeSizes:v.shoeSizes.includes(size)?v.shoeSizes.filter(item=>item!==size):[...v.shoeSizes,size]}));
+ const ready=Boolean(form.name.trim()&&form.type.trim()&&Number(form.price)>0&&(!cfg.brand||form.brand.trim())&&(!cfg.size||form.size.trim())&&(!isFashion||fashion.audience&&fashion.clothingType&&fashion.color&&fashion.condition&&(fashion.clothingType==='پێلاو'?fashion.shoeSizes.length>0:Boolean(fashion.size))));
  const hasChanges=Boolean(files.length||form.type.trim()||form.name.trim()||form.brand.trim()||form.size.trim()||form.price.trim()||form.description.trim()||!form.available||category!==cfg.cats[0].slug||Object.values(fashion).some(Boolean));
  const chooseFiles=(list:FileList|null)=>{if(!list?.length)return;const incoming=Array.from(list).slice(0,6-files.length).filter(file=>['image/jpeg','image/png','image/webp'].includes(file.type)&&file.size<=5*1024*1024);if(!incoming.length)return;setFiles(v=>[...v,...incoming]);setPreviews(v=>[...v,...incoming.map(file=>URL.createObjectURL(file))]);};
  const removeImage=(index:number)=>{URL.revokeObjectURL(previews[index]||'');setFiles(v=>v.filter((_,i)=>i!==index));setPreviews(v=>v.filter((_,i)=>i!==index));};
@@ -62,6 +64,8 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    if(!/^\d+$/.test(form.price)||Number(form.price)<=0)return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
    if(isFashion&&!fashion.audience)return setMessage('تکایە بۆ کێیە دیاری بکە.');
    if(isFashion&&!fashion.clothingType)return setMessage('تکایە جۆری جلوبەرگ دیاری بکە.');
+   if(isFashion&&fashion.clothingType==='پێلاو'&&fashion.shoeSizes.length===0)return setMessage('تکایە لانیکەم یەک ژمارەی پێلاو هەڵبژێرە.');
+   if(isFashion&&fashion.clothingType!=='پێلاو'&&!fashion.size)return setMessage('تکایە قەبارەی جلوبەرگ دیاری بکە.');
    setBusy(true);setMessage('');
 
    const store=await getStore();
@@ -81,7 +85,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
     imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
    }
 
-   const fashionDetails=isFashion?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,size:fashion.size,color:fashion.color,shoe_size:fashion.shoeSize||null,condition:fashion.condition,brand:fashion.brand||null}:{};
+   const fashionDetails=isFashion?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,size:fashion.clothingType==='پێلاو'?null:fashion.size,color:fashion.color,shoe_size:fashion.shoeSize||null,shoe_sizes:fashion.clothingType==='پێلاو'?fashion.shoeSizes:[],condition:fashion.condition,brand:fashion.brand||null}:{};
    const productName=form.name.trim();
 
    const {data:createdProduct,error:productError}=await supabase.from('products').insert({
@@ -110,7 +114,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
 
    setForm(v=>({...initialForm(v.city),storeName:v.storeName}));
    setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);
-   setFashionState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});
+   setFashionState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',shoeSizes:[],condition:'',brand:''});
    setCategory(cfg.cats[0].slug);setShowPreview(true);
    setMessage('بەرهەمەکە و پۆستەکە بە سەرکەوتوویی بڵاوکرانەوە.');onSaved?.();
   }catch(error:unknown){
@@ -131,7 +135,8 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    <label className="postField"><span>قەبارە</span><select value={fashion.size} onChange={e=>setFashion('size',e.target.value)}><option value="">هەڵبژێرە</option>{FASHION_OPTIONS.sizes.map(v=><option key={v}>{v}</option>)}</select></label>
    <label className="postField"><span>ڕەنگ</span><select value={fashion.color} onChange={e=>setFashion('color',e.target.value)}><option value="">هەڵبژێرە</option>{FASHION_OPTIONS.colors.map(v=><option key={v}>{v}</option>)}</select></label>
    <label className="postField"><span>حاڵەت</span><select value={fashion.condition} onChange={e=>setFashion('condition',e.target.value)}><option value="">هەڵبژێرە</option>{FASHION_OPTIONS.condition.map(v=><option key={v}>{v}</option>)}</select></label>
-   <label className="postField"><span>ژمارەی پێلاو</span><input inputMode="numeric" value={fashion.shoeSize} onChange={e=>setFashion('shoeSize',e.target.value.replace(/\D/g,''))} placeholder="٤٢"/></label>
+   {fashion.clothingType==='پێلاو'&&<div className="postField postFieldWide"><span>ژمارەکانی پێلاوی بەردەست</span><div className="shoeSizePicker">{SHOE_SIZES.map(size=><button key={size} type="button" className={fashion.shoeSizes.includes(size)?'shoeSizeChip active':'shoeSizeChip'} aria-pressed={fashion.shoeSizes.includes(size)} onClick={()=>toggleShoeSize(size)}>{size}</button>)}</div><small>تەنها ژمارەکانی بەردەست هەڵبژێرە؛ کڕیار لە هەمان لیست هەڵدەبژێرێت.</small></div>}
+   {fashion.clothingType!=='پێلاو'&&<label className="postField"><span>ژمارەی پێلاو</span><input inputMode="numeric" value={fashion.shoeSize} onChange={e=>setFashion('shoeSize',e.target.value.replace(/\D/g,''))} placeholder="٤٢"/></label>}
    <label className="postField"><span>براند</span><input value={fashion.brand} onChange={e=>setFashion('brand',e.target.value)} placeholder="Nike"/></label>
   </div></div>}
   <div className="postFormGrid"><label className="postField">ناوی بەرهەم<input value={form.name} onChange={e=>update({name:e.target.value})} placeholder="ناوی بەرهەم"/></label>{!isFashion&&<label className="postField">{cfg.typeLabel}<input value={form.type} onChange={e=>update({type:e.target.value})} placeholder="جۆری بەرهەم"/></label>}{isFashion&&<label className="postField">{cfg.typeLabel}<input value={form.type} onChange={e=>update({type:e.target.value})} placeholder="جۆری بەرهەم"/></label>}{cfg.brand&&!isFashion&&<label className="postField">مارکە<input value={form.brand} onChange={e=>update({brand:e.target.value})} placeholder="مارکە"/></label>}{cfg.size&&!isFashion&&<label className="postField">قەبارە<input value={form.size} onChange={e=>update({size:e.target.value})} placeholder="قەبارە"/></label>}<label className="postField">نرخ بە د.ع<input value={form.price} onChange={e=>update({price:e.target.value.replace(/\D/g,'')})} inputMode="numeric" placeholder="نموونە: ١٥٠٠٠"/></label><label className="postField">شار<select value={form.city} onChange={e=>update({city:e.target.value})}>{CITIES.map(v=><option key={v}>{v}</option>)}</select></label></div>
