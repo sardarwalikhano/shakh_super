@@ -201,7 +201,55 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
  const removeEditImage=(index:number)=>{setEditImages(v=>v.filter((_,i)=>i!==index));setEditGalleryIndex(v=>Math.max(0,Math.min(v,editImages.length-2)));};
  const hasEditChanges=useMemo(()=>{if(!editing)return false;return editTitle.trim()!==editing.title||editContent.trim()!==(editing.content||'')||editPrice!==(editing.price_iqd==null?'':String(editing.price_iqd))||editCity!==(editing.city||'هەولێر')||JSON.stringify(editListing)!==JSON.stringify(editing.listing_details||{})||JSON.stringify(editImages)!==JSON.stringify(Array.isArray(editing.images)?editing.images:[])||editFiles.length>0;},[editing,editTitle,editContent,editPrice,editCity,editListing,editImages,editFiles]);
  const closeEditor=()=>{if(busyId)return;if(hasEditChanges&&!window.confirm('گۆڕانکارییەکان پاشەکەوت نەکراون. دڵنیایت دەتەوێت دەستکارییەکە دابخەیت؟'))return;editFilePreviews.forEach(URL.revokeObjectURL);setEditing(null);setEditFiles([]);setEditFilePreviews([])};
- const saveEdit=async()=>{if(!editing)return;if(!editTitle.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');if(editPrice&&!/^\d+$/.test(editPrice))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');setBusyId(editing.id);try{let images=[...editImages];for(const [index,file] of editFiles.entries()){const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');const path=editing.author_id+'/posts/'+Date.now()+'-edit-'+index+'-'+safeName;const {error:uploadError}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});if(uploadError)throw uploadError;images.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl)}const {error}=await supabase.from('posts').update({title:editTitle.trim(),content:editContent.trim()||null,price_iqd:editPrice?Number(editPrice):null,city:editCity.trim()||'هەولێر',images,listing_details:editListing}).eq('id',editing.id);if(error)throw error;editFilePreviews.forEach(URL.revokeObjectURL);setEditing(null);setEditFiles([]);setEditFilePreviews([]);setMessage('پۆستەکە بە تەواوی نوێکرایەوە.');await load()}catch(error:unknown){setMessage(error instanceof Error?error.message:'نوێکردنەوەی پۆست سەرکەوتوو نەبوو.')}finally{setBusyId('')}};
+ const saveEdit=async()=>{
+  if(!editing)return;
+  if(!editTitle.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');
+  if(editPrice&&!/^\d+$/.test(editPrice))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');
+  const listing={...editListing};
+  if(editing.post_type==='fashion'){
+   const required=['audience','clothing_type','size','color','condition'];
+   if(required.some(key=>!String(listing[key]??'').trim()))return setMessage('تکایە هەموو زانیارییە سەرەتاییەکانی جلوبەرگ پڕ بکەرەوە.');
+   listing.shoe_size=String(listing.shoe_size??'').trim()?Number(listing.shoe_size):null;
+  }
+  if(editing.post_type==='car'){
+   const required=['make','model','year','mileage','body_type','fuel','transmission','color'];
+   if(required.some(key=>!String(listing[key]??'').trim()))return setMessage('تکایە هەموو زانیارییە سەرەتاییەکانی ئۆتۆمبێل پڕ بکەرەوە.');
+   const year=Number(listing.year),mileage=Number(listing.mileage);
+   if(!Number.isInteger(year)||year<1900||year>new Date().getFullYear()+1)return setMessage('ساڵی ئۆتۆمبێل دروست نییە.');
+   if(!Number.isFinite(mileage)||mileage<0)return setMessage('کیلۆمەتر دەبێت ژمارەی دروست بێت.');
+   listing.year=year;listing.mileage=mileage;
+  }
+  setBusyId(editing.id);
+  const uploadedPaths:string[]=[];
+  try{
+   let images=[...editImages];
+   for(const [index,file] of editFiles.entries()){
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=editing.author_id+'/posts/'+Date.now()+'-edit-'+index+'-'+safeName;
+    const {error:uploadError}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});
+    if(uploadError)throw uploadError;
+    uploadedPaths.push(path);
+    images.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
+   }
+   if(images.length>12)return setMessage('زۆرترین ١٢ وێنە بۆ هەر پۆستێک ڕێگەپێدراوە.');
+   const {error}=await supabase.from('posts').update({
+    title:editTitle.trim(),
+    content:editContent.trim()||null,
+    price_iqd:editPrice?Number(editPrice):null,
+    city:editCity.trim()||'هەولێر',
+    images,
+    listing_details:listing
+   }).eq('id',editing.id);
+   if(error)throw error;
+   editFilePreviews.forEach(URL.revokeObjectURL);
+   setEditing(null);setEditFiles([]);setEditFilePreviews([]);
+   setMessage('پۆستەکە بە تەواوی نوێکرایەوە.');
+   await load();
+  }catch(error:unknown){
+   if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
+   setMessage(error instanceof Error?error.message:'نوێکردنەوەی پۆست سەرکەوتوو نەبوو.');
+  }finally{setBusyId('')}
+ };
 
  const changeVisibility=async(post:Post,nextVisibility:'public'|'private')=>{
   setBusyId(post.id);
