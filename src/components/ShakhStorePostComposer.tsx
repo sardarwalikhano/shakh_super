@@ -61,6 +61,8 @@ export default function ShakhStorePostComposer({userId}:{userId:string}){
   if(!supabase)return setMessage('پەیوەندی بە Supabase بەردەست نییە.');
   if(!title.trim())return setMessage('ناونیشانی پۆست بنووسە.');
   if(price&&!/^\d+$/.test(price))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');
+  if(PRODUCT_SECTIONS.has(section)&&!price)return setMessage('بۆ پۆستی بەرهەم تکایە نرخێک دابنێ.');
+  if(PRODUCT_SECTIONS.has(section)&&files.length===0)return setMessage('بۆ پۆستی بەرهەم لانیکەم یەک وێنە زیاد بکە.');
   const uploadedPaths:string[]=[];
   let createdStoreId:string|null=null;
   let createdProductId:string|null=null;
