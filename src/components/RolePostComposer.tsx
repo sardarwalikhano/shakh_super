@@ -1,4 +1,4 @@
-import React,{useEffect,useMemo,useState} from 'react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {CheckCircle2,Eye,ImagePlus,Send,Sparkles,Tag,Upload,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
@@ -8,7 +8,7 @@ type RoleConfig={types:{value:string;label:string}[];heading:string;label:string
 const CONFIG:Record<string,RoleConfig>={
  customer:{types:[{value:'general',label:'گشتی'},{value:'marketplace',label:'بازاڕ'}],heading:'پۆستی نوێ',label:'کڕیار'},
  captain:{types:[{value:'delivery',label:'گەیاندن'}],heading:'پۆستی گەیاندن',label:'کاپتن'},
- restaurant_vendor:{types:[{value:'restaurant',label:'خواردن'},{value:'marketplace',label:'بازاڕ'}],heading:'پۆستی ڕێستوران',label:'فرۆشیاری خواردن'},
+ restaurant_vendor:{types:[{value:'food',label:'خواردن'},{value:'marketplace',label:'بازاڕ'}],heading:'پۆستی ڕێستوران',label:'فرۆشیاری خواردن'},
  fashion_vendor:{types:[{value:'fashion',label:'جلوبەرگ'},{value:'marketplace',label:'بازاڕ'}],heading:'پۆستی جلوبەرگ',label:'فرۆشیاری جلوبەرگ'},
  car_dealer:{types:[{value:'car',label:'ئۆتۆمبێل'}],heading:'SHAKH Cars',label:'پێشانگای ئۆتۆمبێل'},
  umrah_agency:{types:[{value:'umrah',label:'عومرە'}],heading:'پۆستی عومرە',label:'ئاژانسی عومرە'},
@@ -42,7 +42,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
  const [price,setPrice]=useState('');
  const [city,setCity]=useState('هەولێر');
  const [files,setFiles]=useState<File[]>([]);
- const [previews,setPreviews]=useState<string[]>([]);
+ const [previews,setPreviews]=useState<string[]>([]);const previewsRef=useRef<string[]>([]);
  const [busy,setBusy]=useState(false);
  const [message,setMessage]=useState('');
  const [showPreview,setShowPreview]=useState(true);
@@ -62,7 +62,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
  const hasChanges=Boolean(title.trim()||content.trim()||price.trim()||city!=='هەولێر'||files.length||postType!==cfg.types[0].value||
    Object.values(fashion).some(Boolean)||Object.entries(car).some(([key,value])=>key==='negotiable'?value===false:key==='exchange'?value===true:Boolean(value)));
 
- useEffect(()=>()=>{previews.forEach(URL.revokeObjectURL)},[previews]);
+ useEffect(()=>{previewsRef.current=previews},[previews]);useEffect(()=>()=>{previewsRef.current.forEach(URL.revokeObjectURL)},[]);
 
  const setF=(key:keyof typeof fashion,value:string)=>setFashion(v=>({...v,[key]:value}));
  const setC=(key:keyof typeof car,value:string|boolean)=>setCar(v=>({...v,[key]:value}));
@@ -88,6 +88,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
  };
 
  const submit=async()=>{
+  const uploadedPaths:string[]=[];
   try{
    if(!title.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');
    if(isPriceVisible&&(!/^\d+$/.test(price)||Number(price)<=0))return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
@@ -104,6 +105,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    if(isCar&&!car.fuel)return setMessage('سووتەمەنی دیاری بکە.');
    if(isCar&&!car.transmission)return setMessage('گێڕ دیاری بکە.');
    if(isCar&&!car.color)return setMessage('ڕەنگی ئۆتۆمبێل دیاری بکە.');
+   if(isCar){const year=Number(car.year),mileage=Number(car.mileage);if(!Number.isInteger(year)||year<1900||year>new Date().getFullYear()+1)return setMessage('ساڵی ئۆتۆمبێل دروست نییە.');if(!Number.isFinite(mileage)||mileage<0)return setMessage('کیلۆمەتر دەبێت ژمارەی دروست بێت.')}
    setBusy(true);setMessage('');
 
    const {data:profile}=await supabase.from('profiles').select('full_name').eq('id',userId).maybeSingle();
@@ -114,6 +116,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
      const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;
      const {error}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});
      if(error)throw error;
+     uploadedPaths.push(path);
      imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
    }
 
@@ -150,7 +153,7 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    </div>
 
    <div className="postComposerLabel">جۆری پۆست</div>
-   <div className="postCategoryGrid">{cfg.types.map(item=><button key={item.value} type="button" className={postType===item.value?'postCategory active':'postCategory'} onClick={()=>setPostType(item.value)}><span>{TYPE_ICONS[item.value]||'📝'}</span><b>{item.label}</b></button>)}</div>
+   <div className="postCategoryGrid">{cfg.types.map(item=><button key={item.value} type="button" className={postType===item.value?'postCategory active':'postCategory'} aria-pressed={postType===item.value} onClick={()=>setPostType(item.value)}><span>{TYPE_ICONS[item.value]||'📝'}</span><b>{item.label}</b></button>)}</div>
 
    {isFashion&&<div className="postStructuredBox">
      <div className="postComposerLabel">👕 زانیاری جلوبەرگ</div>
