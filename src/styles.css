@@ -762,3 +762,18 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
  .supportTicketTitle{flex-direction:column;align-items:flex-start}
 }
 @media(max-width:760px){.nav{padding:10px 14px;min-height:70px}.logo{min-width:auto}.logoImage{width:48px;height:48px}.logo b{font-size:21px}.logo span{font-size:9px}.search{height:48px}.plain,.cart{width:44px;height:44px}.loginBtn{padding:11px 12px}}
+/* SHAKH unified brand replacement — additive */
+.logo{min-width:190px;text-decoration:none;color:inherit}
+.logoImage{width:58px;height:58px;border-radius:18px;object-fit:contain;background:#fff}
+.logoTagline{display:block;color:#7e8c9e;font-size:10px;font-weight:800;white-space:nowrap}
+.heroOrb{background:linear-gradient(145deg,#fff,#edf7f6);transform:none;border-radius:38px;padding:20px}
+.heroOrb img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 20px 30px rgba(8,45,65,.14))}
+.footerBrand>img{width:52px;height:52px;object-fit:contain;border-radius:16px;background:#fff;display:block}
+@media(max-width:720px){
+ .logoImage{width:48px;height:48px}
+ .logo{min-width:auto}
+ .logoTagline{display:none}
+}
+@media(max-width:520px){
+ .logoImage{width:46px;height:46px;border-radius:14px}
+}
