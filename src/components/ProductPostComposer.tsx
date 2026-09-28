@@ -49,8 +49,24 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    const imageUrls:string[]=[];for(const [index,file] of files.entries()){const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;const {error}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);}
    const fashionDetails=isFashion?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,size:fashion.size,color:fashion.color,shoe_size:fashion.shoeSize||null,condition:fashion.condition,brand:fashion.brand||null}:{};
    const productName=form.name.trim();
-   const {error}=await supabase.from('products').insert({store_id:sid,category_id:cat.id,name_ku:productName,name_ar:productName,name_en:productName,description_ku:form.description.trim()||null,price_iqd:Number(form.price),product_type:form.type.trim(),brand:isFashion?fashion.brand.trim()||null:form.brand.trim()||null,size:isFashion?fashion.size.trim()||null:form.size.trim()||null,image_url:imageUrls[0]||null,stock:form.available?1:0,is_available:form.available,variants:[{section:role,category,...fashionDetails}]});if(error)throw error;
-   const meta=POST_META[role];if(meta){const {data:profile}=await supabase.from('profiles').select('full_name').eq('id',userId).maybeSingle();const publisherName=(profile as {full_name?:string|null}|null)?.full_name||form.storeName.trim()||meta.label;const {error:postError}=await supabase.from('posts').insert({author_id:userId,store_id:sid,title:productName,content:form.description.trim()||null,images:imageUrls,price_iqd:Number(form.price),city:form.city||'هەولێر',status:'approved',section:meta.postType==='fashion'?'fashion':category,publisher_name:publisherName,post_type:meta.postType,publisher_role:role,label:meta.label,visibility:'public',listing_details:fashionDetails});if(postError)throw postError;}
+   let createdProductId:string|null=null;
+   const cleanupUploads=async()=>{if(imageUrls.length){const uploadedPaths=imageUrls.map(url=>{const marker='/storage/v1/object/public/products/';const index=url.indexOf(marker);return index>=0?decodeURIComponent(url.slice(index+marker.length)):''}).filter(Boolean);if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths)}};
+   try{
+    const {data:createdProduct,error}=await supabase.from('products').insert({store_id:sid,category_id:cat.id,name_ku:productName,name_ar:productName,name_en:productName,description_ku:form.description.trim()||null,price_iqd:Number(form.price),product_type:form.type.trim(),brand:isFashion?fashion.brand.trim()||null:form.brand.trim()||null,size:isFashion?fashion.size.trim()||null:form.size.trim()||null,image_url:imageUrls[0]||null,stock:form.available?1:0,is_available:form.available,variants:[{section:role,category,...fashionDetails}]}).select('id').single();
+    if(error)throw error;
+    createdProductId=createdProduct.id;
+    const meta=POST_META[role];
+    if(meta){
+     const {data:profile}=await supabase.from('profiles').select('full_name').eq('id',userId).maybeSingle();
+     const publisherName=(profile as {full_name?:string|null}|null)?.full_name||form.storeName.trim()||meta.label;
+     const {error:postError}=await supabase.from('posts').insert({author_id:userId,store_id:sid,title:productName,content:form.description.trim()||null,images:imageUrls,price_iqd:Number(form.price),city:form.city||'هەولێر',status:'approved',section:meta.postType==='fashion'?'fashion':category,publisher_name:publisherName,post_type:meta.postType,publisher_role:role,label:meta.label,visibility:'public',listing_details:fashionDetails});
+     if(postError)throw postError;
+    }
+   }catch(error){
+    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId).eq('store_id',sid);
+    await cleanupUploads();
+    throw error;
+   }
    setForm(v=>({...initialForm(v.city),storeName:v.storeName}));setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);setFashionState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});setCategory(cfg.cats[0].slug);setShowPreview(true);setMessage('بەرهەمەکە و پۆستەکە بە سەرکەوتوویی بڵاوکرانەوە.');onSaved?.();
   }catch(error:unknown){setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.')}finally{setBusy(false)}};
  return <section className="orderCard postComposer" aria-label="پۆستکردنی بەرهەم">
