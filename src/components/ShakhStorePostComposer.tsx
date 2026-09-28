@@ -28,13 +28,28 @@ export default function ShakhStorePostComposer({userId}:{userId:string}){
  const submit=async()=>{
   if(!supabase)return setMessage('پەیوەندی بە Supabase بەردەست نییە.');
   if(!title.trim())return setMessage('ناونیشانی پۆست بنووسە.');
+  if(price&&!/^\\d+$/.test(price))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');
   try{
    setBusy(true);setMessage('');
-   const {error}=await supabase.from('posts').insert({author_id:userId,title:title.trim(),content:content.trim()||null,price_iqd:price?Number(price):null,section,publisher_name:'SHAKH Store',status:'approved'});
+   const postType=section==='restaurant'?'food':section==='fashion'?'fashion':section==='cars'?'car':section==='umrah'?'umrah':section==='marketplace'||section==='supermarket'||section==='daily'||section==='electronics'||section==='jewelry'?'marketplace':'announcement';
+   const {error}=await supabase.from('posts').insert({
+    author_id:userId,
+    title:title.trim(),
+    content:content.trim()||null,
+    price_iqd:price?Number(price):null,
+    section,
+    publisher_name:'SHAKH Store',
+    post_type:postType,
+    publisher_role:'super_admin',
+    label:'بەڕێوبەری باڵا',
+    status:'approved',
+    visibility:'public',
+    listing_details:{source:'shakh_store'}
+   });
    if(error)throw error;
    setTitle('');setContent('');setPrice('');
    setMessage('پۆست بە ناوی SHAKH Store بڵاوکرایەوە.');
-  }catch(e:any){setMessage(e?.message||'بڵاوکردنەوەی پۆست سەرکەوتوو نەبوو.')}finally{setBusy(false)}
+  }catch(e:unknown){setMessage(e instanceof Error?e.message:'بڵاوکردنەوەی پۆست سەرکەوتوو نەبوو.')}finally{setBusy(false)}
  };
  return <div style={{border:'1px solid #eee',borderRadius:18,padding:18,marginTop:18,background:'#fff'}}>
   <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}><Store size={22}/><div><b>SHAKH Store</b><small style={{display:'block',opacity:.65}}>پۆستکردن لە هەموو بەشەکان</small></div></div>
