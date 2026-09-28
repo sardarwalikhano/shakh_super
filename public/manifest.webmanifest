@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "شاخ — بازاڕی هەموو شت",
-  "short_name": "شاخ",
+  "name": "SHAKH SUPER — شاخ",
+  "short_name": "SHAKH SUPER",
   "description": "خواردن، سووپەرمارکێت، جل و بەرگ و پێداویستییە ڕۆژانەکان لە یەک شوێن.",
   "lang": "ku",
   "dir": "rtl",
@@ -9,7 +9,7 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#ff6a00",
+  "theme_color": "#123b68",
   "background_color": "#07111f",
   "categories": ["shopping", "food", "business"],
   "icons": [
