@@ -51,7 +51,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
  const isJewelry=section==='jewelry';
  const isGenericProduct=section==='daily'||section==='marketplace';
  const updateDetail=(key:keyof typeof details,value:string)=>setDetails(v=>({...v,[key]:value}));
- const resetDetails=()=>setDetails({type:'',audience:'',size:'',color:'',condition:'',brand:'',shoeSize:'',model:'',material:'',karat:''});
+ const resetDetails=()=>setDetails({type:'',audience:'',size:'',color:'',condition:'',brand:'',shoeSize:'',shoeSizes:[],model:'',material:'',karat:''});
 
  useEffect(()=>{previewsRef.current=previews},[previews]);
  useEffect(()=>()=>{previewsRef.current.forEach(src=>URL.revokeObjectURL(src))},[]);
