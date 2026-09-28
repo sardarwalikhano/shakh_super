@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {CheckCircle2,Eye,ImagePlus,PackagePlus,Send,Sparkles,Store,Tag,Upload,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
@@ -31,13 +31,13 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const cfg=CONFIG[role as Role];if(!cfg)return null;
  const [form,setForm]=useState<FormState>(()=>initialForm());
  const [category,setCategory]=useState(cfg.cats[0].slug),[storeId,setStoreId]=useState(''),[storeLoading,setStoreLoading]=useState(true);
- const [files,setFiles]=useState<File[]>([]),[previews,setPreviews]=useState<string[]>([]);
+ const [files,setFiles]=useState<File[]>([]),[previews,setPreviews]=useState<string[]>([]);const previewsRef=useRef<string[]>([]);
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[showPreview,setShowPreview]=useState(true);
  const [fashion,setFashionState]=useState({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});
  const isFashion=role==='fashion_vendor';
  const selectedCategory=cfg.cats.find(item=>item.slug===category)||cfg.cats[0];
  useEffect(()=>{let live=true;setStoreLoading(true);(async()=>{const {data}=await supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',cfg.storeCategory).eq('is_active',true).limit(1).maybeSingle();if(!live)return;if(data){setStoreId(data.id);setForm(v=>({...v,storeName:data.name||''}))}setStoreLoading(false)})();return()=>{live=false}},[userId,cfg.storeCategory]);
- useEffect(()=>()=>{previews.forEach(URL.revokeObjectURL)},[previews]);
+ useEffect(()=>{previewsRef.current=previews},[previews]);useEffect(()=>()=>{previewsRef.current.forEach(URL.revokeObjectURL)},[]);
  const update=(patch:Partial<FormState>)=>setForm(v=>({...v,...patch}));
  const setFashion=(key:keyof typeof fashion,value:string)=>setFashionState(v=>({...v,[key]:value}));
  const ready=Boolean(form.name.trim()&&form.type.trim()&&Number(form.price)>0&&(!cfg.brand||form.brand.trim())&&(!cfg.size||form.size.trim())&&(!isFashion||fashion.audience&&fashion.clothingType&&fashion.size&&fashion.color&&fashion.condition));
