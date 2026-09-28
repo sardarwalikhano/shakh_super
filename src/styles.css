@@ -856,3 +856,13 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .postUploadMulti{min-height:92px;display:grid;place-items:center;align-content:center;gap:4px}
 @media(max-width:900px){.postAdvancedGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.postDetailsModalRich{grid-template-columns:1fr}.postDetailsMainImage{height:360px}}
 @media(max-width:600px){.postAdvancedFilterHead{align-items:flex-start;flex-direction:column}.postAdvancedFilterHead>div:last-child{width:100%}.postAdvancedFilterHead>div:last-child button{flex:1;justify-content:center}.postAdvancedGrid{grid-template-columns:1fr}.postDetailsMainImage{height:280px}.postDetailsModalRich{grid-template-rows:auto auto}.postsEditGallery>img,.postsEditGalleryEmpty{height:210px}.postsEditDialogWide{max-height:94vh}.postImageGalleryItem{flex-basis:82px;height:82px}}
+
+
+/* Accessible post editor gallery controls */
+.postsEditThumb{position:relative;flex:0 0 58px;height:58px}
+.postsEditThumb .postsEditThumbSelect{position:relative;display:block;width:100%;height:100%;border:2px solid transparent;border-radius:10px;overflow:hidden;padding:0;background:#fff;cursor:pointer}
+.postsEditThumb.active .postsEditThumbSelect{border-color:#ff8737}
+.postsEditThumb .postsEditThumbSelect img{display:block;width:100%;height:100%;object-fit:cover}
+.postsEditThumb .postsEditThumbSelect i{position:absolute;right:4px;bottom:4px;background:rgba(7,26,51,.78);color:#fff;border-radius:99px;padding:2px 5px;font-size:8px;font-style:normal}
+.postsEditThumb .postsEditThumbRemove{position:absolute;left:3px;top:3px;width:20px;height:20px;min-width:20px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:rgba(179,61,52,.92);color:#fff;cursor:pointer;z-index:2}
+.postsEditThumb .postsEditThumbRemove svg{width:13px;height:13px}
