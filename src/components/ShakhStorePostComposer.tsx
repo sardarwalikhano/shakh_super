@@ -28,7 +28,7 @@ export default function ShakhStorePostComposer({userId}:{userId:string}){
  const submit=async()=>{
   if(!supabase)return setMessage('پەیوەندی بە Supabase بەردەست نییە.');
   if(!title.trim())return setMessage('ناونیشانی پۆست بنووسە.');
-  if(price&&!/^\\d+$/.test(price))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');
+  if(price&&!/^\d+$/.test(price))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');
   try{
    setBusy(true);setMessage('');
    const postType=section==='restaurant'?'food':section==='fashion'?'fashion':section==='cars'?'car':section==='umrah'?'umrah':section==='marketplace'||section==='supermarket'||section==='daily'||section==='electronics'||section==='jewelry'?'marketplace':'announcement';
@@ -56,7 +56,7 @@ export default function ShakhStorePostComposer({userId}:{userId:string}){
   <select value={section} onChange={e=>setSection(e.target.value)} style={{width:'100%',padding:11,borderRadius:10,border:'1px solid #ddd',marginBottom:10}}>{sections.map(s=><option key={s.value} value={s.value}>{s.label}</option>)}</select>
   <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="ناونیشانی پۆست" style={{width:'100%',padding:11,borderRadius:10,border:'1px solid #ddd',marginBottom:10}}/>
   <textarea value={content} onChange={e=>setContent(e.target.value)} placeholder="ناوەڕۆکی پۆست" rows={4} style={{width:'100%',padding:11,borderRadius:10,border:'1px solid #ddd',marginBottom:10,resize:'vertical'}}/>
-  <input value={price} onChange={e=>setPrice(e.target.value)} inputMode="numeric" placeholder="نرخ بە دینار (ئارەزوومەندانە)" style={{width:'100%',padding:11,borderRadius:10,border:'1px solid #ddd',marginBottom:10}}/>
+  <input value={price} onChange={e=>setPrice(e.target.value.replace(/\D/g,''))} inputMode="numeric" placeholder="نرخ بە د.ع (ئارەزوومەندانە)" maxLength={14} style={{width:'100%',padding:11,borderRadius:10,border:'1px solid #ddd',marginBottom:10}}/>
   <button type="button" className="primary full" disabled={busy} onClick={submit}><Send size={17}/>{busy?'تکایە چاوەڕێ بکە':'بڵاوکردنەوەی پۆست'}</button>
   {message&&<small className="msg">{message}</small>}
  </div>;
