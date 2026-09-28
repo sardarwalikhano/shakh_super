@@ -3,7 +3,8 @@ import {Filter,Image as ImageIcon,MapPin,RefreshCw,Share2,Tag,UserRound,WalletCa
 import {supabase} from '../lib/supabase';
 
 type Details=Record<string,unknown>;
-type Post={id:string;author_id:string;title:string;content?:string|null;images?:unknown;price_iqd?:number|null;city?:string|null;status:string;created_at:string;publisher_name?:string|null;post_type?:string|null;publisher_role?:string|null;label?:string|null;visibility:string;listing_details?:Details|null};
+type Post={id:string;author_id:string;store_id?:string|null;title:string;content?:string|null;images?:unknown;price_iqd?:number|null;city?:string|null;status:string;created_at:string;publisher_name?:string|null;post_type?:string|null;publisher_role?:string|null;label?:string|null;visibility:string;listing_details?:Details|null};
+type Props={onAddToCart?: (productId:string)=>Promise<boolean>};
 
 const TYPES=[{value:'all',label:'هەموو'},{value:'food',label:'خواردن'},{value:'fashion',label:'جلوبەرگ'},{value:'marketplace',label:'بازاڕ'},{value:'car',label:'ئۆتۆمبێل'},{value:'umrah',label:'عومرە'},{value:'delivery',label:'گەیاندن'},{value:'announcement',label:'ئاگاداری'}];
 const AUDIENCE=['پیاوان','ئافرەتان','منداڵان','هەمووان'];
@@ -17,21 +18,22 @@ const BODY=['سێدان','SUV','کروس ئۆڤەر','هەچبەک','پیکاپ'
 const labelFor=(type?:string|null,label?:string|null)=>label||TYPES.find(item=>item.value===type)?.label||'گشتی';
 const detailsOf=(post:Post)=>post.listing_details||{};
 const stringDetail=(post:Post,key:string)=>{const value=detailsOf(post)[key];return value==null?'':String(value)};
-const postImages=(images:unknown):string[]=>Array.isArray(images)?images.filter((value):value is string=>typeof value==='string').slice(0,12):[];
+const postImages=(images:unknown):string[]=>{if(Array.isArray(images))return images.filter((value):value is string=>typeof value==='string'&&value.trim().length>0).slice(0,12);if(typeof images==='string'){try{const parsed=JSON.parse(images);return Array.isArray(parsed)?parsed.filter((value):value is string=>typeof value==='string'&&value.trim().length>0).slice(0,12):[]}catch{return images.startsWith('http')?[images]:[]}}return[]};
 const isNew=(createdAt:string)=>Date.now()-new Date(createdAt).getTime()<86400000;
 const timeLabel=(createdAt:string)=>{const m=Math.floor(Math.max(0,Date.now()-new Date(createdAt).getTime())/60000);if(m<1)return 'ئێستا';if(m<60)return m+' خولەک لەمەوبەر';const h=Math.floor(m/60);if(h<24)return h+' کاتژمێر لەمەوبەر';return Math.floor(h/24)+' ڕۆژ لەمەوبەر'};
 const postShareUrl=(id:string)=>{const u=new URL(window.location.href);u.search='';u.searchParams.set('post',id);u.hash='shakh-posts';return u.toString()};
 async function sharePost(post:Post){try{const url=postShareUrl(post.id);if(typeof navigator.share==='function'){await navigator.share({title:post.title,text:post.content||post.title,url});return'shared'}if(navigator.clipboard){await navigator.clipboard.writeText(url);return'copied'}return'failed'}catch(error){if(error instanceof DOMException&&error.name==='AbortError')return'cancelled';return'failed'}}
 
-export default function PostsFeed(){
+export default function PostsFeed({onAddToCart}:Props){
  const [posts,setPosts]=useState<Post[]>([]),[filter,setFilter]=useState('all'),[loading,setLoading]=useState(true),[page,setPage]=useState(1),[message,setMessage]=useState(''),[selectedPost,setSelectedPost]=useState<Post|null>(null),[shareMessage,setShareMessage]=useState('');
+ const [addingProductId,setAddingProductId]=useState<string|null>(null);
  const [showAdvanced,setShowAdvanced]=useState(false);
  const [fashionAudience,setFashionAudience]=useState(''),[fashionType,setFashionType]=useState(''),[fashionSize,setFashionSize]=useState(''),[fashionColor,setFashionColor]=useState(''),[fashionShoe,setFashionShoe]=useState('');
  const [carMake,setCarMake]=useState(''),[carFuel,setCarFuel]=useState(''),[carTransmission,setCarTransmission]=useState(''),[carBody,setCarBody]=useState(''),[carMinYear,setCarMinYear]=useState(''),[carMaxYear,setCarMaxYear]=useState(''),[carMaxMileage,setCarMaxMileage]=useState(''),[carMinPrice,setCarMinPrice]=useState(''),[carMaxPrice,setCarMaxPrice]=useState('');
  const [activeImage,setActiveImage]=useState(0);
  const pageSize=12,closeButtonRef=useRef<HTMLButtonElement|null>(null);
 
- const load=async()=>{setLoading(true);const {data,error}=await supabase.from('posts').select('id,author_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility,listing_details').eq('status','approved').eq('visibility','public').order('created_at',{ascending:false}).limit(200);if(error){setMessage('نەتوانرا پۆستەکان وەرگیرێن.');setLoading(false);return}setPosts((data||[]) as Post[]);setMessage('');setLoading(false)};
+ const load=async()=>{setLoading(true);const {data,error}=await supabase.from('posts').select('id,author_id,store_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility,listing_details').eq('status','approved').eq('visibility','public').order('created_at',{ascending:false}).limit(200);if(error){setMessage('نەتوانرا پۆستەکان وەرگیرێن.');setLoading(false);return}setPosts((data||[]) as Post[]);setMessage('');setLoading(false)};
  useEffect(()=>{void load();const c=supabase.channel('shakh-live-posts').on('postgres_changes',{event:'*',schema:'public',table:'posts'},()=>{void load()}).subscribe();return()=>{void supabase.removeChannel(c)}},[]);
  useEffect(()=>{setPage(1);if(filter!=='fashion'&&filter!=='car')setShowAdvanced(false)},[filter]);
  useEffect(()=>{if(!selectedPost)return;const u=new URL(window.location.href);u.searchParams.set('post',selectedPost.id);u.hash='shakh-posts';window.history.replaceState(null,'',u.pathname+u.search+u.hash)},[selectedPost]);
@@ -61,6 +63,8 @@ export default function PostsFeed(){
    return true;
  }),[posts,filter,fashionAudience,fashionType,fashionSize,fashionColor,fashionShoe,carMake,carFuel,carTransmission,carBody,carMinYear,carMaxYear,carMaxMileage,carMinPrice,carMaxPrice]);
  const shown=filtered.slice(0,page*pageSize);
+ const productIdOf=(post:Post)=>{const value=detailsOf(post).product_id;return typeof value==='string'&&value?value:null};
+ const addProduct=(productId:string)=>{if(!onAddToCart)return;setAddingProductId(productId);void onAddToCart(productId).then(ok=>setMessage(ok?'بەرهەمەکە بۆ سەلە زیاد کرا.':'')).finally(()=>setAddingProductId(null));};
 
  const openPost=(post:Post)=>{setSelectedPost(post);setActiveImage(0);setShareMessage('')};
  const closePost=()=>{setSelectedPost(null);setShareMessage('');const u=new URL(window.location.href);u.searchParams.delete('post');u.hash='shakh-posts';window.history.replaceState(null,'',u.pathname+u.search+u.hash)};
@@ -98,7 +102,7 @@ export default function PostsFeed(){
 
   {loading&&!posts.length?<div className="postFeedEmpty"><RefreshCw size={35}/><strong>پۆستەکان بار دەکرێن...</strong><small>کەمێک چاوەڕوان بە.</small></div>:!filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>فلتەرەکان بگۆڕە یان پاکیان بکەرەوە.</small></div>:<div className="postFeedGrid">{shown.map(post=>{const imgs=postImages(post.images),img=imgs[0],postChips=chips(post);return <article className={'postFeedCard '+(post.post_type==='car'?'postFeedCardCar':post.post_type==='fashion'?'postFeedCardFashion':'')} key={post.id} id={'post-'+post.id} tabIndex={0} role="button" aria-label={'پۆستی '+post.title+' بکەرەوە'} onClick={()=>openPost(post)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPost(post)}}}>
    <div className="postFeedImage">{img?<img src={img} alt={post.title} loading="lazy" decoding="async"/>:<ImageIcon size={40}/>}<span className="postFeedBadge">{labelFor(post.post_type,post.label)}</span>{imgs.length>1&&<span className="postFeedImageCount">{imgs.length} وێنە</span>}{isNew(post.created_at)&&<span className="postFeedNew">نوێ</span>}</div>
-   <div className="postFeedBody"><div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{timeLabel(post.created_at)}</small></div><h3>{post.title}</h3>{post.content&&<p>{post.content}</p>}{postChips.length>0&&<div className="postSpecChips">{postChips.slice(0,7).map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}<div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div><div className="postFeedFooter">{post.price_iqd!=null?<strong><WalletCards size={14}/>{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>:<small>بێ نرخ</small>}<span>وردەکاری</span></div></div>
+   <div className="postFeedBody"><div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{timeLabel(post.created_at)}</small></div><h3>{post.title}</h3>{post.content&&<p>{post.content}</p>}{postChips.length>0&&<div className="postSpecChips">{postChips.slice(0,7).map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}<div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div><div className="postFeedFooter">{post.price_iqd!=null?<strong><WalletCards size={14}/>{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>:<small>بێ نرخ</small>}{productIdOf(post)&&onAddToCart?<button type="button" className="postAddToCart" onClick={e=>{e.stopPropagation();addProduct(productIdOf(post)!)}} disabled={addingProductId===productIdOf(post)}>{addingProductId===productIdOf(post)?'زیاد دەکرێت...':'زیادکردن بۆ سەلە'}</button>:<span>وردەکاری</span>}</div></div>
   </article>})}</div>}
   {shown.length<filtered.length&&<div className="postFeedMore"><button type="button" className="plain" onClick={()=>setPage(v=>v+1)}>زیاتر پیشاندان</button></div>}{message&&<div className="msg postFeedMessage" role="alert" aria-live="polite">{message}</div>}
 
@@ -114,6 +118,7 @@ export default function PostsFeed(){
     {chips(selectedPost).length>0&&<div className="postSpecChips postSpecChipsDetails">{chips(selectedPost).map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}
     <div className="postDetailsPublisher"><UserRound size={15}/><span>{selectedPost.publisher_name||'بڵاوکەرەوە'}</span></div>
     {selectedPost.price_iqd!=null&&<strong className="postDetailsPrice"><WalletCards size={15}/>{Number(selectedPost.price_iqd).toLocaleString('en-US')} د.ع</strong>}
+    {productIdOf(selectedPost)&&onAddToCart&&<button type="button" className="primary postDetailsCart" disabled={addingProductId===productIdOf(selectedPost)} onClick={()=>addProduct(productIdOf(selectedPost)!) }>{addingProductId===productIdOf(selectedPost)?'زیاد دەکرێت...':'زیادکردن بۆ سەلە'}</button>}
     <button type="button" className="primary postDetailsShare" onClick={async()=>{const result=await sharePost(selectedPost);if(result==='shared')setShareMessage('پۆستەکە بە سەرکەوتوویی هاوبەش کرا.');else if(result==='copied')setShareMessage('لینکی پۆستەکە کۆپی کرا.');else if(result==='failed')setShareMessage('نەتوانرا هاوبەشی بکەیت.')}}><Share2 size={15}/> هاوبەشکردن</button>
     {shareMessage&&<div className="msg" role="status">{shareMessage}</div>}
    </div>

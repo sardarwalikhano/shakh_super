@@ -103,7 +103,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
      author_id:userId,store_id:sid,title:productName,content:form.description.trim()||null,images:imageUrls,
      price_iqd:Number(form.price),city:form.city||'هەولێر',status:'approved',
      section:meta.postType==='fashion'?'fashion':category,publisher_name:publisherName,post_type:meta.postType,
-     publisher_role:role,label:meta.label,visibility:'public',listing_details:fashionDetails
+     publisher_role:role,label:meta.label,visibility:'public',listing_details:{...fashionDetails,product_id:createdProduct.id,source:'vendor_product'}
     });
     if(postError)throw postError;
    }
