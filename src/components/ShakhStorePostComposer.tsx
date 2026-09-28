@@ -211,7 +211,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
     <label className="postField"><span>عیار</span><input value={details.karat} onChange={e=>updateDetail('karat',e.target.value)} placeholder="18K"/></label>
     <label className="postField"><span>حاڵەت</span><select value={details.condition} onChange={e=>updateDetail('condition',e.target.value)}><option value="">هەڵبژێرە</option><option>نوێ</option><option>بەکارهاتوو</option></select></label>
    </div>
-  </div>
+  </div>}
   <div className="postUploadBox">
    <div className="postUploadHead"><div><b>وێنەکانی پۆست و بەرهەم</b><small>{files.length}/6 · JPG، PNG یان WEBP · هەر وێنە تا ٥ MB</small></div><ImagePlus size={20}/></div>
    <label className="postUploadDrop postUploadMulti">
