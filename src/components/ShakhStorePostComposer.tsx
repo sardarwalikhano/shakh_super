@@ -29,8 +29,8 @@ const CATEGORY_SLUGS:Record<string,string>={
  jewelry:'jewelry_gold'
 };
 
-export default function ShakhStorePostComposer({userId}:{userId:string}){
- const [section,setSection]=useState('marketplace');
+export default function ShakhStorePostComposer({userId,initialSection='marketplace',hideSectionSelector=false,onBack}:{userId:string;initialSection?:string;hideSectionSelector?:boolean;onBack?:()=>void}){
+ const [section,setSection]=useState(initialSection);
  const [title,setTitle]=useState('');
  const [content,setContent]=useState('');
  const [price,setPrice]=useState('');
@@ -145,9 +145,10 @@ export default function ShakhStorePostComposer({userId}:{userId:string}){
 
  return <div className="postComposer" style={{marginTop:18}} aria-busy={busy}>
   <div className="postComposerHead"><div className="postComposerBadge"><Store size={22}/></div><div><h3>SHAKH Store</h3><p>پۆستی بەرهەم دروست بکە؛ بۆ بەرهەمە بازاڕییەکان product و سەلە بە شێوەی خۆکار پەیوەست دەکرێن.</p></div></div>
-  <div className="postCategoryGrid">
+  {!hideSectionSelector&&<div className="postCategoryGrid">
    {sections.map(s=><button type="button" key={s.value} className={section===s.value?'postCategory active':'postCategory'} aria-pressed={section===s.value} onClick={()=>setSection(s.value)}>{s.label}</button>)}
-  </div>
+  </div>}
+  {hideSectionSelector&&onBack&&<button type="button" className="postBackToCategories" onClick={onBack}>← گەڕانەوە بۆ هەڵبژاردنی کاتەگۆری</button>}
   <div className="postFormGrid">
    <label className="postField"><span>ناونیشانی پۆست</span><input value={title} onChange={e=>setTitle(e.target.value)} placeholder="نموونە: کەباب"/></label>
    <label className="postField"><span>نرخ بە دینار</span><input value={price} onChange={e=>setPrice(e.target.value.replace(/\D/g,''))} inputMode="numeric" placeholder="5000" maxLength={14}/></label>
