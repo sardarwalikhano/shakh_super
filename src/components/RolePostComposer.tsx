@@ -105,32 +105,36 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    if(isCar&&!car.fuel)return setMessage('سووتەمەنی دیاری بکە.');
    if(isCar&&!car.transmission)return setMessage('گێڕ دیاری بکە.');
    if(isCar&&!car.color)return setMessage('ڕەنگی ئۆتۆمبێل دیاری بکە.');
-   if(isCar){const year=Number(car.year),mileage=Number(car.mileage);if(!Number.isInteger(year)||year<1900||year>new Date().getFullYear()+1)return setMessage('ساڵی ئۆتۆمبێل دروست نییە.');if(!Number.isFinite(mileage)||mileage<0)return setMessage('کیلۆمەتر دەبێت ژمارەی دروست بێت.')}
+   if(isCar){
+    const year=Number(car.year),mileage=Number(car.mileage);
+    if(!Number.isInteger(year)||year<1900||year>new Date().getFullYear()+1)return setMessage('ساڵی ئۆتۆمبێل دروست نییە.');
+    if(!Number.isFinite(mileage)||mileage<0)return setMessage('کیلۆمەتر دەبێت ژمارەی دروست بێت.');
+   }
    setBusy(true);setMessage('');
 
    const {data:profile}=await supabase.from('profiles').select('full_name').eq('id',userId).maybeSingle();
    const publisherName=(profile as {full_name?:string|null}|null)?.full_name||cfg.label;
    const imageUrls:string[]=[];
    for(const [index,file] of files.entries()){
-     const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
-     const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;
-     const {error}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});
-     if(error)throw error;
-     uploadedPaths.push(path);
-     imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;
+    const {error}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});
+    if(error)throw error;
+    uploadedPaths.push(path);
+    imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
    }
 
    const listingDetails=isFashion
-     ?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,size:fashion.size,color:fashion.color,shoe_size:fashion.shoeSize||null,condition:fashion.condition,brand:fashion.brand||null}
-     :isCar
-     ?{category:'car',make:car.make,model:car.model,year:Number(car.year),trim:car.trim||null,mileage:Number(car.mileage),engine:car.engine||null,body_type:car.body,fuel:car.fuel,transmission:car.transmission,drivetrain:car.drivetrain||null,color:car.color,condition:car.condition,origin:car.origin||null,plate_status:car.plate||null,negotiable:car.negotiable,exchange_allowed:car.exchange}
-     :{};
+    ?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,size:fashion.size,color:fashion.color,shoe_size:fashion.shoeSize||null,condition:fashion.condition,brand:fashion.brand||null}
+    :isCar
+    ?{category:'car',make:car.make,model:car.model,year:Number(car.year),trim:car.trim||null,mileage:Number(car.mileage),engine:car.engine||null,body_type:car.body,fuel:car.fuel,transmission:car.transmission,drivetrain:car.drivetrain||null,color:car.color,condition:car.condition,origin:car.origin||null,plate_status:car.plate||null,negotiable:car.negotiable,exchange_allowed:car.exchange}
+    :{};
 
    const {error}=await supabase.from('posts').insert({
-     author_id:userId,title:title.trim(),content:content.trim()||null,images:imageUrls,
-     price_iqd:price?Number(price):null,city:city.trim()||'هەولێر',status:'approved',
-     section:postType,publisher_name:publisherName,post_type:postType,publisher_role:role,
-     label:cfg.label,visibility:'public',listing_details:listingDetails
+    author_id:userId,title:title.trim(),content:content.trim()||null,images:imageUrls,
+    price_iqd:price?Number(price):null,city:city.trim()||'هەولێر',status:'approved',
+    section:postType,publisher_name:publisherName,post_type:postType,publisher_role:role,
+    label:cfg.label,visibility:'public',listing_details:listingDetails
    });
    if(error)throw error;
 
@@ -139,10 +143,11 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
    setFashion({audience:'',clothingType:'',size:'',color:'',shoeSize:'',condition:'',brand:''});
    setCar({make:'',model:'',year:'',trim:'',mileage:'',engine:'',body:'',fuel:'',transmission:'',drivetrain:'',color:'',condition:'',origin:'',plate:'',negotiable:true,exchange:false});
    setShowPreview(true);setMessage('پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە.');onSaved?.();
-  }catch(error:unknown){setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.')}
-  finally{setBusy(false)}
+  }catch(error:unknown){
+   if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
+   setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');
+  }finally{setBusy(false)}
  };
-
  const selectField=(label:string,value:string,options:string[],onChange:(value:string)=>void)=>
    <label className="postField"><span>{label}</span><select value={value} onChange={e=>onChange(e.target.value)}><option value="">هەڵبژێرە</option>{options.map(item=><option key={item} value={item}>{item}</option>)}</select></label>;
 
