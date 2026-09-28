@@ -232,7 +232,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
     uploadedPaths.push(path);
     images.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
    }
-   if(images.length>12)return setMessage('زۆرترین ١٢ وێنە بۆ هەر پۆستێک ڕێگەپێدراوە.');
+   if(images.length>12)throw new Error('زۆرترین ١٢ وێنە بۆ هەر پۆستێک ڕێگەپێدراوە.');
    const {error}=await supabase.from('posts').update({
     title:editTitle.trim(),
     content:editContent.trim()||null,
