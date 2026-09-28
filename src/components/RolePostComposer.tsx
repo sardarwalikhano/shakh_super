@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {CheckCircle2,Eye,ImagePlus,Send,Sparkles,Tag,Upload,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
-type Props={userId:string;role:string;onSaved?:()=>void};
+type Props={userId:string;role:string;onSaved?:()=>void;initialType?:string;hideTypeSelector?:boolean;onBack?:()=>void};
 type RoleConfig={types:{value:string;label:string}[];heading:string;label:string};
 
 const CONFIG:Record<string,RoleConfig>={
@@ -34,9 +34,10 @@ const OPTIONS={
 };
 const CLOTHING_SIZES=['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'];
 
-export default function RolePostComposer({userId,role,onSaved}:Props){
+export default function RolePostComposer({userId,role,onSaved,initialType,hideTypeSelector=false,onBack}:Props){
  const cfg=CONFIG[role]||CONFIG.customer;
- const [postType,setPostType]=useState(cfg.types[0].value);
+ const defaultType=initialType&&cfg.types.some(item=>item.value===initialType)?initialType:cfg.types[0].value;
+ const [postType,setPostType]=useState(defaultType);
  const [title,setTitle]=useState('');
  const [content,setContent]=useState('');
  const [price,setPrice]=useState('');
@@ -157,8 +158,9 @@ export default function RolePostComposer({userId,role,onSaved}:Props){
      <div className="postComposerBadge"><Tag size={21}/><span>{cfg.label}</span></div>
    </div>
 
-   <div className="postComposerLabel">جۆری پۆست</div>
-   <div className="postCategoryGrid">{cfg.types.map(item=><button key={item.value} type="button" className={postType===item.value?'postCategory active':'postCategory'} aria-pressed={postType===item.value} onClick={()=>setPostType(item.value)}><span>{TYPE_ICONS[item.value]||'📝'}</span><b>{item.label}</b></button>)}</div>
+   {!hideTypeSelector&&<><div className="postComposerLabel">جۆری پۆست</div>
+   <div className="postCategoryGrid">{cfg.types.map(item=><button key={item.value} type="button" className={postType===item.value?'postCategory active':'postCategory'} aria-pressed={postType===item.value} onClick={()=>setPostType(item.value)}><span>{TYPE_ICONS[item.value]||'📝'}</span><b>{item.label}</b></button>)}</div></>}
+   {hideTypeSelector&&onBack&&<button type="button" className="postBackToCategories" onClick={onBack}>← گەڕانەوە بۆ هەڵبژاردنی کاتەگۆری</button>}
 
    {isFashion&&<div className="postStructuredBox">
      <div className="postComposerLabel">👕 زانیاری جلوبەرگ</div>
