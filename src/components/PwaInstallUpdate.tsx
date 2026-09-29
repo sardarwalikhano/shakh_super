@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import {Download,RefreshCw,X} from 'lucide-react';
+import {Download,RefreshCw,X,Smartphone,Apple,Share2} from 'lucide-react';
 
 type BeforeInstallPromptEvent=Event&{
  prompt:()=>Promise<void>;
@@ -19,9 +19,14 @@ export default function PwaInstallUpdate(){
  const [version,setVersion]=useState('v1.9.7');
  const [checking,setChecking]=useState(false);
  const [status,setStatus]=useState('');
+ const [isAndroid,setIsAndroid]=useState(false);
+ const [isIOS,setIsIOS]=useState(false);
 
  useEffect(()=>{
   setStandalone(isStandalone());
+  const ua=navigator.userAgent.toLowerCase();
+  setIsAndroid(ua.includes('android'));
+  setIsIOS(/iphone|ipad|ipod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
   fetch('/version.json?ts='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(data?.version)setVersion(String(data.version))}).catch(()=>{});
   if(!('serviceWorker' in navigator))return;
 
@@ -74,6 +79,8 @@ export default function PwaInstallUpdate(){
    window.removeEventListener('appinstalled',appInstalled);
   };
  },[]);
+
+ const shareInstallLink=async()=>{try{if(navigator.share){await navigator.share({title:'SHAKH SUPER — شاخ',text:'ئەپی شاخ دامەزرێنە',url:window.location.origin})}else if(navigator.clipboard){await navigator.clipboard.writeText(window.location.origin);setStatus('لینکی شاخ کۆپی کرا.')}}catch{}};
 
  const install=async()=>{
   if(installEvent){
@@ -129,9 +136,18 @@ export default function PwaInstallUpdate(){
     </div>
    </div>
    <div className="pwaPanelActions">
-    {!standalone&&<button type="button" className="primary" onClick={install}>
+    {!standalone&&isAndroid&&<button type="button" className="primary" onClick={install}>
+     <Smartphone size={17}/> دامەزراندنی ڕاستەوخۆی Android
+    </button>}
+    {!standalone&&isIOS&&<button type="button" className="primary" onClick={()=>setInstallHelp(true)}>
+     <Apple size={17}/> چۆنیەتی دامەزراندن لە iPhone
+    </button>}
+    {!standalone&&!isAndroid&&!isIOS&&<button type="button" className="primary" onClick={install}>
      <Download size={17}/> دامەزراندنی ئەپ
     </button>}
+    <button type="button" className="plain" onClick={()=>void shareInstallLink()}>
+     <Share2 size={17}/> هاوبەشکردنی لینکی ئەپ
+    </button>
     <button type="button" className="plain" onClick={()=>void checkForUpdate()} disabled={checking||!registration}>
      <RefreshCw size={17}/> {checking?'پشکنین...':'پشکنینی وەشانی نوێ'}
     </button>
@@ -146,7 +162,7 @@ export default function PwaInstallUpdate(){
    <button className="x" onClick={()=>setInstallHelp(false)}>×</button>
    <img className="pwaHelpLogo" src="/shakh-logo.svg?v=1.9.7" alt="SHAKH SUPER — شاخ" />
    <h2>دامەزراندنی ئەپی شاخ</h2>
-   <p>لە مێنیوی وێبگەڕەکەدا «دامەزراندنی ئەپ» یان «زیادکردن بۆ سەرەتا» هەڵبژێرە. لە ئایفۆن، لە مێنیوی هاوبەشکردن «زیادکردن بۆ سەرەتا» هەڵبژێرە.</p>
+   <p>لە Android، ئەگەر وێبگەڕەکە دوکمەی دامەزراندن پیشان بدات، «دامەزراندنی ئەپ» هەڵبژێرە تا شاخ وەک ئەپ دابمەزرێت. لە iPhone/iPad ـدا لە Safari دوگمەی Share بکە و «Add to Home Screen / زیادکردن بۆ شاشەی سەرەتا» هەڵبژێرە.</p>
    <button className="primary full" onClick={()=>setInstallHelp(false)}>باشە</button>
   </div></div>}
 
