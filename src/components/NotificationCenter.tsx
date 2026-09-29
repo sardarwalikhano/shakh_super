@@ -96,14 +96,19 @@ export default function NotificationCenter({ userId }: NotificationCenterProps) 
           {items.map((item) => {
             const orderId = typeof item.data?.order_id === 'string' ? item.data.order_id : null;
             const postId = typeof item.data?.post_id === 'string' ? item.data.post_id : null;
-            const Icon = item.type === 'post_moderation' ? ShieldCheck : postId ? Tag : Package;
+            const transactionType = typeof item.data?.transaction_type === 'string' ? item.data.transaction_type : null;
+            const transactionLabels: Record<string, string> = {
+              credit: 'زیادکردنی باڵانس', debit: 'خەرجکردن', refund: 'گەڕانەوەی پارە',
+              earning: 'داهات', commission: 'کۆمسیۆن', withdrawal: 'دەرهێنان',
+            };
+            const Icon = item.type === 'post_moderation' ? ShieldCheck : postId ? Tag : item.type === 'wallet' ? Package : Package;
             return (
               <article key={item.id} className={`notification-center__item ${item.is_read ? 'is-read' : 'is-unread'}`}>
                 <div className="notification-center__icon"><Icon size={20} /></div>
                 <div className="notification-center__content">
                   <div className="notification-center__title-row"><strong>{item.title}</strong>{!item.is_read && <span>نوێ</span>}</div>
                   {item.body && <p>{item.body}</p>}
-                  <small><Clock3 size={14} /> {new Date(item.created_at).toLocaleString('ku-IQ')}{orderId ? ` · ئۆردەر #${orderId.slice(0, 8)}` : ''}{postId ? ` · پۆست #${postId.slice(0, 8)}` : ''}</small>
+                  <small><Clock3 size={14} /> {new Date(item.created_at).toLocaleString('ku-IQ')}{orderId ? ` · ئۆردەر #${orderId.slice(0, 8)}` : ''}{postId ? ` · پۆست #${postId.slice(0, 8)}` : ''}{item.type === 'wallet' && transactionType && transactionLabels[transactionType] ? ` · ${transactionLabels[transactionType]}` : ''}</small>
                 </div>
                 {!item.is_read && <button type="button" onClick={() => void read(item.id)} disabled={busy === item.id} aria-label="خوێندراوە بکە"><CheckCheck size={18} /></button>}
               </article>
