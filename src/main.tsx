@@ -32,6 +32,7 @@ const getShoeSizes=(variants:unknown):string[]=>{if(!Array.isArray(variants))ret
 type CartItem={id?:string;product_id:string;store_id:string;name:string;price:number;quantity:number;stock?:number|null;is_available?:boolean;image_url?:string|null;options?:CartOptions};
 type Order={id:string;status:string;total_iqd:number;created_at:string;store_id?:string};
 type SavedAddress={id:string;label?:string|null;address:string;city?:string|null;latitude?:number|null;longitude?:number|null};
+type Promotion={id:string;title:string;description?:string|null;image_url?:string|null;starts_at?:string|null;ends_at?:string|null};
 type DashboardView='home'|'profile'|'orders'|'delivery'|'delivery_zones'|'store'|'wallet'|'cars'|'umrah'|'notifications'|'support'|'settings';
 
 function PasswordReset(){
