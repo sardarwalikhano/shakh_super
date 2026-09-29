@@ -1000,3 +1000,15 @@ html[data-theme='dark'] .orderMeta,html[data-theme='dark'] .customer-orders-pane
 html[data-theme='dark'] .orderCardTop strong,html[data-theme='dark'] h1,html[data-theme='dark'] h2,html[data-theme='dark'] h3,html[data-theme='dark'] b{color:#f0f5f8}
 html[data-theme='dark'] .plain,.app html[data-theme='dark'] .plain{color:#c8d5df;border-color:#2a4258;background:#122234}
 html[data-theme='dark'] .cart{background:#ff6a00;color:#fff}
+
+.storeLocationManager{display:grid;gap:12px;margin-top:16px}
+.storeLocationHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.storeLocationHeader>div{display:grid;gap:4px}.storeLocationHeader h3{margin:0;color:#20354d;font-size:14px}.storeLocationHeader p{margin:0;color:#8290a0;font-size:10px;line-height:1.8}
+.storeLocationFields{display:grid;grid-template-columns:2fr 1fr;gap:10px}.storeLocationFields label{display:grid;gap:6px;color:#536a80;font-size:10px;font-weight:900}.storeLocationFields input{min-height:42px;border:1px solid #dfe7ee;border-radius:11px;background:#fff;color:#243a52;padding:0 10px;font:inherit}
+.storeLocationCoords{display:flex;align-items:center;gap:6px;padding:9px 11px;border-radius:11px;background:#f7fafc;color:#64778a;font-size:9px;font-weight:850}
+.captainOrderMapWrap{margin:10px 0;border:1px solid #e4ebf0;border-radius:15px;overflow:hidden;background:#eef3f7}.captainOrderMapWrap .liveDeliveryMap{min-height:320px}.captainOrderMapWrap .liveDeliveryMapCanvas{height:320px}
+.locationPrivacyBanner{display:flex;align-items:center;gap:10px;margin:10px 0;padding:11px 12px;border:1px solid #dceee4;border-radius:13px;background:#f3fbf6;color:#2d7750}.locationPrivacyBanner>div{display:grid;gap:3px}.locationPrivacyBanner strong{font-size:11px}.locationPrivacyBanner small{font-size:9px;color:#6b8776;line-height:1.7}
+@media(max-width:600px){.storeLocationHeader{flex-direction:column}.storeLocationHeader .plain{width:100%}.storeLocationFields{grid-template-columns:1fr}.captainOrderMapWrap .liveDeliveryMapCanvas{height:280px}}
+html[data-theme='dark'] .storeLocationHeader h3,html[data-theme='dark'] .storeLocationFields label{color:#eaf1f7}
+html[data-theme='dark'] .storeLocationFields input{background:#101d2b;color:#edf4f8;border-color:#2a4258}
+html[data-theme='dark'] .storeLocationCoords,html[data-theme='dark'] .locationPrivacyBanner{background:#10231b;border-color:#254a38;color:#acd8bd}
