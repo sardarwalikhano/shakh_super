@@ -42,7 +42,7 @@ export async function getVendorOrders(storeId: string) {
 export async function updateVendorOrderStatus(orderId: string, status: string) {
   const { data, error } = await supabase.rpc('transition_order_status', {
     p_order_id: orderId,
-    p_new_status: status,
+    p_next_status: status,
   });
 
   if (error) throw error;
