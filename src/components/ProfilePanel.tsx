@@ -273,3 +273,5 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
   {message&&<div className={message.includes('سەرکەوت')?'profileMessage success':'profileMessage'} role="alert" aria-live="polite">{message}</div>}
  </section>;
 });
+
+export default ProfilePanel;
