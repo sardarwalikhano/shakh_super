@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Bell, CheckCheck, Clock3, Package, RefreshCw, ShieldCheck, Tag, Check } from 'lucide-react';
 import { getMyNotifications, markNotificationRead, subscribeToMyNotifications } from '../lib/orderTracking';
+import { supabase } from '../lib/supabase';
 
 type NotificationItem = {
   id: string;
