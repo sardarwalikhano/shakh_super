@@ -35,9 +35,14 @@ export async function getOrderTimeline(orderId: string): Promise<OrderTimelineIt
 }
 
 export async function getMyNotifications(limit = 30) {
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError) throw authError;
+  if (!authData.user) throw new Error('پێویستە بچیتە ژوورەوە.');
+
   const { data, error } = await supabase
     .from('notifications')
     .select('id,title,body,type,is_read,data,created_at')
+    .eq('user_id', authData.user.id)
     .order('created_at', { ascending: false })
     .limit(limit);
 
@@ -46,10 +51,15 @@ export async function getMyNotifications(limit = 30) {
 }
 
 export async function markNotificationRead(notificationId: string) {
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError) throw authError;
+  if (!authData.user) throw new Error('پێویستە بچیتە ژوورەوە.');
+
   const { error } = await supabase
     .from('notifications')
     .update({ is_read: true })
-    .eq('id', notificationId);
+    .eq('id', notificationId)
+    .eq('user_id', authData.user.id);
   if (error) throw error;
 }
 
