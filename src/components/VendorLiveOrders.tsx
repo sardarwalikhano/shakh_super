@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, ChefHat, Package, RefreshCw, Truck, XCircle } from 'lucide-react';
+import { CheckCircle2, ChefHat, MapPin, Package, RefreshCw, Truck, XCircle } from 'lucide-react';
 import { getVendorOrders, subscribeToVendorOrders, updateVendorOrderStatus, type VendorOrder } from '../lib/vendorOrders';
+import LiveDeliveryMap from './LiveDeliveryMap';
 
 const labels: Record<string, string> = {
   pending: 'چاوەڕوان',
@@ -105,6 +106,18 @@ export default function VendorLiveOrders({ storeId }: Props) {
                       <b>{(Number(item.unit_price_iqd) * Number(item.quantity)).toLocaleString('ku-IQ')} د.ع</b>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {order.store?.latitude != null && order.store?.longitude != null && (
+                <div className="vendorOrderMapCard">
+                  <div className="vendorOrderMapHeader">
+                    <div><MapPin size={16}/><strong>شوێنی دوکان</strong></div>
+                    <small>{order.store.city || 'هەولێر'}</small>
+                  </div>
+                  <LiveDeliveryMap
+                    store={{ latitude: Number(order.store.latitude), longitude: Number(order.store.longitude) }}
+                  />
                 </div>
               )}
 
