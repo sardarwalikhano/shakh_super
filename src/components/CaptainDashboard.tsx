@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { RefreshCw, Truck, PackageCheck, MapPin, Clock3 } from 'lucide-react';
+import LiveDeliveryMap from './LiveDeliveryMap';
 import { claimOrder, getAvailableCaptainOrders, getCaptainOrders, getCaptainCustomerContact, markOrderDelivered, markOrderOnTheWay, updateOrderStatus } from '../lib/captain';
 
 type CaptainOrder = {
@@ -52,6 +53,7 @@ export default function CaptainDashboard() {
   const [contacts, setContacts] = useState<Record<string, { full_name: string | null; phone: string | null } | null>>({});
   const [contactBusy, setContactBusy] = useState<string | null>(null);
   const [locationTrackingOrderId, setLocationTrackingOrderId] = useState<string | null>(null);
+  const [captainLocation, setCaptainLocation] = useState<{ latitude:number; longitude:number } | null>(null);
   const watchIdsRef = useRef<Record<string, number>>({});
   const lastLocationSentRef = useRef<Record<string, number>>({});
 
@@ -142,6 +144,7 @@ export default function CaptainDashboard() {
           setMessage(error.message);
           return;
         }
+        setCaptainLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
         setLocationTrackingOrderId(orderId);
         setMessage('شوێنی کاپتن بۆ کڕیار نوێ کرایەوە.');
       },
@@ -172,6 +175,7 @@ export default function CaptainDashboard() {
       await supabase.from('delivery_tracking_locations').delete().eq('order_id', orderId);
     }
     setLocationTrackingOrderId((current) => current === orderId ? null : current);
+    if (locationTrackingOrderId === orderId) setCaptainLocation(null);
   };
 
   useEffect(() => {
@@ -284,6 +288,7 @@ export default function CaptainDashboard() {
               </button>
             )}
             <div className="orderMeta"><MapPin size={16} /> گەیاندن: {order.delivery_address?.address || 'ناونیشانی گەیاندن دیاری نەکراوە'}{order.delivery_address?.city ? ' — ' + order.delivery_address.city : ''}</div>
+            {(order.status === 'assigned_to_captain' || order.status === 'picked_up' || order.status === 'on_the_way') && (order.store?.latitude != null || order.delivery_address?.latitude != null) && <div className="captainOrderMapWrap"><LiveDeliveryMap store={order.store?.latitude != null && order.store?.longitude != null ? {latitude:Number(order.store.latitude),longitude:Number(order.store.longitude)} : null} captain={locationTrackingOrderId===order.id ? captainLocation : null} destination={order.delivery_address?.latitude != null && order.delivery_address?.longitude != null ? {latitude:Number(order.delivery_address.latitude),longitude:Number(order.delivery_address.longitude)} : null}/></div>}
             {order.delivery_address?.latitude != null && order.delivery_address?.longitude != null && (
               <button
                 className="plain full"
