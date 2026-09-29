@@ -897,3 +897,45 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
   .carsMarketplaceFilterGrid,.carsMarketplacePriceGrid{grid-template-columns:1fr}
   .carsMarketplaceFilterGrid>label:first-child{grid-column:auto}
 }
+
+/* Shakh 1.9.8 UX: location, privacy, account, support, payment receipt */
+.locationIndicator{height:44px;border:1px solid #e2e9f0;border-radius:14px;background:#fff;color:#36506a;display:inline-flex;align-items:center;gap:7px;padding:0 12px;font:inherit;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 7px 20px rgba(7,26,51,.05);cursor:pointer}
+.locationIndicator:hover{border-color:#ffc18f;color:#d95800;transform:translateY(-1px)}
+.locationIndicator.ready{border-color:#b9e4cb;background:#f0fbf5;color:#25764a}
+.locationIndicator:disabled{opacity:.65;cursor:wait}
+.privacyModal{width:min(620px,100%);max-height:min(88vh,760px);overflow:auto}
+.privacyMark{background:linear-gradient(145deg,#eaf8f0,#dff4e8)!important;color:#26804b!important;display:grid;place-items:center}
+.privacyPoints{display:grid;gap:9px;margin:16px 0;padding:14px;border:1px solid #e7edf3;border-radius:16px;background:#fbfcfd}
+.privacyPoints span{color:#455b72;font-size:11px;line-height:1.8}
+.privacyActions{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin-top:16px}
+.privacyActions .reset{width:auto;margin:0;border:1px solid #e0e7ef;border-radius:12px;padding:11px 15px}
+.privacyActions .primary{margin:0}
+.privacyConsentRow{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;margin:12px 0;padding:11px 12px;border:1px solid #e6ebf1;border-radius:13px;background:#fafcfe;color:#445a71;font-size:10px;font-weight:900}
+.privacyConsentRow input{width:18px;height:18px;accent-color:#ff6a00}
+.privacyInlineButton{border:0;background:transparent;color:#d95800;font:inherit;font-size:10px;font-weight:950;cursor:pointer}
+.resendConfirmationButton{width:100%;min-height:42px;border:1px solid #dfe7ef;border-radius:12px;background:#f8fafc;color:#23415f;font:inherit;font-size:10px;font-weight:900;cursor:pointer}
+.resendConfirmationButton:hover{border-color:#ffbe86;background:#fff8f2;color:#d95800}
+.profileAccountActions{margin-top:18px;padding:15px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #f0d7d3;border-radius:16px;background:#fff8f7}
+.profileAccountActions>div{display:grid;gap:4px}.profileAccountActions strong{font-size:12px;color:#7b302b}.profileAccountActions small{font-size:10px;color:#8c7773;line-height:1.7}
+.profileLogoutButton{min-height:44px;padding:0 14px;border:1px solid #efc1bc;border-radius:12px;background:#fff;color:#b43c33;display:inline-flex;align-items:center;justify-content:center;gap:7px;font:inherit;font-size:11px;font-weight:950;cursor:pointer}
+.profileLogoutButton:hover{background:#fff0ef}
+.footerSupportContacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+.footerSupportContacts a{display:inline-flex;align-items:center;gap:6px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:8px 10px;border-radius:11px;text-decoration:none;font-size:10px;font-weight:900}
+.footerSupportContacts a:hover{background:rgba(255,255,255,.14)}
+.footerPrivacyLink{border:0;background:transparent;color:#b9cadb;padding:0;margin-top:8px;text-align:right;font:inherit;font-size:10px;font-weight:900;cursor:pointer}
+.footerPrivacyLink:hover{color:#fff}
+.supportContactCard{margin:15px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px solid #e8edf2;border-radius:16px;background:linear-gradient(145deg,#fbfcfd,#fff)}
+.supportContactCard>div:first-child{display:grid;gap:4px}.supportContactCard strong{color:#20354d;font-size:12px}.supportContactCard small{color:#8390a0;font-size:10px}
+.supportContactActions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px}
+.supportContactActions a{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 10px;border:1px solid #e1e8ef;border-radius:11px;background:#fff;color:#31516e;text-decoration:none;font-size:10px;font-weight:950}
+.supportContactActions a:hover{border-color:#ffc18f;color:#d95800}
+.vehiclePaymentBox{display:grid;gap:8px;padding:11px;margin-top:10px;border:1px solid #e7edf3;border-radius:14px;background:#fafbfd}
+.vehiclePaymentBox input{width:100%;box-sizing:border-box}
+.vehiclePaymentBox small{font-size:9px;color:#8190a0}
+.vehiclePaymentAdminRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-top:1px solid #edf1f4}
+.vehiclePaymentAdminRow>div:first-child{display:grid;gap:4px;min-width:0}.vehiclePaymentAdminRow b{font-size:12px;color:#22364e}.vehiclePaymentAdminRow small{font-size:9px;color:#8492a3}
+.vehiclePaymentAdminRow>div:last-child{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.vehiclePaymentAdminRow button{min-height:38px!important;padding-inline:11px!important}
+.pwaPlatformLinks{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:720px){.locationIndicator{height:42px;width:42px;padding:0;justify-content:center}.locationIndicator span{display:none}.privacyActions{flex-direction:column-reverse}.privacyActions button{width:100%!important}.supportContactCard{flex-direction:column;align-items:stretch}.supportContactActions{justify-content:stretch}.supportContactActions a{flex:1;justify-content:center}.vehiclePaymentAdminRow{flex-direction:column;align-items:stretch}.vehiclePaymentAdminRow>div:last-child{justify-content:stretch}.vehiclePaymentAdminRow button{flex:1}.profileAccountActions{flex-direction:column;align-items:stretch}.profileLogoutButton{width:100%}}
+@media(max-width:520px){.privacyConsentRow{grid-template-columns:auto 1fr}.privacyInlineButton{grid-column:2;justify-self:start;padding:0}.locationIndicator{border-radius:13px}.footerSupportContacts a{font-size:9px}}
