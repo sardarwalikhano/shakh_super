@@ -939,3 +939,18 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .pwaPlatformLinks{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:720px){.locationIndicator{height:42px;width:42px;padding:0;justify-content:center}.locationIndicator span{display:none}.privacyActions{flex-direction:column-reverse}.privacyActions button{width:100%!important}.supportContactCard{flex-direction:column;align-items:stretch}.supportContactActions{justify-content:stretch}.supportContactActions a{flex:1;justify-content:center}.vehiclePaymentAdminRow{flex-direction:column;align-items:stretch}.vehiclePaymentAdminRow>div:last-child{justify-content:stretch}.vehiclePaymentAdminRow button{flex:1}.profileAccountActions{flex-direction:column;align-items:stretch}.profileLogoutButton{width:100%}}
 @media(max-width:520px){.privacyConsentRow{grid-template-columns:auto 1fr}.privacyInlineButton{grid-column:2;justify-self:start;padding:0}.locationIndicator{border-radius:13px}.footerSupportContacts a{font-size:9px}}
+
+.locationStatusBar{width:min(1240px,calc(100% - 32px));margin:10px auto 0;min-height:44px;padding:7px 12px;display:flex;align-items:center;justify-content:center;gap:8px;direction:rtl;border:1px solid rgba(36,118,74,.14);border-radius:14px;background:linear-gradient(135deg,#f5fcf7,#fff);color:#315d46;box-shadow:0 8px 22px rgba(7,26,51,.04);font-size:11px;font-weight:900}
+.locationStatusBar svg{color:#2b8a57}
+.locationStatusBar:not(.ready){border-color:rgba(255,106,0,.14);background:#fffaf5;color:#9a5b00}
+.locationStatusBar:not(.ready) svg{color:#ff6a00}
+.locationStatusBar button{margin-inline-start:6px;border:1px solid currentColor;border-radius:10px;background:transparent;padding:6px 10px;color:inherit;font:inherit;font-size:10px;font-weight:950;cursor:pointer}
+.locationStatusBar button:hover{background:rgba(255,255,255,.8)}
+.locationStatusBar button:disabled{opacity:.6;cursor:wait}
+.vehicleFeeAdminList{display:grid;gap:10px;margin-top:12px}
+.vehicleFeeAdminRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px;border:1px solid #e7edf3;border-radius:14px;background:#fbfcfd}
+.vehicleFeeAdminRow>div:first-child{display:grid;gap:3px;min-width:0}.vehicleFeeAdminRow b{font-size:11px;color:#21374f}.vehicleFeeAdminRow small{font-size:9px;color:#8391a0}
+.vehicleFeeAdminRow>div:last-child{display:flex;gap:7px;align-items:center}.vehicleFeeAdminRow input{width:145px;min-height:40px;border:1px solid #dfe6ee;border-radius:11px;padding:0 10px;background:#fff;color:#243a52;font:inherit}
+.vehicleFeeAdminRow button{min-height:40px!important;margin:0!important;padding-inline:11px!important}
+@media(max-width:720px){.locationStatusBar{width:calc(100% - 24px);justify-content:flex-start;font-size:10px}.locationStatusBar button{margin-inline-start:auto}.vehicleFeeAdminRow{flex-direction:column;align-items:stretch}.vehicleFeeAdminRow>div:last-child{width:100%}.vehicleFeeAdminRow input{flex:1;width:auto}.vehicleFeeAdminRow button{flex:0 0 auto}}
+@media(max-width:520px){.locationStatusBar{border-radius:12px;min-height:42px;padding-inline:10px}.locationStatusBar button{padding:6px 9px}.vehicleFeeAdminRow>div:last-child{display:grid;grid-template-columns:1fr auto}}

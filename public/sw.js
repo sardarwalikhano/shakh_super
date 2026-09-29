@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shakh-v1.9.7';
+const CACHE_NAME = 'shakh-v1.9.8';
 const APP_SHELL = ['/', '/manifest.webmanifest?v=1.9.7', '/version.json', '/shakh-logo.svg?v=1.9.7'];
 
 self.addEventListener('install', event => {
