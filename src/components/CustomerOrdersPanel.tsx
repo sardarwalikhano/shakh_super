@@ -321,39 +321,23 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                     {trackingLocation && <small>{formatTrackingAge(trackingLocation.updated_at, trackingClock)}</small>}
                   </div>
 
-                  {trackingLoading ? (
-                    <div className="liveTrackingEmpty">چاوەڕوانی شوێنی زیندووی کاپتن...</div>
-                  ) : trackingLocation ? (
+                  {trackingLoading && !trackingLocation && (
+                    <div className="liveTrackingEmpty">چاوەڕوانی زانیاریی شوێنی کاپتن...</div>
+                  )}
+                  {!trackingLoading && (
                     <>
                       <LiveDeliveryMap
                         store={selected.store?.latitude != null && selected.store?.longitude != null ? { latitude: Number(selected.store.latitude), longitude: Number(selected.store.longitude) } : null}
-                        captain={{ latitude: trackingLocation.latitude, longitude: trackingLocation.longitude }}
+                        captain={trackingLocation ? { latitude: trackingLocation.latitude, longitude: trackingLocation.longitude } : null}
                         destination={selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null ? { latitude: Number(selected.delivery_address.latitude), longitude: Number(selected.delivery_address.longitude) } : null}
                         onRouteInfo={setRouteInfo}
                       />
-                      <a className="plain full liveMapExternalLink" href={googleMapsUrl(trackingLocation.latitude, trackingLocation.longitude)} target="_blank" rel="noreferrer">کردنەوەی شوێنی کاپتن لە نەخشەی گووگڵ</a>
-                      <div className="liveTrackingMeta">
-                        <span><span className="liveTrackingDot" /> کاپتن لە ڕێگادایە</span>
-                        {trackingLocation.accuracy_m != null && <span>دروستی نزیکەی {Math.round(trackingLocation.accuracy_m).toLocaleString('ku-IQ')} مەتر</span>}
-                      </div>
-                      {trackingRouteDistance != null && (
-                        <div className="etaCard">
-                          <div><Truck size={18} /><span>دووری تا شوێنی کڕیار</span><strong>{trackingRouteDistance < 1 ? `${Math.round(trackingRouteDistance * 1000).toLocaleString('ku-IQ')} مەتر` : `${trackingRouteDistance.toFixed(1)} کیلۆمەتر`}</strong></div>
-                          <div><Clock3 size={18} /><span>کاتی خەمڵێنراوی گەیشتن</span><strong>{trackingEtaMinutes?.toLocaleString('ku-IQ')} خولەک</strong></div>
-                          <small>{routeInfo ? 'کاتی ڕێگا لەسەر تۆڕی شەقامەکان خەمڵێنراوە و بە نوێبوونەوەی شوێنی کاپتن نوێ دەکرێتەوە.' : 'کاتی خەمڵێنراوەی fallback ـە و تا routing بەردەست بێت بەکاردێت.'}</small>
-                        </div>
-                      )}
-                      {selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null && (
-                        <div className="liveTrackingActions">
-                          <a className="plain" href={googleDirectionsUrl(trackingLocation.latitude, trackingLocation.longitude, selected.delivery_address.latitude, selected.delivery_address.longitude)} target="_blank" rel="noreferrer">ڕێگای کاپتن بۆ ناونیشان</a>
-                        </div>
-                      )}
+                      {!trackingLocation && <div className="liveTrackingEmpty"><strong>{selected.status === 'assigned_to_captain' ? 'کاپتن دیاریکراوە؛ شوێنی زیندووی هێشتا نەنێردراوە.' : 'شوێنی زیندووی کاپتن هێشتا نەنێردراوە.'}</strong><span>ماپەکە شوێنی دوکان و ناونیشانی گەیاندن پیشان دەدات؛ کاتێک GPS ـی کاپتن بگات، نیشانەکە زیندوو دەبێت.</span></div>}
+                      {trackingLocation && <a className="plain full liveMapExternalLink" href={googleMapsUrl(trackingLocation.latitude, trackingLocation.longitude)} target="_blank" rel="noreferrer">کردنەوەی شوێنی کاپتن لە نەخشەی گووگڵ</a>}
+                      {trackingLocation && <div className="liveTrackingMeta"><span><span className="liveTrackingDot" /> کاپتن لە ڕێگادایە</span>{trackingLocation.accuracy_m != null && <span>دروستی نزیکەی {Math.round(trackingLocation.accuracy_m).toLocaleString('ku-IQ')} مەتر</span>}</div>}
+                      {trackingRouteDistance != null && trackingLocation && <div className="etaCard"><div><Truck size={18} /><span>دووری تا شوێنی کڕیار</span><strong>{trackingRouteDistance < 1 ? `\${Math.round(trackingRouteDistance * 1000).toLocaleString('ku-IQ')} مەتر` : `\${trackingRouteDistance.toFixed(1)} کیلۆمەتر`}</strong></div><div><Clock3 size={18} /><span>کاتی خەمڵێنراوی گەیشتن</span><strong>{trackingEtaMinutes?.toLocaleString('ku-IQ')} خولەک</strong></div><small>{routeInfo ? 'کاتی ڕێگا لەسەر تۆڕی شەقامەکان خەمڵێنراوە و بە نوێبوونەوەی شوێنی کاپتن نوێ دەکرێتەوە.' : 'کاتی خەمڵێنراوەی fallback ـە و تا routing بەردەست بێت بەکاردێت.'}</small></div>}
+                      {trackingLocation && selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null && <div className="liveTrackingActions"><a className="plain" href={googleDirectionsUrl(trackingLocation.latitude, trackingLocation.longitude, selected.delivery_address.latitude, selected.delivery_address.longitude)} target="_blank" rel="noreferrer">ڕێگای کاپتن بۆ ناونیشان</a></div>}
                     </>
-                  ) : (
-                    <div className="liveTrackingEmpty">
-                      <strong>{selected.status === 'assigned_to_captain' ? 'کاپتن دیاریکراوە؛ چاوەڕوانی وەرگرتنی شوێنە.' : 'کاپتن هێشتا شوێنی زیندووی خۆی نەناردووە.'}</strong>
-                      <span>کاتێک شوێن نێردرا، لێرە بە شێوەی زیندوو نوێ دەبێتەوە.</span>
-                    </div>
                   )}
 
                   {selected.store?.latitude != null && selected.store?.longitude != null && selected.delivery_address?.latitude != null && selected.delivery_address?.longitude != null && (
