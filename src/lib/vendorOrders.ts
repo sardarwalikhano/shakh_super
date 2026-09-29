@@ -16,13 +16,14 @@ export type VendorOrder = {
   platform_fee_iqd: number;
   total_iqd: number;
   created_at: string;
+  store?: { name?: string | null; address?: string | null; city?: string | null; latitude?: number | null; longitude?: number | null } | null;
   items: VendorOrderItem[];
 };
 
 export async function getVendorOrders(storeId: string) {
   const { data, error } = await supabase
     .from('orders')
-    .select('id,status,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,total_iqd,created_at,order_items(product_id,product_name,quantity,unit_price_iqd)')
+    .select('id,status,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,total_iqd,created_at,store:stores(name,address,city,latitude,longitude),order_items(product_id,product_name,quantity,unit_price_iqd)')
     .eq('store_id', storeId)
     .order('created_at', { ascending: false });
 
@@ -30,6 +31,7 @@ export async function getVendorOrders(storeId: string) {
 
   return (data ?? []).map((order: any) => ({
     ...order,
+    store: Array.isArray(order.store) ? (order.store[0] ?? null) : (order.store ?? null),
     items: (order.order_items ?? []).map((item: any) => ({
       product_id: item.product_id ?? null,
       product_name: item.product_name,
