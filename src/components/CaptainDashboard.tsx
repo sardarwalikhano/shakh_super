@@ -71,19 +71,47 @@ export default function CaptainDashboard() {
   };
 
   useEffect(() => {
+    let active = true;
+    let orderChannel: ReturnType<typeof supabase.channel> | null = null;
+
     void load();
-    const loadCaptainState = async () => {
+
+    const setupLiveOrders = async () => {
       const { data: authData } = await supabase.auth.getUser();
-      if (!authData.user) return;
-      const { data, error } = await supabase.from('captains').select('is_online').eq('user_id', authData.user.id).maybeSingle();
-      if (!error) setIsOnline(Boolean(data?.is_online));
+      if (!active || !authData.user) return;
+
+      const captainId = authData.user.id;
+      const { data, error } = await supabase
+        .from('captains')
+        .select('is_online')
+        .eq('user_id', captainId)
+        .maybeSingle();
+
+      if (active && !error) setIsOnline(Boolean(data?.is_online));
+
+      if (!active) return;
+
+      orderChannel = supabase
+        .channel('captain-orders-live')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'orders', filter: 'status=eq.ready_for_pickup' },
+          () => void load(),
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'orders', filter: 'captain_id=eq.' + captainId },
+          () => void load(),
+        )
+        .subscribe();
     };
-    void loadCaptainState();
-    const channel = supabase
-      .channel('captain-orders-live')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => void load())
-      .subscribe();
-    return () => { void supabase.removeChannel(channel); };
+
+    void setupLiveOrders();
+
+    return () => {
+      active = false;
+      if (orderChannel) void supabase.removeChannel(orderChannel);
+    };
   }, []);
 
   const toggleOnline = async () => {
