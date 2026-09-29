@@ -114,15 +114,28 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
   const [trackingClock, setTrackingClock] = useState(() => Date.now());
   const [routeInfo, setRouteInfo] = useState<RouteResult | null>(null);
 
+  const loadNotifications = useCallback(async () => {
+    if (!userId) return;
+    try {
+      const notificationData = await getMyNotifications(userId, 30);
+      setNotifications(notificationData as NotificationItem[]);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'نەتوانرا ئاگادارکردنەوەکان بار بکرێن.');
+    }
+  }, [userId]);
+
   const load = useCallback(async () => {
     if (!userId) return;
     setLoading(true);
     setError(null);
     try {
-      const [{ data: orderData, error: orderError }, notificationData] = await Promise.all([
-        supabase.from('orders').select('id,status,total_iqd,created_at,store_id,captain_id,address_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,discount_iqd,payment_status,payment_method,order_items(product_id,product_name,quantity,unit_price_iqd),store:stores(name,address,city,latitude,longitude),delivery_address:delivery_addresses(address,label,city,latitude,longitude)').eq('customer_id', userId).order('created_at', { ascending: false }).limit(30),
-        getMyNotifications(userId, 30),
-      ]);
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .select('id,status,total_iqd,created_at,store_id,captain_id,address_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,discount_iqd,payment_status,payment_method,order_items(product_id,product_name,quantity,unit_price_iqd),store:stores(name,address,city,latitude,longitude),delivery_address:delivery_addresses(address,label,city,latitude,longitude)')
+        .eq('customer_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(30);
       if (orderError) throw orderError;
       const nextOrders = (orderData ?? []).map((order: any) => ({
         ...order,
@@ -142,7 +155,6 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
         })),
       })) as CustomerOrder[];
       setOrders(nextOrders);
-      setNotifications(notificationData as NotificationItem[]);
       setSelectedId((current) => current && nextOrders.some((order) => order.id === current) ? current : nextOrders[0]?.id ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'نەتوانرا زانیارییەکان بار بکرێن.');
@@ -153,17 +165,17 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
 
   useEffect(() => {
     void load();
+    void loadNotifications();
     const orderChannel = supabase
       .channel(`customer-orders-${userId}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders', filter: `customer_id=eq.${userId}` }, () => void load())
       .subscribe();
-    const unsubscribeNotifications = subscribeToMyNotifications(userId, () => void load());
+    const unsubscribeNotifications = subscribeToMyNotifications(userId, () => void loadNotifications());
     return () => {
       void supabase.removeChannel(orderChannel);
       unsubscribeNotifications();
     };
-  }, [load, userId]);
-
+  }, [load, loadNotifications, userId]);
   const selected = useMemo(() => orders.find((order) => order.id === selectedId) ?? null, [orders, selectedId]);
 
   useEffect(() => {
