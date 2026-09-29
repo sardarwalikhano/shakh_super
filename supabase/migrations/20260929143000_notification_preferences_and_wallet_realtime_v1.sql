@@ -175,6 +175,7 @@ DECLARE
   wallet_pref boolean := true;
   notification_title text;
   notification_body text;
+  wallet_order_id uuid := NULL;
 BEGIN
   IF COALESCE(NEW.amount_iqd,0) <= 0 THEN
     RETURN NEW;
@@ -195,6 +196,10 @@ BEGIN
 
   IF NOT wallet_pref THEN
     RETURN NEW;
+  END IF;
+
+  IF NEW.type IN ('debit','refund','earning','commission') THEN
+    wallet_order_id := NEW.reference_id;
   END IF;
 
   CASE NEW.type
@@ -232,7 +237,7 @@ BEGIN
       'wallet_id',NEW.wallet_id,
       'transaction_id',NEW.id,
       'reference_id',NEW.reference_id,
-      'order_id',NEW.reference_id,
+      'order_id',wallet_order_id,
       'transaction_type',NEW.type,
       'amount_iqd',NEW.amount_iqd
     )
