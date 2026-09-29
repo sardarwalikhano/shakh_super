@@ -94,8 +94,10 @@ export default function DeliveryZoneManager({ userId, role }: { userId: string; 
     if (!name.trim()) return setMessage('ناوی سنور بنووسە.');
     if (!isAdmin && !selectedStoreId) return setMessage('سەرەتا دوکانێک هەڵبژێرە.');
     setSaving(true);
-    const payload = { owner_id: userId, store_id: selectedStoreId || null, name: name.trim(), city: city.trim() || null, points, is_active: true };
-    const result = selectedZoneId ? await supabase.from('delivery_zones').update(payload).eq('id', selectedZoneId) : await supabase.from('delivery_zones').insert(payload);
+    const basePayload = { store_id: selectedStoreId || null, name: name.trim(), city: city.trim() || null, points, is_active: true };
+    const result = selectedZoneId
+      ? await supabase.from('delivery_zones').update(basePayload).eq('id', selectedZoneId)
+      : await supabase.from('delivery_zones').insert({ ...basePayload, owner_id: userId });
     if (result.error) setMessage(result.error.message); else { setMessage(selectedZoneId ? 'سنوری گەیاندن نوێ کرایەوە.' : 'سنوری گەیاندن دروست کرا.'); clearEditor(); await load(); }
     setSaving(false);
   };
