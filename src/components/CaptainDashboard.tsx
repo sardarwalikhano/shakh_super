@@ -127,7 +127,6 @@ export default function CaptainDashboard() {
         const now = Date.now();
         const lastSent = lastLocationSentRef.current[orderId] || 0;
         if (now - lastSent < 10000) return;
-        lastLocationSentRef.current[orderId] = now;
 
         const { error } = await supabase.from('delivery_tracking_locations').upsert({
           order_id: orderId,
@@ -144,6 +143,7 @@ export default function CaptainDashboard() {
           setMessage(error.message);
           return;
         }
+        lastLocationSentRef.current[orderId] = now;
         setCaptainLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
         setLocationTrackingOrderId(orderId);
         setMessage('شوێنی کاپتن بۆ کڕیار نوێ کرایەوە.');
@@ -313,7 +313,7 @@ export default function CaptainDashboard() {
                 <button type="button" className="plain" onClick={() => void stopLocationTracking(order.id, false)}>وەستاندن</button>
               </div>
             )}
-            {order.status === 'on_the_way' && <button className="primary full" disabled={busy === order.id} onClick={async () => { await run(order.id, () => markOrderDelivered(order.id), 'گەیاندن بە سەرکەوتوویی تەواو بوو.'); await stopLocationTracking(order.id, true); }}>تەواوکردنی گەیاندن</button>}
+            {order.status === 'on_the_way' && <button className="primary full" disabled={busy === order.id} onClick={async () => { const ok = await run(order.id, () => markOrderDelivered(order.id), 'گەیاندن بە سەرکەوتوویی تەواو بوو.'); if (ok) await stopLocationTracking(order.id, true); }}>تەواوکردنی گەیاندن</button>}
             {order.status !== 'delivered' && (
               <>
                 {!contacts[order.id] && <button className="plain full" type="button" disabled={contactBusy === order.id} onClick={() => void loadCustomerContact(order.id)}>
