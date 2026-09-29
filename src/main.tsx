@@ -14,7 +14,7 @@ import PostsFeed from './components/PostsFeed';
 import PostPublishingHub from './components/PostPublishingHub';
 import PostsManagement from './components/PostsManagement';
 import NotificationCenter from './components/NotificationCenter';
-import ProfilePanel,{ProfilePanelHandle} from './components/ProfilePanel';
+import ProfilePanel,{type ProfilePanelHandle} from './components/ProfilePanel';
 import WalletPanel from './components/WalletPanel';
 import SupportTicketsPanel from './components/SupportTicketsPanel';
 import DeliveryZoneManager from './components/DeliveryZoneManager';
