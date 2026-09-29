@@ -16,10 +16,11 @@ export async function notifyUsers(userIds: string[], orderId: string, status: Or
   const text = copy[status];
   const rows = [...new Set(userIds)].map((user_id) => ({
     user_id,
-    order_id: orderId,
-    type: 'order_update',
-    title_ku: text.title,
-    body_ku: text.body,
+    type: 'order_status',
+    title: text.title,
+    body: text.body,
+    is_read: false,
+    data: { order_id: orderId, status },
   }));
   const { error } = await supabase.from('notifications').insert(rows);
   if (error) throw error;
