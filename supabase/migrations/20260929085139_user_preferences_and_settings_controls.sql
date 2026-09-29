@@ -10,13 +10,20 @@ create table if not exists public.user_preferences (
 alter table public.user_preferences enable row level security;
 
 drop policy if exists user_preferences_self_select on public.user_preferences;
-create policy user_preferences_self_select on public.user_preferences for select to authenticated using (user_id=(select auth.uid()) or is_admin());
+create policy user_preferences_self_select on public.user_preferences
+for select to authenticated
+using (user_id=(select auth.uid()) or is_admin());
 
 drop policy if exists user_preferences_self_insert on public.user_preferences;
-create policy user_preferences_self_insert on public.user_preferences for insert to authenticated with check (user_id=(select auth.uid()) or is_admin());
+create policy user_preferences_self_insert on public.user_preferences
+for insert to authenticated
+with check (user_id=(select auth.uid()) or is_admin());
 
 drop policy if exists user_preferences_self_update on public.user_preferences;
-create policy user_preferences_self_update on public.user_preferences for update to authenticated using (user_id=(select auth.uid()) or is_admin()) with check (user_id=(select auth.uid()) or is_admin());
+create policy user_preferences_self_update on public.user_preferences
+for update to authenticated
+using (user_id=(select auth.uid()) or is_admin())
+with check (user_id=(select auth.uid()) or is_admin());
 
 alter table public.platform_settings
   add column if not exists platform_fee_iqd numeric not null default 250,

@@ -31,7 +31,8 @@ begin
  for v_item in select product_id,coalesce(options,'{}'::jsonb) options,sum(quantity)::integer quantity from jsonb_to_recordset(p_items) x(product_id uuid,quantity integer,options jsonb) group by product_id,coalesce(options,'{}'::jsonb)
  loop
   select * into v_product from public.products where id=v_item.product_id for update;
-  insert into public.order_items(order_id,product_id,product_name,quantity,unit_price_iqd,options) values(v_order_id,v_product.id,v_product.name_ku,v_item.quantity,coalesce(v_product.sale_price_iqd,v_product.price_iqd),v_item.options);
+  insert into public.order_items(order_id,product_id,product_name,quantity,unit_price_iqd,options)
+  values(v_order_id,v_product.id,v_product.name_ku,v_item.quantity,coalesce(v_product.sale_price_iqd,v_product.price_iqd),v_item.options);
   update public.products set stock=greatest(0,coalesce(stock,0)-v_item.quantity),is_available=case when coalesce(stock,0)-v_item.quantity<=0 then false else is_available end,updated_at=now() where id=v_product.id;
  end loop;
  return v_order_id;
