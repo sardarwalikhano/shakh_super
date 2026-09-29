@@ -1220,3 +1220,118 @@ header{
     transform:none!important;
   }
 }
+
+/* Promotions + coupon checkout */
+.promotionsGrid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:13px!important;
+}
+.promotionCard{
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  border:1px solid rgba(18,59,104,.08)!important;
+  border-radius:19px!important;
+  background:rgba(255,255,255,.88)!important;
+  box-shadow:0 12px 28px rgba(8,26,51,.06)!important;
+  min-height:150px!important;
+}
+.promotionCard img{
+  width:100%!important;
+  height:120px!important;
+  object-fit:cover!important;
+  display:block!important;
+}
+.promotionCard>div{
+  padding:12px 13px 14px!important;
+}
+.promotionCard b{
+  font-size:11px!important;
+  color:#102c4b!important;
+}
+.promotionCard p{
+  margin:5px 0 8px!important;
+  font-size:9px!important;
+  line-height:1.7!important;
+  color:#5f7286!important;
+}
+.promotionCard small{
+  font-size:8px!important;
+  color:#ff6a00!important;
+  font-weight:800!important;
+}
+.couponCheckoutBox{
+  margin:13px 0!important;
+  padding:13px!important;
+  border:1px solid rgba(255,106,0,.13)!important;
+  border-radius:17px!important;
+  background:linear-gradient(145deg,#fff8f1,#fff)!important;
+}
+.couponCheckoutHead{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:3px!important;
+  margin-bottom:9px!important;
+}
+.couponCheckoutHead b{
+  font-size:11px!important;
+  color:#173653!important;
+}
+.couponCheckoutHead small{
+  color:#77879a!important;
+  font-size:8px!important;
+}
+.couponCheckoutRow{
+  display:grid!important;
+  grid-template-columns:1fr auto!important;
+  gap:8px!important;
+}
+.couponCheckoutRow input{
+  min-width:0!important;
+  height:43px!important;
+  border-radius:12px!important;
+  border:1px solid rgba(18,59,104,.11)!important;
+  background:#fff!important;
+  padding:0 12px!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.4px!important;
+  direction:ltr!important;
+  text-align:left!important;
+}
+.couponCheckoutRow .plain{
+  height:43px!important;
+  min-width:92px!important;
+  border-radius:12px!important;
+  background:#102c4b!important;
+  color:#fff!important;
+  border:0!important;
+  font-weight:900!important;
+  font-size:9px!important;
+}
+.couponCheckoutRow .plain:disabled{
+  opacity:.45!important;
+}
+.couponApplied{
+  margin-top:8px!important;
+  padding:8px 10px!important;
+  border-radius:10px!important;
+  background:#eefaf2!important;
+  color:#1f7a45!important;
+  font-size:9px!important;
+  font-weight:800!important;
+}
+.checkoutCouponSummary{
+  margin-top:10px!important;
+  padding-top:10px!important;
+  border-top:1px dashed rgba(18,59,104,.1)!important;
+}
+@media(max-width:980px){
+  .promotionsGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:560px){
+  .promotionsGrid{grid-template-columns:1fr!important}
+  .couponCheckoutRow{grid-template-columns:1fr!important}
+  .couponCheckoutRow .plain{width:100%!important}
+}
