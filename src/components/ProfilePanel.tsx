@@ -1,6 +1,8 @@
-import React,{useEffect,useMemo,useRef,useState} from 'react';
+import React,{forwardRef,useEffect,useImperativeHandle,useMemo,useRef,useState} from 'react';
 import {Camera,CheckCircle2,FileText,Languages,LogOut,MapPin,RefreshCw,Save,ShieldCheck,UserRound} from 'lucide-react';
 import {supabase} from '../lib/supabase';
+
+export type ProfilePanelHandle={save:()=>Promise<boolean>;isDirty:()=>boolean};
 
 type Props={userId:string;role:string;onOpenPosts?:(postId?:string)=>void;onDirtyChange?:(dirty:boolean)=>void;onSignOut?:()=>Promise<void>|void};
 
@@ -40,7 +42,7 @@ const LANGUAGE_LABELS:{value:ProfileRow['language'];label:string;icon:string}[]=
  {value:'en',label:'English',icon:'EN'}
 ];
 
-export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange,onSignOut}:Props){
+const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({userId,role,onOpenPosts,onDirtyChange,onSignOut}:Props,ref){
  const [profile,setProfile]=useState<ProfileRow|null>(null);
  const [name,setName]=useState('');
  const [phone,setPhone]=useState('');
@@ -161,11 +163,11 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange,onSi
   return supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
  };
 
- const save=async()=>{
+ const save=async():Promise<boolean>=>{
   const trimmedName=name.trim();
-  if(!trimmedName)return setMessage('تکایە ناوی تەواو بنووسە.');
-  if(trimmedName.length>80)return setMessage('ناو نابێت لە ٨٠ پیت زیاتر بێت.');
-  if(phone.trim().length>20)return setMessage('ژمارەی تەلەفون نابێت لە ٢٠ پیت زیاتر بێت.');
+  if(!trimmedName){setMessage('تکایە ناوی تەواو بنووسە.');return false;}
+  if(trimmedName.length>80){setMessage('ناو نابێت لە ٨٠ پیت زیاتر بێت.');return false;}
+  if(phone.trim().length>20){setMessage('ژمارەی تەلەفون نابێت لە ٢٠ پیت زیاتر بێت.');return false;}
   setSaving(true);
   setMessage('');
   try{
@@ -188,12 +190,17 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange,onSi
    if(preview)URL.revokeObjectURL(preview);
    setPreview('');
    setMessage('زانیاریی پرۆفایل بە سەرکەوتوویی پاشەکەوت کرا.');
+   onDirtyChange?.(false);
+   return true;
   }catch(error:unknown){
    setMessage(error instanceof Error?error.message:'نوێکردنەوەی پرۆفایل سەرکەوتوو نەبوو.');
+   return false;
   }finally{
    setSaving(false);
   }
  };
+
+ useImperativeHandle(ref,()=>({save,isDirty:()=>hasChanges}),[save,hasChanges]);
 
  if(loading)return <section className="profilePanel"><div className="profileLoading"><RefreshCw size={22}/> پرۆفایل بار دەکرێت...</div></section>;
 
@@ -265,4 +272,4 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange,onSi
   {file&&<div className="profileUploadHint"><Camera size={15}/><span>وێنەی نوێ هەڵبژێردراوە؛ پاشەکەوتکردن بۆ جێگیرکردنی وێنەکە پێویستە.</span><button type="button" className="profileUploadCancel" onClick={clearAvatarDraft} disabled={saving}>هەڵوەشاندنەوە</button></div>}
   {message&&<div className={message.includes('سەرکەوت')?'profileMessage success':'profileMessage'} role="alert" aria-live="polite">{message}</div>}
  </section>;
-}
+});
