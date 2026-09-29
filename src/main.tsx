@@ -175,7 +175,7 @@ function App(){
   <h2 id="selected-product-title">{selectedProduct.name_ku}</h2>
   <p className="productDetailsType">{selectedProduct.product_type||'جۆر دیاری نەکراو'}{selectedProduct.brand?' · '+selectedProduct.brand:''}{selectedProduct.size?' · '+selectedProduct.size:''}</p>
     {selectedShoeSizes.length>0&&<div className="productVariantBox"><b>ژمارەی پێلاو هەڵبژێرە</b><div className="shoeSizePicker">{selectedShoeSizes.map(size=><button type="button" key={size} className={selectedOptions.shoe_size===size?'shoeSizeChip active':'shoeSizeChip'} aria-pressed={selectedOptions.shoe_size===size} onClick={()=>setSelectedOptions({shoe_size:size})}>{size}</button>)}</div><small>تەنها ژمارەکانی بەردەستی ئەم پۆستە لێرە پیشان دەدرێن.</small></div>}
-  <div className="productDetailsPriceRow"><span>نرخی بەرهەم</span><strong>{Number(selectedProduct.sale_price_iqd??selectedProduct.price_iqd).toLocaleString('en-US')} د.ع</strong></div>
+  <div className="productDetailsPriceRow"><span>نرخی بەرهەم</span><strong>{selectedProduct.sale_price_iqd!=null&&Number(selectedProduct.sale_price_iqd)>0&&Number(selectedProduct.sale_price_iqd)<Number(selectedProduct.price_iqd)?<>{Number(selectedProduct.sale_price_iqd).toLocaleString('en-US')} د.ع <small style={{textDecoration:'line-through',opacity:.6}}>{Number(selectedProduct.price_iqd).toLocaleString('en-US')} د.ع</small></>:<>{Number(selectedProduct.price_iqd).toLocaleString('en-US')} د.ع</>}</strong></div>
   <div className="productDetailsStats">
    <div><small>ستۆک</small><b>{Number(selectedProduct.stock||0).toLocaleString('ku-IQ')}</b></div>
    <div><small>بەردەستی</small><b>{selectedProduct.is_available&&Number(selectedProduct.stock||0)>0?'بەردەستە':'بەردەست نییە'}</b></div>
