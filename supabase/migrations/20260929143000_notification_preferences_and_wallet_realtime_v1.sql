@@ -49,10 +49,15 @@ BEGIN
       ELSE 'دۆخی داواکارییەکەت نوێ کرایەوە.'
     END;
 
-    SELECT coalesce(order_notifications,true), coalesce(delivery_notifications,true)
-    INTO customer_order_pref, customer_delivery_pref
-    FROM public.user_preferences
-    WHERE user_id = NEW.customer_id;
+    SELECT COALESCE(
+      (SELECT up.order_notifications FROM public.user_preferences up WHERE up.user_id = NEW.customer_id),
+      true
+    ) INTO customer_order_pref;
+
+    SELECT COALESCE(
+      (SELECT up.delivery_notifications FROM public.user_preferences up WHERE up.user_id = NEW.customer_id),
+      true
+    ) INTO customer_delivery_pref;
 
     IF NEW.captain_id IS NOT NULL THEN
       SELECT coalesce(delivery_notifications,true)
@@ -67,10 +72,10 @@ BEGIN
       WHERE s.id = NEW.store_id;
 
       IF store_owner IS NOT NULL THEN
-        SELECT coalesce(order_notifications,true)
-        INTO vendor_order_pref
-        FROM public.user_preferences
-        WHERE user_id = store_owner;
+        SELECT COALESCE(
+          (SELECT up.order_notifications FROM public.user_preferences up WHERE up.user_id = store_owner),
+          true
+        ) INTO vendor_order_pref;
       END IF;
     END IF;
 
@@ -183,10 +188,10 @@ BEGIN
     RETURN NEW;
   END IF;
 
-  SELECT coalesce(wallet_notifications,true)
-  INTO wallet_pref
-  FROM public.user_preferences
-  WHERE user_id = recipient_id;
+  SELECT COALESCE(
+    (SELECT up.wallet_notifications FROM public.user_preferences up WHERE up.user_id = recipient_id),
+    true
+  ) INTO wallet_pref;
 
   IF NOT wallet_pref THEN
     RETURN NEW;
