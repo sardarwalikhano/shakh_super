@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react';
-import {CheckCircle2,Edit3,Eye,EyeOff,RefreshCw,Search,Share2,ShieldAlert,Trash2,X} from 'lucide-react';
+import {CheckCircle2,Edit3,Eye,EyeOff,RefreshCw,Search,Share2,ShieldAlert,Trash2,X,Archive,RotateCcw} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
 type Props={userId:string;role:string;focusRequest?:{postId:string;nonce:number}|null};
@@ -21,6 +21,7 @@ type Post={
  label?:string|null;
  rejection_reason?:string|null;
  visibility:string;
+ archived_at?:string|null;
  listing_details?:Record<string,unknown>|null;
 };
 
@@ -29,7 +30,8 @@ const STATUS_FILTERS=[
  {value:'public',label:'بڵاوکراوە'},
  {value:'private',label:'شاراوە'},
  {value:'pending',label:'چاوەڕوان'},
- {value:'rejected',label:'ڕەتکراوە'}
+ {value:'rejected',label:'ڕەتکراوە'},
+ {value:'archived',label:'ئەرشیفکراوە'}
 ];
 
 const IRAQ_CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
@@ -98,7 +100,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
   setLoading(true);
   let builder=supabase
    .from('posts')
-   .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,listing_details')
+   .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,archived_at,listing_details')
    .order('created_at',{ascending:false})
    .limit(200);
   if(!isAdmin)builder=builder.eq('author_id',userId);
@@ -128,7 +130,8 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
     || (statusFilter==='public'&&post.status==='approved'&&post.visibility==='public')
     || (statusFilter==='private'&&post.visibility==='private')
     || (statusFilter==='pending'&&post.status==='pending')
-    || (statusFilter==='rejected'&&post.status==='rejected');
+    || (statusFilter==='rejected'&&post.status==='rejected')
+     || (statusFilter==='archived'&&!!post.archived_at);
    const roleOk=!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter;
    const structured=post.listing_details&&typeof post.listing_details==='object'
     ?Object.values(post.listing_details).map(value=>value==null?'':String(value)).join(' ')
@@ -295,13 +298,23 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
  };
 
  const deletePost=async(post:Post)=>{
-  if(!window.confirm('دڵنیایت لە سڕینەوەی ئەم پۆستە؟'))return;
+  if(!window.confirm('پۆستەکە دەچێتە ئەرشیف، نەک سڕینەوەی هەمیشەیی. دڵنیایت؟'))return;
   setBusyId(post.id);
-  const {error}=await supabase.from('posts').delete().eq('id',post.id);
+  const {error}=await supabase.from('posts').update({archived_at:new Date().toISOString(),visibility:'private'}).eq('id',post.id);
   setBusyId('');
   if(error){setMessage(error.message);return;}
-  setPosts(current=>current.filter(item=>item.id!==post.id));
-  setMessage('پۆستەکە سڕایەوە.');
+  setMessage('پۆستەکە بۆ ئەرشیف گواسترایەوە و دەتوانرێت restore بکرێت.');
+  await load();
+ };
+
+ const restorePost=async(post:Post)=>{
+  if(!post.archived_at||!isAdmin)return;
+  setBusyId(post.id);
+  const {error}=await supabase.from('posts').update({archived_at:null,visibility:post.status==='approved'?'public':'private'}).eq('id',post.id);
+  setBusyId('');
+  if(error){setMessage(error.message);return;}
+  setMessage('پۆستەکە restore کرا.');
+  await load();
  };
 
  const moderate=async(post:Post,nextStatus:'approved'|'rejected',reasonOverride='')=>{
@@ -380,7 +393,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
         ?<button type="button" onClick={()=>void changeVisibility(post,'private')} disabled={disabled}><EyeOff size={15}/> شارکردنەوە</button>
         :<button type="button" onClick={()=>void changeVisibility(post,'public')} disabled={disabled}><Eye size={15}/> بڵاوکردنەوە</button>)}
        {isAdmin&&post.status==='pending'&&<><button type="button" onClick={()=>void moderate(post,'approved')} disabled={disabled}><CheckCircle2 size={15}/> پەسەند</button><button type="button" onClick={()=>openReject({post})} disabled={disabled}><ShieldAlert size={15}/> ڕەتکردنەوە</button></>}
-       <button type="button" className="danger" onClick={()=>void deletePost(post)} disabled={disabled}><Trash2 size={15}/> سڕینەوە</button>
+       {post.archived_at&&isAdmin?<button type="button" className="plain" onClick={()=>void restorePost(post)} disabled={disabled}><RotateCcw size={15}/> restore</button>:<button type="button" className="danger" onClick={()=>void deletePost(post)} disabled={disabled}><Archive size={15}/> ئەرشیف</button>}
       </div>
      </div>
     </article>;
