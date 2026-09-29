@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { Bell, Check, LogOut, MapPin, Moon, Monitor, Phone, Save, ShieldCheck, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
-type Preferences = { theme:'system'|'light'|'dark'; order_notifications:boolean; delivery_notifications:boolean; marketing_notifications:boolean };
+type Preferences = { theme:'system'|'light'|'dark'; order_notifications:boolean; delivery_notifications:boolean; wallet_notifications:boolean; marketing_notifications:boolean };
 type PlatformSettings = { default_delivery_fee_iqd:number; platform_fee_iqd:number; commission_percent:number; support_phone:string; support_whatsapp:string; default_city:string; privacy_policy_version:string };
 
 export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { userId:string; role:string; onSignOut:()=>Promise<void>|void; onPrivacy:()=>void }) {
   const isAdmin = role==='super_admin' || role==='admin';
-  const [prefs,setPrefs]=useState<Preferences>({theme:'system',order_notifications:true,delivery_notifications:true,marketing_notifications:true});
+  const [prefs,setPrefs]=useState<Preferences>({theme:'system',order_notifications:true,delivery_notifications:true,wallet_notifications:true,marketing_notifications:true});
   const [city,setCity]=useState('هەولێر');
   const [platform,setPlatform]=useState<PlatformSettings>({default_delivery_fee_iqd:1000,platform_fee_iqd:250,commission_percent:0,support_phone:'07504796924',support_whatsapp:'07504796924',default_city:'هەولێر',privacy_policy_version:'1.0'});
   const [loading,setLoading]=useState(true);
@@ -22,7 +22,7 @@ export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { 
   const load=async()=>{
     setLoading(true);setMessage('');
     const [prefResult,profileResult]=await Promise.all([
-      supabase.from('user_preferences').select('theme,order_notifications,delivery_notifications,marketing_notifications').eq('user_id',userId).maybeSingle(),
+      supabase.from('user_preferences').select('theme,order_notifications,delivery_notifications,wallet_notifications,marketing_notifications').eq('user_id',userId).maybeSingle(),
       supabase.from('profiles').select('city,language').eq('id',userId).maybeSingle(),
     ]);
     if(prefResult.error)setMessage(prefResult.error.message);
@@ -61,7 +61,7 @@ export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { 
 
       <div className='settingsCard'><div className='settingsCardHeader'><div><b>ئاگادارییەکان</b><small>کۆنترۆڵی پەیامەکانی شاخ</small></div><Bell size={20}/></div>
         <label className='settingsSwitch'><span><b>ئاگاداریی ئۆردەر</b><small>گۆڕانی دۆخی ئۆردەر</small></span><input type='checkbox' checked={prefs.order_notifications} onChange={e=>setPrefs({...prefs,order_notifications:e.target.checked})}/></label>
-        <label className='settingsSwitch'><span><b>ئاگاداریی گەیاندن</b><small>کاپتن، شوێنکەوتن و گەیاندن</small></span><input type='checkbox' checked={prefs.delivery_notifications} onChange={e=>setPrefs({...prefs,delivery_notifications:e.target.checked})}/></label>
+        <label className='settingsSwitch'><span><b>ئاگاداریی گەیاندن</b><small>کاپتن، شوێنکەوتن و گەیاندن</small></span><input type='checkbox' checked={prefs.delivery_notifications} onChange={e=>setPrefs({...prefs,delivery_notifications:e.target.checked})}/></label><label className='settingsSwitch'><span><b>ئاگاداریی جزدان</b><small>پارەدان، گەڕانەوەی پارە و داهات</small></span><input type='checkbox' checked={prefs.wallet_notifications} onChange={e=>setPrefs({...prefs,wallet_notifications:e.target.checked})}/></label>
         <label className='settingsSwitch'><span><b>پێشنیار و ڕیکلام</b><small>پێشنیارەکانی بازاڕ و کۆد</small></span><input type='checkbox' checked={prefs.marketing_notifications} onChange={e=>setPrefs({...prefs,marketing_notifications:e.target.checked})}/></label>
       </div>
 
