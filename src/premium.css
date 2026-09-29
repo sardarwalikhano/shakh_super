@@ -1063,3 +1063,160 @@ header{
     transition-duration:.001ms!important;
   }
 }
+
+/* Notification center — modern realtime inbox */
+.notification-center{
+  border-radius:22px!important;
+  border:1px solid rgba(17,40,68,.075)!important;
+  background:rgba(255,255,255,.82)!important;
+  box-shadow:var(--sx-shadow-md)!important;
+  padding:17px!important;
+  backdrop-filter:blur(16px)!important;
+}
+.notification-center__header{
+  align-items:center!important;
+  padding-bottom:14px!important;
+  border-bottom:1px solid rgba(17,40,68,.07)!important;
+}
+.notification-center__eyebrow{
+  background:#fff2e8!important;
+  color:#d95800!important;
+  border:1px solid rgba(255,106,0,.12)!important;
+  padding:7px 10px!important;
+  border-radius:999px!important;
+}
+.notification-center__header h2{
+  font-size:21px!important;
+  letter-spacing:-.45px!important;
+}
+.notification-center__header p{
+  margin-top:4px!important;
+}
+.notification-center__header-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-end!important;
+}
+.notification-center__header-actions .plain{
+  width:auto!important;
+  min-height:40px!important;
+  padding:0 12px!important;
+  font-size:9px!important;
+}
+.notification-center__refresh{
+  width:40px!important;
+  height:40px!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+.notification-center__list{
+  gap:8px!important;
+}
+.notification-center__item{
+  position:relative!important;
+  grid-template-columns:44px 1fr auto!important;
+  gap:11px!important;
+  padding:12px!important;
+  border-radius:17px!important;
+  border:1px solid rgba(17,40,68,.065)!important;
+  background:rgba(248,250,253,.82)!important;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease!important;
+}
+.notification-center__item:hover{
+  transform:translateY(-2px)!important;
+  border-color:rgba(18,59,104,.12)!important;
+  box-shadow:0 12px 26px rgba(8,26,51,.06)!important;
+}
+.notification-center__item.is-unread{
+  background:linear-gradient(135deg,#fff8f1,#fff)!important;
+  border-color:rgba(255,106,0,.15)!important;
+  box-shadow:0 8px 20px rgba(255,106,0,.055)!important;
+}
+.notification-center__item.is-unread::before{
+  content:''!important;
+  position:absolute!important;
+  top:12px!important;
+  right:0!important;
+  width:3px!important;
+  height:34px!important;
+  border-radius:6px 0 0 6px!important;
+  background:#ff6a00!important;
+}
+.notification-center__icon{
+  width:44px!important;
+  height:44px!important;
+  border-radius:14px!important;
+  background:#f2f6fa!important;
+  color:#58718a!important;
+}
+.notification-center__item.is-unread .notification-center__icon{
+  background:#fff0e4!important;
+  color:#ff6a00!important;
+}
+.notification-center__title-row strong{
+  font-size:11px!important;
+}
+.notification-center__title-row span{
+  padding:3px 7px!important;
+  border-radius:999px!important;
+  background:#ff6a00!important;
+  box-shadow:0 5px 12px rgba(255,106,0,.18)!important;
+}
+.notification-center__content p{
+  margin:5px 0!important;
+  line-height:1.75!important;
+  font-size:10px!important;
+}
+.notification-center__content small{
+  font-size:8px!important;
+}
+.notification-center__item>button{
+  width:36px!important;
+  height:36px!important;
+  border-radius:11px!important;
+}
+.notification-center__empty{
+  min-height:190px!important;
+  border-radius:18px!important;
+  background:linear-gradient(145deg,#fbfcfe,#f7f9fc)!important;
+}
+
+@media(max-width:600px){
+  .notification-center{
+    padding:13px!important;
+    border-radius:19px!important;
+  }
+  .notification-center__header{
+    align-items:flex-start!important;
+    gap:10px!important;
+  }
+  .notification-center__header h2{
+    font-size:18px!important;
+  }
+  .notification-center__header-actions{
+    width:100%!important;
+    justify-content:stretch!important;
+  }
+  .notification-center__header-actions .plain{
+    flex:1!important;
+  }
+  .notification-center__item{
+    grid-template-columns:40px 1fr!important;
+  }
+  .notification-center__icon{
+    width:40px!important;
+    height:40px!important;
+  }
+  .notification-center__item>button{
+    grid-column:2!important;
+    justify-self:start!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .notification-center__item:hover{
+    transform:none!important;
+  }
+}
