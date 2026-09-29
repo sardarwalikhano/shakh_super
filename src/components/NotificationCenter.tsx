@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Bell, CheckCheck, Clock3, Package, RefreshCw, ShieldCheck, Tag } from 'lucide-react';
+import { Bell, CheckCheck, Clock3, Package, RefreshCw, ShieldCheck, Tag, Check } from 'lucide-react';
 import { getMyNotifications, markNotificationRead, subscribeToMyNotifications } from '../lib/orderTracking';
 
 type NotificationItem = {
@@ -53,6 +53,21 @@ export default function NotificationCenter({ userId }: NotificationCenterProps) 
     }
   };
 
+  const readAll = async () => {
+    const unread = items.filter((item) => !item.is_read);
+    if (unread.length === 0) return;
+    setBusy('all');
+    try {
+      const { error } = await supabase.from('notifications').update({ is_read: true }).eq('user_id', userId).eq('is_read', false);
+      if (error) throw error;
+      setItems((current) => current.map((item) => ({ ...item, is_read: true })));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'نەتوانرا هەموو ئاگادارکردنەوەکان بخوێندرێنەوە.');
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
     <section className="notification-center" dir="rtl" aria-label="ئاگادارکردنەوەکان">
       <header className="notification-center__header">
@@ -61,9 +76,12 @@ export default function NotificationCenter({ userId }: NotificationCenterProps) 
           <h2>نوێترین ئاگادارکردنەوەکان</h2>
           <p>{unreadCount > 0 ? `${unreadCount.toLocaleString('ku-IQ')} ئاگادارکردنەوەی نەخوێندراوە هەیە.` : 'هەموو ئاگادارکردنەوەکانت خوێندراونەتەوە.'}</p>
         </div>
-        <button type="button" className="notification-center__refresh" onClick={() => void load()} disabled={loading} aria-label="نوێکردنەوە">
-          <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-        </button>
+        <div className="notification-center__header-actions">
+          {unreadCount > 0 && <button type="button" className="plain" onClick={() => void readAll()} disabled={busy === 'all'}><Check size={16}/> {busy === 'all' ? 'دەخوێندرێتەوە...' : 'هەمووی بخوێنەوە'}</button>}
+          <button type="button" className="notification-center__refresh" onClick={() => void load()} disabled={loading} aria-label="نوێکردنەوە">
+            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+          </button>
+        </div>
       </header>
 
       {error && <div className="notification-center__error" role="alert">{error}</div>}
