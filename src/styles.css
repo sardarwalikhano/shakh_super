@@ -954,3 +954,16 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.82);backdro
 .vehicleFeeAdminRow button{min-height:40px!important;margin:0!important;padding-inline:11px!important}
 @media(max-width:720px){.locationStatusBar{width:calc(100% - 24px);justify-content:flex-start;font-size:10px}.locationStatusBar button{margin-inline-start:auto}.vehicleFeeAdminRow{flex-direction:column;align-items:stretch}.vehicleFeeAdminRow>div:last-child{width:100%}.vehicleFeeAdminRow input{flex:1;width:auto}.vehicleFeeAdminRow button{flex:0 0 auto}}
 @media(max-width:520px){.locationStatusBar{border-radius:12px;min-height:42px;padding-inline:10px}.locationStatusBar button{padding:6px 9px}.vehicleFeeAdminRow>div:last-child{display:grid;grid-template-columns:1fr auto}}
+
+/* Shakh delivery zones */
+.deliveryZoneEditorCard{margin-bottom:20px}
+.deliveryZoneEditorTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.deliveryZoneEditorTop>div{display:grid;gap:4px}.deliveryZoneEditorTop strong{font-size:14px;color:#20344c}.deliveryZoneEditorTop small{font-size:10px;color:#8693a0}
+.deliveryZoneFormGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}.deliveryZoneFormGrid label{display:grid;gap:6px;font-size:10px;font-weight:900;color:#51677e}.deliveryZoneFormGrid input,.deliveryZoneFormGrid select{width:100%;box-sizing:border-box;min-height:42px;border:1px solid #e1e8ef;border-radius:11px;background:#fff;padding:0 10px;color:#243a52;font:inherit}
+.deliveryZoneMapWrap{position:relative;border:1px solid #dfe7ee;border-radius:16px;overflow:hidden;background:#eef3f7}.deliveryZoneMap{height:430px;width:100%}.deliveryZoneMapHint{position:absolute;z-index:500;right:12px;bottom:12px;display:inline-flex;align-items:center;gap:6px;padding:9px 11px;border:1px solid rgba(255,255,255,.8);border-radius:11px;background:rgba(255,255,255,.93);color:#38536b;box-shadow:0 8px 22px rgba(7,26,51,.12);font-size:10px;font-weight:900}
+.deliveryZonePointList{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.deliveryZonePointList span{padding:7px 9px;border:1px solid #e6ebf0;border-radius:9px;background:#fafcfd;color:#617489;font-size:9px;font-weight:800}
+.deliveryZoneEditorActions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:12px}.deliveryZoneEditorActions button{margin:0!important;min-height:40px!important}
+.deliveryZoneCard.isSelected{box-shadow:0 0 0 2px rgba(255,106,0,.16),0 10px 30px rgba(7,26,51,.06)}
+.deliveryZoneCardActions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.deliveryZoneCardActions button{min-height:38px!important;margin:0!important;padding-inline:10px!important}
+.deliveryZoneManager .leaflet-container{font-family:inherit}
+@media(max-width:760px){.deliveryZoneFormGrid{grid-template-columns:1fr 1fr}.deliveryZoneFormGrid label:last-child{grid-column:1/-1}.deliveryZoneMap{height:380px}.deliveryZoneEditorActions{flex-direction:column;align-items:stretch}.deliveryZoneEditorActions button{width:100%}}
+@media(max-width:520px){.deliveryZoneFormGrid{grid-template-columns:1fr}.deliveryZoneFormGrid label:last-child{grid-column:auto}.deliveryZoneMap{height:330px}.deliveryZoneMapHint{left:10px;right:10px;justify-content:center;font-size:9px}}
