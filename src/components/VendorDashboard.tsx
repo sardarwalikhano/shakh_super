@@ -4,6 +4,7 @@ import VendorLiveOrders from './VendorLiveOrders';
 import './vendor-dashboard.css';
 import ProductPostComposer from './ProductPostComposer';
 import ProductManagement from './ProductManagement';
+import StoreLocationManager from './StoreLocationManager';
 
 type VendorDashboardProps = {
   storeId?: string;
@@ -49,7 +50,7 @@ export default function VendorDashboard({
         <article><Store /><span>دۆخی دوکان</span><strong className="is-live">چالاک</strong></article>
       </div>
       {resolvedStoreId ? <VendorLiveOrders storeId={resolvedStoreId} /> : <div className="vendor-dashboard__empty"><ShoppingBag size={42} /><h3>دوکانەکەت دیاری نەکراوە</h3><p>بۆ پیشاندانی ئۆردەرە زیندووەکان، دەبێت ناسنامەی دوکان بۆ داشبۆرد بنێردرێت.</p></div>}
-      {userId && role && <><div ref={setPostAnchor}><ProductPostComposer userId={userId} role={role} onSaved={onRefresh} /></div><ProductManagement userId={userId} role={role} onChanged={onRefresh} /></>}
+      {userId && role && <><div ref={setPostAnchor}><ProductPostComposer userId={userId} role={role} onSaved={onRefresh} /></div><ProductManagement userId={userId} role={role} onChanged={onRefresh} />{resolvedStoreId && <StoreLocationManager storeId={resolvedStoreId} userId={userId} />}</>}
     </section>
   );
 }
