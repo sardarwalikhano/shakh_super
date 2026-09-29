@@ -1,8 +1,8 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {Camera,CheckCircle2,FileText,Languages,MapPin,RefreshCw,Save,ShieldCheck,UserRound} from 'lucide-react';
+import {Camera,CheckCircle2,FileText,Languages,LogOut,MapPin,RefreshCw,Save,ShieldCheck,UserRound} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
-type Props={userId:string;role:string;onOpenPosts?:(postId?:string)=>void;onDirtyChange?:(dirty:boolean)=>void};
+type Props={userId:string;role:string;onOpenPosts?:(postId?:string)=>void;onDirtyChange?:(dirty:boolean)=>void;onSignOut?:()=>Promise<void>|void};
 
 type ProfileRow={
  id:string;
@@ -40,7 +40,7 @@ const LANGUAGE_LABELS:{value:ProfileRow['language'];label:string;icon:string}[]=
  {value:'en',label:'English',icon:'EN'}
 ];
 
-export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Props){
+export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange,onSignOut}:Props){
  const [profile,setProfile]=useState<ProfileRow|null>(null);
  const [name,setName]=useState('');
  const [phone,setPhone]=useState('');
@@ -259,6 +259,8 @@ export default function ProfilePanel({userId,role,onOpenPosts,onDirtyChange}:Pro
     {saving?<><RefreshCw size={17}/> پاشەکەوت دەکرێت...</>:<><Save size={17}/> پاشەکەوتکردنی پرۆفایل</>}
    </button>
   </div>
+
+  {onSignOut&&<div className="profileAccountActions"><div><strong>دەرچوون لە هەژمار</strong><small>لە هەموو ئەم ئامێرەوە دەچیتە دەرەوە.</small></div><button type="button" className="profileLogoutButton" onClick={()=>void onSignOut()}><LogOut size={17}/> دەرچوون</button></div>}
 
   {file&&<div className="profileUploadHint"><Camera size={15}/><span>وێنەی نوێ هەڵبژێردراوە؛ پاشەکەوتکردن بۆ جێگیرکردنی وێنەکە پێویستە.</span><button type="button" className="profileUploadCancel" onClick={clearAvatarDraft} disabled={saving}>هەڵوەشاندنەوە</button></div>}
   {message&&<div className={message.includes('سەرکەوت')?'profileMessage success':'profileMessage'} role="alert" aria-live="polite">{message}</div>}
