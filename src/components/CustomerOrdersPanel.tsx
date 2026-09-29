@@ -304,6 +304,12 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
                 </div>
               )}
               <div className="tracking-card__footer"><MapPin size={17} /><span>شوێنی گەیاندن لە زانیارییەکانی ئۆردەرەکە پارێزراوە.</span></div>
+              {(selected.status === 'assigned_to_captain' || selected.status === 'picked_up' || selected.status === 'on_the_way') && (
+                <div className="locationPrivacyBanner" role="status">
+                  <MapPin size={18}/>
+                  <div><strong>شوێنەکەت دەبینرێت لەلایەن کاپتن</strong><small>تەنها بۆ ئەوەی ئۆردەرەکەت بە دروستی بگاتە دەستت.</small></div>
+                </div>
+              )}
 
               {(selected.status === 'assigned_to_captain' || selected.status === 'picked_up' || selected.status === 'on_the_way') && (
                 <div className="liveDeliveryMapCard">
