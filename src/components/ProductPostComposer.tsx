@@ -62,7 +62,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
   try{
    if(!ready)return setMessage('تکایە هەموو خانە پێویستەکان پڕ بکەرەوە.');
    if(!/^\d+$/.test(form.price)||Number(form.price)<=0)return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
-   if(!/^\d+$/.test(form.stock)||Number(form.stock)<0)return setMessage('ستۆک دەبێت ژمارەیەکی دروست و نەخۆش بێت.');
+   if(!/^\d+$/.test(form.stock)||Number(form.stock)<0)return setMessage('ستۆک دەبێت ژمارەیەکی دروست و صفر یان زیاتر بێت.');
    if(form.salePrice&&(!/^\d+$/.test(form.salePrice)||Number(form.salePrice)<=0||Number(form.salePrice)>Number(form.price)))return setMessage('نرخی داشکان دەبێت لە ١ تا نرخە سەرەکییەکە بێت.');
    if(isFashion&&!fashion.audience)return setMessage('تکایە بۆ کێیە دیاری بکە.');
    if(isFashion&&!fashion.clothingType)return setMessage('تکایە جۆری جلوبەرگ دیاری بکە.');
