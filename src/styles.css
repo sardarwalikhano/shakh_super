@@ -990,3 +990,13 @@ html[data-theme='dark'] .settingsCardHeader b,html[data-theme='dark'] .settingsS
 html[data-theme='dark'] .settingsCardHeader small,html[data-theme='dark'] .settingsSwitch small,html[data-theme='dark'] .settingsHint{color:#889aab}
 @media(max-width:760px){.settingsGrid{grid-template-columns:1fr}.settingsAdminCard,.settingsAccountCard{grid-column:auto}.settingsAdminGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.settingsChoiceGrid{grid-template-columns:1fr}.settingsChoice{min-height:58px;display:flex;align-items:center;justify-content:center;flex-direction:row}.settingsAdminGrid{grid-template-columns:1fr}.settingsSaveBar{position:sticky;bottom:0;background:rgba(255,255,255,.96);padding:10px 0;z-index:20}.settingsSaveBar .primary{width:100%}}
+
+html[data-theme='dark'] body{background:#08111c;color:#eef4f8}
+html[data-theme='dark'] header{background:#0d1926;border-color:#1d3043}
+html[data-theme='dark'] .nav,.app main,.dashboard,.orderCard,.customer-order-card,.customer-orders-panel__detail,.cartPanel,.checkoutPanel,.auth,.supportContactCard,.notificationCard{background:#101d2b!important;color:#eaf1f6;border-color:#263b4f!important}
+html[data-theme='dark'] .search{background:#111f2e;border-color:#294057;color:#b8c7d5}
+html[data-theme='dark'] .search input,html[data-theme='dark'] input,html[data-theme='dark'] textarea,html[data-theme='dark'] select{background:#101d2b;color:#edf4f8;border-color:#2a4258}
+html[data-theme='dark'] .orderMeta,html[data-theme='dark'] .customer-orders-panel__header p,html[data-theme='dark'] .dashboardHeader p,html[data-theme='dark'] .settingsCardHeader small{color:#8fa2b5}
+html[data-theme='dark'] .orderCardTop strong,html[data-theme='dark'] h1,html[data-theme='dark'] h2,html[data-theme='dark'] h3,html[data-theme='dark'] b{color:#f0f5f8}
+html[data-theme='dark'] .plain,.app html[data-theme='dark'] .plain{color:#c8d5df;border-color:#2a4258;background:#122234}
+html[data-theme='dark'] .cart{background:#ff6a00;color:#fff}
