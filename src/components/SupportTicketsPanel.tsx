@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { MessageCircle, Plus, RefreshCw, Send, ShieldCheck, Clock3 } from 'lucide-react';
+import { MessageCircle, Plus, RefreshCw, Send, ShieldCheck, Clock3, Phone, ExternalLink } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 type Props = { userId: string; role: string };
@@ -108,6 +108,13 @@ export default function SupportTicketsPanel({ userId, role }: Props) {
           <button type="button" className="primary supportNewButton" onClick={() => setShowComposer(current => !current)}>
             <Plus size={17} /> تیکەتی نوێ
           </button>
+        </div>
+      </div>
+      <div className="supportContactCard">
+        <div><strong>پشتگیریی ڕاستەوخۆ</strong><small>بۆ کێشەی خێرا پەیوەندی بکە.</small></div>
+        <div className="supportContactActions">
+          <a href="tel:+9647504796924"><Phone size={16}/> 07504796924</a>
+          <a href="https://wa.me/9647504796924" target="_blank" rel="noreferrer"><MessageCircle size={16}/> WhatsApp <ExternalLink size={12}/></a>
         </div>
       </div>
 
