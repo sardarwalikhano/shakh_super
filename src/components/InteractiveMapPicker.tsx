@@ -11,10 +11,26 @@ type InteractiveMapPickerProps = {
 
 const DEFAULT_CENTER: MapCoords = { latitude: 36.1911, longitude: 44.0092 };
 
+function normalizeCoords(lat: number, lng: number): MapCoords {
+  return {
+    latitude: Number(lat.toFixed(7)),
+    longitude: Number(lng.toFixed(7)),
+  };
+}
+
+function createPinIcon() {
+  return L.divIcon({
+    className: 'shakhMapPin',
+    html: '<span class="shakhMapPinDot"></span>',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+  });
+}
+
 export default function InteractiveMapPicker({ value, onChange }: InteractiveMapPickerProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.CircleMarker | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
   const onChangeRef = useRef(onChange);
 
   useEffect(() => {
@@ -27,32 +43,48 @@ export default function InteractiveMapPicker({ value, onChange }: InteractiveMap
     const start = value ?? DEFAULT_CENTER;
     const map = L.map(mapRef.current, {
       center: [start.latitude, start.longitude],
-      zoom: value ? 16 : 12,
+      zoom: value ? 18 : 13,
       zoomControl: true,
       attributionControl: true,
+      scrollWheelZoom: true,
+      doubleClickZoom: true,
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
+      maxZoom: 20,
       attribution: '&copy; OpenStreetMap',
     }).addTo(map);
 
-    const marker = L.circleMarker([start.latitude, start.longitude], {
-      radius: 9,
-      weight: 3,
-      fillOpacity: 0.9,
+    const marker = L.marker([start.latitude, start.longitude], {
+      icon: createPinIcon(),
+      draggable: true,
+      keyboard: true,
+      autoPan: true,
+      title: 'شوێنی وردی گەیاندن',
     }).addTo(map);
 
-    marker.bindTooltip(value ? 'شوێنی هەڵبژێردراو' : 'شوێنەکەت لێرە هەڵبژێرە', {
+    const emit = (lat: number, lng: number) => {
+      const coords = normalizeCoords(lat, lng);
+      marker.setLatLng([coords.latitude, coords.longitude]);
+      map.setView([coords.latitude, coords.longitude], Math.max(map.getZoom(), 18), {
+        animate: true,
+      });
+      onChangeRef.current(coords);
+    };
+
+    marker.bindTooltip(value ? 'شوێنی وردی هەڵبژێردراو' : 'پینەکە لێرە بگوازەوە یان لە ماپ کلیک بکە', {
       direction: 'top',
-      offset: [0, -8],
+      offset: [0, -14],
+      sticky: true,
     });
 
     map.on('click', (event) => {
-      const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
-      marker.setLatLng(event.latlng);
-      marker.openTooltip();
-      onChangeRef.current(coords);
+      emit(event.latlng.lat, event.latlng.lng);
+    });
+
+    marker.on('dragend', () => {
+      const position = marker.getLatLng();
+      emit(position.lat, position.lng);
     });
 
     mapInstanceRef.current = map;
@@ -72,16 +104,28 @@ export default function InteractiveMapPicker({ value, onChange }: InteractiveMap
     const marker = markerRef.current;
     if (!map || !marker || !value) return;
 
-    const next = L.latLng(value.latitude, value.longitude);
-    marker.setLatLng(next);
-    marker.setTooltipContent('شوێنی هەڵبژێردراو');
-    map.setView(next, Math.max(map.getZoom(), 15), { animate: true });
+    const coords = normalizeCoords(value.latitude, value.longitude);
+    marker.setLatLng([coords.latitude, coords.longitude]);
+    marker.setTooltipContent('شوێنی وردی هەڵبژێردراو');
+    if (Math.abs(map.getCenter().lat - coords.latitude) > 0.000001 || Math.abs(map.getCenter().lng - coords.longitude) > 0.000001) {
+      map.setView([coords.latitude, coords.longitude], Math.max(map.getZoom(), 18), {
+        animate: true,
+      });
+    }
   }, [value]);
+
+  const display = value
+    ? `${value.latitude.toFixed(7)}, ${value.longitude.toFixed(7)}`
+    : 'هیچ خاڵێکی دقیق هەڵنەبژێردراوە';
 
   return (
     <div className="interactiveMapPicker">
-      <div ref={mapRef} className="interactiveMapCanvas" aria-label="نەخشەی هەڵبژاردنی شوێنی گەیاندن" />
-      <div className="interactiveMapHint"><LMapPinIcon /> لەسەر نەخشە کلیک بکە بۆ دیاریکردنی شوێنی گەیاندن</div>
+      <div ref={mapRef} className="interactiveMapCanvas" aria-label="نەخشەی هەڵبژاردنی شوێنی وردی گەیاندن" />
+      <div className="interactiveMapExactBar">
+        <span><strong>شوێنی ورد:</strong> {display}</span>
+        <small>کلیکی ڕاستەوخۆ یان ڕاکێشانی پین، هەمان خاڵی ماپ هەڵدەبژێرێت.</small>
+      </div>
+      <div className="interactiveMapHint"><LMapPinIcon /> ماپەکە بگەڕێنەوە و لە هەمان شوێن کلیک بکە کە دەتەوێت گەیاندن بۆی بکرێت</div>
     </div>
   );
 }
