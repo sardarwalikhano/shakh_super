@@ -41,7 +41,7 @@ const vendorCategories:Record<string,string[]>={
 };
 
 export default function ProductManagement({userId,role,onChanged}:Props){
- const [items,setItems]=useState<Product[]>([]),[loading,setLoading]=useState(true),[editing,setEditing]=useState<Product|null>(null),[editingVariants,setEditingVariants]=useState({sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[]}),[editingVariantInventory,setEditingVariantInventory]=useState<VariantInventoryEntry[]>([]),[message,setMessage]=useState('');
+ const [items,setItems]=useState<Product[]>([]),[loading,setLoading]=useState(true),[editing,setEditing]=useState<Product|null>(null),[editingVariants,setEditingVariants]=useState({sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[]}),[editingVariantInventory,setEditingVariantInventory]=useState<VariantInventoryEntry[]>([]),[editingVariantSync,setEditingVariantSync]=useState(false),[message,setMessage]=useState('');
 
  const load=async()=>{
   setLoading(true);
@@ -60,6 +60,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
  const outOfStockCount=useMemo(()=>items.filter(p=>!p.unlimited_stock&&Number(p.stock||0)<=0).length,[items]);
 
  const setEditVariant=(key:'sizes'|'colors'|'shoeSizes',value:string)=>{
+  setEditingVariantSync(true);
   setEditingVariants(v=>({...v,[key]:v[key].includes(value)?v[key].filter(item=>item!==value):[...v[key],value]}));
  };
  const startEdit=(p:Product)=>{
@@ -67,7 +68,17 @@ export default function ProductManagement({userId,role,onChanged}:Props){
   const summary=variantSummary(p.variants);
   setEditingVariants(summary);
   setEditingVariantInventory(summary.inventory);
+  setEditingVariantSync(summary.inventory.length>0);
  };
+ useEffect(()=>{
+  if(role!=='fashion_vendor'||!editingVariantSync)return;
+  const primary=editingVariants.shoeSizes.length?editingVariants.shoeSizes:editingVariants.sizes;
+  const combos=primary.flatMap(value=>editingVariants.colors.map(color=>editingVariants.shoeSizes.length?{shoe_size:value,color}:{size:value,color}));
+  setEditingVariantInventory(current=>{
+    const map=new Map(current.map(row=>[comboKey(row),row] as const));
+    return combos.map(combo=>map.get(comboKey(combo))||{...combo,stock:0,unlimited_stock:false});
+  });
+ },[role,editingVariantSync,JSON.stringify(editingVariants.sizes),JSON.stringify(editingVariants.shoeSizes),JSON.stringify(editingVariants.colors)]);
  const updateVariantInventory=(index:number,patch:Partial<VariantInventoryEntry>)=>{
   setEditingVariantInventory(rows=>rows.map((row,i)=>i===index?{...row,...patch}:row));
  };
@@ -120,6 +131,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
   setEditing(null);
   setEditingVariants({sizes:[],colors:[],shoeSizes:[]});
   setEditingVariantInventory([]);
+  setEditingVariantSync(false);
   setMessage('بەرهەمەکە نوێکرایەوە.');
   onChanged?.();
  };
@@ -152,7 +164,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
     const stock=Number(p.stock||0);
     const variants=variantSummary(p.variants);
     return editing?.id===p.id?<div className="orderCard" key={p.id}>
-     <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><b>دەستکاریکردنی بەرهەم</b><button className="plain" onClick={()=>{setEditing(null);setEditingVariants({sizes:[],colors:[],shoeSizes:[]});setEditingVariantInventory([])}}><X size={16}/></button></div>
+     <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><b>دەستکاریکردنی بەرهەم</b><button className="plain" onClick={()=>{setEditing(null);setEditingVariants({sizes:[],colors:[],shoeSizes:[]});setEditingVariantInventory([]);setEditingVariantSync(false)}}><X size={16}/></button></div>
      <input value={editing.name_ku} onChange={e=>setEditing({...editing,name_ku:e.target.value})} placeholder="ناو"/>
      <input value={editing.product_type||''} onChange={e=>setEditing({...editing,product_type:e.target.value})} placeholder="جۆر"/>
      <input value={editing.brand||''} onChange={e=>setEditing({...editing,brand:e.target.value})} placeholder="مارکە"/>
