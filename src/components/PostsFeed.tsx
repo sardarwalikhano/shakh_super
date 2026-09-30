@@ -99,7 +99,20 @@ export default function PostsFeed({onAddToCart}:Props){
    const v=variantDetails(post);
    return [d.audience,d.clothing_type,v.sizes.length?'قەبارە: '+v.sizes.join('، '):'',v.colors.length?'ڕەنگ: '+v.colors.join('، '):'',v.shoeSizes.length?'پێلاو: '+v.shoeSizes.join('، '):'',v.unlimited?'بەردەستی: بێ‌سنوور':v.stock!==null&&!Number.isNaN(v.stock)?'بەردەستی: '+v.stock+' دانە':'',d.condition,d.brand].filter(Boolean).map(String);
   }
-  if(post.post_type==='car')return[d.make&&d.model?d.make+' '+d.model:d.make,d.year,d.mileage&&Number(d.mileage).toLocaleString('en-US')+' km',d.body_type,d.fuel,d.transmission,d.color,d.engine].filter(Boolean).map(String);
+  if(post.post_type==='car')return[
+   d.make&&d.model?d.make+' '+d.model:d.make,
+   d.year,
+   d.mileage&&Number(d.mileage).toLocaleString('en-US')+' km',
+   d.body_type,
+   d.fuel,
+   d.transmission,
+   d.color,
+   d.engine,
+   d.condition,
+   d.origin&&'سەرچاوە: '+d.origin,
+   d.negotiable?'دانوستاندن هەیە':'',
+   d.exchange_allowed?'ئەکسچێنج قبوڵە':''
+  ].filter(Boolean).map(String);
   return[];
  };
 
