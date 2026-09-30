@@ -62,17 +62,6 @@ type Props = {
   children?: React.ReactNode;
 };
 
-const statusLabel: Record<string, string> = {
-  pending: 'چاوەڕوان',
-  accepted: 'قبوڵکراو',
-  preparing: 'ئامادەکردن',
-  ready_for_pickup: 'ئامادەی وەرگرتن',
-  assigned_to_captain: 'کاپتن دیاریکراوە',
-  picked_up: 'وەرگیراوە',
-  on_the_way: 'لە ڕێگادایە',
-  delivered: 'گەیەندراوە',
-  cancelled: 'هەڵوەشێنراوەتەوە',
-};
 
 const money = (value: number) => `${Number(value || 0).toLocaleString('ku-IQ')} د.ع`;
 
