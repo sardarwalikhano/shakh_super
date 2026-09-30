@@ -182,7 +182,6 @@ function App(){
    if(cart.length&&cart[0].store_id!==p.store_id){setMessage('لە هەر سەلەیەکدا تەنها لە یەک دوکان دەتوانیت داواکاری بکەیت.');return false}
    const {data:live,error:liveError}=await supabase!.from('products').select('is_available,stock,price_iqd,sale_price_iqd,variants').eq('id',p.id).single();
    if(liveError)throw liveError;
-,
    const liveUnlimited=getVariantOptions(live?.variants).unlimited;
    const liveInventory=matchingVariantInventory(live?.variants,options);
    const liveInventoryUnavailable=Boolean(liveInventory&&!liveInventory.unlimited_stock&&Number(liveInventory.stock||0)<=0);
