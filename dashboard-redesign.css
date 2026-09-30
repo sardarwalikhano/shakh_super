@@ -20,3 +20,228 @@ html[data-theme=dark]{--dash-bg:#071426;--dash-surface:#0d1d32;--dash-surface-2:
 .dashCards div,.roleTiles div{background:var(--dash-surface-2)!important;border-color:var(--dash-line)!important}.dashCards b{color:var(--dash-orange)!important}.dashCards span,.roleTiles small{color:var(--dash-muted)!important}.orderRow{border-color:var(--dash-line)!important}.orderRow span{background:var(--dash-orange-soft)!important;color:var(--dash-orange)!important}
 @media(max-width:900px){.vendor-dashboard__stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}.captainOrderGrid{grid-template-columns:1fr}.captainStats{grid-template-columns:repeat(3,minmax(0,1fr))}.dashboard,.vendor-dashboard{padding-inline:16px}}
 @media(max-width:620px){.dashboardHeader,.vendor-dashboard__header{padding:20px!important}.captainStats{grid-template-columns:1fr}.vendor-dashboard__stats{grid-template-columns:1fr!important}.captainPacketGrid{grid-template-columns:1fr}.dashboard,.vendor-dashboard{padding-inline:12px}.captainHeaderActions{width:100%;justify-content:flex-start}.dashboardHeader{flex-direction:column;align-items:stretch!important}.dashboardHeader .captainHeaderActions{justify-content:space-between}}
+
+
+/* =========================================================
+   SHAKH DASHBOARD LAYOUT HOTFIX — 2026-09-30
+   Layout-only stabilization. Existing data flows, routes,
+   components, Supabase logic and interactions remain intact.
+   ========================================================= */
+
+/* One dashboard viewport: prevent the modal from becoming a
+   narrow nested scrolling island inside the application. */
+.modal:has(.dashboardPanel){
+  padding:12px!important;
+  place-items:center!important;
+  overflow:hidden!important;
+}
+.dashboardPanel{
+  width:min(1440px,calc(100vw - 24px))!important;
+  max-width:none!important;
+  height:calc(100dvh - 24px)!important;
+  max-height:none!important;
+  min-width:0!important;
+  margin:0 auto!important;
+  padding:24px!important;
+  overflow:auto!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable;
+}
+.dashboardPanel > .x{
+  z-index:10!important;
+}
+.dashboardPanel > .dashboard,
+.dashboardPanel > .settingsPanel,
+.dashboardPanel > .vendor-dashboard{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0 0 44px!important;
+}
+
+/* Contain every dashboard descendant so long Kurdish labels or
+   child modules cannot expand the layout horizontally. */
+.dashboardPanel,
+.dashboardPanel *{
+  min-width:0;
+}
+.dashboardPanel img,
+.dashboardPanel svg,
+.dashboardPanel canvas{
+  max-width:100%;
+}
+.dashboardPanel button,
+.dashboardPanel a,
+.dashboardPanel input,
+.dashboardPanel select,
+.dashboardPanel textarea{
+  max-width:100%;
+}
+
+/* Home dashboard: predictable cards at every width. */
+.dashboardPanel .dashCards{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+.dashboardPanel .roleTiles{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+.dashboardPanel .orderList{
+  min-width:0!important;
+  overflow:auto!important;
+  overscroll-behavior:contain;
+}
+
+/* Post publishing hub is a common source of text collisions. */
+.dashboardPanel .postPublishingHub,
+.dashboardPanel .postHubGrid,
+.dashboardPanel .postHubGridPersistent,
+.dashboardPanel .postHubSelectedForm{
+  width:100%!important;
+  min-width:0!important;
+}
+.dashboardPanel .postHubGrid,
+.dashboardPanel .postHubGridPersistent{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+.dashboardPanel .postHubCard{
+  width:100%!important;
+  min-width:0!important;
+  overflow:hidden!important;
+}
+.dashboardPanel .postHubCardText,
+.dashboardPanel .postHubCardText b,
+.dashboardPanel .postHubCardText small{
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+
+/* Order monitor: stop wide financial/customer blocks from forcing
+   the parent beyond its viewport. */
+.dashboardPanel .platformOrderMonitor,
+.dashboardPanel .platformOrderGrid,
+.dashboardPanel .platformOrderList,
+.dashboardPanel .orderMonitorControls,
+.dashboardPanel .orderMonitorStats{
+  min-width:0!important;
+  width:100%!important;
+}
+.dashboardPanel .platformOrderGrid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+.dashboardPanel .platformOrderCard{
+  min-width:0!important;
+  overflow:hidden!important;
+}
+.dashboardPanel .platformOrderSection,
+.dashboardPanel .platformOrderItems,
+.dashboardPanel .platformOrderFinance,
+.dashboardPanel .captainBroadcastBox,
+.dashboardPanel .assignedCaptainCard{
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Settings: keep a stable two-column desktop grid and collapse
+   only when the available dashboard width actually becomes small. */
+.dashboardPanel .settingsGrid{
+  width:100%!important;
+  min-width:0!important;
+}
+.dashboardPanel .settingsCard,
+.dashboardPanel .settingsAdminCard{
+  min-width:0!important;
+  overflow:hidden!important;
+}
+.dashboardPanel .settingsAdminGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+.dashboardPanel .settingsChoiceGrid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+.dashboardPanel .settingsSwitch{
+  min-width:0!important;
+}
+.dashboardPanel .settingsSwitch > span{
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Remove accidental horizontal overflow from nested lists/panels. */
+.dashboardPanel .cartList,
+.dashboardPanel .notification-center__list,
+.dashboardPanel .orderMonitorList{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+
+/* Responsive breakpoints are based on the actual dashboard viewport,
+   not the width of any inner card. */
+@media(max-width:1100px){
+  .dashboardPanel .postHubGrid,
+  .dashboardPanel .postHubGridPersistent{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .dashboardPanel .roleTiles{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .dashboardPanel .settingsAdminGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:760px){
+  .modal:has(.dashboardPanel){
+    padding:8px!important;
+  }
+  .dashboardPanel{
+    width:calc(100vw - 16px)!important;
+    height:calc(100dvh - 16px)!important;
+    padding:18px!important;
+    border-radius:22px!important;
+  }
+  .dashboardPanel .dashCards,
+  .dashboardPanel .roleTiles{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .dashboardPanel .postHubGrid,
+  .dashboardPanel .postHubGridPersistent{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .dashboardPanel .platformOrderGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardPanel .settingsAdminGrid{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:480px){
+  .dashboardPanel{
+    width:calc(100vw - 10px)!important;
+    height:calc(100dvh - 10px)!important;
+    padding:14px!important;
+    border-radius:19px!important;
+  }
+  .dashboardPanel .dashCards,
+  .dashboardPanel .roleTiles,
+  .dashboardPanel .postHubGrid,
+  .dashboardPanel .postHubGridPersistent,
+  .dashboardPanel .settingsChoiceGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardPanel .dashboardHeader{
+    padding:18px!important;
+  }
+}
+
+/* Keep the rest of the application viewport stable as well. */
+html,
+body,
+#root{
+  max-width:100%;
+  overflow-x:hidden!important;
+}
