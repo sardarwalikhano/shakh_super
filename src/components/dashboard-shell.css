@@ -1835,3 +1835,107 @@ html[data-theme='dark'] .dashboardShellDirty{
     font-size:7px!important;
   }
 }
+
+
+/* Order workspace notifications */
+.dashboardShellModule .customer-orders-panel__notifications{
+  margin-top:16px!important;
+  padding-top:16px!important;
+  border-top:1px solid var(--dsx-line)!important;
+}
+.dashboardShellModule .customer-orders-panel__notification-head{
+  display:flex!important;
+  align-items:end!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin-bottom:10px!important;
+}
+.dashboardShellModule .customer-orders-panel__notification-head h3{
+  margin:4px 0 0!important;
+  color:var(--dsx-text)!important;
+  font-size:17px!important;
+  font-weight:950!important;
+}
+.dashboardShellModule .customer-orders-panel__notification-head em{
+  display:inline-grid!important;
+  place-items:center!important;
+  min-width:21px!important;
+  height:21px!important;
+  margin-inline-start:5px!important;
+  padding:0 5px!important;
+  border-radius:999px!important;
+  background:var(--dsx-brand)!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-style:normal!important;
+}
+.dashboardShellModule .notification-list{
+  display:grid!important;
+  gap:6px!important;
+}
+.dashboardShellModule .notification-item{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr) auto!important;
+  gap:10px!important;
+  align-items:start!important;
+  padding:11px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:13px!important;
+  background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .notification-item.is-unread{
+  border-color:color-mix(in srgb,var(--dsx-brand) 24%,var(--dsx-line))!important;
+  background:var(--dsx-brand-soft)!important;
+}
+.dashboardShellModule .notification-item__icon{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:11px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-brand)!important;
+}
+.dashboardShellModule .notification-item > div:nth-child(2){
+  min-width:0!important;
+}
+.dashboardShellModule .notification-item strong{
+  display:block!important;
+  color:var(--dsx-text)!important;
+  font-size:10px!important;
+  font-weight:950!important;
+  line-height:1.55!important;
+}
+.dashboardShellModule .notification-item p{
+  margin:3px 0 0!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  line-height:1.75!important;
+  overflow-wrap:anywhere!important;
+}
+.dashboardShellModule .notification-item small{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  margin-top:5px!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+}
+.dashboardShellModule .notification-item > button{
+  width:34px!important;
+  min-width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:10px!important;
+  background:var(--dsx-surface)!important;
+  color:var(--dsx-green)!important;
+}
+@media(max-width:560px){
+  .dashboardShellModule .customer-orders-panel__notification-head{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+}
