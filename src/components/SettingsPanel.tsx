@@ -60,7 +60,7 @@ export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { 
     {message&&<div className='msg'>{message}</div>}
     {loading?<div className='empty'>چاوەڕوان بە...</div>:<div className='settingsGrid'>
       <div className='settingsCard'><div className='settingsCardHeader'><div><b>ڕووکاری ئەپ</b><small>شێوازی پیشاندانی شاخ</small></div></div><div className='settingsChoiceGrid'>
-        {([['system','سیستەم',Monitor],['light','ڕوون',Sun],['dark','تاریک',Moon]] as const).map(([value,label,Icon])=><button key={value} type='button' className={prefs.theme===value?'settingsChoice active':'settingsChoice'} onClick={()=>setPrefs({...prefs,theme:value})}><Icon size={18}/><span>{label}</span>{prefs.theme===value&&<Check size={15}/>}</button>)}
+        {([['system','سیستەم',Monitor],['light','ڕوون',Sun],['dark','تاریک',Moon]] as const).map(([value,label,Icon])=><button key={value} type='button' className={prefs.theme===value?'settingsChoice active':'settingsChoice'} onClick={()=>{setPrefs({...prefs,theme:value});applyTheme(value)}}><Icon size={18}/><span>{label}</span>{prefs.theme===value&&<Check size={15}/>}</button>)}
       </div></div>
 
       <div className='settingsCard'><div className='settingsCardHeader'><div><b>ئاگادارییەکان</b><small>کۆنترۆڵی پەیامەکانی شاخ</small></div><Bell size={20}/></div>
