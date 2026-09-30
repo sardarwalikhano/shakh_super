@@ -17,6 +17,20 @@ const BODY=['سێدان','SUV','کروس ئۆڤەر','هەچبەک','پیکاپ'
 
 const labelFor=(type?:string|null,label?:string|null)=>label||TYPES.find(item=>item.value===type)?.label||'گشتی';
 const detailsOf=(post:Post)=>post.listing_details||{};
+const listDetail=(post:Post,key:string):string[]=>{
+ const value=detailsOf(post)[key];
+ if(Array.isArray(value))return value.filter((v):v is string=>typeof v==='string'||typeof v==='number').map(String);
+ if(typeof value==='string'&&value.trim())return value.split(',').map(v=>v.trim()).filter(Boolean);
+ if(typeof value==='number')return [String(value)];
+ return[];
+};
+const variantDetails=(post:Post)=>{
+ const d=detailsOf(post);
+ const sizes=[...new Set([...listDetail(post,'available_sizes'),...listDetail(post,'sizes'),...(d.size?[String(d.size)]:[])])];
+ const colors=[...new Set([...listDetail(post,'available_colors'),...listDetail(post,'colors'),...(d.color?[String(d.color)]:[])])];
+ const shoeSizes=[...new Set([...listDetail(post,'shoe_sizes'),...(d.shoe_size?[String(d.shoe_size)]:[])])];
+ return{sizes,colors,shoeSizes,unlimited:Boolean(d.unlimited_stock),stock:d.inventory_stock==null?null:Number(d.inventory_stock)};
+};
 const stringDetail=(post:Post,key:string)=>{const value=detailsOf(post)[key];return value==null?'':String(value)};
 const postImages=(images:unknown):string[]=>{if(Array.isArray(images))return images.filter((value):value is string=>typeof value==='string'&&value.trim().length>0).slice(0,12);if(typeof images==='string'){try{const parsed=JSON.parse(images);return Array.isArray(parsed)?parsed.filter((value):value is string=>typeof value==='string'&&value.trim().length>0).slice(0,12):[]}catch{return images.startsWith('http')?[images]:[]}}return[]};
 const isNew=(createdAt:string)=>Date.now()-new Date(createdAt).getTime()<86400000;
@@ -45,9 +59,10 @@ export default function PostsFeed({onAddToCart}:Props){
    if(filter==='fashion'){
      if(fashionAudience&&d.audience!==fashionAudience)return false;
      if(fashionType&&d.clothing_type!==fashionType)return false;
-     if(fashionSize&&d.size!==fashionSize)return false;
-     if(fashionColor&&d.color!==fashionColor)return false;
-     if(fashionShoe&&Number(d.shoe_size||0)<Number(fashionShoe))return false;
+     const variants=variantDetails(post);
+     if(fashionSize&&!variants.sizes.includes(fashionSize))return false;
+     if(fashionColor&&!variants.colors.includes(fashionColor))return false;
+     if(fashionShoe&&!variants.shoeSizes.some(size=>Number(size)>=Number(fashionShoe)))return false;
    }
    if(filter==='car'){
      if(carMake&&!stringDetail(post,'make').toLowerCase().includes(carMake.toLowerCase()))return false;
@@ -68,7 +83,15 @@ export default function PostsFeed({onAddToCart}:Props){
 
  const openPost=(post:Post)=>{setSelectedPost(post);setActiveImage(0);setShareMessage('')};
  const closePost=()=>{setSelectedPost(null);setShareMessage('');const u=new URL(window.location.href);u.searchParams.delete('post');u.hash='shakh-posts';window.history.replaceState(null,'',u.pathname+u.search+u.hash)};
- const chips=(post:Post)=>{const d=detailsOf(post);if(post.post_type==='fashion')return [d.audience,d.clothing_type,d.size,d.color,d.shoe_size&&'پێلاو '+d.shoe_size,d.condition,d.brand].filter(Boolean).map(String);if(post.post_type==='car')return [d.make&&d.model?d.make+' '+d.model:d.make,d.year,d.mileage&&Number(d.mileage).toLocaleString('en-US')+' km',d.body_type,d.fuel,d.transmission,d.color,d.engine].filter(Boolean).map(String);return[]};
+ const chips=(post:Post)=>{
+  const d=detailsOf(post);
+  if(post.post_type==='fashion'){
+   const v=variantDetails(post);
+   return [d.audience,d.clothing_type,v.sizes.length?'قەبارە: '+v.sizes.join('، '):'',v.colors.length?'ڕەنگ: '+v.colors.join('، '):'',v.shoeSizes.length?'پێلاو: '+v.shoeSizes.join('، '):'',v.unlimited?'بەردەستی: بێ‌سنوور':v.stock!==null&&!Number.isNaN(v.stock)?'بەردەستی: '+v.stock+' دانە':'',d.condition,d.brand].filter(Boolean).map(String);
+  }
+  if(post.post_type==='car')return[d.make&&d.model?d.make+' '+d.model:d.make,d.year,d.mileage&&Number(d.mileage).toLocaleString('en-US')+' km',d.body_type,d.fuel,d.transmission,d.color,d.engine].filter(Boolean).map(String);
+  return[];
+ };
 
  useEffect(()=>{const id=new URLSearchParams(window.location.search).get('post');if(id&&!selectedPost){const match=posts.find(post=>post.id===id);if(match)openPost(match)}},[posts,selectedPost]);
  useEffect(()=>{if(!selectedPost)return;const prev=document.body.style.overflow;document.body.style.overflow='hidden';const key=(e:KeyboardEvent)=>{if(e.key==='Escape')closePost()};window.addEventListener('keydown',key);window.setTimeout(()=>closeButtonRef.current?.focus(),0);return()=>{document.body.style.overflow=prev;window.removeEventListener('keydown',key)}},[selectedPost]);
