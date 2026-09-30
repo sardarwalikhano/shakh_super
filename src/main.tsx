@@ -35,6 +35,8 @@ type CartItem={id?:string;product_id:string;store_id:string;name:string;price:nu
 type Order={id:string;status:string;total_iqd:number;created_at:string;store_id?:string};
 type SavedAddress={id:string;label?:string|null;address:string;delivery_note?:string|null;city?:string|null;latitude?:number|null;longitude?:number|null};
 type Promotion={id:string;title:string;description?:string|null;image_url?:string|null;starts_at?:string|null;ends_at?:string|null};
+const dashboardStatusLabel:Record<string,string>={pending:'چاوەڕوان',accepted:'قبوڵکراو',preparing:'لە ئامادەکردندایە',ready_for_pickup:'ئامادەی وەرگرتن',assigned_to_captain:'کاپتن دیاریکراوە',picked_up:'وەرگیراوە',on_the_way:'لە ڕێگادایە',delivered:'گەیەندراوە',cancelled:'هەڵوەشێنراوەتەوە'};
+
 
 function PasswordReset(){
  const [password,setPassword]=useState('');
@@ -263,7 +265,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
           {orders.slice(0,6).map((order)=>(
             <button type="button" className="dashboardShellRecentRow" key={order.id} onClick={()=>openDashboard('orders')}>
               <span className="dashboardShellRecentId">#{order.id.slice(0,8)}</span>
-              <span className="dashboardShellRecentStatus">{order.status==='pending'?'چاوەڕوان':statusLabelForDashboard(order.status)}</span>
+              <span className="dashboardShellRecentStatus">{order.status==='pending'?'چاوەڕوان':dashboardStatusLabel[order.status]||order.status}</span>
               <strong>{Number(order.total_iqd).toLocaleString('ku-IQ')} د.ع</strong>
               <small>{new Date(order.created_at).toLocaleString('ku-IQ')}</small>
             </button>
