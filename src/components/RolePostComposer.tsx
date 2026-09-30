@@ -207,7 +207,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
        {selectField('حاڵەت',fashion.condition,OPTIONS.fashionCondition,v=>setF('condition',v))}
        <label className="postField"><span>براند</span><input value={fashion.brand} onChange={e=>setF('brand',e.target.value)} placeholder="نموونە: Nike"/></label>
      </div>
-   </div>
+    </div>}
 
    {isCar&&<div className="postStructuredBox carListingBox">
      <div className="postComposerLabel">🚗 SHAKH Cars — زانیاریی تەواوی ئۆتۆمبێل</div>
