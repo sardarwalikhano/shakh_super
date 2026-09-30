@@ -113,7 +113,7 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
    ||city!==(profile.city||'هەولێر')
    ||language!==(profile.language||'ku')
    ||Boolean(file);
- },[profile,name,phone,city,language,file]);
+ },[profile,name,phone,whatsappPhone,city,language,file]);
 
  useEffect(()=>{onDirtyChange?.(hasChanges);hasChangesRef.current=hasChanges;},[hasChanges,onDirtyChange]);
  useEffect(()=>()=>{
@@ -184,7 +184,7 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
     city:city||'هەولێر',
     language,
     avatar_url:nextAvatar
-   }).eq('id',userId).select('id,full_name,email,phone,avatar_url,city,language').single();
+   }).eq('id',userId).select('id,full_name,email,phone,whatsapp_phone,avatar_url,city,language').single();
    if(error)throw error;
    setProfile(data as ProfileRow);
    setName(data.full_name||'');
