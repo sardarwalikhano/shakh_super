@@ -44,6 +44,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const [fashion,setFashionState]=useState({audience:'',clothingType:'',sizes:[] as string[],colors:[] as string[],shoeSize:'',shoeSizes:[] as string[],condition:'',brand:''});
  const [stockMode,setStockMode]=useState<'finite'|'unlimited'>('finite');
  const [variantInventory,setVariantInventory]=useState<Record<string,VariantInventoryValue>>({});
+ const [bulkVariantStock,setBulkVariantStock]=useState('1');
  const isFashion=role==='fashion_vendor';
  const selectedCategory=cfg.cats.find(item=>item.slug===category)||cfg.cats[0];
  useEffect(()=>{let live=true;setStoreLoading(true);(async()=>{const {data,error}=await supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',cfg.storeCategory).eq('is_active',true).limit(1);if(!live)return;if(error){setMessage('نەتوانرا دوکانەکەت وەرگیرێت. تکایە دووبارە هەوڵ بدەرەوە.');setStoreLoading(false);return}const store=data?.[0];if(store){setStoreId(store.id);setForm(v=>({...v,storeName:store.name||''}))}setStoreLoading(false)})();return()=>{live=false}},[userId,cfg.storeCategory]);
@@ -65,6 +66,8 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  },[isFashion,JSON.stringify(fashion.sizes),JSON.stringify(fashion.shoeSizes),JSON.stringify(fashion.colors)]);
  const setVariantStock=(key:string,value:string)=>setVariantInventory(v=>({...v,[key]:{...(v[key]||{unlimited:false}),stock:value.replace(/\D/g,'')}}));
  const setVariantUnlimited=(key:string,value:boolean)=>setVariantInventory(v=>({...v,[key]:{...(v[key]||{stock:'0'}),unlimited:value}}));
+ const setAllVariantStock=(value:string)=>setVariantInventory(current=>Object.fromEntries(fashionCombos.map(combo=>{const key=comboKey(combo);return[key,{...(current[key]||{unlimited:false}),stock:value.replace(/\D/g,'')}]})));
+ const setAllVariantUnlimited=(value:boolean)=>setVariantInventory(current=>Object.fromEntries(fashionCombos.map(combo=>{const key=comboKey(combo);return[key,{...(current[key]||{stock:'0'}),unlimited:value}]})));
  const variantInventoryRows=fashionCombos.map(combo=>{const value=variantInventory[comboKey(combo)]||{stock:'0',unlimited:false};return{...combo,stock:Number(value.stock||0),unlimited_stock:value.unlimited}});
  const variantHasAvailability=variantInventoryRows.some(row=>row.unlimited_stock||row.stock>0);
  const variantInventoryValid=!isFashion||(
