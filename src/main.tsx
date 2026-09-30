@@ -30,10 +30,10 @@ const supabase=url&&key?createClient(url,key):null;
 
 type Product={id:string;store_id:string;name_ku:string;name_ar?:string;name_en?:string;price_iqd:number;sale_price_iqd?:number|null;image_url?:string|null;is_available:boolean;stock?:number|null;unlimited_stock?:boolean|null;product_type?:string|null;brand?:string|null;size?:string|null;category?:string;store_name?:string;variants?:unknown};
 type CartOptions=Record<string,string|number>;
-type VariantRecord={shoe_sizes?:unknown;shoe_size?:unknown;shoeSizes?:unknown;shoeSize?:unknown;available_sizes?:unknown;sizes?:unknown;available_colors?:unknown;colors?:unknown;color?:unknown};
+type VariantRecord={shoe_sizes?:unknown;shoe_size?:unknown;shoeSizes?:unknown;shoeSize?:unknown;available_sizes?:unknown;sizes?:unknown;available_colors?:unknown;colors?:unknown;color?:unknown;unlimited_stock?:unknown};
 const getVariantOptions=(variants:unknown)=>{
  const sizes=new Set<string>(),colors=new Set<string>(),shoeSizes=new Set<string>();
- if(!Array.isArray(variants))return{sizes:[],colors:[],shoeSizes:[]};
+ if(!Array.isArray(variants))return{sizes:[],colors:[],shoeSizes:[],unlimited:false};
  const add=(target:Set<string>,value:unknown)=>{
   const values=Array.isArray(value)?value:[value];
   for(const item of values){
@@ -41,15 +41,17 @@ const getVariantOptions=(variants:unknown)=>{
    else if(typeof item==='number')target.add(String(item));
   }
  };
+ let unlimited=false;
  for(const variant of variants){
   if(!variant||typeof variant!=='object')continue;
   const v=variant as VariantRecord;
+  unlimited=unlimited||v.unlimited_stock===true;
   add(sizes,v.available_sizes);add(sizes,v.sizes);
   add(colors,v.available_colors);add(colors,v.colors);add(colors,v.color);
   add(shoeSizes,v.shoe_sizes);add(shoeSizes,v.shoeSizes);
   for(const value of [v.shoe_size,v.shoeSize])if(typeof value==='string'&&/^\d+$/.test(value))shoeSizes.add(value);
  }
- return{sizes:[...sizes],colors:[...colors],shoeSizes:[...shoeSizes]};
+ return{sizes:[...sizes],colors:[...colors],shoeSizes:[...shoeSizes],unlimited};
 };
 const getShoeSizes=(variants:unknown):string[]=>getVariantOptions(variants).shoeSizes;
 type CartItem={id?:string;product_id:string;store_id:string;name:string;price:number;quantity:number;stock?:number|null;unlimited_stock?:boolean|null;is_available?:boolean;image_url?:string|null;options?:CartOptions};
@@ -108,8 +110,8 @@ function App(){
   document.body.style.overflow='hidden';
   return()=>{document.body.style.overflow=previousOverflow};
  },[dashboard,auth,cartOpen,checkoutOpen,selectedProduct]);
- const loadProducts=async()=>{if(!supabase)return;const {data,error}=await supabase.from('products').select('id,store_id,name_ku,name_ar,name_en,price_iqd,sale_price_iqd,image_url,is_available,stock,unlimited_stock,product_type,brand,size,variants,stores(name),categories(name)').eq('is_available',true).order('created_at',{ascending:false});if(!error&&data)setProducts((data as any[]).map(p=>({...p,store_name:p.stores?.name,category:p.categories?.name})))};
- const loadCart=async(u:User)=>{if(!supabase)return;const {data:c}=await supabase.from('carts').select('id').eq('user_id',u.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();if(!c){setCart([]);return}const {data:items}=await supabase.from('cart_items').select('id,product_id,quantity,unit_price_iqd,options,products(store_id,name_ku,image_url,stock,unlimited_stock,is_available,variants)').eq('cart_id',c.id);setCart((items as any[]||[]).map(i=>({id:i.id,product_id:i.product_id,store_id:i.products?.store_id,name:i.products?.name_ku||'بەرهەم',price:Number(i.unit_price_iqd),quantity:i.quantity,stock:i.products?.stock,unlimited_stock:i.products?.unlimited_stock,is_available:i.products?.is_available,image_url:i.products?.image_url,options:(i.options||{}) as CartOptions})))};
+ const loadProducts=async()=>{if(!supabase)return;const {data,error}=await supabase.from('products').select('id,store_id,name_ku,name_ar,name_en,price_iqd,sale_price_iqd,image_url,is_available,stock,product_type,brand,size,variants,stores(name),categories(name)').eq('is_available',true).order('created_at',{ascending:false});if(!error&&data)setProducts((data as any[]).map(p=>({...p,store_name:p.stores?.name,category:p.categories?.name,unlimited_stock:getVariantOptions(p.variants).unlimited})))};
+ const loadCart=async(u:User)=>{if(!supabase)return;const {data:c}=await supabase.from('carts').select('id').eq('user_id',u.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();if(!c){setCart([]);return}const {data:items}=await supabase.from('cart_items').select('id,product_id,quantity,unit_price_iqd,options,products(store_id,name_ku,image_url,stock,is_available,variants)').eq('cart_id',c.id);setCart((items as any[]||[]).map(i=>({id:i.id,product_id:i.product_id,store_id:i.products?.store_id,name:i.products?.name_ku||'بەرهەم',price:Number(i.unit_price_iqd),quantity:i.quantity,stock:i.products?.stock,unlimited_stock:getVariantOptions(i.products?.variants).unlimited,is_available:i.products?.is_available,image_url:i.products?.image_url,options:(i.options||{}) as CartOptions})))};
 
  const loadProfile=async(u:User)=>{if(!supabase)return;const {data}=await supabase.from('profiles').select('role').eq('id',u.id).maybeSingle();setRole(data?.role||'customer')};
  const loadOrders=async(u:User)=>{if(!supabase)return;const {data}=await supabase.from('orders').select('id,status,total_iqd,created_at,store_id').eq('customer_id',u.id).order('created_at',{ascending:false}).limit(20);if(data)setOrders(data as Order[])};
@@ -150,15 +152,16 @@ function App(){
    setBusy(true);
    if(!p.is_available||( !p.unlimited_stock && Number(p.stock||0)<=0)){setMessage('ئەم بەرهەمە ئێستا بەردەست نییە.');return false}
    if(cart.length&&cart[0].store_id!==p.store_id){setMessage('لە هەر سەلەیەکدا تەنها لە یەک دوکان دەتوانیت داواکاری بکەیت.');return false}
-   const {data:live,error:liveError}=await supabase!.from('products').select('is_available,stock,unlimited_stock,price_iqd,sale_price_iqd,variants').eq('id',p.id).single();
+   const {data:live,error:liveError}=await supabase!.from('products').select('is_available,stock,price_iqd,sale_price_iqd,variants').eq('id',p.id).single();
    if(liveError)throw liveError;
-   if(!live?.is_available||(!live?.unlimited_stock&&Number(live.stock||0)<=0)){setMessage('ئەم بەرهەمە ئێستا بەردەست نییە.');await loadProducts();return false}
+   const liveUnlimited=getVariantOptions(live?.variants).unlimited;
+   if(!live?.is_available||(!liveUnlimited&&Number(live.stock||0)<=0)){setMessage('ئەم بەرهەمە ئێستا بەردەست نییە.');await loadProducts();return false}
    const cartId=await ensureCart(user,p.store_id);
    const price=Number(live.sale_price_iqd??live.price_iqd);
    const optionsKey=JSON.stringify(options,Object.keys(options).sort());
    const existing=cart.find(i=>i.product_id===p.id&&JSON.stringify(i.options||{},Object.keys(i.options||{}).sort())===optionsKey);
    if(existing?.id){
-    if(!live.unlimited_stock&&existing.quantity>=Number(live.stock||0)){setMessage('ژمارەی داواکراو لە ستۆک زیاترە.');return false}
+    if(!liveUnlimited&&existing.quantity>=Number(live.stock||0)){setMessage('ژمارەی داواکراو لە ستۆک زیاترە.');return false}
     const {error}=await supabase!.from('cart_items').update({quantity:existing.quantity+1}).eq('id',existing.id);
     if(error)throw error;
    }else{
