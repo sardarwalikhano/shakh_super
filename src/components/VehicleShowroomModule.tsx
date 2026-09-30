@@ -21,7 +21,7 @@ const statusLabel: Record<string,string> = {
 };
 
 export default function VehicleShowroomModule({ userId, isAdmin = false, role = 'customer' }: Props) {
-  if (!isAdmin && role !== 'car_dealer') return <ShakhCarsMarketplace />;
+  if (!isAdmin && !['car_dealer','customer'].includes(role)) return <ShakhCarsMarketplace />;
   const [listings, setListings] = useState<Listing[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [showrooms, setShowrooms] = useState<any[]>([]);
