@@ -34,7 +34,8 @@ const roleCategories=(role:string):Category[]=>{
  ];
  if(role==='customer')return[
   {id:'general',kind:'role',value:'general',label:'پۆستی گشتی',description:'بیرۆکە، دەق و پۆستی گشتی',icon:LayoutGrid},
-  {id:'marketplace',kind:'role',value:'marketplace',label:'بازاڕ',description:'پۆستی بەرهەم و کڕین و فرۆشتن',icon:Store}
+  {id:'marketplace',kind:'role',value:'marketplace',label:'بازاڕ',description:'پۆستی بەرهەم و کڕین و فرۆشتن',icon:Store},
+  {id:'car',kind:'role',value:'car',label:'SHAKH Cars',description:'بڵاوکردنەوەی ئۆتۆمبێل بە کرێی پۆستکردن و پەسەندکردنی بەڕێوەبەر',icon:Car}
  ];
  if(role==='captain')return[{id:'delivery',kind:'role',value:'delivery',label:'گەیاندن',description:'پۆستی پەیوەندیدار بە گەیاندن',icon:Truck}];
  if(role==='car_dealer')return[{id:'car',kind:'role',value:'car',label:'SHAKH Cars',description:'پۆستی ئۆتۆمبێل و پێشانگا',icon:Car}];
