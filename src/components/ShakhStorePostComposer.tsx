@@ -38,13 +38,17 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
  const [content,setContent]=useState('');
  const [price,setPrice]=useState('');
  const [city,setCity]=useState('هەولێر');
- const [details,setDetails]=useState({type:'',audience:'',size:'',color:'',condition:'',brand:'',shoeSize:'',shoeSizes:[] as string[],model:'',material:'',karat:''});
+ const [details,setDetails]=useState({type:'',audience:'',sizes:[] as string[],colors:[] as string[],condition:'',brand:'',shoeSizes:[] as string[],model:'',material:'',karat:''});
+ const [stockMode,setStockMode]=useState<'finite'|'unlimited'>('finite');
+ const [stock,setStock]=useState('0');
  const [files,setFiles]=useState<File[]>([]);
  const [previews,setPreviews]=useState<string[]>([]);
  const [busy,setBusy]=useState(false);
  const [message,setMessage]=useState('');
  const previewsRef=useRef<string[]>([]);
  const isFashion=section==='fashion';
+ const isProductListing=PRODUCT_SECTIONS.has(section);
+ const isShoe=isFashion&&details.type==='پێلاو';
  const isFood=section==='restaurant';
  const isSupermarket=section==='supermarket';
  const isElectronics=section==='electronics';
@@ -75,12 +79,12 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
   if(price&&!/^\d+$/.test(price))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');
   if(PRODUCT_SECTIONS.has(section)&&!price)return setMessage('بۆ پۆستی بەرهەم تکایە نرخێک دابنێ.');
   if(PRODUCT_SECTIONS.has(section)&&files.length===0)return setMessage('بۆ پۆستی بەرهەم لانیکەم یەک وێنە زیاد بکە.');
+  if(isProductListing&&stockMode==='finite'&&(!/^\d+$/.test(stock)||Number(stock)<0))return setMessage('ژمارەی بەردەست دەبێت ٠ یان ژمارەیەکی دروست بێت.');
   if(isFashion&&!details.type)return setMessage('تکایە جۆری جلوبەرگ دیاری بکە.');
-  if(isFashion&&!details.size)return setMessage('تکایە قەبارە دیاری بکە.');
-  if(isFashion&&!details.color)return setMessage('تکایە ڕەنگ دیاری بکە.');
   if(isFashion&&!details.condition)return setMessage('تکایە حاڵەتی جلوبەرگ دیاری بکە.');
-  if(isFashion&&details.type==='پێلاو'&&details.shoeSizes.length===0)return setMessage('تکایە لانیکەم یەک ژمارەی پێلاو هەڵبژێرە.');
-  if(isFashion&&details.type!=='پێلاو'&&!details.size)return setMessage('تکایە قەبارەی جلوبەرگ دیاری بکە.');
+  if(isFashion&&isShoe&&details.shoeSizes.length===0)return setMessage('تکایە لانیکەم یەک ژمارەی پێلاو هەڵبژێرە.');
+  if(isFashion&&!isShoe&&details.sizes.length===0)return setMessage('تکایە لانیکەم یەک قەبارەی جلوبەرگ هەڵبژێرە.');
+  if(isFashion&&details.colors.length===0)return setMessage('تکایە لانیکەم یەک ڕەنگ هەڵبژێرە.');
   if(isFood&&!details.type)return setMessage('تکایە جۆری خواردن دیاری بکە.');
   if(isElectronics&&!details.type)return setMessage('تکایە جۆری ئامێر دیاری بکە.');
   if(isJewelry&&!details.type)return setMessage('تکایە جۆری جواهرات دیاری بکە.');
@@ -129,9 +133,10 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
      brand:details.brand||null,
      size:details.size||null,
      image_url:imageUrls[0]||null,
-     stock:1,
-     is_available:true,
-     variants:[{section,...details}]
+     stock:stockMode==='unlimited'?0:Number(stock||0),
+     unlimited_stock:stockMode==='unlimited',
+     is_available:stockMode==='unlimited'||Number(stock||0)>0,
+     variants:[{section,category:isFashion?'fashion':section,clothing_type:isFashion?details.type:null,available_sizes:isFashion&&!isShoe?details.sizes:[],available_colors:isFashion?details.colors:[],shoe_sizes:isFashion&&isShoe?details.shoeSizes:[],unlimited_stock:stockMode==='unlimited'}]
     }).select('id').single();
     if(productError)throw productError;
     createdProductId=newProduct.id;
@@ -152,11 +157,11 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
     label:'بەڕێوبەری باڵا',
     status:'approved',
     visibility:'public',
-    listing_details:{source:'shakh_store',...(createdProductId?{product_id:createdProductId}:{}),...details}
+    listing_details:{source:'shakh_store',...(createdProductId?{product_id:createdProductId}:{}),stock:stockMode==='unlimited'?null:Number(stock||0),unlimited_stock:stockMode==='unlimited',...details,available_sizes:isFashion&&!isShoe?details.sizes:[],available_colors:isFashion?details.colors:[],shoe_sizes:isFashion&&isShoe?details.shoeSizes:[]}
    });
    if(postError)throw postError;
 
-   setTitle('');setContent('');setPrice('');setFiles([]);previews.forEach(src=>URL.revokeObjectURL(src));setPreviews([]);resetDetails();
+   setTitle('');setContent('');setPrice('');setFiles([]);previews.forEach(src=>URL.revokeObjectURL(src));setPreviews([]);resetDetails();setStockMode('finite');setStock('0');
    setMessage(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە؛ کڕیار دەتوانێت بۆ سەلە زیادیکات.':'پۆست بە ناوی SHAKH Store بڵاوکرایەوە.');
   }catch(error){
    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId);
@@ -178,18 +183,22 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
    <label className="postField"><span>شار</span><input value={city} onChange={e=>setCity(e.target.value)} placeholder="هەولێر"/></label>
    <label className="postField postFieldWide"><span>ناوەڕۆک</span><textarea value={content} onChange={e=>setContent(e.target.value)} placeholder="وەسف و زانیارییەکانی بەرهەم بنووسە..." rows={4}/></label>
   </div>
-  {isFashion&&<div className="postStructuredBox">
-   <div className="postComposerLabel">👕 زانیاریی تەواوی جلوبەرگ</div>
-   <div className="postFormGrid">
-    <label className="postField"><span>جۆری جلوبەرگ</span><select value={details.type} onChange={e=>updateDetail('type',e.target.value)}><option value="">هەڵبژێرە</option>{['تیشێرت','کراس','پانتۆڵ','جین','جاکەت','پۆشاک','جلوبەرگی وەرزشی','پێلاو','جانتا','ئاکسسوارات','کۆمەڵە جلوبەرگ'].map(v=><option key={v}>{v}</option>)}</select></label>
-    <label className="postField"><span>بۆ کێیە؟</span><select value={details.audience} onChange={e=>updateDetail('audience',e.target.value)}><option value="">هەڵبژێرە</option>{['پیاوان','ئافرەتان','منداڵان','هەمووان'].map(v=><option key={v}>{v}</option>)}</select></label>
-    <label className="postField"><span>قەبارە</span><select value={details.size} onChange={e=>updateDetail('size',e.target.value)}><option value="">هەڵبژێرە</option>{['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'].map(v=><option key={v}>{v}</option>)}</select></label>
-    <label className="postField"><span>ڕەنگ</span><select value={details.color} onChange={e=>updateDetail('color',e.target.value)}><option value="">هەڵبژێرە</option>{['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'].map(v=><option key={v}>{v}</option>)}</select></label>
-    <label className="postField"><span>حاڵەت / تازەیی</span><select value={details.condition} onChange={e=>updateDetail('condition',e.target.value)}><option value="">هەڵبژێرە</option><option>نوێ</option><option>بەکارهاتوو</option></select></label>
-    <label className="postField"><span>ژمارەی پێلاو</span><input inputMode="numeric" value={details.shoeSize} onChange={e=>updateDetail('shoeSize',e.target.value.replace(/\D/g,''))} placeholder="٤٢"/></label>
-    <label className="postField"><span>براند</span><input value={details.brand} onChange={e=>updateDetail('brand',e.target.value)} placeholder="Nike"/></label>
-   </div>
+  {isProductListing&&<div className="postInventoryBox">
+   <div className="postInventoryHeader"><div><b>بەردەستی بەرهەم</b><small>ژمارەی بەردەست لە ٠ تا ژمارەی دیاریکراو یان بێ‌سنوور.</small></div><span>{stockMode==='unlimited'?'بێ سنوور ∞':stock||'0'}</span></div>
+   <div className="postInventoryMode"><button type="button" className={stockMode==='finite'?'active':''} onClick={()=>setStockMode('finite')}>ژمارەی دیاریکراو</button><button type="button" className={stockMode==='unlimited'?'active':''} onClick={()=>setStockMode('unlimited')}>بێ‌سنوور ∞</button></div>
+   {stockMode==='finite'&&<label className="postField"><span>چەند دانە بەردەستە؟</span><input inputMode="numeric" min="0" value={stock} onChange={e=>setStock(e.target.value.replace(/\D/g,''))} placeholder="٠"/></label>}
   </div>}
+  {isFashion&&<div className="postStructuredBox">
+   <div className="postComposerLabel">👕 زانیاری جلوبەرگ و variant ـەکان</div>
+   <div className="postFormGrid">
+    <label className="postField"><span>جۆری جلوبەرگ</span><select value={details.type} onChange={e=>{updateDetail('type',e.target.value);if(e.target.value==='پێلاو')setDetails(v=>({...v,sizes:[]}));else setDetails(v=>({...v,shoeSizes:[]}))}}><option value="">هەڵبژێرە</option>{['تیشێرت','کراس','پانتۆڵ','جین','جاکەت','پۆشاک','جلوبەرگی وەرزشی','پێلاو','جانتا','ئاکسسوارات','کۆمەڵە جلوبەرگ'].map(v=><option key={v}>{v}</option>)}</select></label>
+    <label className="postField"><span>بۆ کێیە؟</span><select value={details.audience} onChange={e=>updateDetail('audience',e.target.value)}><option value="">هەڵبژێرە</option>{['پیاوان','ئافرەتان','منداڵان','هەمووان'].map(v=><option key={v}>{v}</option>)}</select></label>
+    <label className="postField postFieldWide"><span>{isShoe?'ژمارەکانی پێلاوی بەردەست':'قەبارەکانی بەردەست'}</span><div className="postChoiceGrid">{(isShoe?SHOE_SIZES:['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44']).map(v=><button type="button" key={v} className={(isShoe?details.shoeSizes:details.sizes).includes(v)?'postChoiceChip active':'postChoiceChip'} onClick={()=>toggleDetailChoice(isShoe?'shoeSizes':'sizes',v)}>{v}</button>)}</div><small>{isShoe?'هەر ژمارەی پێلاوی بەردەستە هەڵیبژێرە.':'هەر قەبارەی بەردەستە هەڵیبژێرە.'}</small></label>
+    <label className="postField postFieldWide"><span>ڕەنگەکانی بەردەست</span><div className="postChoiceGrid postColorChoiceGrid">{['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'].map(v=><button type="button" key={v} className={details.colors.includes(v)?'postChoiceChip active':'postChoiceChip'} onClick={()=>toggleDetailChoice('colors',v)}>{v}</button>)}</div><small>دەتوانیت چەند ڕەنگێک هەڵبژێریت.</small></label>
+    <label className="postField"><span>حاڵەت / تازەیی</span><select value={details.condition} onChange={e=>updateDetail('condition',e.target.value)}><option value="">هەڵبژێرە</option><option>نوێ</option><option>بەکارهاتوو</option></select></label>
+    <label className="postField"><span>براند</span><input value={details.brand} onChange={e=>updateDetail('brand',e.target.value)} placeholder="نموونە: Nike"/></label>
+   </div>
+  </div>
   {(isFood||isSupermarket||isGenericProduct)&&<div className="postStructuredBox">
    <div className="postComposerLabel">🛍️ زانیاریی بەرهەم</div>
    <div className="postFormGrid">
