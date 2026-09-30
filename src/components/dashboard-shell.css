@@ -1313,3 +1313,62 @@ html[data-theme='dark'] .dashboardShellDirty{
     min-height:260px!important;
   }
 }
+
+
+/* Isolate the new shell from legacy global header/button selectors. */
+.dashboardShell .dashboardShellHeader{
+  position:relative!important;
+  top:auto!important;
+  z-index:30!important;
+  min-height:0!important;
+  background:var(--dsx-surface)!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+  box-shadow:none!important;
+}
+.dashboardShell .dashboardShellHeader button{
+  width:auto!important;
+  min-height:0!important;
+  padding:0!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+.dashboardShell .dashboardShellMobileMenu,
+.dashboardShell .dashboardShellIconButton,
+.dashboardShell .dashboardShellMobileClose{
+  width:42px!important;
+  min-width:42px!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0!important;
+}
+.dashboardShell .dashboardShellMobileMenu{
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-text)!important;
+}
+.dashboardShell .dashboardShellIconButton{
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-text)!important;
+  border:1px solid var(--dsx-line)!important;
+}
+.dashboardShell .dashboardShellClose{
+  background:var(--dsx-surface-alt)!important;
+}
+.dashboardShell .dashboardShellHeader img{
+  max-width:none!important;
+}
+.dashboardShell .dashboardShellNavItem,
+.dashboardShell .dashboardShellServiceRow,
+.dashboardShell .dashboardShellRecentRow{
+  min-height:0!important;
+}
+.dashboardShell .dashboardShellNavItem{
+  height:auto!important;
+  padding:10px!important;
+}
+.dashboardShell .dashboardShellServiceRow{
+  height:auto!important;
+  padding:13px 15px!important;
+}
+.dashboardShell .dashboardShellRecentRow{
+  height:auto!important;
+}
