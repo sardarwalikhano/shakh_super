@@ -6,6 +6,13 @@ type Role='restaurant_vendor'|'supermarket_vendor'|'fashion_vendor'|'vendor'|'el
 type Props={userId:string;role:string;onSaved?:()=>void};
 type Config={storeCategory:string;label:string;heading:string;typeLabel:string;brand:boolean;size:boolean;cats:{slug:string;label:string;icon:string}[]};
 type FormState={storeName:string;type:string;brand:string;name:string;size:string;price:string;salePrice:string;stock:string;description:string;available:boolean;city:string};
+type VariantInventoryValue={stock:string;unlimited:boolean};
+const VariantInventoryRow={size?:string;color?:string;shoe_size?:string;stock:number;unlimited_stock:boolean;};
+const comboKey=(row:{size?:string;color?:string;shoe_size?:string})=>[row.size||'',row.shoe_size||'',row.color||''].join('¦');
+const buildFashionCombos=(sizes:string[],shoeSizes:string[],colors:string[])=>{
+ const primary=shoeSizes.length?shoeSizes:sizes;
+ return primary.flatMap(value=>colors.map(color=>shoeSizes.length?{shoe_size:value,color}:{size:value,color}));
+};
 
 const CONFIG:Record<Role,Config>={
  restaurant_vendor:{storeCategory:'restaurant',label:'چێشتخانە',heading:'پۆستکردنی خواردن',typeLabel:'جۆری خواردن',brand:false,size:false,cats:[{slug:'restaurant_food',label:'خواردنی چێشتخانە',icon:'🍽️'}]},
@@ -36,6 +43,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[showPreview,setShowPreview]=useState(false);
  const [fashion,setFashionState]=useState({audience:'',clothingType:'',sizes:[] as string[],colors:[] as string[],shoeSize:'',shoeSizes:[] as string[],condition:'',brand:''});
  const [stockMode,setStockMode]=useState<'finite'|'unlimited'>('finite');
+ const [variantInventory,setVariantInventory]=useState<Record<string,VariantInventoryValue>>({});
  const isFashion=role==='fashion_vendor';
  const selectedCategory=cfg.cats.find(item=>item.slug===category)||cfg.cats[0];
  useEffect(()=>{let live=true;setStoreLoading(true);(async()=>{const {data,error}=await supabase.from('stores').select('id,name').eq('owner_id',userId).eq('category',cfg.storeCategory).eq('is_active',true).limit(1);if(!live)return;if(error){setMessage('نەتوانرا دوکانەکەت وەرگیرێت. تکایە دووبارە هەوڵ بدەرەوە.');setStoreLoading(false);return}const store=data?.[0];if(store){setStoreId(store.id);setForm(v=>({...v,storeName:store.name||''}))}setStoreLoading(false)})();return()=>{live=false}},[userId,cfg.storeCategory]);
@@ -43,8 +51,29 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const update=(patch:Partial<FormState>)=>setForm(v=>({...v,...patch}));
  const setFashion=(key:'audience'|'clothingType'|'shoeSize'|'condition'|'brand',value:string)=>setFashionState(v=>({...v,[key]:value}));
  const toggleFashionChoice=(key:'sizes'|'colors'|'shoeSizes',value:string)=>setFashionState(v=>({...v,[key]:v[key].includes(value)?v[key].filter(item=>item!==value):[...v[key],value]}));
+ const fashionCombos=buildFashionCombos(fashion.sizes,fashion.shoeSizes,fashion.colors);
+ useEffect(()=>{
+  if(!isFashion)return;
+  setVariantInventory(current=>{
+   const next:Record<string,VariantInventoryValue>={};
+   for(const combo of fashionCombos){
+    const key=comboKey(combo);
+    next[key]=current[key]||{stock:'0',unlimited:stockMode==='unlimited'};
+   }
+   return next;
+  });
+ },[isFashion,JSON.stringify(fashion.sizes),JSON.stringify(fashion.shoeSizes),JSON.stringify(fashion.colors)]);
+ const setVariantStock=(key:string,value:string)=>setVariantInventory(v=>({...v,[key]:{...(v[key]||{unlimited:false}),stock:value.replace(/\D/g,'')}}));
+ const setVariantUnlimited=(key:string,value:boolean)=>setVariantInventory(v=>({...v,[key]:{...(v[key]||{stock:'0'}),unlimited:value}}));
+ const variantInventoryRows=fashionCombos.map(combo=>{const value=variantInventory[comboKey(combo)]||{stock:'0',unlimited:false};return{...combo,stock:Number(value.stock||0),unlimited_stock:value.unlimited}});
+ const variantHasAvailability=variantInventoryRows.some(row=>row.unlimited_stock||row.stock>0);
+ const variantInventoryValid=!isFashion||(
+  fashionCombos.length>0&&
+  variantInventoryRows.every(row=>row.unlimited_stock||Number.isInteger(row.stock)&&row.stock>=0)&&
+  variantHasAvailability
+ );
  const isShoe=isFashion&&fashion.clothingType==='پێلاو';
- const ready=Boolean(form.name.trim()&&form.type.trim()&&Number(form.price)>0&&(stockMode==='unlimited'||(Number.isInteger(Number(form.stock))&&Number(form.stock)>=0))&&(!form.salePrice||Number(form.salePrice)>0&&Number(form.salePrice)<=Number(form.price))&&(!cfg.brand||form.brand.trim())&&(!cfg.size||isFashion||form.size.trim())&&(!isFashion||fashion.audience&&fashion.clothingType&&fashion.colors.length>0&&fashion.condition&&(isShoe?fashion.shoeSizes.length>0:fashion.sizes.length>0)));
+ const ready=Boolean(form.name.trim()&&form.type.trim()&&Number(form.price)>0&&(!isFashion?(stockMode==='unlimited'||(Number.isInteger(Number(form.stock))&&Number(form.stock)>=0)):variantInventoryValid)&&(!form.salePrice||Number(form.salePrice)>0&&Number(form.salePrice)<=Number(form.price))&&(!cfg.brand||form.brand.trim())&&(!cfg.size||isFashion||form.size.trim())&&(!isFashion||fashion.audience&&fashion.clothingType&&fashion.colors.length>0&&fashion.condition&&(isShoe?fashion.shoeSizes.length>0:fashion.sizes.length>0)));
  const hasChanges=Boolean(files.length||form.type.trim()||form.name.trim()||form.brand.trim()||form.size.trim()||form.price.trim()||form.salePrice.trim()||form.stock!=='1'||form.description.trim()||!form.available||category!==cfg.cats[0].slug||stockMode!=='finite'||Object.values(fashion).some(value=>Array.isArray(value)?value.length>0:Boolean(value)));
  const chooseFiles=(list:FileList|null)=>{if(!list?.length)return;const incoming=Array.from(list).slice(0,6-files.length).filter(file=>['image/jpeg','image/png','image/webp'].includes(file.type)&&file.size<=5*1024*1024);if(!incoming.length)return;setFiles(v=>[...v,...incoming]);setPreviews(v=>[...v,...incoming.map(file=>URL.createObjectURL(file))]);};
  const removeImage=(index:number)=>{URL.revokeObjectURL(previews[index]||'');setFiles(v=>v.filter((_,i)=>i!==index));setPreviews(v=>v.filter((_,i)=>i!==index));};
@@ -90,7 +119,9 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
     imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
    }
 
-   const fashionDetails=isFashion?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,available_sizes:isShoe?[]:fashion.sizes,available_colors:fashion.colors,shoe_sizes:isShoe?fashion.shoeSizes:[],shoe_size:fashion.shoeSize||null,condition:fashion.condition,brand:fashion.brand||null,stock:stockMode==='unlimited'?null:Number(form.stock||0),unlimited_stock:stockMode==='unlimited'}:{};
+   const fashionTotalStock=variantInventoryRows.filter(row=>!row.unlimited_stock).reduce((sum,row)=>sum+row.stock,0);
+   const fashionHasUnlimited=variantInventoryRows.some(row=>row.unlimited_stock);
+   const fashionDetails=isFashion?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,available_sizes:isShoe?[]:fashion.sizes,available_colors:fashion.colors,shoe_sizes:isShoe?fashion.shoeSizes:[],shoe_size:fashion.shoeSize||null,condition:fashion.condition,brand:fashion.brand||null,stock:fashionHasUnlimited?null:fashionTotalStock,unlimited_stock:fashionHasUnlimited,variant_inventory:variantInventoryRows}:{};
    const productName=form.name.trim();
 
    const {data:createdProduct,error:productError}=await supabase.from('products').insert({
@@ -98,8 +129,8 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
     description_ku:form.description.trim()||null,price_iqd:Number(form.price),sale_price_iqd:form.salePrice?Number(form.salePrice):null,product_type:form.type.trim(),
     brand:isFashion?fashion.brand.trim()||null:form.brand.trim()||null,
     size:isFashion&&!isShoe&&fashion.sizes.length?fashion.sizes.join(', '):form.size.trim()||null,
-    image_url:imageUrls[0]||null,stock:stockMode==='unlimited'?0:Number(form.stock||0),is_available:form.available&&(stockMode==='unlimited'||Number(form.stock)>0),
-    variants:[{section:role,category,...fashionDetails,available_sizes:isFashion&&!isShoe?fashion.sizes:[],available_colors:isFashion?fashion.colors:[],shoe_sizes:isFashion&&isShoe?fashion.shoeSizes:[],unlimited_stock:stockMode==='unlimited'}]
+    image_url:imageUrls[0]||null,stock:isFashion?(fashionHasUnlimited?fashionTotalStock:fashionTotalStock):stockMode==='unlimited'?0:Number(form.stock||0),is_available:form.available&&(isFashion?variantHasAvailability:(stockMode==='unlimited'||Number(form.stock)>0)),
+    variants:[{section:role,category,...fashionDetails,available_sizes:isFashion&&!isShoe?fashion.sizes:[],available_colors:isFashion?fashion.colors:[],shoe_sizes:isFashion&&isShoe?fashion.shoeSizes:[],unlimited_stock:isFashion?fashionHasUnlimited:stockMode==='unlimited',variant_inventory:isFashion?variantInventoryRows:[]} ]
    }).select('id').single();
    if(productError)throw productError;
    createdProductId=createdProduct.id;
@@ -112,14 +143,14 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
      author_id:userId,store_id:sid,title:productName,content:form.description.trim()||null,images:imageUrls,
      price_iqd:Number(form.price),city:form.city||'هەولێر',status:'approved',
      section:meta.postType==='fashion'?'fashion':category,publisher_name:publisherName,post_type:meta.postType,
-     publisher_role:role,label:meta.label,visibility:'public',listing_details:{...fashionDetails,product_id:createdProduct.id,source:'vendor_product',stock:stockMode==='unlimited'?null:Number(form.stock||0),unlimited_stock:stockMode==='unlimited',available_sizes:isFashion&&!isShoe?fashion.sizes:[],available_colors:isFashion?fashion.colors:[],shoe_sizes:isFashion&&isShoe?fashion.shoeSizes:[]}
+     publisher_role:role,label:meta.label,visibility:'public',listing_details:{...fashionDetails,product_id:createdProduct.id,source:'vendor_product',stock:isFashion?(fashionHasUnlimited?null:fashionTotalStock):(stockMode==='unlimited'?null:Number(form.stock||0)),unlimited_stock:isFashion?fashionHasUnlimited:stockMode==='unlimited',available_sizes:isFashion&&!isShoe?fashion.sizes:[],available_colors:isFashion?fashion.colors:[],shoe_sizes:isFashion&&isShoe?fashion.shoeSizes:[],variant_inventory:isFashion?variantInventoryRows:[]}
     });
     if(postError)throw postError;
    }
 
    setForm(v=>({...initialForm(v.city),storeName:v.storeName}));
    setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);
-   setFashionState({audience:'',clothingType:'',sizes:[],colors:[],shoeSize:'',shoeSizes:[],condition:'',brand:''});setStockMode('finite');
+   setFashionState({audience:'',clothingType:'',sizes:[],colors:[],shoeSize:'',shoeSizes:[],condition:'',brand:''});setVariantInventory({});setStockMode('finite');
    setCategory(cfg.cats[0].slug);setShowPreview(true);
    setMessage('بەرهەمەکە و پۆستەکە بە سەرکەوتوویی بڵاوکرانەوە.');onSaved?.();
   }catch(error:unknown){
@@ -139,6 +170,20 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    <div className="postInventoryMode"><button type="button" className={stockMode==='finite'?'active':''} onClick={()=>setStockMode('finite')}>ژمارەی دیاریکراو</button><button type="button" className={stockMode==='unlimited'?'active':''} onClick={()=>setStockMode('unlimited')}>بێ‌سنوور ∞</button></div>
    {stockMode==='finite'&&<label className="postField"><span>چەند دانە بەردەستە؟</span><input inputMode="numeric" min="0" value={form.stock} onChange={e=>update({stock:e.target.value.replace(/\D/g,'')})} placeholder="٠"/></label>}
   </div>
+  {isFashion&&fashionCombos.length>0&&<div className="postStructuredBox variantInventoryEditor">
+   <div className="postComposerLabel">📦 ستۆکی هەر قەبارە و ڕەنگ</div>
+   <div className="variantInventoryList">{fashionCombos.map(combo=>{
+     const key=comboKey(combo),value=variantInventory[key]||{stock:'0',unlimited:false};
+     return <div className="variantInventoryRow" key={key}>
+      <div className="variantInventoryIdentity">{combo.shoe_size&&<b>پێلاو {combo.shoe_size}</b>}{combo.size&&<b>قەبارە {combo.size}</b>}<span>{combo.color}</span></div>
+      <div className="variantInventoryControls">
+       <input inputMode="numeric" min="0" value={value.unlimited?'':value.stock} disabled={value.unlimited} onChange={e=>setVariantStock(key,e.target.value)} placeholder="٠"/>
+       <button type="button" className={value.unlimited?'postChoiceChip active':'postChoiceChip'} onClick={()=>setVariantUnlimited(key,!value.unlimited)}>{value.unlimited?'∞ بێ‌سنوور':'بێ‌سنوور ∞'}</button>
+      </div>
+     </div>
+   })}</div>
+   <small>بڕی ستۆک بۆ هەر هەڵبژاردەیەک جیاوازە. ٠ واتە ئەو هەڵبژاردەیە بەردەست نییە.</small>
+  </div>}
   {isFashion&&<div className="postStructuredBox">
    <div className="postComposerLabel">👕 قەبارە و ڕەنگی بەردەست</div>
    <div className="postFormGrid">
