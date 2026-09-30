@@ -152,7 +152,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
     ?Object.values(post.listing_details).map(value=>value==null?'':String(value)).join(' ')
     :'';
    const haystack=[post.title,post.content,post.publisher_name,post.city,labelOf(post),structured].filter(Boolean).join(' ').toLowerCase();
-   return statusOk&&roleOk&&(!textQuery||haystack.includes(textQuery));
+   return statusOk&&roleOk&&typeOk&&(!textQuery||haystack.includes(textQuery));
   });
  },[posts,statusFilter,roleFilter,query,isAdmin]);
 
