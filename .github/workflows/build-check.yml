@@ -2,9 +2,6 @@ name: Build Check
 
 on:
   push:
-    branches:
-      - main
-      - batch-10-post-uiux
   pull_request:
 
 jobs:
