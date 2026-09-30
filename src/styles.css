@@ -1038,3 +1038,26 @@ html[data-theme='dark'] .paymentMethodOption small{color:#8fa2b5}
 .shakhMapPinDot{display:block;width:22px;height:22px;border-radius:50% 50% 50% 0;background:#ff6b16;border:4px solid #fff;box-shadow:0 5px 18px rgba(15,31,55,.28);transform:rotate(-45deg);position:relative}
 .shakhMapPinDot::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff}
 @media(max-width:720px){.interactiveMapCanvas{height:255px}}
+
+
+/* Exact delivery location + contact readiness — additive UI layer */
+.checkoutAutoCity{margin:8px 0 10px;padding:9px 11px;border:1px solid #e7edf3;border-radius:12px;background:#f8fafc;color:#68788c;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800}
+.locationExactField,.deliveryNoteField{display:block;margin:10px 0}
+.locationExactField>span,.deliveryNoteField>span{display:flex;align-items:center;gap:6px;margin-bottom:7px;color:#18304d;font-size:12px;font-weight:900}
+.locationExactField>span small{color:#ff6b16;font-weight:800}
+.locationExactField input,.deliveryNoteField input{display:block;width:100%;height:48px;border:1px solid #dfe5ec;border-radius:13px;padding:0 14px;outline:0;background:#fbfcfe;color:#24374f}
+.locationExactField input{background:#f2f6fa;color:#163f6b;font-weight:800}
+.deliveryNoteField input:focus{border-color:#ffb77c;box-shadow:0 0 0 4px rgba(255,107,22,.10);background:#fff}
+.locationFindButton{border:0!important;border-radius:14px!important;background:linear-gradient(135deg,#ff9b4a,#ff6412)!important;color:#fff!important;font-weight:900!important;box-shadow:0 13px 28px rgba(255,107,22,.22)!important;min-height:46px!important}
+.locationFindButton:hover{transform:translateY(-2px)}
+.locationFindButton:disabled{opacity:.65;transform:none}
+.profileRequiredMark{display:inline-flex;align-items:center;padding:3px 7px;border-radius:999px;background:#fff0e5;color:#c75a05;font-size:9px;font-weight:900}
+.profileContactRequiredNotice{display:flex;align-items:flex-start;gap:9px;margin:12px 0;padding:12px 13px;border:1px solid #ffd8bb;border-radius:14px;background:#fff7f0;color:#a64d08}
+.profileContactRequiredNotice svg{flex:0 0 auto;margin-top:1px}
+.profileContactRequiredNotice div{display:flex;flex-direction:column;gap:3px}
+.profileContactRequiredNotice b{font-size:12px}
+.profileContactRequiredNotice small{font-size:10px;line-height:1.8;color:#886449}
+@media(max-width:520px){
+ .locationExactField input,.deliveryNoteField input{height:46px}
+ .locationFindButton{min-height:48px!important}
+}
