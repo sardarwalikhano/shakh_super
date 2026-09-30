@@ -933,3 +933,383 @@ html[data-theme='dark'] .dashboardShellDirty{
     justify-self:start;
   }
 }
+
+
+/* =========================================================
+   SHAKH MODULE SURFACES — redesign legacy module internals
+   without changing their data or interaction logic.
+   ========================================================= */
+
+.dashboardShellModule > .dashboard,
+.dashboardShellModule > .section,
+.dashboardShellModule > .vendor-dashboard,
+.dashboardShellModule > .profilePanel,
+.dashboardShellModule > .customer-orders-panel,
+.dashboardShellModule > .supportPanel,
+.dashboardShellModule > .walletPanel,
+.dashboardShellModule > .notification-center{
+  color:var(--dsx-text)!important;
+  background:transparent!important;
+}
+
+.dashboardShellModule .dashboardHeader,
+.dashboardShellModule .vendor-dashboard__header,
+.dashboardShellModule .profilePanelHero,
+.dashboardShellModule .customer-orders-panel__header,
+.dashboardShellModule .supportHead,
+.dashboardShellModule .walletHead,
+.dashboardShellModule .notification-center__header{
+  position:relative!important;
+  margin:0 0 16px!important;
+  padding:0 0 15px!important;
+  border:0!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .dashboardHeader:after,
+.dashboardShellModule .vendor-dashboard__header:after{
+  display:none!important;
+}
+.dashboardShellModule .dashboardHeader h2,
+.dashboardShellModule .vendor-dashboard__header h2,
+.dashboardShellModule .profilePanelHero h2,
+.dashboardShellModule .customer-orders-panel__header h2,
+.dashboardShellModule .supportHead h2,
+.dashboardShellModule .walletHead h2,
+.dashboardShellModule .notification-center__header h2{
+  color:var(--dsx-text)!important;
+  font-size:clamp(20px,2vw,28px)!important;
+  letter-spacing:-.55px!important;
+}
+.dashboardShellModule .dashboardHeader p,
+.dashboardShellModule .vendor-dashboard__header p,
+.dashboardShellModule .profilePanelHero p,
+.dashboardShellModule .customer-orders-panel__header p,
+.dashboardShellModule .supportHead p,
+.dashboardShellModule .walletHead p,
+.dashboardShellModule .notification-center__header p{
+  color:var(--dsx-muted)!important;
+}
+.dashboardShellModule .eyebrow,
+.dashboardShellModule .profileEyebrow,
+.dashboardShellModule .customer-orders-panel__eyebrow,
+.dashboardShellModule .notification-center__eyebrow{
+  background:var(--dsx-brand-soft)!important;
+  color:var(--dsx-brand)!important;
+  border-color:color-mix(in srgb,var(--dsx-brand) 20%,transparent)!important;
+}
+
+/* Shared content surfaces: use section dividers rather than repeated
+   floating cards. */
+.dashboardShellModule .orderCard,
+.dashboardShellModule .settingsCard,
+.dashboardShellModule .supportContactCard,
+.dashboardShellModule .supportComposer,
+.dashboardShellModule .walletMiniStats > div,
+.dashboardShellModule .notification-center__item,
+.dashboardShellModule .tracking-card,
+.dashboardShellModule .customer-orders-panel__orders,
+.dashboardShellModule .customer-orders-panel__detail,
+.dashboardShellModule .deliveryZoneEditorCard,
+.dashboardShellModule .deliveryZoneMapWrap{
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-surface)!important;
+  box-shadow:none!important;
+}
+
+.dashboardShellModule .orderCard:hover,
+.dashboardShellModule .settingsCard:hover{
+  transform:none!important;
+  box-shadow:none!important;
+}
+
+/* Profile — information-first two-zone structure. */
+.dashboardShellModule .profilePanelHero{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:16px!important;
+}
+.dashboardShellModule .profileHeroText{
+  min-width:0!important;
+}
+.dashboardShellModule .profileStats{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:1px!important;
+  background:var(--dsx-line)!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  overflow:hidden!important;
+}
+.dashboardShellModule .profileStats > *{
+  min-width:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .profileAvatarWrap{
+  flex:0 0 auto!important;
+}
+
+/* Orders + delivery — prioritize the order stream and detail panel. */
+.dashboardShellModule .customer-orders-panel__grid{
+  display:grid!important;
+  grid-template-columns:minmax(280px,.82fr) minmax(0,1.45fr)!important;
+  gap:14px!important;
+  align-items:start!important;
+}
+.dashboardShellModule .customer-orders-panel__orders,
+.dashboardShellModule .customer-orders-panel__detail{
+  min-width:0!important;
+  padding:14px!important;
+}
+.dashboardShellModule .tracking-card{
+  padding:14px!important;
+}
+.dashboardShellModule .tracking-card__timeline{
+  margin-top:12px!important;
+}
+.dashboardShellModule .liveDeliveryMapCard{
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-surface)!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .liveDeliveryMapHeader{
+  padding:12px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+.dashboardShellModule .liveTrackingStatus{
+  border-color:color-mix(in srgb,var(--dsx-green) 22%,var(--dsx-line))!important;
+  background:color-mix(in srgb,var(--dsx-green) 6%,var(--dsx-surface))!important;
+}
+
+/* Captain — operational work queue. */
+.dashboardShellModule .captainStats{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:1px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  overflow:hidden!important;
+  background:var(--dsx-line)!important;
+}
+.dashboardShellModule .captainStats .orderCard{
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .captainOrderGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+.dashboardShellModule .captainOrderCard{
+  padding:16px!important;
+}
+.dashboardShellModule .captainPacketGrid{
+  gap:8px!important;
+}
+.dashboardShellModule .captainPacketSection{
+  background:var(--dsx-surface-alt)!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:13px!important;
+}
+
+/* Vendor — compact operational data strip. */
+.dashboardShellModule .vendor-dashboard__stats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:1px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  overflow:hidden!important;
+  background:var(--dsx-line)!important;
+}
+.dashboardShellModule .vendor-dashboard__stats article{
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  min-height:96px!important;
+}
+
+/* Delivery zones — form/map split, no nested floating panel. */
+.dashboardShellModule .deliveryZoneEditorCard{
+  padding:16px!important;
+}
+.dashboardShellModule .deliveryZoneMapWrap{
+  padding:0!important;
+  overflow:hidden!important;
+}
+.dashboardShellModule .deliveryZoneMap{
+  min-height:320px!important;
+}
+
+/* Cars + Umrah — remove the generic centered section appearance. */
+.dashboardShellModule .section:has(.vehicleImageUpload),
+.dashboardShellModule .section:has(.orderRow){
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .section:has(.vehicleImageUpload) .title,
+.dashboardShellModule .section:has(.orderRow) .title{
+  margin:0 0 16px!important;
+  padding:0 0 15px!important;
+  border:0!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .vehiclePostFormGrid{
+  gap:12px!important;
+}
+.dashboardShellModule .vehicleImageUpload{
+  border:1px dashed var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .vehicleImageGrid{
+  border:0!important;
+  background:transparent!important;
+}
+.dashboardShellModule .section:has(.orderRow) .orderRow{
+  border:0!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Notifications — readable stream. */
+.dashboardShellModule .notification-center{
+  padding:0!important;
+  border:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+.dashboardShellModule .notification-center__header-actions .plain{
+  background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .notification-center__list{
+  gap:6px!important;
+}
+.dashboardShellModule .notification-center__item{
+  border-radius:14px!important;
+  background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .notification-center__item.is-unread{
+  background:var(--dsx-brand-soft)!important;
+}
+
+/* Support — conversation workspace. */
+.dashboardShellModule .supportPanel{
+  padding:0!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .supportComposer{
+  border-radius:16px!important;
+}
+.dashboardShellModule .supportContactCard{
+  padding:14px!important;
+}
+.dashboardShellModule .supportTicketCard,
+.dashboardShellModule .supportTicketDetail{
+  border-color:var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-surface)!important;
+  box-shadow:none!important;
+}
+
+/* Wallet — compact finance workspace. */
+.dashboardShellModule .walletPanel{
+  padding:0!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .walletBalanceCard{
+  border-radius:20px!important;
+}
+.dashboardShellModule .walletMiniStats{
+  gap:1px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-line)!important;
+  overflow:hidden!important;
+}
+.dashboardShellModule .walletMiniStats > div{
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .walletTx{
+  padding:12px 0!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+
+/* Settings — organized rows instead of repeated card floating. */
+.dashboardShellModule .settingsPanel{
+  padding:0!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .settingsGrid{
+  gap:1px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+  background:var(--dsx-line)!important;
+}
+.dashboardShellModule .settingsCard{
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding:18px!important;
+}
+.dashboardShellModule .settingsSaveBar{
+  margin-top:14px!important;
+}
+
+/* Responsive module layouts. */
+@media(max-width:920px){
+  .dashboardShellModule .customer-orders-panel__grid,
+  .dashboardShellModule .captainOrderGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .vendor-dashboard__stats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .dashboardShellModule .profileStats{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:620px){
+  .dashboardShellModule .profilePanelHero{
+    grid-template-columns:1fr!important;
+    justify-items:start!important;
+  }
+  .dashboardShellModule .captainStats,
+  .dashboardShellModule .vendor-dashboard__stats{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .dashboardHeader,
+  .dashboardShellModule .vendor-dashboard__header,
+  .dashboardShellModule .profilePanelHero,
+  .dashboardShellModule .customer-orders-panel__header,
+  .dashboardShellModule .supportHead,
+  .dashboardShellModule .walletHead{
+    padding-bottom:12px!important;
+  }
+  .dashboardShellModule .deliveryZoneMap{
+    min-height:260px!important;
+  }
+}
