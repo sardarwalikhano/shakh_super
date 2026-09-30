@@ -41,7 +41,7 @@ const vendorCategories:Record<string,string[]>={
 };
 
 export default function ProductManagement({userId,role,onChanged}:Props){
- const [items,setItems]=useState<Product[]>([]),[loading,setLoading]=useState(true),[editing,setEditing]=useState<Product|null>(null),[editingVariants,setEditingVariants]=useState({sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[]}),[editingVariantInventory,setEditingVariantInventory]=useState<VariantInventoryEntry[]>([]),[editingVariantSync,setEditingVariantSync]=useState(false),[message,setMessage]=useState('');
+ const [items,setItems]=useState<Product[]>([]),[loading,setLoading]=useState(true),[editing,setEditing]=useState<Product|null>(null),[editingVariants,setEditingVariants]=useState({sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[]}),[editingVariantInventory,setEditingVariantInventory]=useState<VariantInventoryEntry[]>([]),[editingVariantSync,setEditingVariantSync]=useState(false),[bulkVariantStock,setBulkVariantStock]=useState('1'),[message,setMessage]=useState('');
 
  const load=async()=>{
   setLoading(true);
@@ -82,6 +82,8 @@ export default function ProductManagement({userId,role,onChanged}:Props){
  const updateVariantInventory=(index:number,patch:Partial<VariantInventoryEntry>)=>{
   setEditingVariantInventory(rows=>rows.map((row,i)=>i===index?{...row,...patch}:row));
  };
+ const setAllVariantStock=(value:string)=>setEditingVariantInventory(rows=>rows.map(row=>({...row,stock:Math.max(0,Math.floor(Number(value)||0))})));
+ const setAllVariantUnlimited=(value:boolean)=>setEditingVariantInventory(rows=>rows.map(row=>({...row,unlimited_stock:value})));
  const buildVariants=(p:Product)=>{
   const base=Array.isArray(p.variants)?p.variants:[];
   const next=base.length?base.map((item,index)=>index===0&&item&&typeof item==='object'?{
@@ -170,7 +172,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
      <input value={editing.brand||''} onChange={e=>setEditing({...editing,brand:e.target.value})} placeholder="مارکە"/>
      <input value={editing.size||''} onChange={e=>setEditing({...editing,size:e.target.value})} placeholder="قەبارەی legacy"/>
      <input value={String(editing.price_iqd)} onChange={e=>setEditing({...editing,price_iqd:Number(e.target.value)||0})} inputMode="numeric" placeholder="نرخ"/><input value={editing.sale_price_iqd==null?'':String(editing.sale_price_iqd)} onChange={e=>setEditing({...editing,sale_price_iqd:e.target.value===''?null:Number(e.target.value)||0})} inputMode="numeric" placeholder="نرخی داشکان (ئارەزوومەندانە)"/>
-     <label><input type="checkbox" checked={Boolean(editing.unlimited_stock)} onChange={e=>setEditing({...editing,unlimited_stock:e.target.checked})}/> بێ‌سنوورە ∞</label>
+     {role!=='fashion_vendor'&&<label><input type="checkbox" checked={Boolean(editing.unlimited_stock)} onChange={e=>setEditing({...editing,unlimited_stock:e.target.checked})}/> بێ‌سنوورە ∞</label>}
      {role==='fashion_vendor'&&<div className="productVariantEditor">
        <b>قەبارە و ڕەنگی بەردەست</b>
        <span>قەبارە</span><div className="postChoiceGrid">{CLOTHING_SIZES.map(value=><button type="button" key={value} className={editingVariants.sizes.includes(value)?'postChoiceChip active':'postChoiceChip'} onClick={()=>setEditVariant('sizes',value)}>{value}</button>)}</div>
@@ -179,6 +181,12 @@ export default function ProductManagement({userId,role,onChanged}:Props){
      </div>}
      {editingVariantInventory.length>0&&<div className="variantInventoryEditor">
        <div className="postComposerLabel">📦 ستۆکی هەر هەڵبژاردە</div>
+       <div className="variantInventoryBulk">
+        <input inputMode="numeric" value={bulkVariantStock} onChange={e=>setBulkVariantStock(e.target.value.replace(/\D/g,''))} placeholder="بڕی هەموو"/>
+        <button type="button" className="postChoiceChip" onClick={()=>setAllVariantStock(bulkVariantStock||'0')}>دانانی بۆ هەموو</button>
+        <button type="button" className="postChoiceChip" onClick={()=>setAllVariantUnlimited(true)}>∞ بۆ هەموو</button>
+        <button type="button" className="postChoiceChip" onClick={()=>setAllVariantUnlimited(false)}>لابردنی ∞</button>
+       </div>
        <div className="variantInventoryList">{editingVariantInventory.map((row,index)=><div className="variantInventoryRow" key={comboKey(row)+index}>
         <div className="variantInventoryIdentity">{row.shoe_size&&<b>پێلاو {row.shoe_size}</b>}{row.size&&<b>قەبارە {row.size}</b>}{row.color&&<span>{row.color}</span>}</div>
         <div className="variantInventoryControls">
@@ -188,7 +196,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
        </div>)}</div>
        <small>بڕی هەر قەبارە/ڕەنگ/ژمارە بە جیاوازی پاشەکەوت دەکرێت.</small>
       </div>}
-     {!editing.unlimited_stock&&<label>ژمارەی ستۆک<input type="number" min="0" step="1" value={String(editing.stock??0)} onChange={e=>setEditing({...editing,stock:Math.max(0,Math.floor(Number(e.target.value)||0))})} inputMode="numeric" placeholder="بڕی بەردەست"/></label>}
+     {role!=='fashion_vendor'&&!editing.unlimited_stock&&<label>ژمارەی ستۆک<input type="number" min="0" step="1" value={String(editing.stock??0)} onChange={e=>setEditing({...editing,stock:Math.max(0,Math.floor(Number(e.target.value)||0))})} inputMode="numeric" placeholder="بڕی بەردەست"/></label>}
      <label><input type="checkbox" checked={editing.is_available||Boolean(editing.unlimited_stock)} onChange={e=>setEditing({...editing,is_available:e.target.checked})}/> لە بازاڕدا بەردەستە</label>
      <button className="primary full" onClick={()=>void update(editing)}><Save size={16}/> پاشەکەوتکردن</button>
     </div>:<article className="orderCard" key={p.id}>
