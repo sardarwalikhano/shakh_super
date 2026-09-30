@@ -7,7 +7,7 @@ export type CaptainOrderItem = {
   product_name: string;
   quantity: number;
   unit_price_iqd: number;
-  options?: Record<string, unknown>;
+  options?: Record<string, unknown> | null;
 };
 
 export type CaptainStore = {
