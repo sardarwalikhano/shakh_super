@@ -59,6 +59,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  const [stockMode,setStockMode]=useState<'finite'|'unlimited'>('finite');
  const [stock,setStock]=useState('0');
  const [variantInventory,setVariantInventory]=useState<Record<string,VariantInventoryValue>>({});
+ const [bulkVariantStock,setBulkVariantStock]=useState('1');
  const [car,setCar]=useState({make:'',model:'',year:'',trim:'',mileage:'',engine:'',body:'',fuel:'',transmission:'',drivetrain:'',color:'',condition:'',origin:'',plate:'',negotiable:true,exchange:false});
  const isFashion=postType==='fashion';
  const isCar=postType==='car';
@@ -80,6 +81,8 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  },[isFashion,JSON.stringify(fashion.sizes),JSON.stringify(fashion.shoeSizes),JSON.stringify(fashion.colors),stockMode]);
  const variantInventoryRows=fashionCombos.map(combo=>{const value=variantInventory[comboKey(combo)]||{stock:'0',unlimited:false};return{...combo,stock:Number(value.stock||0),unlimited_stock:value.unlimited}});
  const variantHasAvailability=variantInventoryRows.some(row=>row.unlimited_stock||row.stock>0);
+ const fashionTotalStock=variantInventoryRows.filter(row=>!row.unlimited_stock).reduce((sum,row)=>sum+row.stock,0);
+ const fashionHasUnlimited=variantInventoryRows.some(row=>row.unlimited_stock);
  const variantInventoryValid=!isFashion||(
   fashionCombos.length>0&&
   variantInventoryRows.every(row=>row.unlimited_stock||Number.isInteger(row.stock)&&row.stock>=0)&&
@@ -108,6 +111,8 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  };
  const setVariantStock=(key:string,value:string)=>setVariantInventory(v=>({...v,[key]:{...(v[key]||{unlimited:false}),stock:value.replace(/\D/g,'')}}));
  const setVariantUnlimited=(key:string,value:boolean)=>setVariantInventory(v=>({...v,[key]:{...(v[key]||{stock:'0'}),unlimited:value}}));
+ const setAllVariantStock=(value:string)=>setVariantInventory(current=>Object.fromEntries(fashionCombos.map(combo=>{const key=comboKey(combo);return[key,{...(current[key]||{unlimited:false}),stock:value.replace(/\D/g,'')}]})));
+ const setAllVariantUnlimited=(value:boolean)=>setVariantInventory(current=>Object.fromEntries(fashionCombos.map(combo=>{const key=comboKey(combo);return[key,{...(current[key]||{stock:'0'}),unlimited:value}]})));
  const setC=(key:keyof typeof car,value:string|boolean)=>setCar(v=>({...v,[key]:value}));
 
  const chooseFiles=(list:FileList|null)=>{
@@ -172,8 +177,6 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
     imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
    }
 
-   const fashionTotalStock=variantInventoryRows.filter(row=>!row.unlimited_stock).reduce((sum,row)=>sum+row.stock,0);
-   const fashionHasUnlimited=variantInventoryRows.some(row=>row.unlimited_stock);
    const listingDetails=isFashion
     ?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,available_sizes:isShoe?[]:fashion.sizes,available_colors:fashion.colors,shoe_sizes:isShoe?fashion.shoeSizes:[],condition:fashion.condition,brand:fashion.brand||null,stock:fashionHasUnlimited?null:fashionTotalStock,unlimited_stock:fashionHasUnlimited,variant_inventory:variantInventoryRows}
     :isCar
@@ -191,9 +194,9 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    setTitle('');setContent('');setPrice('');setCity('هەولێر');
    setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);
    setFashion({audience:'',clothingType:'',sizes:[],colors:[],shoeSizes:[],condition:'',brand:''});
-   setVariantInventory({});setStockMode('finite');setStock('0');
+   setVariantInventory({});setBulkVariantStock('1');setStockMode('finite');setStock('0');
    setCar({make:'',model:'',year:'',trim:'',mileage:'',engine:'',body:'',fuel:'',transmission:'',drivetrain:'',color:'',condition:'',origin:'',plate:'',negotiable:true,exchange:false});
-   setShowPreview(true);setMessage('پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە.');onSaved?.();
+   setShowPreview(false);setMessage('پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە.');onSaved?.();
   }catch(error:unknown){
    if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
    setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');
@@ -223,6 +226,12 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
 
    {isFashion&&fashionCombos.length>0&&<div className="postStructuredBox variantInventoryEditor">
     <div className="postComposerLabel">📦 ستۆکی هەر هەڵبژاردە</div>
+    <div className="variantInventoryBulk">
+      <input inputMode="numeric" value={bulkVariantStock} onChange={e=>setBulkVariantStock(e.target.value.replace(/\D/g,''))} placeholder="بڕی هەموو" aria-label="بڕی ستۆکی هەموو variant ـەکان"/>
+      <button type="button" className="postChoiceChip" onClick={()=>setAllVariantStock(bulkVariantStock||'0')}>دانانی بۆ هەموو</button>
+      <button type="button" className="postChoiceChip" onClick={()=>setAllVariantUnlimited(true)}>∞ بۆ هەموو</button>
+      <button type="button" className="postChoiceChip" onClick={()=>setAllVariantUnlimited(false)}>لابردنی ∞</button>
+    </div>
     <div className="variantInventoryList">{fashionCombos.map(combo=>{
       const key=comboKey(combo),value=variantInventory[key]||{stock:'0',unlimited:false};
       return <div className="variantInventoryRow" key={key}>
@@ -301,7 +310,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
 
    <div className="postComposerBottom"><span className="postComposerHint" aria-hidden="true"></span><button type="button" className="postPreviewToggle" onClick={()=>setShowPreview(v=>!v)}><Eye size={16}/>{showPreview?'شاردنەوەی پێشبینین':'پیشاندانی پێشبینین'}</button></div>
 
-   {showPreview&&<div className="postLivePreview"><div className="postLivePreviewTop"><span>پێشبینینی پۆست</span><small>{TYPE_ICONS[postType]||'📝'} {cfg.types.find(item=>item.value===postType)?.label||cfg.label}</small></div><div className="postLivePreviewCard"><div className="postLivePreviewImage">{previews[0]?<img src={previews[0]} alt="" />:<ImagePlus size={34}/>}</div><div className="postLivePreviewBody"><small>{cfg.label} · {city}</small><h4>{title.trim()||'سەردێڕی پۆستەکەت لێرە دەردەکەوێت'}</h4><p>{content.trim()||'ناوەڕۆکی پۆستەکەت لێرە پیشان دەدرێت.'}</p>{isPriceVisible&&<div className="postLivePreviewPrice">{price?Number(price).toLocaleString('en-US'):'٠'} د.ع</div>}{isFashion&&<div className="postPreviewChips">{[fashion.audience,fashion.clothingType,isShoe&&fashion.shoeSizes.length? 'پێلاو: '+fashion.shoeSizes.join('، '):fashion.sizes.length?'قەبارە: '+fashion.sizes.join('، '):'',fashion.colors.length?'ڕەنگ: '+fashion.colors.join('، '):'',fashion.condition,fashion.brand,stockMode==='unlimited'?'بێ‌سنوور':'بەردەست: '+stock].filter(Boolean).map(v=><span key={String(v)}>{String(v)}</span>)}</div>}{isCar&&<div className="postPreviewChips">{[car.make&&car.model?car.make+' '+car.model:car.make,car.year,car.mileage&&car.mileage+' km',car.body,car.fuel,car.transmission,car.color].filter(Boolean).map(v=><span key={String(v)}>{String(v)}</span>)}</div>}</div></div></div>}
+   {showPreview&&<div className="postLivePreview"><div className="postLivePreviewTop"><span>پێشبینینی پۆست</span><small>{TYPE_ICONS[postType]||'📝'} {cfg.types.find(item=>item.value===postType)?.label||cfg.label}</small></div><div className="postLivePreviewCard"><div className="postLivePreviewImage">{previews[0]?<img src={previews[0]} alt="" />:<ImagePlus size={34}/>}</div><div className="postLivePreviewBody"><small>{cfg.label} · {city}</small><h4>{title.trim()||'سەردێڕی پۆستەکەت لێرە دەردەکەوێت'}</h4><p>{content.trim()||'ناوەڕۆکی پۆستەکەت لێرە پیشان دەدرێت.'}</p>{isPriceVisible&&<div className="postLivePreviewPrice">{price?Number(price).toLocaleString('en-US'):'٠'} د.ع</div>}{isFashion&&<div className="postPreviewChips">{[fashion.audience,fashion.clothingType,isShoe&&fashion.shoeSizes.length? 'پێلاو: '+fashion.shoeSizes.join('، '):fashion.sizes.length?'قەبارە: '+fashion.sizes.join('، '):'',fashion.colors.length?'ڕەنگ: '+fashion.colors.join('، '):'',fashion.condition,fashion.brand,fashionHasUnlimited?'بێ‌سنوور':'بەردەست: '+fashionTotalStock].filter(Boolean).map(v=><span key={String(v)}>{String(v)}</span>)}</div>}{isCar&&<div className="postPreviewChips">{[car.make&&car.model?car.make+' '+car.model:car.make,car.year,car.mileage&&car.mileage+' km',car.body,car.fuel,car.transmission,car.color].filter(Boolean).map(v=><span key={String(v)}>{String(v)}</span>)}</div>}</div></div></div>}
 
    {message&&<div className={message.includes('سەرکەوت')?'postComposerMessage success':'postComposerMessage'} role="alert" aria-live="polite">{message}</div>}
    <button type="button" className="primary postPublishButton" disabled={busy||!ready} onClick={()=>void submit()}>{busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Send size={17}/> بڵاوکردنەوەی پۆست</>}</button>
