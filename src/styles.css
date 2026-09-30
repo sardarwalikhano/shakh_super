@@ -4814,3 +4814,23 @@ html[data-theme='dark'] .postInventoryBox{
     font-size:7px!important;
   }
 }
+
+
+/* SHAKH — inventory choice availability */
+.app .variantChoiceChip:disabled,
+.app .shoeSizeChip:disabled{
+  opacity:.38!important;
+  cursor:not-allowed!important;
+  text-decoration:line-through!important;
+  filter:saturate(.35)!important;
+  background:var(--surface-alt)!important;
+  border-color:var(--line)!important;
+  color:var(--muted)!important;
+  box-shadow:none!important;
+}
+.app .variantChoiceChip:disabled:hover,
+.app .shoeSizeChip:disabled:hover{
+  border-color:var(--line)!important;
+  background:var(--surface-alt)!important;
+  color:var(--muted)!important;
+}
