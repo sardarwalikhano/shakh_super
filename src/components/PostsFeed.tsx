@@ -26,6 +26,16 @@ const listDetail=(post:Post,key:string):string[]=>{
 };
 const variantDetails=(post:Post)=>{
  const d=detailsOf(post);
+ const rawInventory=Array.isArray(d.variant_inventory)?d.variant_inventory.filter(v=>v&&typeof v==='object') as Record<string,unknown>[]:[];
+ if(rawInventory.length){
+   const available=rawInventory.filter(row=>row.unlimited_stock===true||Number(row.stock||0)>0);
+   const sizes=[...new Set(available.map(row=>String(row.size||'').trim()).filter(Boolean))];
+   const colors=[...new Set(available.map(row=>String(row.color||'').trim()).filter(Boolean))];
+   const shoeSizes=[...new Set(available.map(row=>String(row.shoe_size||'').trim()).filter(Boolean))];
+   const unlimited=available.some(row=>row.unlimited_stock===true);
+   const stock=unlimited?null:available.reduce((sum,row)=>sum+Math.max(0,Math.floor(Number(row.stock)||0)),0);
+   return{sizes,colors,shoeSizes,unlimited,stock};
+ }
  const sizes=[...new Set([...listDetail(post,'available_sizes'),...listDetail(post,'sizes'),...(d.size?[String(d.size)]:[])])];
  const colors=[...new Set([...listDetail(post,'available_colors'),...listDetail(post,'colors'),...(d.color?[String(d.color)]:[])])];
  const shoeSizes=[...new Set([...listDetail(post,'shoe_sizes'),...(d.shoe_size?[String(d.shoe_size)]:[])])];
