@@ -4856,3 +4856,459 @@ html[data-theme='dark'] .dashboardShellModule .deliveryZoneMapHint{
     padding:11px!important;
   }
 }
+
+
+/* =========================================================
+   SHAKH — DASHBOARD SHELL FINAL UX PASS
+   ========================================================= */
+
+.dashboardShell{
+  border-radius:30px!important;
+  background:var(--dsx-bg)!important;
+}
+
+.dashboardShellHeader{
+  min-height:78px!important;
+  padding:12px 18px!important;
+  background:var(--dsx-surface)!important;
+}
+
+.dashboardShellIdentity{
+  min-width:0!important;
+  flex:1 1 auto!important;
+}
+
+.dashboardShellBrandMark{
+  width:48px!important;
+  height:48px!important;
+  flex-basis:48px!important;
+  border-radius:14px!important;
+  background:var(--dsx-surface-alt)!important;
+}
+
+.dashboardShellHeading h1{
+  margin:3px 0 2px!important;
+  color:var(--dsx-text)!important;
+  font-size:clamp(17px,1.7vw,22px)!important;
+  line-height:1.25!important;
+  font-weight:950!important;
+  overflow-wrap:anywhere!important;
+}
+
+.dashboardShellHeading p{
+  margin:0!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  line-height:1.6!important;
+  overflow-wrap:anywhere!important;
+}
+
+.dashboardShellHeaderActions{
+  flex:0 0 auto!important;
+}
+
+.dashboardShellAccount{
+  min-width:130px!important;
+  padding-inline-end:12px!important;
+  border-inline-end:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellAccount span{
+  display:block!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+  font-weight:800!important;
+}
+
+.dashboardShellAccount strong{
+  display:block!important;
+  margin-top:2px!important;
+  color:var(--dsx-text)!important;
+  font-size:9px!important;
+  font-weight:950!important;
+  overflow-wrap:anywhere!important;
+}
+
+.dashboardShellAccount small{
+  display:block!important;
+  margin-top:2px!important;
+  max-width:180px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  direction:ltr!important;
+  text-align:right!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+}
+
+.dashboardShellIconButton{
+  width:38px!important;
+  min-width:38px!important;
+  height:38px!important;
+  min-height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:11px!important;
+  background:var(--dsx-surface)!important;
+  color:var(--dsx-text)!important;
+  transition:background-color .18s ease,border-color .18s ease,transform .18s ease,color .18s ease!important;
+}
+
+.dashboardShellIconButton:hover{
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-brand)!important;
+  color:var(--dsx-brand)!important;
+  transform:translateY(-1px)!important;
+}
+
+.dashboardShellClose:hover{
+  color:var(--dsx-danger)!important;
+  border-color:var(--dsx-danger)!important;
+}
+
+.dashboardShellBody{
+  grid-template-columns:minmax(0,1fr) 286px!important;
+}
+
+.dashboardShellSidebar{
+  padding:14px 12px!important;
+  background:
+    linear-gradient(180deg,var(--dsx-surface),var(--dsx-surface-alt))!important;
+}
+
+.dashboardShellSidebarHead{
+  padding:5px 7px 12px!important;
+}
+
+.dashboardShellSidebarHead span{
+  font-size:7px!important;
+  letter-spacing:.2px!important;
+}
+
+.dashboardShellSidebarHead strong{
+  font-size:13px!important;
+}
+
+.dashboardShellNav{
+  gap:4px!important;
+}
+
+.dashboardShellNavItem{
+  grid-template-columns:38px minmax(0,1fr) auto auto!important;
+  gap:8px!important;
+  min-height:58px!important;
+  padding:8px!important;
+  border-radius:12px!important;
+}
+
+.dashboardShellNavItem:hover{
+  transform:none!important;
+}
+
+.dashboardShellNavItem.is-active{
+  border-color:var(--dsx-line)!important;
+  background:linear-gradient(90deg,var(--dsx-brand-soft),var(--dsx-surface))!important;
+  box-shadow:inset 3px 0 0 var(--dsx-brand)!important;
+}
+
+.dashboardShellNavItem.is-active::before{
+  display:none!important;
+}
+
+.dashboardShellNavIcon{
+  width:38px!important;
+  height:38px!important;
+  border-radius:11px!important;
+}
+
+.dashboardShellNavCopy strong{
+  font-size:9px!important;
+  line-height:1.45!important;
+}
+
+.dashboardShellNavCopy small{
+  font-size:7px!important;
+  line-height:1.55!important;
+}
+
+.dashboardShellNavBadge{
+  min-width:22px!important;
+  height:22px!important;
+  font-size:7px!important;
+}
+
+.dashboardShellNavArrow{
+  opacity:.65!important;
+}
+
+.dashboardShellSidebarFooter{
+  margin-top:10px!important;
+  padding:10px 8px 2px!important;
+}
+
+.dashboardShellSidebarFooter strong{
+  font-size:8px!important;
+}
+
+.dashboardShellSidebarFooter small{
+  font-size:7px!important;
+}
+
+.dashboardShellMain{
+  background:var(--dsx-bg)!important;
+}
+
+.dashboardShellToolbar{
+  min-height:58px!important;
+  padding:10px 18px!important;
+}
+
+.dashboardShellToolbar span{
+  font-size:7px!important;
+}
+
+.dashboardShellToolbar strong{
+  font-size:11px!important;
+}
+
+.dashboardShellDirty{
+  padding:5px 8px!important;
+  font-size:7px!important;
+}
+
+.dashboardShellOverview,
+.dashboardShellModule{
+  padding:18px!important;
+}
+
+.dashboardShellStats{
+  border-radius:15px!important;
+  background:var(--dsx-line)!important;
+}
+
+.dashboardShellStat{
+  min-height:92px!important;
+  padding:13px!important;
+}
+
+.dashboardShellStat span{
+  font-size:7px!important;
+}
+
+.dashboardShellStat strong{
+  font-size:21px!important;
+}
+
+.dashboardShellStat small{
+  font-size:7px!important;
+}
+
+.dashboardShellStat.is-money strong{
+  font-size:15px!important;
+}
+
+.dashboardShellServiceIndex{
+  margin-top:16px!important;
+  padding-top:16px!important;
+}
+
+.dashboardShellSectionIntro{
+  gap:14px!important;
+  margin-bottom:10px!important;
+}
+
+.dashboardShellSectionIntro span{
+  font-size:7px!important;
+}
+
+.dashboardShellSectionIntro h2{
+  margin-top:3px!important;
+  font-size:18px!important;
+}
+
+.dashboardShellSectionIntro p{
+  max-width:310px!important;
+  font-size:8px!important;
+}
+
+.dashboardShellServiceList{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  border-radius:15px!important;
+}
+
+.dashboardShellServiceRow{
+  min-height:78px!important;
+  grid-template-columns:40px minmax(0,1fr) auto!important;
+  gap:9px!important;
+  padding:11px 12px!important;
+}
+
+.dashboardShellServiceIcon{
+  width:40px!important;
+  height:40px!important;
+  border-radius:11px!important;
+}
+
+.dashboardShellServiceCopy{
+  gap:2px!important;
+}
+
+.dashboardShellServiceCopy strong{
+  font-size:9px!important;
+}
+
+.dashboardShellServiceCopy small{
+  font-size:7px!important;
+  line-height:1.6!important;
+}
+
+.dashboardShellServiceAction{
+  font-size:7px!important;
+}
+
+.dashboardShellHomeContent{
+  margin-top:16px!important;
+}
+
+.dashboardShellModule > .dashboard,
+.dashboardShellModule > .section,
+.dashboardShellModule > .vendor-dashboard{
+  position:relative!important;
+}
+
+.dashboardShellModule > .dashboard::before,
+.dashboardShellModule > .section::before,
+.dashboardShellModule > .vendor-dashboard::before{
+  content:''!important;
+  position:absolute!important;
+  inset-inline-start:0!important;
+  top:0!important;
+  width:3px!important;
+  height:100%!important;
+  border-radius:3px!important;
+  background:linear-gradient(180deg,var(--dsx-brand),transparent)!important;
+  pointer-events:none!important;
+  opacity:.45!important;
+}
+
+.dashboardShellNavItem:focus-visible,
+.dashboardShellServiceRow:focus-visible,
+.dashboardShellIconButton:focus-visible,
+.dashboardShellMobileMenu:focus-visible,
+.dashboardShellMobileClose:focus-visible{
+  outline:2px solid var(--dsx-brand)!important;
+  outline-offset:2px!important;
+}
+
+/* Mobile shell */
+@media(max-width:1180px){
+  .dashboardShellBody{
+    grid-template-columns:minmax(0,1fr) 252px!important;
+  }
+  .dashboardShellAccount{
+    min-width:112px!important;
+  }
+}
+
+@media(max-width:860px){
+  .dashboardShellHeader{
+    min-height:70px!important;
+    padding:10px 12px!important;
+  }
+  .dashboardShellBrandMark{
+    width:44px!important;
+    height:44px!important;
+    flex-basis:44px!important;
+  }
+  .dashboardShellHeading h1{
+    font-size:16px!important;
+  }
+  .dashboardShellAccount{
+    display:none!important;
+  }
+  .dashboardShellHeaderActions{
+    gap:6px!important;
+  }
+  .dashboardShellIconButton{
+    width:36px!important;
+    min-width:36px!important;
+    height:36px!important;
+    min-height:36px!important;
+  }
+  .dashboardShellOverview,
+  .dashboardShellModule{
+    padding:14px!important;
+  }
+}
+
+@media(max-width:620px){
+  .dashboardShellSectionIntro{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .dashboardShellSectionIntro p{
+    max-width:none!important;
+    text-align:right!important;
+  }
+  .dashboardShellServiceList{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellServiceRow{
+    min-height:70px!important;
+  }
+}
+
+@media(max-width:460px){
+  .dashboardShellHeader{
+    gap:8px!important;
+  }
+  .dashboardShellIdentity{
+    gap:8px!important;
+  }
+  .dashboardShellBrandMark{
+    width:40px!important;
+    height:40px!important;
+    flex-basis:40px!important;
+  }
+  .dashboardShellOverline{
+    font-size:7px!important;
+  }
+  .dashboardShellHeading h1{
+    font-size:14px!important;
+  }
+  .dashboardShellHeading p{
+    display:none!important;
+  }
+  .dashboardShellOverview,
+  .dashboardShellModule{
+    padding:11px!important;
+  }
+  .dashboardShellToolbar{
+    padding:9px 11px!important;
+  }
+  .dashboardShellStats{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellStat{
+    min-height:74px!important;
+    border-top:1px solid var(--dsx-line)!important;
+  }
+  .dashboardShellStat:first-child{
+    border-top:0!important;
+  }
+  .dashboardShellStat + .dashboardShellStat{
+    border-inline-start:0!important;
+  }
+  .dashboardShellServiceRow{
+    grid-template-columns:38px minmax(0,1fr) auto!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dashboardShellIconButton,
+  .dashboardShellNavItem{
+    transition:none!important;
+  }
+}
