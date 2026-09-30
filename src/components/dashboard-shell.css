@@ -6101,3 +6101,464 @@ html[data-theme='dark'] .dashboardShellModule .deliveryZoneMapHint{
  .dashboardShellModule .orderMonitorStats{grid-template-columns:1fr 1fr!important}
  .dashboardShellModule .tracking-card__timeline{grid-template-columns:1fr!important}
 }
+
+
+/* =========================================================
+   SHAKH — ACCOUNT NAV / PROFILE / SETTINGS POLISH
+   ========================================================= */
+
+.dashboardShell{
+  background:var(--dsx-bg)!important;
+}
+
+.dashboardShellHeader{
+  min-height:78px!important;
+  padding:13px 16px!important;
+  background:var(--dsx-surface)!important;
+}
+
+.dashboardShellIdentity{
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+
+.dashboardShellHeading h1{
+  max-width:42vw!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+.dashboardShellHeaderActions{
+  flex:0 0 auto!important;
+}
+
+.dashboardShellAccount{
+  min-width:180px!important;
+  max-width:260px!important;
+}
+
+.dashboardShellMain{
+  min-width:0!important;
+  background:var(--dsx-bg)!important;
+}
+
+.dashboardShellToolbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:15!important;
+  background:color-mix(in srgb,var(--dsx-bg) 92%,transparent)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--dsx-line) 80%,transparent)!important;
+}
+
+.dashboardShellToolbar>div:first-child span{
+  color:var(--dsx-muted)!important;
+}
+
+.dashboardShellToolbar>div:first-child strong{
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellDirty{
+  border:1px solid color-mix(in srgb,var(--dsx-brand) 30%,var(--dsx-line))!important;
+  background:var(--dsx-brand-soft)!important;
+  color:var(--dsx-brand)!important;
+}
+
+/* Navigation: clearer active state without enlarging every row. */
+.dashboardShellNavItem{
+  min-height:58px!important;
+  grid-template-columns:38px minmax(0,1fr) auto auto!important;
+  gap:8px!important;
+  padding:8px!important;
+}
+
+.dashboardShellNavIcon{
+  width:38px!important;
+  height:38px!important;
+  border-radius:11px!important;
+}
+
+.dashboardShellNavCopy strong{
+  font-size:10px!important;
+}
+
+.dashboardShellNavCopy small{
+  font-size:7px!important;
+}
+
+.dashboardShellNavArrow{
+  opacity:.55!important;
+}
+
+.dashboardShellNavItem.is-active .dashboardShellNavArrow{
+  opacity:1!important;
+  color:var(--dsx-brand)!important;
+}
+
+/* Overview */
+.dashboardShellStats{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:1px!important;
+  overflow:hidden!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:17px!important;
+  background:var(--dsx-line)!important;
+}
+
+.dashboardShellStat{
+  min-height:108px!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:var(--dsx-surface)!important;
+}
+
+.dashboardShellStat span{
+  color:var(--dsx-muted)!important;
+}
+
+.dashboardShellStat strong{
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellStat small{
+  color:var(--dsx-muted)!important;
+}
+
+/* Profile workspace */
+.dashboardShellModule .profilePanel{
+  max-width:100%!important;
+  margin:0!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .profilePanelHero{
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  padding:16px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:18px!important;
+  background:var(--dsx-surface)!important;
+}
+
+.dashboardShellModule .profileHeroText h2{
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .profileHeroText p{
+  color:var(--dsx-muted)!important;
+}
+
+.dashboardShellModule .profileRoleBadge{
+  background:var(--dsx-brand-soft)!important;
+  border-color:color-mix(in srgb,var(--dsx-brand) 22%,var(--dsx-line))!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .profileStats{
+  margin-top:10px!important;
+}
+
+.dashboardShellModule .profileStats>*{
+  background:var(--dsx-surface)!important;
+  border-color:var(--dsx-line)!important;
+}
+
+.dashboardShellModule .profileStats strong,
+.dashboardShellModule .profileStats span{
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .profileStats span{
+  color:var(--dsx-muted)!important;
+}
+
+.dashboardShellModule .profileSectionTitle{
+  margin-top:18px!important;
+}
+
+.dashboardShellModule .profileSectionTitle h3,
+.dashboardShellModule .profileSectionTitle small{
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .profileSectionTitle small{
+  color:var(--dsx-muted)!important;
+}
+
+.dashboardShellModule .profileFormGrid{
+  gap:10px!important;
+  padding:14px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-surface)!important;
+}
+
+.dashboardShellModule .profileField{
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+}
+
+.dashboardShellModule .profileField input,
+.dashboardShellModule .profileField select{
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-text)!important;
+  border-color:var(--dsx-line)!important;
+}
+
+.dashboardShellModule .profileContactRequiredNotice{
+  border-color:color-mix(in srgb,#d97706 22%,var(--dsx-line))!important;
+  background:color-mix(in srgb,#d97706 6%,var(--dsx-surface))!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .profilePostSection,
+.dashboardShellModule .profileLanguageGrid{
+  background:var(--dsx-surface)!important;
+  border-color:var(--dsx-line)!important;
+}
+
+.dashboardShellModule .profilePostRow{
+  background:var(--dsx-surface)!important;
+  border-bottom-color:var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .profilePostRow:hover{
+  background:var(--dsx-surface-alt)!important;
+}
+
+.dashboardShellModule .profilePostInfo b{
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .profilePostInfo small{
+  color:var(--dsx-muted)!important;
+}
+
+.dashboardShellModule .profileLanguageGrid button{
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .profileLanguageGrid button.active{
+  background:var(--dsx-brand-soft)!important;
+  border-color:color-mix(in srgb,var(--dsx-brand) 36%,var(--dsx-line))!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .profileSaveRow{
+  position:sticky!important;
+  bottom:0!important;
+  z-index:10!important;
+  margin-top:14px!important;
+  padding:10px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:15px!important;
+  background:color-mix(in srgb,var(--dsx-surface) 94%,transparent)!important;
+  backdrop-filter:blur(12px)!important;
+}
+
+.dashboardShellModule .profileDirtyText{
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .profileSavedText{
+  color:var(--dsx-green)!important;
+}
+
+/* Settings workspace */
+.dashboardShellModule .settingsPanel{
+  margin:0!important;
+  padding:0!important;
+}
+
+.dashboardShellModule .settingsGrid{
+  gap:10px!important;
+}
+
+.dashboardShellModule .settingsCard{
+  padding:14px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-surface)!important;
+  box-shadow:none!important;
+}
+
+.dashboardShellModule .settingsCardHeader b{
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .settingsCardHeader small,
+.dashboardShellModule .settingsHint{
+  color:var(--dsx-muted)!important;
+}
+
+.dashboardShellModule .settingsChoice{
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .settingsChoice.active{
+  background:var(--dsx-brand-soft)!important;
+  border-color:color-mix(in srgb,var(--dsx-brand) 36%,var(--dsx-line))!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .settingsSwitch{
+  border-bottom-color:var(--dsx-line)!important;
+}
+
+.dashboardShellModule .settingsSwitch b{
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .settingsSwitch small{
+  color:var(--dsx-muted)!important;
+}
+
+.dashboardShellModule .settingsPanel label>input,
+.dashboardShellModule .settingsPanel label>select{
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .settingsInfoRow{
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .settingsPrivacyButton{
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .settingsSaveBar{
+  position:sticky!important;
+  bottom:0!important;
+  z-index:10!important;
+  margin-top:12px!important;
+  padding:10px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:15px!important;
+  background:color-mix(in srgb,var(--dsx-surface) 94%,transparent)!important;
+  backdrop-filter:blur(12px)!important;
+}
+
+.dashboardShellModule .settingsSaveBar .primary{
+  min-height:44px!important;
+}
+
+/* Mobile navigation/header */
+@media(max-width:900px){
+  .dashboardShell{
+    width:98vw!important;
+    height:95vh!important;
+    border-radius:22px!important;
+  }
+  .dashboardShellBody{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"main"!important;
+  }
+  .dashboardShellSidebar{
+    position:absolute!important;
+    inset:0 auto 0 0!important;
+    z-index:40!important;
+    width:min(320px,88vw)!important;
+    transform:translateX(-105%)!important;
+    transition:transform .22s ease!important;
+    border-inline-end:1px solid var(--dsx-line)!important;
+    border-inline-start:0!important;
+    box-shadow:18px 0 55px rgba(0,0,0,.22)!important;
+  }
+  .dashboardShellSidebar.is-open{
+    transform:translateX(0)!important;
+  }
+  .dashboardShellMobileMenu{
+    display:grid!important;
+  }
+  .dashboardShellMobileClose{
+    display:grid!important;
+  }
+  .dashboardShellHeading h1{
+    max-width:48vw!important;
+  }
+  .dashboardShellAccount{
+    display:none!important;
+  }
+  .dashboardShellStats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:620px){
+  .dashboardShellBackdrop{
+    padding:0!important;
+  }
+  .dashboardShell{
+    width:100vw!important;
+    height:100vh!important;
+    max-height:none!important;
+    border-radius:0!important;
+  }
+  .dashboardShellHeader{
+    padding:10px!important;
+  }
+  .dashboardShellBrandMark{
+    width:44px!important;
+    height:44px!important;
+    flex-basis:44px!important;
+    border-radius:12px!important;
+  }
+  .dashboardShellHeading h1{
+    max-width:56vw!important;
+    font-size:16px!important;
+  }
+  .dashboardShellHeading p{
+    display:none!important;
+  }
+  .dashboardShellToolbar{
+    padding:9px 11px!important;
+  }
+  .dashboardShellOverview,
+  .dashboardShellModule{
+    padding:10px!important;
+  }
+  .dashboardShellStats{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .dashboardShellStat{
+    min-height:92px!important;
+    padding:11px!important;
+  }
+  .dashboardShellModule .profilePanelHero{
+    grid-template-columns:auto minmax(0,1fr)!important;
+  }
+  .dashboardShellModule .profileRefresh{
+    grid-column:1/-1!important;
+    width:100%!important;
+  }
+  .dashboardShellModule .profileFormGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .settingsGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .settingsSaveBar .primary,
+  .dashboardShellModule .profileSaveButton{
+    width:100%!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dashboardShellSidebar{
+    transition:none!important;
+  }
+}
