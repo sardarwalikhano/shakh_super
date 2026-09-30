@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bell, Check, LogOut, MapPin, Moon, Monitor, Phone, Save, ShieldCheck, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { applyTheme, type ThemePreference } from '../lib/theme';
+import { applyTheme, getCurrentTheme } from '../lib/theme';
 
 type Preferences = { theme:'system'|'light'|'dark'; order_notifications:boolean; delivery_notifications:boolean; wallet_notifications:boolean; marketing_notifications:boolean };
 type PlatformSettings = { default_delivery_fee_iqd:number; platform_fee_iqd:number; commission_percent:number; support_phone:string; support_whatsapp:string; default_city:string; privacy_policy_version:string };
@@ -31,6 +31,14 @@ export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { 
     setLoading(false);
   };
   useEffect(()=>{void load()},[userId,isAdmin]);
+  useEffect(()=>{
+    const syncTheme=()=>{
+      const actual=getCurrentTheme();
+      setPrefs(current=>({...current,theme:actual}));
+    };
+    window.addEventListener('shakh-theme-change',syncTheme);
+    return()=>window.removeEventListener('shakh-theme-change',syncTheme);
+  },[]);
 
   const save=async()=>{
     setSaving(true);setMessage('');
