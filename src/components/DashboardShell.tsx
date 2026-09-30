@@ -90,7 +90,7 @@ export default function DashboardShell({
   ].includes(role);
   const isAdmin = role === 'super_admin' || role === 'admin';
 
-  const items = useMemo<NavItem[]>(() => [
+  const items = useMemo((): NavItem[] => [
     {
       id: 'home',
       label: 'سەرەکی داشبۆرد',
