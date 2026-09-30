@@ -35,6 +35,14 @@ const STATUS_FILTERS=[
 ];
 
 const IRAQ_CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
+const CAR_FUEL=['بنزین','دیزڵ','هايبرید','کارەبا'];
+const CAR_TRANSMISSION=['ئۆتۆماتیک','مانوێڵ'];
+const CAR_BODY=['سێدان','SUV','کروس ئۆڤەر','هەچبەک','پیکاپ','ڤان','کوپێ'];
+const CAR_DRIVETRAIN=['FWD','RWD','AWD','4WD'];
+const CAR_CONDITION=['نوێ','کارکراو'];
+const CAR_ORIGIN=['ئیمارات','ئەڵمانیا','ئەمریکا','کۆریا','ژاپۆن','چین','تورکیا','عێراق'];
+const CAR_COLORS=['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'];
+const CAR_PLATE=['هەیە','نییە'];
 
 const ROLE_FILTERS=[
  {value:'all',label:'هەموو ڕۆڵەکان'},
@@ -203,6 +211,11 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
 
  const startEdit=(post:Post)=>{setEditing(post);setEditTitle(post.title);setEditContent(post.content||'');setEditPrice(post.price_iqd==null?'':String(post.price_iqd));setEditCity(post.city||'هەولێر');setEditListing(post.listing_details&&typeof post.listing_details==='object'?{...post.listing_details}:{});setEditImages(Array.isArray(post.images)?post.images.filter((v):v is string=>typeof v==='string'):[]);setEditFiles([]);setEditFilePreviews([]);setEditGalleryIndex(0);setMessage('');};
  const setEditSpec=(key:string,value:any)=>setEditListing(v=>({...v,[key]:value}));
+ const editSelect=(key:string,label:string,options:string[])=>{
+  const current=String(editListing[key]??'');
+  const values=current&&!options.includes(current)?[current,...options]:options;
+  return <label className="postsEditField">{label}<select value={current} onChange={e=>setEditSpec(key,e.target.value)}><option value="">هەڵبژێرە</option>{values.map(value=><option key={value} value={value}>{value}</option>)}</select></label>;
+ };
  const chooseEditFiles=(list:FileList|null)=>{
   if(!list?.length)return;
   const remaining=Math.max(0,12-editImages.length-editFiles.length);
@@ -441,7 +454,22 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
       <label className="postsEditField">حاڵەت<input value={String(editListing.condition||'')} onChange={e=>setEditSpec('condition',e.target.value)}/></label>
       <label className="postsEditField">براند<input value={String(editListing.brand||'')} onChange={e=>setEditSpec('brand',e.target.value)}/></label>
     </div></div>}
-    {editing.post_type==='car'&&<div className="postsEditStructured"><h4>🚗 SHAKH Cars</h4><div className="postsEditGrid"><label className="postsEditField">make<input value={String(editListing['make']??'')} onChange={e=>setEditSpec('make',e.target.value)}/></label><label className="postsEditField">model<input value={String(editListing['model']??'')} onChange={e=>setEditSpec('model',e.target.value)}/></label><label className="postsEditField">year<input value={String(editListing['year']??'')} onChange={e=>setEditSpec('year',e.target.value)}/></label><label className="postsEditField">trim<input value={String(editListing['trim']??'')} onChange={e=>setEditSpec('trim',e.target.value)}/></label><label className="postsEditField">mileage<input value={String(editListing['mileage']??'')} onChange={e=>setEditSpec('mileage',e.target.value)}/></label><label className="postsEditField">engine<input value={String(editListing['engine']??'')} onChange={e=>setEditSpec('engine',e.target.value)}/></label><label className="postsEditField">body_type<input value={String(editListing['body_type']??'')} onChange={e=>setEditSpec('body_type',e.target.value)}/></label><label className="postsEditField">fuel<input value={String(editListing['fuel']??'')} onChange={e=>setEditSpec('fuel',e.target.value)}/></label><label className="postsEditField">transmission<input value={String(editListing['transmission']??'')} onChange={e=>setEditSpec('transmission',e.target.value)}/></label><label className="postsEditField">drivetrain<input value={String(editListing['drivetrain']??'')} onChange={e=>setEditSpec('drivetrain',e.target.value)}/></label><label className="postsEditField">color<input value={String(editListing['color']??'')} onChange={e=>setEditSpec('color',e.target.value)}/></label><label className="postsEditField">condition<input value={String(editListing['condition']??'')} onChange={e=>setEditSpec('condition',e.target.value)}/></label><label className="postsEditField">origin<input value={String(editListing['origin']??'')} onChange={e=>setEditSpec('origin',e.target.value)}/></label><label className="postsEditField">plate_status<input value={String(editListing['plate_status']??'')} onChange={e=>setEditSpec('plate_status',e.target.value)}/></label></div><div className="postsEditToggles"><label><input type="checkbox" checked={Boolean(editListing.negotiable)} onChange={e=>setEditSpec('negotiable',e.target.checked)}/> نرخ دانوستاندن هەیە</label><label><input type="checkbox" checked={Boolean(editListing.exchange_allowed)} onChange={e=>setEditSpec('exchange_allowed',e.target.checked)}/> گۆڕین/ئەکسچێنج قبوڵە</label></div></div>}
+    {editing.post_type==='car'&&<div className="postsEditStructured"><h4>🚗 SHAKH Cars — زانیاریی ئۆتۆمبێل</h4><div className="postsEditGrid">
+     <label className="postsEditField">مارکە<input value={String(editListing['make']??'')} onChange={e=>setEditSpec('make',e.target.value)} placeholder="Toyota"/></label>
+     <label className="postsEditField">مۆدێل<input value={String(editListing['model']??'')} onChange={e=>setEditSpec('model',e.target.value)} placeholder="Land Cruiser"/></label>
+     <label className="postsEditField">ساڵ<input inputMode="numeric" value={String(editListing['year']??'')} onChange={e=>setEditSpec('year',e.target.value.replace(/\D/g,''))} placeholder="2024"/></label>
+     <label className="postsEditField">تریم<input value={String(editListing['trim']??'')} onChange={e=>setEditSpec('trim',e.target.value)} placeholder="GXR / Limited"/></label>
+     <label className="postsEditField">کیلۆمەتر<input inputMode="numeric" value={String(editListing['mileage']??'')} onChange={e=>setEditSpec('mileage',e.target.value.replace(/\D/g,''))} placeholder="45000"/></label>
+     <label className="postsEditField">مەکینە<input value={String(editListing['engine']??'')} onChange={e=>setEditSpec('engine',e.target.value)} placeholder="3.5L V6"/></label>
+     {editSelect('body_type','جۆری بۆدی',CAR_BODY)}
+     {editSelect('fuel','سووتەمەنی',CAR_FUEL)}
+     {editSelect('transmission','گێڕ',CAR_TRANSMISSION)}
+     {editSelect('drivetrain','سیستەمی جوڵان',CAR_DRIVETRAIN)}
+     {editSelect('color','ڕەنگ',CAR_COLORS)}
+     {editSelect('condition','حاڵەت',CAR_CONDITION)}
+     {editSelect('origin','سەرچاوە',CAR_ORIGIN)}
+     {editSelect('plate_status','پلاک',CAR_PLATE)}
+    </div><div className="postsEditToggles"><label><input type="checkbox" checked={Boolean(editListing.negotiable)} onChange={e=>setEditSpec('negotiable',e.target.checked)}/> نرخ دانوستاندن هەیە</label><label><input type="checkbox" checked={Boolean(editListing.exchange_allowed)} onChange={e=>setEditSpec('exchange_allowed',e.target.checked)}/> گۆڕین/ئەکسچێنج قبوڵە</label></div></div>}
     <div className="postsEditStructured"><h4>📸 زیادکردنی وێنە</h4><label className="postsEditUpload"><input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={e=>{chooseEditFiles(e.target.files);e.currentTarget.value=''}} aria-label="زیادکردنی وێنە بۆ پۆست"/><span>{editFiles.length?'زیادکردنی وێنە: '+editFiles.length:'تا ٨ وێنەی تر زیاد بکە'}</span></label>{editFilePreviews.length>0&&<div className="postsEditNewThumbs">{editFilePreviews.map((src,index)=><div key={src}><img src={src} alt=""/><button type="button" onClick={()=>removeEditFile(index)}><X size={14}/></button></div>)}</div>}</div>
     <div className="postsEditDialogFoot"><small className={hasEditChanges?'postsEditDirty':'postsEditSaved'}>{hasEditChanges?'گۆڕانکاریی هەیە':'هیچ گۆڕانکارییەکی تازە نییە'}</small><button type="button" className="plain postsEditCancel" onClick={closeEditor} disabled={busyId===editing.id}>پاشگەزبوونەوە</button><button type="button" className="primary postsEditSave" disabled={busyId===editing.id||!hasEditChanges} onClick={()=>void saveEdit()}>{busyId===editing.id?'پاشەکەوت دەکرێت...':'پاشەکەوتکردنی گۆڕانکارییەکان'}</button></div>
    </div>
