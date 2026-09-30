@@ -134,7 +134,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
      price_iqd:price?Number(price):0,
      product_type:details.type||section,
      brand:details.brand||null,
-     size:details.size||null,
+     size:isFashion&&!isShoe&&details.sizes.length?details.sizes.join(', '):null,
      image_url:imageUrls[0]||null,
      stock:stockMode==='unlimited'?0:Number(stock||0),
      unlimited_stock:stockMode==='unlimited',
