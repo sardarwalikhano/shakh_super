@@ -44,8 +44,8 @@ export default function ProductManagement({userId,role,onChanged}:Props){
   const {data:stores}=await supabase.from('stores').select('id').eq('owner_id',userId).in('category',cats);
   const ids=(stores||[]).map((s:any)=>s.id);
   if(!ids.length){setItems([]);setLoading(false);return}
-  const {data,error}=await supabase.from('products').select('id,store_id,name_ku,price_iqd,sale_price_iqd,stock,unlimited_stock,product_type,brand,size,image_url,is_available,variants').in('store_id',ids).order('created_at',{ascending:false});
-  if(error)setMessage(error.message);else setItems((data||[]) as Product[]);
+  const {data,error}=await supabase.from('products').select('id,store_id,name_ku,price_iqd,sale_price_iqd,stock,product_type,brand,size,image_url,is_available,variants').in('store_id',ids).order('created_at',{ascending:false});
+  if(error)setMessage(error.message);else setItems(((data||[]) as Product[]).map(p=>({...p,unlimited_stock:variantSummary(p.variants).unlimited})));
   setLoading(false);
  };
 
@@ -91,7 +91,6 @@ export default function ProductManagement({userId,role,onChanged}:Props){
    brand:p.brand?.trim()||null,
    size:p.size?.trim()||null,
    stock:p.unlimited_stock?0:stock,
-   unlimited_stock:Boolean(p.unlimited_stock),
    is_available:p.unlimited_stock||p.is_available,
    variants:buildVariants(p)
   }).eq('id',p.id);
