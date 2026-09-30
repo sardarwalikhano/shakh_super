@@ -3,7 +3,8 @@ import type { CaptainOrderItem } from './captain';
 export type WhatsAppOrderPacket = {
   orderId: string;
   status?: string | null;
-  store?: { name?: string | null; address?: string | null; city?: string | null } | null;
+  createdAt?: string | null;
+  store?: { name?: string | null; address?: string | null; city?: string | null; latitude?: number | null; longitude?: number | null } | null;
   deliveryAddress?: {
     address?: string | null;
     delivery_note?: string | null;
@@ -24,6 +25,7 @@ export type WhatsAppOrderPacket = {
     phone?: string | null;
     whatsapp_phone?: string | null;
   } | null;
+  includeCustomerContact?: boolean;
 };
 
 const statusLabel: Record<string, string> = {
@@ -47,15 +49,24 @@ function optionText(options?: Record<string, unknown> | null) {
     .join('، ');
 }
 
+function mapsUrl(latitude?: number | null, longitude?: number | null) {
+  if (latitude == null || longitude == null) return '';
+  return 'https://www.google.com/maps/dir/?api=1&destination=' + latitude + ',' + longitude;
+}
+
 export function buildWhatsAppOrderText(packet: WhatsAppOrderPacket) {
   const lines = [
     '🟠 شاخ — زانیاریی تەواوی ئۆردەر',
     'ژمارەی ئۆردەر: #' + packet.orderId.slice(0, 8),
     'دۆخ: ' + (statusLabel[packet.status || ''] || packet.status || '—'),
+    packet.createdAt ? 'کاتی ئۆردەر: ' + new Date(packet.createdAt).toLocaleString('ku-IQ') : '',
     '',
     '🏪 دوکان',
     packet.store?.name || '—',
     [packet.store?.address, packet.store?.city].filter(Boolean).join(' — ') || '—',
+    packet.store?.latitude != null && packet.store?.longitude != null
+      ? 'شوێنی دوکان: ' + mapsUrl(packet.store.latitude, packet.store.longitude)
+      : '',
     '',
     '📍 شوێنی وردی گەیاندن',
     packet.deliveryAddress?.address || '—',
@@ -63,6 +74,9 @@ export function buildWhatsAppOrderText(packet: WhatsAppOrderPacket) {
     packet.deliveryAddress?.delivery_note ? 'تێبینی: ' + packet.deliveryAddress.delivery_note : '',
     packet.deliveryAddress?.latitude != null && packet.deliveryAddress?.longitude != null
       ? 'کۆئۆردینات: ' + packet.deliveryAddress.latitude.toFixed(7) + ', ' + packet.deliveryAddress.longitude.toFixed(7)
+      : '',
+    packet.deliveryAddress?.latitude != null && packet.deliveryAddress?.longitude != null
+      ? 'ڕێگای نەخشە: ' + mapsUrl(packet.deliveryAddress.latitude, packet.deliveryAddress.longitude)
       : '',
     '',
     '🛍️ لیستی بەرهەم',
@@ -84,13 +98,11 @@ export function buildWhatsAppOrderText(packet: WhatsAppOrderPacket) {
   ];
 
   if (packet.customer) {
-    lines.push(
-      '',
-      '👤 کڕیار',
-      packet.customer.full_name || '—',
-      packet.customer.phone ? 'مۆبایل: ' + packet.customer.phone : '',
-      packet.customer.whatsapp_phone ? 'واتسئاپ: ' + packet.customer.whatsapp_phone : '',
-    );
+    lines.push('', '👤 کڕیار', packet.customer.full_name || '—');
+    if (packet.includeCustomerContact) {
+      if (packet.customer.phone) lines.push('مۆبایل: ' + packet.customer.phone);
+      if (packet.customer.whatsapp_phone) lines.push('واتسئاپ: ' + packet.customer.whatsapp_phone);
+    }
   }
 
   return lines.filter((line) => line !== '').join('\n');
