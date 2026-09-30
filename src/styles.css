@@ -3298,3 +3298,366 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     font-size:9px!important;
   }
 }
+
+/* =========================================================
+   SHAKH — MARKETPLACE CARDS + LIVE FEED SIGNATURE PASS
+   Richer hierarchy, better readability, stronger visual rhythm.
+   ========================================================= */
+
+.app .postFeed{
+  max-width:1280px!important;
+  margin:42px auto 0!important;
+}
+
+.app .postFeedTitle{
+  margin-bottom:12px!important;
+}
+
+.app .postFeedTitle>div{
+  display:grid!important;
+  gap:3px!important;
+}
+
+.app .postFeedTitle>div>span{
+  width:max-content!important;
+  padding:5px 9px!important;
+  border-radius:999px!important;
+  background:color-mix(in srgb,var(--accent) 9%,var(--surface))!important;
+  border:1px solid color-mix(in srgb,var(--accent) 16%,var(--line))!important;
+  color:var(--accent)!important;
+  font-size:8px!important;
+  font-weight:950!important;
+}
+
+.app .postFeedTitle h2{
+  font-size:clamp(22px,2.5vw,30px)!important;
+  line-height:1.45!important;
+  letter-spacing:-.5px!important;
+}
+
+.app .postFeedFilters{
+  margin:4px 0 14px!important;
+  padding:6px!important;
+  border-radius:15px!important;
+  background:color-mix(in srgb,var(--surface) 92%,transparent)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:0 9px 24px color-mix(in srgb,var(--navy) 5%,transparent)!important;
+}
+
+.app .postFeedFilters>svg{
+  color:var(--accent)!important;
+  flex:0 0 auto!important;
+  margin-inline:3px 2px!important;
+}
+
+.app .postFeedFilters>button{
+  min-height:36px!important;
+  padding:7px 13px!important;
+  border-radius:10px!important;
+  font-size:8px!important;
+  color:var(--muted)!important;
+  background:transparent!important;
+  border:1px solid transparent!important;
+}
+
+.app .postFeedFilters>button:hover{
+  color:var(--accent)!important;
+  background:color-mix(in srgb,var(--accent) 6%,var(--surface))!important;
+}
+
+.app .postFeedFilters>button.active{
+  color:#fff!important;
+  background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent-2) 58%,var(--accent)))!important;
+  border-color:transparent!important;
+  box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 22%,transparent)!important;
+}
+
+.app .postFeedGrid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+
+.app .postFeedCard{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  border-radius:20px!important;
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:0 12px 34px color-mix(in srgb,var(--navy) 6%,transparent)!important;
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease!important;
+}
+
+.app .postFeedCard:hover{
+  transform:translateY(-4px)!important;
+  border-color:color-mix(in srgb,var(--accent) 30%,var(--line))!important;
+  box-shadow:0 22px 48px color-mix(in srgb,var(--accent) 11%,transparent)!important;
+}
+
+.app .postFeedCard:focus-visible{
+  outline:2px solid var(--accent)!important;
+  outline-offset:3px!important;
+}
+
+.app .postFeedImage{
+  height:220px!important;
+  flex:0 0 220px!important;
+  background:
+    radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--accent-2) 18%,transparent),transparent 24%),
+    linear-gradient(145deg,color-mix(in srgb,var(--accent) 8%,var(--surface)),color-mix(in srgb,var(--accent-3) 11%,var(--surface)))!important;
+}
+
+.app .postFeedImage img{
+  transition:transform .35s ease!important;
+}
+
+.app .postFeedCard:hover .postFeedImage img{
+  transform:scale(1.045)!important;
+}
+
+.app .postFeedBadge{
+  top:10px!important;
+  right:10px!important;
+  padding:6px 9px!important;
+  border-radius:999px!important;
+  background:color-mix(in srgb,var(--surface) 86%,transparent)!important;
+  border:1px solid color-mix(in srgb,var(--line) 88%,transparent)!important;
+  color:var(--accent)!important;
+  font-size:8px!important;
+  box-shadow:0 6px 16px rgba(0,0,0,.06)!important;
+}
+
+.app .postFeedNew{
+  top:10px!important;
+  left:10px!important;
+  padding:6px 9px!important;
+  border-radius:999px!important;
+  background:var(--accent-3)!important;
+  color:#fff!important;
+  font-size:8px!important;
+  box-shadow:0 8px 18px color-mix(in srgb,var(--accent-3) 24%,transparent)!important;
+}
+
+.app .postFeedImageCount{
+  right:auto!important;
+  left:10px!important;
+  bottom:10px!important;
+  padding:5px 8px!important;
+  border-radius:999px!important;
+  background:rgba(10,9,20,.55)!important;
+  color:#fff!important;
+  font-size:8px!important;
+  backdrop-filter:blur(8px)!important;
+}
+
+.app .postFeedBody{
+  display:flex!important;
+  flex:1!important;
+  flex-direction:column!important;
+  padding:14px!important;
+}
+
+.app .postFeedMeta{
+  min-height:20px!important;
+  font-size:8px!important;
+}
+
+.app .postFeedMeta span{
+  color:var(--muted)!important;
+}
+
+.app .postFeedMeta span svg{
+  color:var(--accent-2)!important;
+}
+
+.app .postFeedMeta small{
+  color:var(--muted)!important;
+}
+
+.app .postFeedBody h3{
+  margin:7px 0 5px!important;
+  font-size:15px!important;
+  line-height:1.55!important;
+  font-weight:950!important;
+  color:var(--text)!important;
+}
+
+.app .postFeedBody p{
+  margin:0!important;
+  color:var(--muted)!important;
+  font-size:10px!important;
+  line-height:1.85!important;
+  -webkit-line-clamp:3!important;
+}
+
+.app .postSpecChips{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:5px!important;
+  margin-top:9px!important;
+}
+
+.app .postSpecChips span{
+  padding:5px 7px!important;
+  border-radius:8px!important;
+  background:var(--surface-alt)!important;
+  border:1px solid var(--line)!important;
+  color:var(--muted)!important;
+  font-size:7px!important;
+  line-height:1.3!important;
+}
+
+.app .postFeedPublisher{
+  margin-top:auto!important;
+  padding-top:10px!important;
+  color:var(--muted)!important;
+  font-size:8px!important;
+}
+
+.app .postFeedPublisher svg{
+  color:var(--accent)!important;
+}
+
+.app .postFeedFooter{
+  margin-top:9px!important;
+  padding-top:10px!important;
+  border-top:1px solid var(--line)!important;
+}
+
+.app .postFeedFooter strong{
+  color:var(--accent)!important;
+  font-size:11px!important;
+  font-weight:950!important;
+}
+
+.app .postFeedFooter strong svg{
+  color:var(--accent-2)!important;
+}
+
+.app .postFeedFooter>span{
+  background:color-mix(in srgb,var(--success) 9%,var(--surface))!important;
+  color:var(--success)!important;
+  border:1px solid color-mix(in srgb,var(--success) 18%,var(--line))!important;
+}
+
+.app .postAddToCart{
+  min-height:34px!important;
+  padding:7px 10px!important;
+  border-radius:10px!important;
+  background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent-2) 58%,var(--accent)))!important;
+  border:0!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 16%,transparent)!important;
+}
+
+.app .postAddToCart:hover{
+  transform:translateY(-1px)!important;
+  box-shadow:0 11px 22px color-mix(in srgb,var(--accent) 22%,transparent)!important;
+}
+
+.app .postFeedEmpty{
+  min-height:190px!important;
+  padding:28px!important;
+  border-radius:20px!important;
+  background:var(--surface-alt)!important;
+  border-color:var(--line)!important;
+}
+
+.app main>.section:not(.promotionsSection){
+  max-width:1280px!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card{
+  border-radius:20px!important;
+  overflow:hidden!important;
+  background:var(--surface)!important;
+  border-color:var(--line)!important;
+  box-shadow:0 12px 34px color-mix(in srgb,var(--navy) 6%,transparent)!important;
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card:hover{
+  transform:translateY(-4px)!important;
+  border-color:color-mix(in srgb,var(--accent) 28%,var(--line))!important;
+  box-shadow:0 22px 45px color-mix(in srgb,var(--accent) 10%,transparent)!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card .pic{
+  height:210px!important;
+  background:
+    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 18%,transparent),transparent 24%),
+    linear-gradient(145deg,color-mix(in srgb,var(--accent) 7%,var(--surface)),color-mix(in srgb,var(--accent-3) 12%,var(--surface)))!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card .body{
+  padding:14px!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card .body small{
+  font-size:8px!important;
+  color:var(--muted)!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card .body h3{
+  margin:7px 0 10px!important;
+  font-size:14px!important;
+  line-height:1.6!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card .buy{
+  padding-top:10px!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card .buy b{
+  font-size:12px!important;
+  color:var(--accent)!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card .buy button{
+  min-height:34px!important;
+  padding:7px 10px!important;
+  border-radius:10px!important;
+  background:color-mix(in srgb,var(--accent) 9%,var(--surface))!important;
+  color:var(--accent)!important;
+  border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line))!important;
+  font-size:8px!important;
+  font-weight:950!important;
+}
+
+.app main>.section:not(.promotionsSection)>.grid>.card .buy button:hover:not(:disabled){
+  background:var(--accent)!important;
+  color:#fff!important;
+}
+
+@media(max-width:1050px){
+  .app .postFeedGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .app main>.section:not(.promotionsSection)>.grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+
+@media(max-width:760px){
+  .app .postFeed{margin-top:32px!important}
+  .app .postFeedTitle h2{font-size:21px!important}
+  .app .postFeedGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .app .postFeedImage{height:175px!important;flex-basis:175px!important}
+  .app .postFeedBody{padding:11px!important}
+  .app .postFeedBody h3{font-size:12px!important}
+  .app .postFeedBody p{font-size:8px!important}
+  .app main>.section:not(.promotionsSection)>.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .app main>.section:not(.promotionsSection)>.grid>.card .pic{height:185px!important}
+}
+
+@media(max-width:500px){
+  .app .postFeedGrid{grid-template-columns:1fr!important}
+  .app .postFeedImage{height:210px!important;flex-basis:210px!important}
+  .app main>.section:not(.promotionsSection)>.grid{grid-template-columns:1fr!important}
+  .app main>.section:not(.promotionsSection)>.grid>.card .pic{height:215px!important}
+}
