@@ -97,7 +97,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
      (isShoe?fashion.shoeSizes.length>0&&fashion.colors.length>0:fashion.sizes.length>0&&fashion.colors.length>0)&&
      variantInventoryValid
    )) &&
-   (!isCar||(car.make&&car.model&&car.year&&car.mileage&&car.body&&car.fuel&&car.transmission&&car.color))
+   (!isCar||(car.make&&car.model&&car.year&&car.mileage&&car.body&&car.fuel&&car.transmission&&car.color&&car.condition))
  );
 
  const hasChanges=Boolean(title.trim()||content.trim()||price.trim()||city!=='هەولێر'||files.length||postType!==cfg.types[0].value||
@@ -158,6 +158,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    if(isCar&&!car.fuel)return setMessage('سووتەمەنی دیاری بکە.');
    if(isCar&&!car.transmission)return setMessage('گێڕ دیاری بکە.');
    if(isCar&&!car.color)return setMessage('ڕەنگی ئۆتۆمبێل دیاری بکە.');
+   if(isCar&&!car.condition)return setMessage('حاڵەتی ئۆتۆمبێل دیاری بکە.');
    if(isCar){
     const year=Number(car.year),mileage=Number(car.mileage);
     if(!Number.isInteger(year)||year<1900||year>new Date().getFullYear()+1)return setMessage('ساڵی ئۆتۆمبێل دروست نییە.');
