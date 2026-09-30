@@ -181,7 +181,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
     <div className="postInventoryMode">
       <button type="button" className={stockMode==='finite'?'active':''} onClick={()=>setStockMode('finite')}>ژمارەی دیاریکراو</button>
       <button type="button" className={stockMode==='unlimited'?'active':''} onClick={()=>setStockMode('unlimited')}>بێ‌سنوور ∞</button>
-    </div>
+    </div>}
     {stockMode==='finite'&&<label className="postField"><span>چەند دانە بەردەستە؟</span><input inputMode="numeric" min="0" value={stock} onChange={e=>setStock(e.target.value.replace(/\D/g,''))} placeholder="٠" /></label>}
    </div>}
 
