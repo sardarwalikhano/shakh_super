@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {CheckCircle2,Eye,ImagePlus,PackagePlus,Send,Sparkles,Store,Tag,Upload,X} from 'lucide-react';
+import {Eye,ImagePlus,PackagePlus,Send,Sparkles,Store,Tag,Upload,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
 type Role='restaurant_vendor'|'supermarket_vendor'|'fashion_vendor'|'vendor'|'electronics_vendor'|'jewelry_vendor';
