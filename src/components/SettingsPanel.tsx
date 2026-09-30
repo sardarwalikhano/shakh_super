@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bell, Check, LogOut, MapPin, Moon, Monitor, Phone, Save, ShieldCheck, Sun } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { applyTheme, type ThemePreference } from '../lib/theme';
 
 type Preferences = { theme:'system'|'light'|'dark'; order_notifications:boolean; delivery_notifications:boolean; wallet_notifications:boolean; marketing_notifications:boolean };
 type PlatformSettings = { default_delivery_fee_iqd:number; platform_fee_iqd:number; commission_percent:number; support_phone:string; support_whatsapp:string; default_city:string; privacy_policy_version:string };
@@ -13,11 +14,6 @@ export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { 
   const [loading,setLoading]=useState(true);
   const [saving,setSaving]=useState(false);
   const [message,setMessage]=useState('');
-
-  const applyTheme=(theme:Preferences['theme'])=>{
-    const actual=theme==='system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light') : theme;
-    document.documentElement.dataset.theme=actual;
-  };
 
   const load=async()=>{
     setLoading(true);setMessage('');
