@@ -1061,3 +1061,259 @@ html[data-theme='dark'] .paymentMethodOption small{color:#8fa2b5}
  .locationExactField input,.deliveryNoteField input{height:46px}
  .locationFindButton{min-height:48px!important}
 }
+
+
+/* SHAKH — operational order packet, WhatsApp handoff, vendor destination */
+.platformOrderCard{display:grid;gap:13px!important}
+.platformOrderGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.platformOrderSection{padding:12px;border:1px solid rgba(18,59,104,.08);border-radius:15px;background:#fbfcfe;display:grid;gap:5px}
+.platformOrderSection strong{font-size:12px;color:#173552;line-height:1.7}
+.platformOrderSection span{font-size:9px;color:#718397;line-height:1.7}
+.platformOrderSectionHead{display:flex;align-items:center;gap:6px;color:#5c7288;font-size:10px}
+.platformOrderSectionHead svg{color:var(--orange)}
+.platformOrderItems{padding:12px;border:1px solid rgba(18,59,104,.08);border-radius:15px;background:#fff;display:grid;gap:7px}
+.platformOrderItem{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed #e7edf2;font-size:10px}
+.platformOrderItem:last-child{border-bottom:0}
+.platformOrderFinance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.platformOrderFinance>div{display:flex;justify-content:space-between;gap:9px;padding:9px 10px;border-radius:11px;background:#f7fafc;color:#687b8f;font-size:9px}
+.platformOrderFinance>div b{color:#203951}
+.platformOrderFinance>div.grand{grid-column:1/-1;background:#fff4ea;color:#a94d09}
+.platformOrderFinance>div.grand b{color:#c55a00}
+.platformOrderMeta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#7e8e9f;font-size:9px}
+.platformOrderMeta span{display:inline-flex;align-items:center;gap:5px}
+.captainBroadcastBox{padding:13px;border:1px solid rgba(37,116,67,.16);border-radius:16px;background:linear-gradient(145deg,#f8fdf9,#fff)}
+.captainBroadcastBox>div:first-child{display:flex;flex-direction:column;gap:3px;margin-bottom:9px}
+.captainBroadcastBox b{font-size:11px;color:#1d4c34}
+.captainBroadcastBox small{font-size:9px;color:#779282}
+.captainBroadcastList{display:flex;flex-wrap:wrap;gap:7px}
+.whatsappSendButton{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #c7e7d1;border-radius:11px;background:#effaf2;color:#247443;padding:8px 10px;font:inherit;font-size:9px;font-weight:900;cursor:pointer}
+.whatsappSendButton:hover{background:#e4f7e9;border-color:#aad9b9}
+.assignedCaptainCard{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:1px solid #dbe7f0;border-radius:14px;background:#f8fbfe}
+.assignedCaptainCard>div{display:flex;align-items:center;gap:7px}
+.captainCustomerContactCard{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:1px solid #dfe8ef;border-radius:14px;background:#fbfcfe}
+.captainCustomerContactCard>div:first-child{display:flex;align-items:center;gap:7px;color:#29445d;font-size:10px}
+.captainContactActions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.captainContactActions a{display:inline-flex;align-items:center;gap:5px;color:#365a76;text-decoration:none;font-size:9px;font-weight:900}
+.captainLocationActions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.captainLocationActions>a{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.captainLocationActions>span{font-size:9px;color:#788b9f;direction:ltr}
+.captainPacketGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.captainPacketSection{padding:12px;border:1px solid rgba(18,59,104,.08);border-radius:15px;background:#fbfcfe;display:grid;gap:5px}
+.captainPacketSection strong{font-size:12px;color:#173552;line-height:1.7}
+.captainPacketSection span{font-size:9px;color:#718397;line-height:1.7}
+.captainStats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.captainStatNumber{font-size:28px!important;color:var(--orange)}
+.captainStatMoney{font-size:20px!important;color:#173f68}
+.vendorDeliveryAddressCard{margin-top:12px;display:grid;gap:6px;padding:12px;border:1px solid #dce8f0;border-radius:15px;background:linear-gradient(145deg,#fbfdff,#f5f9fc)}
+.vendorDeliveryAddressCard>div{display:flex;align-items:center;gap:6px;color:#315771;font-size:10px}
+.vendorDeliveryAddressCard>span{font-size:11px;color:#203a54;font-weight:850;line-height:1.8}
+.vendorDeliveryAddressCard>small{color:#8a6a53;font-size:9px;line-height:1.7}
+.orderNoteCard{display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap;padding:10px 12px;border-radius:13px;background:#fff8f1;border:1px solid #f1d5bb;color:#80644f;font-size:10px;line-height:1.7}
+.orderNoteCard b{color:#a65311}
+
+/* SHAKH — premium header, category navigation, backgrounds, footer */
+body{
+  background:
+    radial-gradient(circle at 10% -8%,rgba(255,178,105,.22),transparent 28%),
+    radial-gradient(circle at 92% 2%,rgba(82,145,211,.16),transparent 27%),
+    linear-gradient(180deg,#f8fafc 0%,#f4f7fb 54%,#eef3f8 100%)!important;
+}
+header{
+  position:sticky!important;
+  top:0!important;
+  z-index:80!important;
+  background:rgba(6,21,39,.93)!important;
+  border-bottom:1px solid rgba(255,255,255,.09)!important;
+  box-shadow:0 16px 40px rgba(5,18,35,.18)!important;
+  backdrop-filter:blur(18px) saturate(130%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(130%);
+}
+.nav{
+  width:min(1360px,100%)!important;
+  margin:auto!important;
+  min-height:76px!important;
+  padding:10px 18px!important;
+  gap:10px!important;
+}
+.logo{
+  border-radius:17px!important;
+  padding:4px!important;
+  background:rgba(255,255,255,.07)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+}
+.logoImage{border-radius:13px!important}
+.search{
+  background:rgba(255,255,255,.075)!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  color:#dce8f3!important;
+  box-shadow:none!important;
+}
+.search input{color:#fff!important}
+.search input::placeholder{color:#9fb1c2!important}
+.locationIndicator{
+  border:1px solid rgba(255,255,255,.12)!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#eaf2f8!important;
+}
+.locationIndicator.ready{
+  background:rgba(47,143,91,.19)!important;
+  border-color:rgba(118,203,146,.28)!important;
+}
+.nav>.plain{
+  background:rgba(255,255,255,.07)!important;
+  color:#edf5fb!important;
+  border-color:rgba(255,255,255,.11)!important;
+}
+.loginBtn{border-radius:13px!important}
+.brandRibbon{
+  margin:13px auto 4px!important;
+  width:min(1360px,calc(100% - 36px))!important;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,157,76,.18),transparent 26%),
+    linear-gradient(135deg,#0c2643,#174b78)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:0 18px 44px rgba(8,26,51,.12)!important;
+}
+.brandRibbonLogo{
+  background:#fff!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.15)!important;
+}
+.brandRibbonCopy b{color:#fff!important}
+.brandRibbonCopy span{color:#c4d5e4!important}
+.hero{
+  margin:14px auto 0!important;
+  width:min(1360px,calc(100% - 36px))!important;
+  min-height:420px!important;
+  border-radius:34px!important;
+  background:
+    radial-gradient(circle at 78% 18%,rgba(255,154,73,.28),transparent 20%),
+    radial-gradient(circle at 93% 72%,rgba(91,153,219,.15),transparent 23%),
+    linear-gradient(135deg,#07192e 0%,#0e3457 52%,#143f68 100%)!important;
+  box-shadow:0 30px 75px rgba(6,24,44,.20)!important;
+  overflow:hidden!important;
+}
+.hero::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(112deg,transparent 0%,rgba(255,255,255,.03) 40%,transparent 74%);
+}
+.hero>div:first-child,.heroOrb{position:relative;z-index:2}
+.hero .eyebrow{
+  color:#ffb26f!important;
+  background:rgba(255,255,255,.06)!important;
+  border-color:rgba(255,255,255,.10)!important;
+}
+.hero h1,.hero p{color:#fff!important}
+.hero p{color:#d4e2ef!important}
+.hero .primary{box-shadow:0 16px 35px rgba(255,106,22,.25)!important}
+.section{scroll-margin-top:95px}
+.postFeed{margin-top:48px!important}
+.postFeedFilters{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin-top:16px!important;
+  padding:8px!important;
+  border:1px solid rgba(18,59,104,.08)!important;
+  border-radius:17px!important;
+  background:rgba(255,255,255,.87)!important;
+  box-shadow:0 12px 28px rgba(8,26,51,.055)!important;
+  overflow-x:auto!important;
+  scrollbar-width:none;
+}
+.postFeedFilters::-webkit-scrollbar{display:none}
+.postFeedFilters>button{
+  flex:0 0 auto!important;
+  border:1px solid transparent!important;
+  background:transparent!important;
+  color:#60758a!important;
+  border-radius:11px!important;
+  padding:10px 13px!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+.postFeedFilters>button.active{
+  background:#123b68!important;
+  color:#fff!important;
+  box-shadow:0 8px 18px rgba(18,59,104,.15)!important;
+}
+.postFeedGrid{margin-top:14px!important}
+.postFeedCard{
+  border:1px solid rgba(18,59,104,.08)!important;
+  background:rgba(255,255,255,.93)!important;
+  box-shadow:0 14px 34px rgba(8,26,51,.07)!important;
+}
+.postFeedCard:hover{
+  transform:translateY(-5px)!important;
+  box-shadow:0 24px 54px rgba(8,26,51,.11)!important;
+}
+.features{
+  max-width:1360px!important;
+  margin:56px auto!important;
+  padding:0 18px!important;
+}
+.features button{
+  background:rgba(255,255,255,.91)!important;
+  border:1px solid rgba(18,59,104,.08)!important;
+  box-shadow:0 14px 34px rgba(8,26,51,.06)!important;
+}
+.siteFooter{
+  margin-top:72px!important;
+  padding:58px max(18px,calc((100% - 1360px)/2)) 24px!important;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(255,136,50,.12),transparent 24%),
+    radial-gradient(circle at 88% 15%,rgba(81,146,214,.11),transparent 22%),
+    linear-gradient(145deg,#06172b,#0a2946 55%,#0f3558)!important;
+  border-top:1px solid rgba(255,255,255,.08)!important;
+}
+.siteFooterGrid{
+  grid-template-columns:1.45fr repeat(3,1fr)!important;
+  gap:46px!important;
+}
+.siteFooterGrid>div{
+  gap:11px!important;
+  align-content:start!important;
+}
+.siteFooterGrid>div>b{font-size:11px!important;color:#fff!important}
+.siteFooterGrid p,.siteFooterGrid button,.siteFooterGrid a{font-size:9px!important;line-height:1.9!important;color:#b8cadb!important}
+.footerBrand>img{
+  width:50px!important;height:50px!important;border-radius:15px!important;
+  background:#fff!important;padding:4px!important;
+}
+.footerBrand b{font-size:22px!important;color:#fff!important}
+.footerBrand small{color:#90abc2!important}
+.footerSupportContacts a{
+  background:rgba(255,255,255,.06)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+}
+.siteFooterBottom{
+  margin-top:40px!important;
+  padding-top:18px!important;
+  border-top:1px solid rgba(255,255,255,.08)!important;
+  color:#7f9bb4!important;
+}
+@media(max-width:900px){
+  .platformOrderGrid{grid-template-columns:1fr 1fr}
+  .platformOrderSection:last-child{grid-column:1/-1}
+  .siteFooterGrid{grid-template-columns:1fr 1fr!important;gap:28px!important}
+  .siteFooterGrid>div:first-child{grid-column:1/-1!important}
+}
+@media(max-width:720px){
+  .nav{min-height:68px!important;padding:8px 11px!important}
+  .brandRibbon{width:calc(100% - 24px)!important}
+  .hero{width:calc(100% - 20px)!important;min-height:370px!important;border-radius:27px!important}
+  .siteFooter{padding:44px 14px 92px!important}
+  .platformOrderGrid,.platformOrderFinance{grid-template-columns:1fr}
+  .platformOrderFinance>div.grand{grid-column:auto}
+  .captainPacketGrid{grid-template-columns:1fr}
+  .captainCustomerContactCard,.assignedCaptainCard{flex-direction:column;align-items:stretch}
+  .captainContactActions{justify-content:stretch}
+  .captainContactActions a,.captainContactActions .whatsappSendButton{flex:1}
+}
+@media(max-width:520px){
+  .siteFooterGrid{grid-template-columns:1fr!important}
+  .siteFooterGrid>div:first-child{grid-column:auto!important}
+  .captainStats{grid-template-columns:1fr!important}
+}
