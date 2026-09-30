@@ -32,7 +32,12 @@ export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { 
   };
   useEffect(()=>{void load()},[userId,isAdmin]);
   useEffect(()=>{
-    const syncTheme=()=>{
+    const syncTheme=(event:Event)=>{
+      const detail=(event as CustomEvent<{preference?:Preferences['theme']}>).detail;
+      if(detail?.preference){
+        setPrefs(current=>({...current,theme:detail.preference!}));
+        return;
+      }
       const actual=getCurrentTheme();
       setPrefs(current=>({...current,theme:actual}));
     };
