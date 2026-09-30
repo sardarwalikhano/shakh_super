@@ -23,7 +23,7 @@ const labels: Record<string, string> = {
   delivered: 'گەیەندراوە',
 };
 
-const optionText = (options?: Record<string, unknown>) =>
+const optionText = (options?: Record<string, unknown> | null) =>
   options
     ? Object.entries(options)
         .filter(([, value]) => value != null && String(value).trim() !== '')
