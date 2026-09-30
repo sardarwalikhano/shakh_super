@@ -165,6 +165,8 @@ function App(){
  const addToCart=async(p:Product,options:CartOptions={}):Promise<boolean>=>{
   if(!user){setAuthMode('login');setAuth(true);setMessage('بۆ زیادکردن بۆ سەلە، تکایە بچۆ ژوورەوە یان خۆت تۆمار بکە.');return false}
   const variantOptions=getVariantOptions(p.variants);
+  const selectedInventory=matchingVariantInventory(p.variants,options);
+  const selectedInventoryUnavailable=Boolean(selectedInventory&&!selectedInventory.unlimited_stock&&Number(selectedInventory.stock||0)<=0);
   if(variantOptions.shoeSizes.length){
    if(!options.shoe_size)return(setSelectedOptions({}),setSelectedProduct(p),setMessage('تکایە ژمارەی پێلاوی بەردەست هەڵبژێرە.'),false);
    if(typeof options.shoe_size!=='string'||!variantOptions.shoeSizes.includes(options.shoe_size))return setMessage('ئەم ژمارەی پێلاوە بەردەست نییە.'),false;
