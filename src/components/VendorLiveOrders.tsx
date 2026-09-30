@@ -109,6 +109,7 @@ export default function VendorLiveOrders({ storeId }: Props) {
                 </div>
               )}
 
+              {order.delivery_address?.address && <div className="vendorDeliveryAddressCard"><div><MapPin size={15}/><b>شوێنی وردی گەیاندن</b></div><span>{order.delivery_address.address}{order.delivery_address.city ? ' — ' + order.delivery_address.city : ''}</span>{order.delivery_address.delivery_note && <small>تێبینی: {order.delivery_address.delivery_note}</small>}{order.delivery_address.latitude != null && order.delivery_address.longitude != null && <a className="plain full" href={'https://www.google.com/maps/dir/?api=1&destination='+order.delivery_address.latitude+','+order.delivery_address.longitude} target="_blank" rel="noreferrer">کردنەوەی شوێنی گەیاندن</a>}</div>}
               {order.store?.latitude != null && order.store?.longitude != null && (
                 <div className="vendorOrderMapCard">
                   <div className="vendorOrderMapHeader">
