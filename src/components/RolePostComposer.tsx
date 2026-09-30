@@ -202,7 +202,6 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
        <label className="postField postFieldWide">
          <span>ڕەنگەکانی بەردەست</span>
          <div className="postChoiceGrid postColorChoiceGrid">{OPTIONS.colors.map(value=><button type="button" key={value} className={fashion.colors.includes(value)?'postChoiceChip active':'postChoiceChip'} onClick={()=>toggleFashionChoice('colors',value)}>{value}</button>)}</div>
-         <!--color hint removed-->
        </label>
        {selectField('حاڵەت',fashion.condition,OPTIONS.fashionCondition,v=>setF('condition',v))}
        <label className="postField"><span>براند</span><input value={fashion.brand} onChange={e=>setF('brand',e.target.value)} placeholder="نموونە: Nike"/></label>
