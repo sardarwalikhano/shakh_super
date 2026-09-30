@@ -14,6 +14,8 @@ const COLORS=['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆ
 const FUEL=['بنزین','دیزڵ','هايبرید','کارەبا'];
 const TRANSMISSION=['ئۆتۆماتیک','مانوێڵ'];
 const BODY=['سێدان','SUV','کروس ئۆڤەر','هەچبەک','پیکاپ','ڤان','کوپێ'];
+const CAR_CONDITIONS=['نوێ','کارکراو'];
+const CAR_ORIGINS=['ئیمارات','ئەڵمانیا','ئەمریکا','کۆریا','ژاپۆن','چین','تورکیا','عێراق'];
 
 const labelFor=(type?:string|null,label?:string|null)=>label||TYPES.find(item=>item.value===type)?.label||'گشتی';
 const detailsOf=(post:Post)=>post.listing_details||{};
@@ -53,7 +55,7 @@ export default function PostsFeed({onAddToCart}:Props){
  const [addingProductId,setAddingProductId]=useState<string|null>(null);
  const [showAdvanced,setShowAdvanced]=useState(false);
  const [fashionAudience,setFashionAudience]=useState(''),[fashionType,setFashionType]=useState(''),[fashionSize,setFashionSize]=useState(''),[fashionColor,setFashionColor]=useState(''),[fashionShoe,setFashionShoe]=useState('');
- const [carMake,setCarMake]=useState(''),[carFuel,setCarFuel]=useState(''),[carTransmission,setCarTransmission]=useState(''),[carBody,setCarBody]=useState(''),[carMinYear,setCarMinYear]=useState(''),[carMaxYear,setCarMaxYear]=useState(''),[carMaxMileage,setCarMaxMileage]=useState(''),[carMinPrice,setCarMinPrice]=useState(''),[carMaxPrice,setCarMaxPrice]=useState('');
+ const [carMake,setCarMake]=useState(''),[carFuel,setCarFuel]=useState(''),[carTransmission,setCarTransmission]=useState(''),[carBody,setCarBody]=useState(''),[carCondition,setCarCondition]=useState(''),[carOrigin,setCarOrigin]=useState(''),[carMinYear,setCarMinYear]=useState(''),[carMaxYear,setCarMaxYear]=useState(''),[carMaxMileage,setCarMaxMileage]=useState(''),[carMinPrice,setCarMinPrice]=useState(''),[carMaxPrice,setCarMaxPrice]=useState('');
  const [activeImage,setActiveImage]=useState(0);
  const pageSize=12,closeButtonRef=useRef<HTMLButtonElement|null>(null);
 
@@ -62,7 +64,7 @@ export default function PostsFeed({onAddToCart}:Props){
  useEffect(()=>{setPage(1);if(filter!=='fashion'&&filter!=='car')setShowAdvanced(false)},[filter]);
  useEffect(()=>{if(!selectedPost)return;const u=new URL(window.location.href);u.searchParams.set('post',selectedPost.id);u.hash='shakh-posts';window.history.replaceState(null,'',u.pathname+u.search+u.hash)},[selectedPost]);
 
- const clearAdvanced=()=>{setFashionAudience('');setFashionType('');setFashionSize('');setFashionColor('');setFashionShoe('');setCarMake('');setCarFuel('');setCarTransmission('');setCarBody('');setCarMinYear('');setCarMaxYear('');setCarMaxMileage('');setCarMinPrice('');setCarMaxPrice('');};
+ const clearAdvanced=()=>{setFashionAudience('');setFashionType('');setFashionSize('');setFashionColor('');setFashionShoe('');setCarMake('');setCarFuel('');setCarTransmission('');setCarBody('');setCarCondition('');setCarOrigin('');setCarMinYear('');setCarMaxYear('');setCarMaxMileage('');setCarMinPrice('');setCarMaxPrice('');};
  const filtered=useMemo(()=>posts.filter(post=>{
    if(filter!=='all'&&post.post_type!==filter)return false;
    const d=detailsOf(post);
@@ -79,6 +81,8 @@ export default function PostsFeed({onAddToCart}:Props){
      if(carFuel&&d.fuel!==carFuel)return false;
      if(carTransmission&&d.transmission!==carTransmission)return false;
      if(carBody&&d.body_type!==carBody)return false;
+     if(carCondition&&d.condition!==carCondition)return false;
+     if(carOrigin&&d.origin!==carOrigin)return false;
      if(carMinYear&&Number(d.year||0)<Number(carMinYear))return false;
      if(carMaxYear&&Number(d.year||0)>Number(carMaxYear))return false;
      if(carMaxMileage&&Number(d.mileage||0)>Number(carMaxMileage))return false;
@@ -86,7 +90,7 @@ export default function PostsFeed({onAddToCart}:Props){
      if(carMaxPrice&&Number(post.price_iqd||0)>Number(carMaxPrice))return false;
    }
    return true;
- }),[posts,filter,fashionAudience,fashionType,fashionSize,fashionColor,fashionShoe,carMake,carFuel,carTransmission,carBody,carMinYear,carMaxYear,carMaxMileage,carMinPrice,carMaxPrice]);
+ }),[posts,filter,fashionAudience,fashionType,fashionSize,fashionColor,fashionShoe,carMake,carFuel,carTransmission,carBody,carCondition,carOrigin,carMinYear,carMaxYear,carMaxMileage,carMinPrice,carMaxPrice]);
  const shown=filtered.slice(0,page*pageSize);
  const productIdOf=(post:Post)=>{const value=detailsOf(post).product_id;return typeof value==='string'&&value?value:null};
  const addProduct=(productId:string)=>{if(!onAddToCart)return;setAddingProductId(productId);void onAddToCart(productId).then(ok=>setMessage(ok?'بەرهەمەکە بۆ سەلە زیاد کرا.':'')).finally(()=>setAddingProductId(null));};
@@ -137,6 +141,8 @@ export default function PostsFeed({onAddToCart}:Props){
        <label className="postField"><span>سووتەمەنی</span><select value={carFuel} onChange={e=>setCarFuel(e.target.value)}><option value="">هەموو</option>{FUEL.map(v=><option key={v}>{v}</option>)}</select></label>
        <label className="postField"><span>گێڕ</span><select value={carTransmission} onChange={e=>setCarTransmission(e.target.value)}><option value="">هەموو</option>{TRANSMISSION.map(v=><option key={v}>{v}</option>)}</select></label>
        <label className="postField"><span>بۆدی</span><select value={carBody} onChange={e=>setCarBody(e.target.value)}><option value="">هەموو</option>{BODY.map(v=><option key={v}>{v}</option>)}</select></label>
+       <label className="postField"><span>حاڵەت</span><select value={carCondition} onChange={e=>setCarCondition(e.target.value)}><option value="">هەموو</option>{CAR_CONDITIONS.map(v=><option key={v}>{v}</option>)}</select></label>
+       <label className="postField"><span>سەرچاوە</span><select value={carOrigin} onChange={e=>setCarOrigin(e.target.value)}><option value="">هەموو</option>{CAR_ORIGINS.map(v=><option key={v}>{v}</option>)}</select></label>
        <label className="postField"><span>کەمترین ساڵ</span><input inputMode="numeric" value={carMinYear} onChange={e=>setCarMinYear(e.target.value.replace(/\D/g,''))} placeholder="2020"/></label>
        <label className="postField"><span>زۆرترین ساڵ</span><input inputMode="numeric" value={carMaxYear} onChange={e=>setCarMaxYear(e.target.value.replace(/\D/g,''))} placeholder="2026"/></label>
        <label className="postField"><span>زۆرترین کیلۆمەتر</span><input inputMode="numeric" value={carMaxMileage} onChange={e=>setCarMaxMileage(e.target.value.replace(/\D/g,''))} placeholder="100000"/></label>
