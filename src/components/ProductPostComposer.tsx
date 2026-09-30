@@ -7,7 +7,7 @@ type Props={userId:string;role:string;onSaved?:()=>void};
 type Config={storeCategory:string;label:string;heading:string;typeLabel:string;brand:boolean;size:boolean;cats:{slug:string;label:string;icon:string}[]};
 type FormState={storeName:string;type:string;brand:string;name:string;size:string;price:string;salePrice:string;stock:string;description:string;available:boolean;city:string};
 type VariantInventoryValue={stock:string;unlimited:boolean};
-const VariantInventoryRow={size?:string;color?:string;shoe_size?:string;stock:number;unlimited_stock:boolean;};
+type VariantInventoryRow={size?:string;color?:string;shoe_size?:string;stock:number;unlimited_stock:boolean;};
 const comboKey=(row:{size?:string;color?:string;shoe_size?:string})=>[row.size||'',row.shoe_size||'',row.color||''].join('¦');
 const buildFashionCombos=(sizes:string[],shoeSizes:string[],colors:string[])=>{
  const primary=shoeSizes.length?shoeSizes:sizes;
