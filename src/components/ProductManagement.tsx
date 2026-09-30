@@ -27,12 +27,16 @@ const variantSummary=(variants:unknown)=>{
  return{sizes:[...sizes],colors:[...colors],shoeSizes:[...shoeSizes]};
 };
 
+const CLOTHING_SIZES=['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'];
+const COLORS=['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'];
+const SHOE_SIZES=['35','36','37','38','39','40','41','42','43','44','45','46'];
+
 const vendorCategories:Record<string,string[]>={
  restaurant_vendor:['restaurant'],supermarket_vendor:['supermarket'],fashion_vendor:['fashion'],vendor:['daily'],electronics_vendor:['electronics'],jewelry_vendor:['jewelry']
 };
 
 export default function ProductManagement({userId,role,onChanged}:Props){
- const [items,setItems]=useState<Product[]>([]),[loading,setLoading]=useState(true),[editing,setEditing]=useState<Product|null>(null),[message,setMessage]=useState('');
+ const [items,setItems]=useState<Product[]>([]),[loading,setLoading]=useState(true),[editing,setEditing]=useState<Product|null>(null),[editingVariants,setEditingVariants]=useState({sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[]}),[message,setMessage]=useState('');
 
  const load=async()=>{
   setLoading(true);
@@ -50,6 +54,29 @@ export default function ProductManagement({userId,role,onChanged}:Props){
  const lowStockCount=useMemo(()=>items.filter(p=>!p.unlimited_stock&&Number(p.stock||0)>0&&Number(p.stock||0)<=5).length,[items]);
  const outOfStockCount=useMemo(()=>items.filter(p=>!p.unlimited_stock&&Number(p.stock||0)<=0).length,[items]);
 
+ const setEditVariant=(key:'sizes'|'colors'|'shoeSizes',value:string)=>{
+  setEditingVariants(v=>({...v,[key]:v[key].includes(value)?v[key].filter(item=>item!==value):[...v[key],value]}));
+ };
+ const startEdit=(p:Product)=>{
+  setEditing(p);
+  setEditingVariants(variantSummary(p.variants));
+ };
+ const buildVariants=(p:Product)=>{
+  const base=Array.isArray(p.variants)?p.variants:[];
+  const next=base.length?base.map((item,index)=>index===0&&item&&typeof item==='object'?{
+    ...(item as Record<string,unknown>),
+    available_sizes:editingVariants.sizes,
+    available_colors:editingVariants.colors,
+    shoe_sizes:editingVariants.shoeSizes,
+  }:item):[{
+    section:role,
+    category:'fashion',
+    available_sizes:editingVariants.sizes,
+    available_colors:editingVariants.colors,
+    shoe_sizes:editingVariants.shoeSizes,
+  }];
+  return next;
+ };
  const update=async(p:Product)=>{
   const stock=Math.max(0,Math.floor(Number(p.stock)||0));
   const price=Number(p.price_iqd);
@@ -65,12 +92,21 @@ export default function ProductManagement({userId,role,onChanged}:Props){
    size:p.size?.trim()||null,
    stock:p.unlimited_stock?0:stock,
    unlimited_stock:Boolean(p.unlimited_stock),
-   is_available:p.unlimited_stock||p.is_available
+   is_available:p.unlimited_stock||p.is_available,
+   variants:buildVariants(p)
   }).eq('id',p.id);
   if(error)return setMessage(error.message);
-  const saved={...p,stock:p.unlimited_stock?0:stock};
+  const saved={...p,stock:p.unlimited_stock?0:stock,variants:buildVariants(p),size:editingVariants.sizes.join(', ')||p.size};
   setItems(x=>x.map(i=>i.id===p.id?saved:i));
+  if(role==='fashion_vendor'){
+   const variantPayload={available_sizes:editingVariants.sizes,available_colors:editingVariants.colors,shoe_sizes:editingVariants.shoeSizes};
+   const {data:linkedPosts}=await supabase.from('posts').select('id,listing_details').eq('author_id',userId).contains('listing_details',{product_id:p.id});
+   for(const post of (linkedPosts||[]) as {id:string;listing_details?:Record<string,unknown>|null}[]){
+    await supabase.from('posts').update({listing_details:{...(post.listing_details||{}),...variantPayload,size:editingVariants.sizes.join(', ')||null,color:editingVariants.colors.join(', ')||null,shoe_sizes:editingVariants.shoeSizes}}).eq('id',post.id).eq('author_id',userId);
+   }
+  }
   setEditing(null);
+  setEditingVariants({sizes:[],colors:[],shoeSizes:[]});
   setMessage('بەرهەمەکە نوێکرایەوە.');
   onChanged?.();
  };
@@ -103,13 +139,19 @@ export default function ProductManagement({userId,role,onChanged}:Props){
     const stock=Number(p.stock||0);
     const variants=variantSummary(p.variants);
     return editing?.id===p.id?<div className="orderCard" key={p.id}>
-     <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><b>دەستکاریکردنی بەرهەم</b><button className="plain" onClick={()=>setEditing(null)}><X size={16}/></button></div>
+     <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><b>دەستکاریکردنی بەرهەم</b><button className="plain" onClick={()=>{setEditing(null);setEditingVariants({sizes:[],colors:[],shoeSizes:[]})}}><X size={16}/></button></div>
      <input value={editing.name_ku} onChange={e=>setEditing({...editing,name_ku:e.target.value})} placeholder="ناو"/>
      <input value={editing.product_type||''} onChange={e=>setEditing({...editing,product_type:e.target.value})} placeholder="جۆر"/>
      <input value={editing.brand||''} onChange={e=>setEditing({...editing,brand:e.target.value})} placeholder="مارکە"/>
      <input value={editing.size||''} onChange={e=>setEditing({...editing,size:e.target.value})} placeholder="قەبارەی legacy"/>
      <input value={String(editing.price_iqd)} onChange={e=>setEditing({...editing,price_iqd:Number(e.target.value)||0})} inputMode="numeric" placeholder="نرخ"/><input value={editing.sale_price_iqd==null?'':String(editing.sale_price_iqd)} onChange={e=>setEditing({...editing,sale_price_iqd:e.target.value===''?null:Number(e.target.value)||0})} inputMode="numeric" placeholder="نرخی داشکان (ئارەزوومەندانە)"/>
      <label><input type="checkbox" checked={Boolean(editing.unlimited_stock)} onChange={e=>setEditing({...editing,unlimited_stock:e.target.checked})}/> بێ‌سنوورە ∞</label>
+     {role==='fashion_vendor'&&<div className="productVariantEditor">
+       <b>قەبارە و ڕەنگی بەردەست</b>
+       <span>قەبارە</span><div className="postChoiceGrid">{CLOTHING_SIZES.map(value=><button type="button" key={value} className={editingVariants.sizes.includes(value)?'postChoiceChip active':'postChoiceChip'} onClick={()=>setEditVariant('sizes',value)}>{value}</button>)}</div>
+       <span>ڕەنگ</span><div className="postChoiceGrid postColorChoiceGrid">{COLORS.map(value=><button type="button" key={value} className={editingVariants.colors.includes(value)?'postChoiceChip active':'postChoiceChip'} onClick={()=>setEditVariant('colors',value)}>{value}</button>)}</div>
+       <span>ژمارەی پێلاو</span><div className="postChoiceGrid">{SHOE_SIZES.map(value=><button type="button" key={value} className={editingVariants.shoeSizes.includes(value)?'postChoiceChip active':'postChoiceChip'} onClick={()=>setEditVariant('shoeSizes',value)}>{value}</button>)}</div>
+     </div>}
      {!editing.unlimited_stock&&<label>ژمارەی ستۆک<input type="number" min="0" step="1" value={String(editing.stock??0)} onChange={e=>setEditing({...editing,stock:Math.max(0,Math.floor(Number(e.target.value)||0))})} inputMode="numeric" placeholder="بڕی بەردەست"/></label>}
      <label><input type="checkbox" checked={editing.is_available||Boolean(editing.unlimited_stock)} onChange={e=>setEditing({...editing,is_available:e.target.checked})}/> لە بازاڕدا بەردەستە</label>
      <button className="primary full" onClick={()=>void update(editing)}><Save size={16}/> پاشەکەوتکردن</button>
@@ -119,7 +161,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
      <small>{p.product_type||'—'}{p.brand?' · '+p.brand:''}</small>{(variants.sizes.length||variants.colors.length||variants.shoeSizes.length)&&<div className="productVariantSummary">{variants.sizes.length>0&&<span>قەبارە: {variants.sizes.join('، ')}</span>}{variants.colors.length>0&&<span>ڕەنگ: {variants.colors.join('، ')}</span>}{variants.shoeSizes.length>0&&<span>پێلاو: {variants.shoeSizes.join('، ')}</span>}</div>}
      <div className="orderTotal">{p.sale_price_iqd!=null&&Number(p.sale_price_iqd)>0&&Number(p.sale_price_iqd)<Number(p.price_iqd)?<><b>{Number(p.sale_price_iqd).toLocaleString('en-US')} د.ع</b> <small style={{textDecoration:'line-through',opacity:.65}}>{Number(p.price_iqd).toLocaleString('en-US')} د.ع</small></>:<>{Number(p.price_iqd).toLocaleString('en-US')} د.ع</>}</div>
      <div style={{marginTop:7}}><small>{p.unlimited_stock?'بەردەستی: بێ‌سنوور ∞':<>ستۆک: <b>{stock.toLocaleString('ku-IQ')}</b></>}</small></div>
-     <div style={{display:'flex',gap:8,marginTop:8}}><button className="primary" onClick={()=>setEditing(p)}><Edit3 size={16}/> دەستکاری</button><button className="reset" onClick={()=>void remove(p)}><Trash2 size={16}/> سڕینەوە</button></div>
+     <div style={{display:'flex',gap:8,marginTop:8}}><button className="primary" onClick={()=>startEdit(p)}><Edit3 size={16}/> دەستکاری</button><button className="reset" onClick={()=>void remove(p)}><Trash2 size={16}/> سڕینەوە</button></div>
     </article>
   })}</div>}
 
