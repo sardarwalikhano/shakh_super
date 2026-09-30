@@ -33,6 +33,13 @@ const OPTIONS={
  origin:['ئیمارات','ئەڵمانیا','ئەمریکا','کۆریا','ژاپۆن','چین','تورکیا','عێراق']
 };
 const CLOTHING_SIZES=['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'];
+const SHOE_SIZES=['35','36','37','38','39','40','41','42','43','44','45','46'];
+type VariantInventoryValue={stock:string;unlimited:boolean};
+const comboKey=(row:{size?:string;color?:string;shoe_size?:string})=>[row.size||'',row.shoe_size||'',row.color||''].join('¦');
+const buildFashionCombos=(sizes:string[],shoeSizes:string[],colors:string[])=>{
+ const primary=shoeSizes.length?shoeSizes:sizes;
+ return primary.flatMap(value=>colors.map(color=>shoeSizes.length?{shoe_size:value,color}:{size:value,color}));
+};
 
 export default function RolePostComposer({userId,role,onSaved,initialType,hideTypeSelector=false,onBack}:Props){
  const cfg=CONFIG[role]||CONFIG.customer;
@@ -51,6 +58,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  const [fashion,setFashion]=useState({audience:'',clothingType:'',sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[],condition:'',brand:''});
  const [stockMode,setStockMode]=useState<'finite'|'unlimited'>('finite');
  const [stock,setStock]=useState('0');
+ const [variantInventory,setVariantInventory]=useState<Record<string,VariantInventoryValue>>({});
  const [car,setCar]=useState({make:'',model:'',year:'',trim:'',mileage:'',engine:'',body:'',fuel:'',transmission:'',drivetrain:'',color:'',condition:'',origin:'',plate:'',negotiable:true,exchange:false});
  const isFashion=postType==='fashion';
  const isCar=postType==='car';
@@ -58,11 +66,34 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  const isShoe=isFashion&&fashion.clothingType==='پێلاو';
  const isPriceVisible=useMemo(()=>postType==='marketplace'||isCar||postType==='umrah',[postType]);
  const availableOptionMode=stockMode==='unlimited'?'بێ سنوور':stock||'0';
+ const fashionCombos=buildFashionCombos(fashion.sizes,fashion.shoeSizes,fashion.colors);
+ useEffect(()=>{
+  if(!isFashion)return;
+  setVariantInventory(current=>{
+   const next:Record<string,VariantInventoryValue>={};
+   for(const combo of fashionCombos){
+    const key=comboKey(combo);
+    next[key]=current[key]||{stock:'0',unlimited:stockMode==='unlimited'};
+   }
+   return next;
+  });
+ },[isFashion,JSON.stringify(fashion.sizes),JSON.stringify(fashion.shoeSizes),JSON.stringify(fashion.colors),stockMode]);
+ const variantInventoryRows=fashionCombos.map(combo=>{const value=variantInventory[comboKey(combo)]||{stock:'0',unlimited:false};return{...combo,stock:Number(value.stock||0),unlimited_stock:value.unlimited}});
+ const variantHasAvailability=variantInventoryRows.some(row=>row.unlimited_stock||row.stock>0);
+ const variantInventoryValid=!isFashion||(
+  fashionCombos.length>0&&
+  variantInventoryRows.every(row=>row.unlimited_stock||Number.isInteger(row.stock)&&row.stock>=0)&&
+  variantHasAvailability
+ );
 
  const ready=Boolean(
    title.trim() &&
    (!isPriceVisible||Number(price)>0) &&
-   (!isFashion||(fashion.audience&&fashion.clothingType&&fashion.condition&&(isShoe?(fashion.shoeSizes.length>0&&fashion.colors.length>0):(fashion.sizes.length>0&&fashion.colors.length>0)))) &&
+   (!isFashion||(
+     fashion.audience&&fashion.clothingType&&fashion.condition&&
+     (isShoe?fashion.shoeSizes.length>0&&fashion.colors.length>0:fashion.sizes.length>0&&fashion.colors.length>0)&&
+     variantInventoryValid
+   )) &&
    (!isCar||(car.make&&car.model&&car.year&&car.mileage&&car.body&&car.fuel&&car.transmission&&car.color))
  );
 
@@ -75,6 +106,8 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  const toggleFashionChoice=(key:'sizes'|'colors'|'shoeSizes',value:string)=>{
   setFashion(v=>({...v,[key]:v[key].includes(value)?v[key].filter(item=>item!==value):[...v[key],value]}));
  };
+ const setVariantStock=(key:string,value:string)=>setVariantInventory(v=>({...v,[key]:{...(v[key]||{unlimited:false}),stock:value.replace(/\D/g,'')}}));
+ const setVariantUnlimited=(key:string,value:boolean)=>setVariantInventory(v=>({...v,[key]:{...(v[key]||{stock:'0'}),unlimited:value}}));
  const setC=(key:keyof typeof car,value:string|boolean)=>setCar(v=>({...v,[key]:value}));
 
  const chooseFiles=(list:FileList|null)=>{
@@ -102,9 +135,10 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
   try{
    if(!title.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');
    if(isPriceVisible&&(!/^\d+$/.test(price)||Number(price)<=0))return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
-   if(isProductListing){
+   if(isProductListing&&!isFashion){
     if(stockMode==='finite'&&(!/^\d+$/.test(stock)||Number(stock)<0))return setMessage('ژمارەی بەردەست دەبێت ٠ یان ژمارەیەکی دروست بێت.');
    }
+   if(isFashion&&!variantInventoryValid)return setMessage('تکایە بۆ لانیکەم یەک هەڵبژاردە بڕی ستۆک دابنێ یان بێ‌سنووری بکە.');
    if(isFashion&&!fashion.audience)return setMessage('تکایە بۆ کێیە جلوبەرگەکە دیاری بکە.');
    if(isFashion&&!fashion.clothingType)return setMessage('تکایە جۆری جلوبەرگ دیاری بکە.');
    if(isFashion&&!fashion.condition)return setMessage('تکایە حاڵەت دیاری بکە.');
@@ -138,8 +172,10 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
     imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
    }
 
+   const fashionTotalStock=variantInventoryRows.filter(row=>!row.unlimited_stock).reduce((sum,row)=>sum+row.stock,0);
+   const fashionHasUnlimited=variantInventoryRows.some(row=>row.unlimited_stock);
    const listingDetails=isFashion
-    ?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,available_sizes:isShoe?[]:fashion.sizes,available_colors:fashion.colors,shoe_sizes:isShoe?fashion.shoeSizes:[],condition:fashion.condition,brand:fashion.brand||null,stock:stockMode==='unlimited'?null:Number(stock||0),unlimited_stock:stockMode==='unlimited'}
+    ?{category:'fashion',audience:fashion.audience,clothing_type:fashion.clothingType,available_sizes:isShoe?[]:fashion.sizes,available_colors:fashion.colors,shoe_sizes:isShoe?fashion.shoeSizes:[],condition:fashion.condition,brand:fashion.brand||null,stock:fashionHasUnlimited?null:fashionTotalStock,unlimited_stock:fashionHasUnlimited,variant_inventory:variantInventoryRows}
     :isCar
     ?{category:'car',make:car.make,model:car.model,year:Number(car.year),trim:car.trim||null,mileage:Number(car.mileage),engine:car.engine||null,body_type:car.body,fuel:car.fuel,transmission:car.transmission,drivetrain:car.drivetrain||null,color:car.color,condition:car.condition,origin:car.origin||null,plate_status:car.plate||null,negotiable:car.negotiable,exchange_allowed:car.exchange}
     :{};
@@ -148,14 +184,14 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
     author_id:userId,title:title.trim(),content:content.trim()||null,images:imageUrls,
     price_iqd:price?Number(price):null,city:city.trim()||'هەولێر',status:'approved',
     section:postType,publisher_name:publisherName,post_type:postType,publisher_role:role,
-    label:cfg.label,visibility:'public',listing_details:{...listingDetails,inventory_stock:stockMode==='unlimited'?null:Number(stock||0),unlimited_stock:stockMode==='unlimited'}
+    label:cfg.label,visibility:'public',listing_details:{...listingDetails,inventory_stock:isFashion?(fashionHasUnlimited?null:fashionTotalStock):(stockMode==='unlimited'?null:Number(stock||0)),unlimited_stock:isFashion?fashionHasUnlimited:stockMode==='unlimited',variant_inventory:isFashion?variantInventoryRows:[]}
    });
    if(error)throw error;
 
    setTitle('');setContent('');setPrice('');setCity('هەولێر');
    setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);
    setFashion({audience:'',clothingType:'',sizes:[],colors:[],shoeSizes:[],condition:'',brand:''});
-   setStockMode('finite');setStock('0');
+   setVariantInventory({});setStockMode('finite');setStock('0');
    setCar({make:'',model:'',year:'',trim:'',mileage:'',engine:'',body:'',fuel:'',transmission:'',drivetrain:'',color:'',condition:'',origin:'',plate:'',negotiable:true,exchange:false});
    setShowPreview(true);setMessage('پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە.');onSaved?.();
   }catch(error:unknown){
@@ -176,7 +212,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    <div className="postCategoryGrid">{cfg.types.map(item=><button key={item.value} type="button" className={postType===item.value?'postCategory active':'postCategory'} aria-pressed={postType===item.value} onClick={()=>setPostType(item.value)}><span>{TYPE_ICONS[item.value]||'📝'}</span><b>{item.label}</b></button>)}</div></>}
    {hideTypeSelector&&onBack&&<button type="button" className="postBackToCategories" onClick={onBack}>← گەڕانەوە بۆ هەڵبژاردنی کاتەگۆری</button>}
 
-   {isProductListing&&<div className="postInventoryBox">
+   {isProductListing&&!isFashion&&<div className="postInventoryBox">
     <div className="postInventoryHeader"><div><b>بەردەستی بەرهەم</b><small>٠ بۆ هەر ژمارەیەک، یان بێ‌سنوور.</small></div><span>{availableOptionMode}</span></div>
     <div className="postInventoryMode">
       <button type="button" className={stockMode==='finite'?'active':''} onClick={()=>setStockMode('finite')}>ژمارەی دیاریکراو</button>
@@ -185,6 +221,20 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
     {stockMode==='finite'&&<label className="postField"><span>چەند دانە بەردەستە؟</span><input inputMode="numeric" min="0" value={stock} onChange={e=>setStock(e.target.value.replace(/\D/g,''))} placeholder="٠" /></label>}
     </div>}
 
+   {isFashion&&fashionCombos.length>0&&<div className="postStructuredBox variantInventoryEditor">
+    <div className="postComposerLabel">📦 ستۆکی هەر هەڵبژاردە</div>
+    <div className="variantInventoryList">{fashionCombos.map(combo=>{
+      const key=comboKey(combo),value=variantInventory[key]||{stock:'0',unlimited:false};
+      return <div className="variantInventoryRow" key={key}>
+       <div className="variantInventoryIdentity">{combo.shoe_size&&<b>پێلاو {combo.shoe_size}</b>}{combo.size&&<b>قەبارە {combo.size}</b>}<span>{combo.color}</span></div>
+       <div className="variantInventoryControls">
+        <input inputMode="numeric" min="0" value={value.unlimited?'':value.stock} disabled={value.unlimited} onChange={e=>setVariantStock(key,e.target.value)} placeholder="٠"/>
+        <button type="button" className={value.unlimited?'postChoiceChip active':'postChoiceChip'} onClick={()=>setVariantUnlimited(key,!value.unlimited)}>{value.unlimited?'∞ بێ‌سنوور':'بێ‌سنوور ∞'}</button>
+       </div>
+      </div>
+    })}</div>
+    <small>هەر قەبارە و ڕەنگ ستۆکی تایبەتی هەیە.</small>
+   </div>}
    {isFashion&&<div className="postStructuredBox">
      <div className="postComposerLabel">👕 زانیاری جلوبەرگ و variant ـەکان</div>
      <div className="postFormGrid">
