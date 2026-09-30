@@ -54,8 +54,11 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
  const isElectronics=section==='electronics';
  const isJewelry=section==='jewelry';
  const isGenericProduct=section==='daily'||section==='marketplace';
- const updateDetail=(key:keyof typeof details,value:string)=>setDetails(v=>({...v,[key]:value}));
- const resetDetails=()=>setDetails({type:'',audience:'',size:'',color:'',condition:'',brand:'',shoeSize:'',shoeSizes:[],model:'',material:'',karat:''});
+  const updateDetail=(key:'type'|'audience'|'condition'|'brand'|'model'|'material'|'karat',value:string)=>setDetails(v=>({...v,[key]:value}));
+  const toggleDetailChoice=(key:'sizes'|'colors'|'shoeSizes',value:string)=>{
+    setDetails(v=>({...v,[key]:v[key].includes(value)?v[key].filter(item=>item!==value):[...v[key],value]}));
+  };
+  const resetDetails=()=>setDetails({type:'',audience:'',sizes:[],colors:[],condition:'',brand:'',shoeSizes:[],model:'',material:'',karat:''});
 
  useEffect(()=>{previewsRef.current=previews},[previews]);
  useEffect(()=>()=>{previewsRef.current.forEach(src=>URL.revokeObjectURL(src))},[]);
@@ -198,7 +201,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
     <label className="postField"><span>حاڵەت / تازەیی</span><select value={details.condition} onChange={e=>updateDetail('condition',e.target.value)}><option value="">هەڵبژێرە</option><option>نوێ</option><option>بەکارهاتوو</option></select></label>
     <label className="postField"><span>براند</span><input value={details.brand} onChange={e=>updateDetail('brand',e.target.value)} placeholder="نموونە: Nike"/></label>
    </div>
-  </div>
+  </div>}
   {(isFood||isSupermarket||isGenericProduct)&&<div className="postStructuredBox">
    <div className="postComposerLabel">🛍️ زانیاریی بەرهەم</div>
    <div className="postFormGrid">
