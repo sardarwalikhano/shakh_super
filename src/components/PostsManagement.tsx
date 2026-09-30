@@ -58,6 +58,19 @@ const typeLabels:Record<string,string>={
  umrah:'عومرە',delivery:'گەیاندن',announcement:'ئاگاداری',support:'پشتگیری',general:'گشتی'
 };
 
+const TYPE_FILTERS=[
+ {value:'all',label:'هەموو جۆرەکان'},
+ {value:'car',label:'ئۆتۆمبێل'},
+ {value:'food',label:'خواردن'},
+ {value:'fashion',label:'جل و بەرگ'},
+ {value:'marketplace',label:'بازاڕ'},
+ {value:'umrah',label:'عومرە'},
+ {value:'delivery',label:'گەیاندن'},
+ {value:'announcement',label:'ئاگاداری'},
+ {value:'support',label:'پشتگیری'},
+ {value:'general',label:'گشتی'}
+];
+
 const imageOf=(images:unknown)=>{
  if(Array.isArray(images)&&typeof images[0]==='string')return String(images[0]);
  return '';
@@ -81,6 +94,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
  const [query,setQuery]=useState('');
  const [statusFilter,setStatusFilter]=useState('all');
  const [roleFilter,setRoleFilter]=useState('all');
+ const [typeFilter,setTypeFilter]=useState('all');
  const [page,setPage]=useState(1);
  const [editing,setEditing]=useState<Post|null>(null);
  const [editTitle,setEditTitle]=useState('');
@@ -133,6 +147,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
     || (statusFilter==='rejected'&&post.status==='rejected')
      || (statusFilter==='archived'&&!!post.archived_at);
    const roleOk=!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter;
+   const typeOk=typeFilter==='all'||post.post_type===typeFilter;
    const structured=post.listing_details&&typeof post.listing_details==='object'
     ?Object.values(post.listing_details).map(value=>value==null?'':String(value)).join(' ')
     :'';
@@ -142,13 +157,14 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
  },[posts,statusFilter,roleFilter,query,isAdmin]);
 
  const matchesStatus=(post:Post,value:string)=>value==='all'||(value==='public'&&post.status==='approved'&&post.visibility==='public')||(value==='private'&&post.visibility==='private')||(value==='pending'&&post.status==='pending')||(value==='rejected'&&post.status==='rejected');
- const filterCount=(value:string)=>posts.filter(post=>matchesStatus(post,value)&&(!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter)).length;
+ const filterCount=(value:string)=>posts.filter(post=>matchesStatus(post,value)&&(!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter)&&(typeFilter==='all'||post.post_type===typeFilter)).length;
+ const typeFilterCount=(value:string)=>posts.filter(post=>(value==='all'||post.post_type===value)&&(statusFilter==='all'||matchesStatus(post,statusFilter))&&(!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter)).length;
 
  const totalPages=Math.max(1,Math.ceil(filtered.length/pageSize));
  const currentPage=Math.min(page,totalPages);
  const pageItems=filtered.slice((currentPage-1)*pageSize,currentPage*pageSize);
 
- useEffect(()=>{setPage(1)},[statusFilter,roleFilter,query]);
+ useEffect(()=>{setPage(1)},[statusFilter,roleFilter,typeFilter,query]);
 
  useEffect(()=>{
   if(!focusRequest?.postId||!posts.length)return;
@@ -160,6 +176,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
   setQuery('');
   setStatusFilter('all');
   if(isAdmin)setRoleFilter('all');
+  setTypeFilter('all');
   setPage(Math.floor(index/pageSize)+1);
  },[focusRequest?.nonce,posts,isAdmin]);
 
@@ -364,6 +381,9 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
     {isAdmin&&<select value={roleFilter} onChange={e=>setRoleFilter(e.target.value)} aria-label="فلتەری ڕۆڵ">
      {ROLE_FILTERS.map(item=><option key={item.value} value={item.value}>{item.label}</option>)}
     </select>}
+    {isAdmin&&<select value={typeFilter} onChange={e=>setTypeFilter(e.target.value)} aria-label="فلتەری جۆری پۆست">
+     {TYPE_FILTERS.map(item=><option key={item.value} value={item.value}>{item.label} ({typeFilterCount(item.value)})</option>)}
+    </select>}
     {STATUS_FILTERS.map(item=><button key={item.value} type="button" className={statusFilter===item.value?'active':''} onClick={()=>setStatusFilter(item.value)}>{item.label} ({filterCount(item.value)})</button>)}
    </div>
   </div>
@@ -441,7 +461,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
       <label className="postsEditField">حاڵەت<input value={String(editListing.condition||'')} onChange={e=>setEditSpec('condition',e.target.value)}/></label>
       <label className="postsEditField">براند<input value={String(editListing.brand||'')} onChange={e=>setEditSpec('brand',e.target.value)}/></label>
     </div></div>}
-    {editing.post_type==='car'&&<div className="postsEditStructured"><h4>🚗 SHAKH Cars</h4><div className="postsEditGrid"><label className="postsEditField">make<input value={String(editListing['make']??'')} onChange={e=>setEditSpec('make',e.target.value)}/></label><label className="postsEditField">model<input value={String(editListing['model']??'')} onChange={e=>setEditSpec('model',e.target.value)}/></label><label className="postsEditField">year<input value={String(editListing['year']??'')} onChange={e=>setEditSpec('year',e.target.value)}/></label><label className="postsEditField">trim<input value={String(editListing['trim']??'')} onChange={e=>setEditSpec('trim',e.target.value)}/></label><label className="postsEditField">mileage<input value={String(editListing['mileage']??'')} onChange={e=>setEditSpec('mileage',e.target.value)}/></label><label className="postsEditField">engine<input value={String(editListing['engine']??'')} onChange={e=>setEditSpec('engine',e.target.value)}/></label><label className="postsEditField">body_type<input value={String(editListing['body_type']??'')} onChange={e=>setEditSpec('body_type',e.target.value)}/></label><label className="postsEditField">fuel<input value={String(editListing['fuel']??'')} onChange={e=>setEditSpec('fuel',e.target.value)}/></label><label className="postsEditField">transmission<input value={String(editListing['transmission']??'')} onChange={e=>setEditSpec('transmission',e.target.value)}/></label><label className="postsEditField">drivetrain<input value={String(editListing['drivetrain']??'')} onChange={e=>setEditSpec('drivetrain',e.target.value)}/></label><label className="postsEditField">color<input value={String(editListing['color']??'')} onChange={e=>setEditSpec('color',e.target.value)}/></label><label className="postsEditField">condition<input value={String(editListing['condition']??'')} onChange={e=>setEditSpec('condition',e.target.value)}/></label><label className="postsEditField">origin<input value={String(editListing['origin']??'')} onChange={e=>setEditSpec('origin',e.target.value)}/></label><label className="postsEditField">plate_status<input value={String(editListing['plate_status']??'')} onChange={e=>setEditSpec('plate_status',e.target.value)}/></label></div><div className="postsEditToggles"><label><input type="checkbox" checked={Boolean(editListing.negotiable)} onChange={e=>setEditSpec('negotiable',e.target.checked)}/> نرخ دانوستاندن هەیە</label><label><input type="checkbox" checked={Boolean(editListing.exchange_allowed)} onChange={e=>setEditSpec('exchange_allowed',e.target.checked)}/> گۆڕین/ئەکسچێنج قبوڵە</label></div></div>}
+    {editing.post_type==='car'&&<div className="postsEditStructured"><h4>🚗 SHAKH Cars — زانیاریی ئۆتۆمبێل</h4><div className="postsEditGrid"><label className="postsEditField">مارکە<input value={String(editListing['make']??'')} onChange={e=>setEditSpec('make',e.target.value)} /></label><label className="postsEditField">مۆدێل<input value={String(editListing['model']??'')} onChange={e=>setEditSpec('model',e.target.value)} /></label><label className="postsEditField">ساڵ<input inputMode="numeric" value={String(editListing['year']??'')} onChange={e=>setEditSpec('year',e.target.value.replace(/\D/g,''))} /></label><label className="postsEditField">تریم<input value={String(editListing['trim']??'')} onChange={e=>setEditSpec('trim',e.target.value)} /></label><label className="postsEditField">کیلۆمەتر<input inputMode="numeric" value={String(editListing['mileage']??'')} onChange={e=>setEditSpec('mileage',e.target.value.replace(/\D/g,''))} /></label><label className="postsEditField">مەکینە<input value={String(editListing['engine']??'')} onChange={e=>setEditSpec('engine',e.target.value)} /></label><label className="postsEditField">جۆری بۆدی<input value={String(editListing['body_type']??'')} onChange={e=>setEditSpec('body_type',e.target.value)} /></label><label className="postsEditField">سووتەمەنی<input value={String(editListing['fuel']??'')} onChange={e=>setEditSpec('fuel',e.target.value)} /></label><label className="postsEditField">گێڕ<input value={String(editListing['transmission']??'')} onChange={e=>setEditSpec('transmission',e.target.value)} /></label><label className="postsEditField">سیستەمی جوڵان<input value={String(editListing['drivetrain']??'')} onChange={e=>setEditSpec('drivetrain',e.target.value)} /></label><label className="postsEditField">ڕەنگ<input value={String(editListing['color']??'')} onChange={e=>setEditSpec('color',e.target.value)} /></label><label className="postsEditField">حاڵەت<input value={String(editListing['condition']??'')} onChange={e=>setEditSpec('condition',e.target.value)} /></label><label className="postsEditField">سەرچاوە<input value={String(editListing['origin']??'')} onChange={e=>setEditSpec('origin',e.target.value)} /></label><label className="postsEditField">پلاک<input value={String(editListing['plate_status']??'')} onChange={e=>setEditSpec('plate_status',e.target.value)} /></label></div><div className="postsEditToggles"><label><input type="checkbox" checked={Boolean(editListing.negotiable)} onChange={e=>setEditSpec('negotiable',e.target.checked)}/> نرخ دانوستاندن هەیە</label><label><input type="checkbox" checked={Boolean(editListing.exchange_allowed)} onChange={e=>setEditSpec('exchange_allowed',e.target.checked)}/> گۆڕین/ئەکسچێنج قبوڵە</label></div></div>
     <div className="postsEditStructured"><h4>📸 زیادکردنی وێنە</h4><label className="postsEditUpload"><input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={e=>{chooseEditFiles(e.target.files);e.currentTarget.value=''}} aria-label="زیادکردنی وێنە بۆ پۆست"/><span>{editFiles.length?'زیادکردنی وێنە: '+editFiles.length:'تا ٨ وێنەی تر زیاد بکە'}</span></label>{editFilePreviews.length>0&&<div className="postsEditNewThumbs">{editFilePreviews.map((src,index)=><div key={src}><img src={src} alt=""/><button type="button" onClick={()=>removeEditFile(index)}><X size={14}/></button></div>)}</div>}</div>
     <div className="postsEditDialogFoot"><small className={hasEditChanges?'postsEditDirty':'postsEditSaved'}>{hasEditChanges?'گۆڕانکاریی هەیە':'هیچ گۆڕانکارییەکی تازە نییە'}</small><button type="button" className="plain postsEditCancel" onClick={closeEditor} disabled={busyId===editing.id}>پاشگەزبوونەوە</button><button type="button" className="primary postsEditSave" disabled={busyId===editing.id||!hasEditChanges} onClick={()=>void saveEdit()}>{busyId===editing.id?'پاشەکەوت دەکرێت...':'پاشەکەوتکردنی گۆڕانکارییەکان'}</button></div>
    </div>
