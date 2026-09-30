@@ -6691,3 +6691,130 @@ html[data-theme='dark'] .dashboardShellModule .deliveryZoneMapHint{
    justify-content:center!important;
  }
 }
+
+
+/* SHAKH — notifications, support & wallet final UX */
+.dashboardShellModule .notification-center__header,
+.dashboardShellModule .supportHead,
+.dashboardShellModule .walletHead{
+  display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:12px!important;
+}
+.dashboardShellModule .notification-center__header>div:first-child,
+.dashboardShellModule .supportHead>div:first-child,
+.dashboardShellModule .walletHead>div:first-child{min-width:0!important}
+.dashboardShellModule .notification-center__header-actions,
+.dashboardShellModule .supportHeadActions{display:flex!important;align-items:center!important;gap:7px!important;flex:0 0 auto!important}
+.dashboardShellModule .notification-center__refresh,
+.dashboardShellModule .walletRefresh{
+  width:40px!important;height:40px!important;display:grid!important;place-items:center!important;
+  border:1px solid var(--dsx-line)!important;border-radius:11px!important;background:var(--dsx-surface-alt)!important;color:var(--dsx-text)!important;
+}
+.dashboardShellModule .notification-center__refresh:hover,
+.dashboardShellModule .walletRefresh:hover{border-color:var(--dsx-brand)!important;color:var(--dsx-brand)!important}
+.dashboardShellModule .notification-center__error,
+.dashboardShellModule .supportMessage,
+.dashboardShellModule .walletMessage{
+  border:1px solid color-mix(in srgb,var(--dsx-danger) 24%,var(--dsx-line))!important;
+  border-radius:12px!important;background:color-mix(in srgb,var(--dsx-danger) 6%,var(--dsx-surface))!important;color:var(--dsx-text)!important;
+}
+.dashboardShellModule .notification-center__list{display:flex!important;flex-direction:column!important;gap:6px!important}
+.dashboardShellModule .notification-center__item{
+  position:relative!important;min-width:0!important;display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;align-items:start!important;gap:11px!important;
+  padding:12px!important;border-radius:14px!important;background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .notification-center__item::before{
+  content:''!important;position:absolute!important;inset-block:8px!important;inset-inline-end:0!important;
+  width:3px!important;border-radius:4px!important;background:transparent!important;
+}
+.dashboardShellModule .notification-center__item.is-unread{background:var(--dsx-brand-soft)!important}
+.dashboardShellModule .notification-center__item.is-unread::before{background:var(--dsx-brand)!important}
+.dashboardShellModule .notification-center__icon{
+  width:40px!important;height:40px!important;display:grid!important;place-items:center!important;
+  border:1px solid var(--dsx-line)!important;border-radius:11px!important;
+  background:var(--dsx-surface-alt)!important;color:var(--dsx-brand)!important;
+}
+.dashboardShellModule .notification-center__content{min-width:0!important}
+.dashboardShellModule .notification-center__title-row{display:flex!important;align-items:flex-start!important;gap:7px!important}
+.dashboardShellModule .notification-center__title-row strong{
+  color:var(--dsx-text)!important;font-size:10px!important;line-height:1.7!important;overflow-wrap:anywhere!important;
+}
+.dashboardShellModule .notification-center__title-row span{
+  flex:0 0 auto!important;padding:3px 6px!important;border-radius:999px!important;background:var(--dsx-brand)!important;color:#fff!important;font-size:6px!important;font-weight:950!important;
+}
+.dashboardShellModule .notification-center__content p{
+  margin:4px 0 6px!important;color:var(--dsx-muted)!important;font-size:8px!important;line-height:1.9!important;overflow-wrap:anywhere!important;
+}
+.dashboardShellModule .notification-center__content small{
+  display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:4px!important;color:var(--dsx-muted)!important;font-size:6px!important;line-height:1.7!important;
+}
+.dashboardShellModule .notification-center__item>button{
+  width:34px!important;height:34px!important;min-height:34px!important;display:grid!important;place-items:center!important;
+  border:1px solid var(--dsx-line)!important;border-radius:9px!important;background:var(--dsx-surface)!important;color:var(--dsx-green)!important;
+}
+.dashboardShellModule .notification-center__empty,
+.dashboardShellModule .supportEmpty,
+.dashboardShellModule .walletEmpty{
+  min-height:190px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:8px!important;
+  padding:20px!important;border:1px dashed var(--dsx-line)!important;border-radius:15px!important;
+  background:var(--dsx-surface-alt)!important;color:var(--dsx-muted)!important;text-align:center!important;
+}
+.dashboardShellModule .notification-center__empty strong,
+.dashboardShellModule .supportEmpty strong,
+.dashboardShellModule .walletEmpty strong{color:var(--dsx-text)!important;font-size:11px!important}
+.dashboardShellModule .notification-center__empty span,
+.dashboardShellModule .supportEmpty span,
+.dashboardShellModule .walletEmpty small{max-width:440px!important;color:var(--dsx-muted)!important;font-size:7px!important;line-height:1.9!important}
+
+/* Support */
+.dashboardShellModule .supportContactActions a{transition:background-color .18s ease,border-color .18s ease,color .18s ease,transform .18s ease!important}
+.dashboardShellModule .supportContactActions a:hover{
+  transform:translateY(-1px)!important;border-color:var(--dsx-brand)!important;color:var(--dsx-brand)!important;background:var(--dsx-brand-soft)!important;
+}
+.dashboardShellModule .supportComposer input,
+.dashboardShellModule .supportComposer textarea{
+  min-width:0!important;border-color:var(--dsx-line)!important;border-radius:10px!important;
+  background:var(--dsx-surface-alt)!important;color:var(--dsx-text)!important;outline:none!important;
+}
+.dashboardShellModule .supportComposer input:focus,
+.dashboardShellModule .supportComposer textarea:focus{
+  border-color:var(--dsx-brand)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--dsx-brand) 10%,transparent)!important;
+}
+.dashboardShellModule .supportComposerFooter{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important}
+.dashboardShellModule .supportComposerFooter small{color:var(--dsx-muted)!important;font-size:7px!important}
+.dashboardShellModule .supportTicket:hover{background:var(--dsx-surface-alt)!important}
+
+/* Wallet */
+.dashboardShellModule .walletBalanceCard{
+  position:relative!important;overflow:hidden!important;
+  background:radial-gradient(circle at 8% 20%,color-mix(in srgb,var(--dsx-brand) 16%,transparent),transparent 30%),linear-gradient(135deg,var(--dsx-brand-soft),var(--dsx-surface))!important;
+}
+.dashboardShellModule .walletBalanceCard::after{
+  content:''!important;position:absolute!important;width:180px!important;height:180px!important;border-radius:50%!important;
+  border:1px solid color-mix(in srgb,var(--dsx-brand) 20%,transparent)!important;
+  inset-inline-start:-80px!important;inset-block-end:-100px!important;pointer-events:none!important;
+}
+.dashboardShellModule .walletTx{border-bottom-color:var(--dsx-line)!important}
+.dashboardShellModule .walletTx:hover{background:var(--dsx-surface-alt)!important}
+.dashboardShellModule .walletTxBody b{color:var(--dsx-text)!important;font-size:9px!important}
+.dashboardShellModule .walletTxBody small{color:var(--dsx-muted)!important;font-size:6px!important;line-height:1.8!important}
+.dashboardShellModule .walletTx>strong{font-size:9px!important;font-weight:950!important;direction:ltr!important;text-align:right!important}
+
+@media(max-width:700px){
+  .dashboardShellModule .notification-center__header,
+  .dashboardShellModule .supportHead,
+  .dashboardShellModule .walletHead{align-items:flex-start!important;flex-direction:column!important}
+  .dashboardShellModule .notification-center__header-actions,
+  .dashboardShellModule .supportHeadActions{width:100%!important}
+  .dashboardShellModule .notification-center__header-actions .plain,
+  .dashboardShellModule .supportNewButton{flex:1!important;justify-content:center!important}
+  .dashboardShellModule .supportComposer{grid-template-columns:1fr!important}
+}
+@media(max-width:520px){
+  .dashboardShellModule .notification-center__item{grid-template-columns:auto minmax(0,1fr)!important}
+  .dashboardShellModule .notification-center__item>button{grid-column:1/-1!important;width:100%!important}
+  .dashboardShellModule .notification-center__title-row{flex-direction:column!important;align-items:flex-start!important}
+  .dashboardShellModule .supportContactCard{align-items:stretch!important;flex-direction:column!important}
+  .dashboardShellModule .supportContactActions{width:100%!important;justify-content:stretch!important}
+  .dashboardShellModule .supportContactActions a{flex:1!important;justify-content:center!important}
+}
