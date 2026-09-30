@@ -34,10 +34,16 @@ type VariantRecord={shoe_sizes?:unknown;shoe_size?:unknown;shoeSizes?:unknown;sh
 const getVariantOptions=(variants:unknown)=>{
  const sizes=new Set<string>(),colors=new Set<string>(),shoeSizes=new Set<string>();
  if(!Array.isArray(variants))return{sizes:[],colors:[],shoeSizes:[]};
+ const add=(target:Set<string>,value:unknown)=>{
+  const values=Array.isArray(value)?value:[value];
+  for(const item of values){
+   if(typeof item==='string'&&item.trim())target.add(item.trim());
+   else if(typeof item==='number')target.add(String(item));
+  }
+ };
  for(const variant of variants){
   if(!variant||typeof variant!=='object')continue;
   const v=variant as VariantRecord;
-  const add=(target:Set<string>,value:unknown)=>{if(Array.isArray(value))for(const item of value)if(typeof item==='string'&&item.trim())target.add(item.trim());else if(typeof item==='number')target.add(String(item));else if(typeof value==='string'&&value.trim())target.add(value.trim())};
   add(sizes,v.available_sizes);add(sizes,v.sizes);
   add(colors,v.available_colors);add(colors,v.colors);add(colors,v.color);
   add(shoeSizes,v.shoe_sizes);add(shoeSizes,v.shoeSizes);
