@@ -18,12 +18,13 @@ export type VendorOrder = {
   created_at: string;
   store?: { name?: string | null; address?: string | null; city?: string | null; latitude?: number | null; longitude?: number | null } | null;
   items: VendorOrderItem[];
+  delivery_address?: { address?: string | null; label?: string | null; delivery_note?: string | null; city?: string | null; latitude?: number | null; longitude?: number | null } | null;
 };
 
 export async function getVendorOrders(storeId: string) {
   const { data, error } = await supabase
     .from('orders')
-    .select('id,status,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,total_iqd,created_at,store:stores(name,address,city,latitude,longitude),order_items(product_id,product_name,quantity,unit_price_iqd)')
+    .select('id,status,store_id,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,total_iqd,created_at,store:stores(name,address,city,latitude,longitude),delivery_address:delivery_addresses(address,label,delivery_note,city,latitude,longitude),order_items(product_id,product_name,quantity,unit_price_iqd)')
     .eq('store_id', storeId)
     .order('created_at', { ascending: false });
 
@@ -31,6 +32,7 @@ export async function getVendorOrders(storeId: string) {
 
   return (data ?? []).map((order: any) => ({
     ...order,
+    delivery_address: Array.isArray(order.delivery_address) ? (order.delivery_address[0] ?? null) : (order.delivery_address ?? null),
     store: Array.isArray(order.store) ? (order.store[0] ?? null) : (order.store ?? null),
     items: (order.order_items ?? []).map((item: any) => ({
       product_id: item.product_id ?? null,
