@@ -47,7 +47,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  const [previews,setPreviews]=useState<string[]>([]);const previewsRef=useRef<string[]>([]);
  const [busy,setBusy]=useState(false);
  const [message,setMessage]=useState('');
- const [showPreview,setShowPreview]=useState(true);
+ const [showPreview,setShowPreview]=useState(false);
  const [fashion,setFashion]=useState({audience:'',clothingType:'',sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[],condition:'',brand:''});
  const [stockMode,setStockMode]=useState<'finite'|'unlimited'>('finite');
  const [stock,setStock]=useState('0');
@@ -168,7 +168,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
 
  return <section className="orderCard postComposer" aria-label="پۆستکردن" aria-busy={busy}>
    <div className="postComposerHead">
-     <div><span className="eyebrow"><Sparkles size={13}/> پۆستکردنی پیشەیی</span><h3>{cfg.heading}</h3><p>{cfg.label} · لەگەڵ شاخ دەگەیتە لوتکە</p></div>
+     <div><span className="eyebrow"><Sparkles size={13}/> پۆستکردنی پیشەیی</span><h3>{cfg.heading}</h3><p>{cfg.label}</p></div>
      <div className="postComposerBadge"><Tag size={21}/><span>{cfg.label}</span></div>
    </div>
 
@@ -177,7 +177,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    {hideTypeSelector&&onBack&&<button type="button" className="postBackToCategories" onClick={onBack}>← گەڕانەوە بۆ هەڵبژاردنی کاتەگۆری</button>}
 
    {isProductListing&&<div className="postInventoryBox">
-    <div className="postInventoryHeader"><div><b>بەردەستی بەرهەم</b><small>ژمارەی بەردەست لە ٠ تا ژمارەی دیاریکراو؛ یان بێ‌سنوور.</small></div><span>{availableOptionMode}</span></div>
+    <div className="postInventoryHeader"><div><b>بەردەستی بەرهەم</b><small>٠ بۆ هەر ژمارەیەک، یان بێ‌سنوور.</small></div><span>{availableOptionMode}</span></div>
     <div className="postInventoryMode">
       <button type="button" className={stockMode==='finite'?'active':''} onClick={()=>setStockMode('finite')}>ژمارەی دیاریکراو</button>
       <button type="button" className={stockMode==='unlimited'?'active':''} onClick={()=>setStockMode('unlimited')}>بێ‌سنوور ∞</button>
@@ -202,7 +202,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
        <label className="postField postFieldWide">
          <span>ڕەنگەکانی بەردەست</span>
          <div className="postChoiceGrid postColorChoiceGrid">{OPTIONS.colors.map(value=><button type="button" key={value} className={fashion.colors.includes(value)?'postChoiceChip active':'postChoiceChip'} onClick={()=>toggleFashionChoice('colors',value)}>{value}</button>)}</div>
-         <small>دەتوانیت چەند ڕەنگێک هەڵبژێریت.</small>
+         <!--color hint removed-->
        </label>
        {selectField('حاڵەت',fashion.condition,OPTIONS.fashionCondition,v=>setF('condition',v))}
        <label className="postField"><span>براند</span><input value={fashion.brand} onChange={e=>setF('brand',e.target.value)} placeholder="نموونە: Nike"/></label>
@@ -250,12 +250,12 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
      {previews.length>0&&<div className="postImageGallery">{previews.map((src,index)=><div className="postImageGalleryItem" key={src}><img src={src} alt="" /><button type="button" onClick={()=>removeImage(index)} aria-label="سڕینەوەی وێنە"><X size={15}/></button><span>{index+1}</span></div>)}</div>}
    </div>
 
-   <div className="postComposerBottom"><span className="postComposerHint">پۆستەکە لە Supabase هەڵدەگیرێت و لە Feed ـدا بە شێوەی ڕاستەقینە دەردەکەوێت.</span><button type="button" className="postPreviewToggle" onClick={()=>setShowPreview(v=>!v)}><Eye size={16}/>{showPreview?'شاردنەوەی پێشبینین':'پیشاندانی پێشبینین'}</button></div>
+   <div className="postComposerBottom"><span className="postComposerHint" aria-hidden="true"></span><button type="button" className="postPreviewToggle" onClick={()=>setShowPreview(v=>!v)}><Eye size={16}/>{showPreview?'شاردنەوەی پێشبینین':'پیشاندانی پێشبینین'}</button></div>
 
    {showPreview&&<div className="postLivePreview"><div className="postLivePreviewTop"><span>پێشبینینی پۆست</span><small>{TYPE_ICONS[postType]||'📝'} {cfg.types.find(item=>item.value===postType)?.label||cfg.label}</small></div><div className="postLivePreviewCard"><div className="postLivePreviewImage">{previews[0]?<img src={previews[0]} alt="" />:<ImagePlus size={34}/>}</div><div className="postLivePreviewBody"><small>{cfg.label} · {city}</small><h4>{title.trim()||'سەردێڕی پۆستەکەت لێرە دەردەکەوێت'}</h4><p>{content.trim()||'ناوەڕۆکی پۆستەکەت لێرە پیشان دەدرێت.'}</p>{isPriceVisible&&<div className="postLivePreviewPrice">{price?Number(price).toLocaleString('en-US'):'٠'} د.ع</div>}{isFashion&&<div className="postPreviewChips">{[fashion.audience,fashion.clothingType,isShoe&&fashion.shoeSizes.length? 'پێلاو: '+fashion.shoeSizes.join('، '):fashion.sizes.length?'قەبارە: '+fashion.sizes.join('، '):'',fashion.colors.length?'ڕەنگ: '+fashion.colors.join('، '):'',fashion.condition,fashion.brand,stockMode==='unlimited'?'بێ‌سنوور':'بەردەست: '+stock].filter(Boolean).map(v=><span key={String(v)}>{String(v)}</span>)}</div>}{isCar&&<div className="postPreviewChips">{[car.make&&car.model?car.make+' '+car.model:car.make,car.year,car.mileage&&car.mileage+' km',car.body,car.fuel,car.transmission,car.color].filter(Boolean).map(v=><span key={String(v)}>{String(v)}</span>)}</div>}</div></div></div>}
 
    {message&&<div className={message.includes('سەرکەوت')?'postComposerMessage success':'postComposerMessage'} role="alert" aria-live="polite">{message}</div>}
    <button type="button" className="primary postPublishButton" disabled={busy||!ready} onClick={()=>void submit()}>{busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Send size={17}/> بڵاوکردنەوەی پۆست</>}</button>
-   <small className="postComposerFoot"><CheckCircle2 size={14}/> لێبلی <b>{cfg.label}</b> لەگەڵ پۆستەکە هەڵدەگیرێت.</small>
+   <span className="postComposerFoot" aria-hidden="true"></span>
  </section>;
 }
