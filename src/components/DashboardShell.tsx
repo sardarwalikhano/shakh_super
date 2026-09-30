@@ -44,7 +44,7 @@ type NavItem = {
   id: DashboardView;
   label: string;
   description: string;
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+  icon: React.ElementType;
   show?: boolean;
 };
 
