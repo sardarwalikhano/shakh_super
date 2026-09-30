@@ -5,3 +5,12 @@
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
 button:disabled{cursor:not-allowed}
+button,[role="button"],a,input,select,textarea{touch-action:manipulation}
+:focus-visible{box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 0 5px #ff6b16}
+@media (prefers-contrast: more){
+  :focus-visible{outline-width:4px;outline-offset:4px}
+  button,[role="button"],a{text-decoration-thickness:2px}
+}
+html,body{max-width:100%;overflow-x:hidden}
+button:disabled,[aria-disabled="true"]{opacity:.6}
+body{-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
