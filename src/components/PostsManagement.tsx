@@ -233,7 +233,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
   }
   if(editing.post_type==='car'&&editPrice&&(!/^\d+$/.test(editPrice)||Number(editPrice)<=0))return setMessage('نرخی ئۆتۆمبێل دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
   if(editing.post_type==='car'){
-   const required=['make','model','year','mileage','body_type','fuel','transmission','color'];
+   const required=['make','model','year','mileage','body_type','fuel','transmission','color','condition'];
    if(required.some(key=>!String(listing[key]??'').trim()))return setMessage('تکایە هەموو زانیارییە سەرەتاییەکانی ئۆتۆمبێل پڕ بکەرەوە.');
    const year=Number(listing.year),mileage=Number(listing.mileage);
    if(!Number.isInteger(year)||year<1900||year>new Date().getFullYear()+1)return setMessage('ساڵی ئۆتۆمبێل دروست نییە.');
