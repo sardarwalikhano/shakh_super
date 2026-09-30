@@ -6562,3 +6562,132 @@ html[data-theme='dark'] .dashboardShellModule .deliveryZoneMapHint{
     transition:none!important;
   }
 }
+
+
+/* SHAKH — captain operations: online state, live queue and delivery packet */
+.dashboardShellModule .captainDashboard{
+  margin:0!important;
+  padding:0!important;
+}
+.dashboardShellModule .captainHeaderActions{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+}
+.dashboardShellModule .captainHeaderActions .primary,
+.dashboardShellModule .captainHeaderActions .plain{
+  min-height:42px!important;
+  margin:0!important;
+}
+.dashboardShellModule .captainHeaderActions .primary{
+  background:var(--dsx-green)!important;
+  border-color:var(--dsx-green)!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .captainStats{
+  margin:0 0 13px!important;
+}
+.dashboardShellModule .captainStatNumber,
+.dashboardShellModule .captainStatMoney{
+  color:var(--dsx-text)!important;
+}
+.dashboardShellModule .captainStatNumber{
+  font-size:24px!important;
+  font-weight:950!important;
+}
+.dashboardShellModule .captainStatMoney{
+  font-size:15px!important;
+  font-weight:950!important;
+}
+.dashboardShellModule .captainOrderGrid{
+  align-items:start!important;
+}
+.dashboardShellModule .captainOrderCard{
+  background:var(--dsx-surface)!important;
+  border-color:var(--dsx-line)!important;
+}
+.dashboardShellModule .captainOrderCard .orderCardTop strong,
+.dashboardShellModule .captainOrderCard .orderTotal{
+  color:var(--dsx-text)!important;
+}
+.dashboardShellModule .captainOrderCard .orderMeta,
+.dashboardShellModule .captainOrderCard .platformOrderMeta{
+  color:var(--dsx-muted)!important;
+}
+.dashboardShellModule .captainPacketGrid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+}
+.dashboardShellModule .captainPacketSection{
+  min-width:0!important;
+}
+.dashboardShellModule .captainPacketSection strong{
+  color:var(--dsx-text)!important;
+  font-size:10px!important;
+  overflow-wrap:anywhere!important;
+}
+.dashboardShellModule .captainPacketSection span{
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+}
+.dashboardShellModule .orderNoteCard{
+  margin-top:9px!important;
+  border-color:color-mix(in srgb,#d97706 22%,var(--dsx-line))!important;
+  background:color-mix(in srgb,#d97706 6%,var(--dsx-surface))!important;
+  color:var(--dsx-text)!important;
+}
+.dashboardShellModule .captainLocationActions{
+  margin-top:9px!important;
+  padding:9px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:12px!important;
+  background:var(--dsx-surface-alt)!important;
+}
+.dashboardShellModule .captainLocationActions>a{
+  background:var(--dsx-surface)!important;
+  border:1px solid var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+  text-decoration:none!important;
+}
+.dashboardShellModule .captainLocationActions>span{
+  color:var(--dsx-muted)!important;
+}
+.dashboardShellModule .captainOrderMapWrap{
+  margin-top:10px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+  background:var(--dsx-surface-alt)!important;
+}
+.dashboardShellModule .captainOrderMapWrap .leaflet-container{
+  min-height:260px!important;
+}
+.dashboardShellModule .captainOrderCard .primary.full{
+  min-height:44px!important;
+  box-shadow:none!important;
+}
+.dashboardShellModule .captainOrderCard .liveTrackingStatus{
+  margin-top:9px!important;
+  border-color:color-mix(in srgb,var(--dsx-green) 25%,var(--dsx-line))!important;
+  background:color-mix(in srgb,var(--dsx-green) 6%,var(--dsx-surface))!important;
+}
+.dashboardShellModule .captainDashboard>.dashboardHeader{
+  gap:12px!important;
+}
+@media(max-width:760px){
+ .dashboardShellModule .captainPacketGrid{
+   grid-template-columns:1fr!important;
+ }
+ .dashboardShellModule .captainOrderGrid{
+   grid-template-columns:1fr!important;
+ }
+ .dashboardShellModule .captainHeaderActions{
+   width:100%!important;
+ }
+ .dashboardShellModule .captainHeaderActions .primary,
+ .dashboardShellModule .captainHeaderActions .plain{
+   flex:1!important;
+   justify-content:center!important;
+ }
+}
