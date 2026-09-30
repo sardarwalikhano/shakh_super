@@ -7213,3 +7213,82 @@ html[data-theme='dark'] .dashboardAccountServiceCard[data-tone='slate'] .dashboa
     padding-inline:2px;
   }
 }
+
+/* =========================================================
+   SHAKH DASHBOARD POST WORKSPACE — typography cleanup
+   Keep posting controls visually consistent inside the account shell.
+   ========================================================= */
+.dashboardShellModule .postComposer,
+.dashboardShellModule .postPublishingHub{
+  font-family:inherit!important;
+  color:var(--dsx-text)!important;
+  line-height:1.65!important;
+  direction:rtl!important;
+  text-align:right!important;
+}
+.dashboardShellModule .postComposer h3,
+.dashboardShellModule .postComposer h4,
+.dashboardShellModule .postPublishingHub h2,
+.dashboardShellModule .postPublishingHub h3{
+  color:var(--dsx-text)!important;
+  font-weight:950!important;
+  line-height:1.45!important;
+  letter-spacing:-.2px!important;
+}
+.dashboardShellModule .postComposer p,
+.dashboardShellModule .postPublishingHub p{
+  color:var(--dsx-muted)!important;
+  line-height:1.9!important;
+}
+.dashboardShellModule .postComposer .postComposerLabel{
+  color:var(--dsx-text)!important;
+  font-size:10px!important;
+  font-weight:950!important;
+}
+.dashboardShellModule .postComposer .postField>span,
+.dashboardShellModule .postComposer .postLabelRow{
+  color:var(--dsx-text)!important;
+  font-size:9px!important;
+  font-weight:900!important;
+}
+.dashboardShellModule .postComposer .postField input,
+.dashboardShellModule .postComposer .postField select,
+.dashboardShellModule .postComposer .postField textarea{
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+  direction:rtl!important;
+  text-align:right!important;
+}
+.dashboardShellModule .postComposer .postField input:focus,
+.dashboardShellModule .postComposer .postField select:focus,
+.dashboardShellModule .postComposer .postField textarea:focus{
+  border-color:var(--dsx-brand)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--dsx-brand) 12%,transparent)!important;
+}
+.dashboardShellModule .postComposer .postChoiceGrid,
+.dashboardShellModule .postComposer .postInventoryBox,
+.dashboardShellModule .postComposer .postStructuredBox{
+  border-color:var(--dsx-line)!important;
+  background:var(--dsx-surface-alt)!important;
+}
+.dashboardShellModule .postComposer .postChoiceChip,
+.dashboardShellModule .postComposer .postInventoryMode button{
+  background:var(--dsx-surface)!important;
+  border-color:var(--dsx-line)!important;
+  color:var(--dsx-text)!important;
+}
+.dashboardShellModule .postComposer .postChoiceChip.active,
+.dashboardShellModule .postComposer .postInventoryMode button.active{
+  background:var(--dsx-brand)!important;
+  border-color:var(--dsx-brand)!important;
+  color:#fff!important;
+}
+.dashboardShellModule .postComposer .postComposerHint,
+.dashboardShellModule .postComposer .postField>small{
+  color:var(--dsx-muted)!important;
+}
+.dashboardShellModule .postComposer .postLivePreview{
+  border-color:var(--dsx-line)!important;
+  background:var(--dsx-surface-alt)!important;
+}
