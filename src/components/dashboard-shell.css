@@ -6818,3 +6818,283 @@ html[data-theme='dark'] .dashboardShellModule .deliveryZoneMapHint{
   .dashboardShellModule .supportContactActions{width:100%!important;justify-content:stretch!important}
   .dashboardShellModule .supportContactActions a{flex:1!important;justify-content:center!important}
 }
+
+/* =========================================================
+   SHAKH ACCOUNT CENTER — navigation hierarchy + isolated modules
+   ========================================================= */
+
+.dashboardShellNavGroupLabel{
+  margin:8px 7px 2px;
+  padding-top:9px;
+  border-top:1px solid var(--dsx-line);
+  color:var(--dsx-muted);
+  font-size:8px;
+  font-weight:950;
+  line-height:1.5;
+}
+
+.dashboardShellNavGroupLabel:first-child{
+  margin-top:0;
+  padding-top:0;
+  border-top:0;
+}
+
+.dashboardShellNavItem[data-account-tool='true']{
+  background:color-mix(in srgb,var(--dsx-brand) 3%,transparent);
+}
+
+.dashboardShellNavItem.is-active .dashboardShellNavCopy strong{
+  color:var(--dsx-brand);
+}
+
+.dashboardShellNavItem.is-active .dashboardShellNavArrow{
+  color:var(--dsx-brand);
+}
+
+/* Account service center */
+.dashboardAccountServices{
+  width:100%;
+  max-width:none;
+  min-width:0;
+  display:grid;
+  gap:14px;
+}
+
+.dashboardAccountServicesHero{
+  position:relative;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:19px 20px;
+  overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--dsx-brand) 15%,var(--dsx-line));
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--dsx-brand) 12%,transparent),transparent 28%),
+    radial-gradient(circle at 8% 95%,color-mix(in srgb,var(--dsx-green) 9%,transparent),transparent 28%),
+    var(--dsx-surface);
+  box-shadow:0 16px 38px color-mix(in srgb,var(--dsx-text) 5%,transparent);
+}
+
+.dashboardAccountServicesHero::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(110deg,transparent 0%,rgba(255,255,255,.04) 45%,transparent 75%);
+}
+
+.dashboardAccountServicesHero > div:first-child{
+  position:relative;
+  z-index:1;
+  min-width:0;
+}
+
+.dashboardAccountServicesHero > div:first-child > span{
+  display:inline-flex;
+  padding:5px 9px;
+  border-radius:999px;
+  background:var(--dsx-brand-soft);
+  color:var(--dsx-brand);
+  border:1px solid color-mix(in srgb,var(--dsx-brand) 18%,transparent);
+  font-size:8px;
+  font-weight:950;
+}
+
+.dashboardAccountServicesHero h2{
+  margin:7px 0 4px;
+  color:var(--dsx-text);
+  font-size:clamp(21px,2.4vw,30px);
+  line-height:1.35;
+  font-weight:950;
+  letter-spacing:-.55px;
+}
+
+.dashboardAccountServicesHero p{
+  max-width:680px;
+  margin:0;
+  color:var(--dsx-muted);
+  font-size:9px;
+  line-height:1.9;
+}
+
+.dashboardAccountServicesCount{
+  position:relative;
+  z-index:1;
+  flex:0 0 auto;
+  min-width:86px;
+  min-height:82px;
+  padding:13px 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  border-radius:17px;
+  background:linear-gradient(145deg,var(--dsx-brand-soft),var(--dsx-surface-alt));
+  border:1px solid color-mix(in srgb,var(--dsx-brand) 20%,var(--dsx-line));
+}
+
+.dashboardAccountServicesCount strong{
+  color:var(--dsx-brand);
+  font-size:25px;
+  line-height:1.1;
+  font-weight:950;
+}
+
+.dashboardAccountServicesCount small{
+  color:var(--dsx-muted);
+  font-size:8px;
+  font-weight:900;
+}
+
+.dashboardAccountServicesGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.dashboardAccountServiceCard{
+  position:relative;
+  min-width:0;
+  min-height:92px;
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr) auto;
+  align-items:center;
+  gap:11px;
+  padding:13px 14px;
+  border:1px solid var(--dsx-line);
+  border-radius:17px;
+  background:var(--dsx-surface);
+  color:var(--dsx-text);
+  text-align:right;
+  box-shadow:0 9px 24px color-mix(in srgb,var(--dsx-text) 4%,transparent);
+  transition:transform .18s ease,border-color .18s ease,background-color .18s ease,box-shadow .18s ease;
+}
+
+.dashboardAccountServiceCard:hover{
+  transform:translateY(-2px);
+  background:var(--dsx-surface-alt);
+  border-color:color-mix(in srgb,var(--dsx-brand) 30%,var(--dsx-line));
+  box-shadow:0 16px 34px color-mix(in srgb,var(--dsx-brand) 8%,transparent);
+}
+
+.dashboardAccountServiceCard:focus-visible{
+  outline:2px solid var(--dsx-brand);
+  outline-offset:2px;
+}
+
+.dashboardAccountServiceCard.is-active{
+  border-color:var(--dsx-brand);
+  box-shadow:0 14px 34px color-mix(in srgb,var(--dsx-brand) 11%,transparent);
+}
+
+.dashboardAccountServiceCardIcon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:var(--dsx-brand-soft);
+  color:var(--dsx-brand);
+}
+
+.dashboardAccountServiceCard.is-active .dashboardAccountServiceCardIcon{
+  background:var(--dsx-brand);
+  color:#fff;
+}
+
+.dashboardAccountServiceCardCopy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+
+.dashboardAccountServiceCardCopy strong{
+  min-width:0;
+  color:var(--dsx-text);
+  font-size:11px;
+  font-weight:950;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+}
+
+.dashboardAccountServiceCardCopy small{
+  min-width:0;
+  color:var(--dsx-muted);
+  font-size:8px;
+  line-height:1.75;
+  overflow-wrap:anywhere;
+}
+
+.dashboardAccountServiceCardArrow{
+  width:31px;
+  height:31px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:var(--dsx-surface-alt);
+  color:var(--dsx-blue);
+}
+
+.dashboardAccountServiceCard:hover .dashboardAccountServiceCardArrow{
+  background:var(--dsx-brand-soft);
+  color:var(--dsx-brand);
+}
+
+.dashboardAccountSingleModule{
+  width:100%;
+  min-width:0;
+}
+
+.dashboardAccountSingleModule > *{
+  min-width:0;
+}
+
+@media(max-width:920px){
+  .dashboardAccountServicesGrid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:620px){
+  .dashboardAccountServicesHero{
+    align-items:flex-start;
+    flex-direction:column;
+    padding:16px;
+  }
+  .dashboardAccountServicesCount{
+    width:100%;
+    min-height:64px;
+    flex-direction:row;
+    justify-content:flex-start;
+    gap:8px;
+  }
+  .dashboardAccountServicesCount strong{
+    font-size:22px;
+  }
+  .dashboardAccountServicesGrid{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .dashboardAccountServiceCard{
+    min-height:82px;
+    grid-template-columns:42px minmax(0,1fr) auto;
+    padding:11px;
+    border-radius:15px;
+  }
+  .dashboardAccountServiceCardIcon{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dashboardAccountServiceCard{
+    transition:none!important;
+  }
+}
