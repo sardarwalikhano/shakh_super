@@ -3071,3 +3071,230 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     font-size:30px!important;
   }
 }
+
+/* =========================================================
+   SHAKH — HEADER + BRAND RIBBON SIGNATURE PASS
+   Compact, premium, content-first navigation.
+   ========================================================= */
+
+.app header{
+  background:color-mix(in srgb,var(--surface) 86%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--accent) 12%,var(--line))!important;
+  box-shadow:0 10px 28px color-mix(in srgb,var(--navy) 7%,transparent)!important;
+}
+
+.app .nav{
+  width:min(1280px,100%)!important;
+  min-height:68px!important;
+  padding:8px 16px!important;
+  gap:9px!important;
+}
+
+.app .logo{
+  flex:0 0 auto!important;
+  padding:3px!important;
+  gap:8px!important;
+  border:1px solid var(--line)!important;
+  border-radius:15px!important;
+  background:var(--surface)!important;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 7%,transparent)!important;
+}
+
+.app .logoImage{
+  width:46px!important;
+  height:46px!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  outline:none!important;
+}
+
+.app .search{
+  height:46px!important;
+  max-width:650px!important;
+  border-radius:14px!important;
+  background:var(--surface-alt)!important;
+  border-color:var(--line)!important;
+  color:var(--muted)!important;
+}
+
+.app .search svg{
+  color:var(--accent)!important;
+  flex:0 0 auto;
+}
+
+.app .search:focus-within{
+  background:var(--surface)!important;
+  border-color:var(--accent)!important;
+}
+
+.app .locationIndicator,
+.app .themeToggleButton,
+.app .nav>.plain,
+.app .cart{
+  height:44px!important;
+  min-width:44px!important;
+  border-radius:13px!important;
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  color:var(--text)!important;
+  box-shadow:none!important;
+}
+
+.app .locationIndicator span,
+.app .themeToggleButton span{
+  font-size:8px!important;
+  font-weight:900!important;
+}
+
+.app .locationIndicator.ready{
+  color:var(--success)!important;
+  border-color:color-mix(in srgb,var(--success) 30%,var(--line))!important;
+  background:color-mix(in srgb,var(--success) 7%,var(--surface))!important;
+}
+
+.app .nav>.plain:hover,
+.app .cart:hover,
+.app .locationIndicator:hover,
+.app .themeToggleButton:hover{
+  color:var(--accent)!important;
+  background:color-mix(in srgb,var(--accent) 7%,var(--surface))!important;
+  border-color:color-mix(in srgb,var(--accent) 35%,var(--line))!important;
+}
+
+.app .loginBtn{
+  min-height:44px!important;
+  padding:0 14px!important;
+  border-radius:13px!important;
+  background:linear-gradient(135deg,#211a56,var(--accent) 72%,var(--accent-2))!important;
+  box-shadow:0 11px 26px color-mix(in srgb,var(--accent) 20%,transparent)!important;
+}
+
+.app .brandRibbon{
+  width:min(1280px,calc(100% - 32px))!important;
+  margin:11px auto 2px!important;
+  min-height:58px!important;
+  padding:7px 12px!important;
+  border-radius:17px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  background:
+    radial-gradient(circle at 5% 0%,color-mix(in srgb,var(--accent-2) 16%,transparent),transparent 25%),
+    linear-gradient(110deg,color-mix(in srgb,var(--accent) 11%,var(--surface)),color-mix(in srgb,var(--accent-2) 7%,var(--surface)))!important;
+  border:1px solid color-mix(in srgb,var(--accent) 14%,var(--line))!important;
+  box-shadow:0 10px 26px color-mix(in srgb,var(--accent) 8%,transparent)!important;
+}
+
+.app .brandRibbonLogo{
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  border-radius:12px!important;
+  padding:4px!important;
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none!important;
+}
+
+.app .brandRibbonLogo img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  border-radius:9px!important;
+}
+
+.app .brandRibbonCopy{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:1px!important;
+  min-width:0!important;
+}
+
+.app .brandRibbonCopy b{
+  color:var(--text)!important;
+  font-size:11px!important;
+  letter-spacing:.5px!important;
+}
+
+.app .brandRibbonCopy span{
+  color:var(--muted)!important;
+  font-size:8px!important;
+}
+
+.app .brandRibbonCopy b::first-letter{
+  color:var(--accent)!important;
+}
+
+@media(max-width:900px){
+  .app .nav{
+    min-height:64px!important;
+    padding:7px 11px!important;
+  }
+  .app .locationIndicator{
+    padding:0 9px!important;
+  }
+  .app .locationIndicator span{
+    display:none!important;
+  }
+  .app .loginBtn{
+    padding:0 11px!important;
+  }
+}
+
+@media(max-width:720px){
+  .app .nav{
+    flex-wrap:wrap!important;
+  }
+  .app .search{
+    order:5!important;
+    flex-basis:100%!important;
+    max-width:none!important;
+    height:43px!important;
+  }
+  .app .brandRibbon{
+    width:calc(100% - 22px)!important;
+    min-height:51px!important;
+    margin-top:8px!important;
+    padding:6px 9px!important;
+    border-radius:14px!important;
+  }
+  .app .brandRibbonLogo{
+    width:36px!important;
+    height:36px!important;
+    min-width:36px!important;
+    border-radius:10px!important;
+  }
+  .app .brandRibbonCopy b{
+    font-size:10px!important;
+  }
+  .app .brandRibbonCopy span{
+    font-size:7px!important;
+  }
+}
+
+@media(max-width:520px){
+  .app .logoImage{
+    width:40px!important;
+    height:40px!important;
+  }
+  .app .logo{
+    border-radius:13px!important;
+  }
+  .app .nav>.plain,
+  .app .cart,
+  .app .themeToggleButton{
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+    border-radius:11px!important;
+  }
+  .app .locationIndicator,
+  .app .loginBtn{
+    height:40px!important;
+    min-height:40px!important;
+  }
+  .app .loginBtn{
+    padding:0 10px!important;
+    font-size:9px!important;
+  }
+}
