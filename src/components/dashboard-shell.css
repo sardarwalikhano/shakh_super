@@ -821,3 +821,115 @@ html[data-theme='dark'] .dashboardShellDirty{
     animation:none!important;
   }
 }
+
+
+.dashboardShellRecentOrders{
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px solid var(--dsx-line);
+}
+.dashboardShellRecentOrdersHead{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:10px;
+}
+.dashboardShellRecentOrdersHead > div{
+  min-width:0;
+}
+.dashboardShellRecentOrdersHead span{
+  display:block;
+  color:var(--dsx-brand);
+  font-size:9px;
+  font-weight:900;
+}
+.dashboardShellRecentOrdersHead h2{
+  margin:3px 0 0;
+  color:var(--dsx-text);
+  font-size:19px;
+  line-height:1.35;
+  font-weight:950;
+}
+.dashboardShellRecentOrdersHead button{
+  border:0;
+  background:transparent;
+  color:var(--dsx-blue);
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.dashboardShellRecentOrdersHead button:hover{
+  color:var(--dsx-brand);
+}
+.dashboardShellRecentList{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:1px;
+  overflow:hidden;
+  border:1px solid var(--dsx-line);
+  border-radius:18px;
+  background:var(--dsx-line);
+}
+.dashboardShellRecentRow{
+  min-width:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto auto;
+  align-items:center;
+  gap:13px;
+  padding:13px 15px;
+  border:0;
+  background:var(--dsx-surface);
+  color:var(--dsx-text);
+  text-align:right;
+  transition:background-color .18s ease;
+}
+.dashboardShellRecentRow:hover{
+  background:var(--dsx-surface-alt);
+}
+.dashboardShellRecentId{
+  min-width:0;
+  color:var(--dsx-text);
+  font-size:10px;
+  font-weight:950;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.dashboardShellRecentStatus{
+  padding:5px 8px;
+  border-radius:999px;
+  background:var(--dsx-brand-soft);
+  color:var(--dsx-brand);
+  font-size:8px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.dashboardShellRecentRow strong{
+  color:var(--dsx-text);
+  font-size:10px;
+  font-weight:950;
+  white-space:nowrap;
+}
+.dashboardShellRecentRow small{
+  color:var(--dsx-muted);
+  font-size:8px;
+  white-space:nowrap;
+}
+
+@media(max-width:680px){
+  .dashboardShellRecentRow{
+    grid-template-columns:minmax(0,1fr) auto;
+    row-gap:5px;
+  }
+  .dashboardShellRecentStatus{
+    justify-self:start;
+  }
+  .dashboardShellRecentRow strong{
+    justify-self:start;
+  }
+  .dashboardShellRecentRow small{
+    grid-column:1/-1;
+    justify-self:start;
+  }
+}
