@@ -40,12 +40,18 @@ BEGIN
       ELSE '[]'::jsonb
     END
   ) AS row(value)
-  WHERE coalesce(btrim(row.value->>'size'), '') = ''
-        OR coalesce(btrim(row.value->>'size'), '') = coalesce(btrim(p_options->>'size'), '')
-    AND coalesce(btrim(row.value->>'shoe_size'), '') = ''
-        OR coalesce(btrim(row.value->>'shoe_size'), '') = coalesce(btrim(p_options->>'shoe_size'), '')
-    AND coalesce(btrim(row.value->>'color'), '') = ''
-        OR coalesce(btrim(row.value->>'color'), '') = coalesce(btrim(p_options->>'color'), '')
+  WHERE (
+          coalesce(btrim(row.value->>'size'), '') = ''
+          OR coalesce(btrim(row.value->>'size'), '') = coalesce(btrim(p_options->>'size'), '')
+        )
+    AND (
+          coalesce(btrim(row.value->>'shoe_size'), '') = ''
+          OR coalesce(btrim(row.value->>'shoe_size'), '') = coalesce(btrim(p_options->>'shoe_size'), '')
+        )
+    AND (
+          coalesce(btrim(row.value->>'color'), '') = ''
+          OR coalesce(btrim(row.value->>'color'), '') = coalesce(btrim(p_options->>'color'), '')
+        )
   LIMIT 1;
 
   IF v_row IS NULL THEN
@@ -119,12 +125,18 @@ AS $function$
           pg_catalog.jsonb_agg(
             CASE
               WHEN
-                coalesce(btrim(row.value->>'size'),'') = ''
+                (
+                  coalesce(btrim(row.value->>'size'),'') = ''
                   OR coalesce(btrim(row.value->>'size'),'') = coalesce(btrim(p_options->>'size'),'')
-              AND coalesce(btrim(row.value->>'shoe_size'),'') = ''
+                )
+                AND (
+                  coalesce(btrim(row.value->>'shoe_size'),'') = ''
                   OR coalesce(btrim(row.value->>'shoe_size'),'') = coalesce(btrim(p_options->>'shoe_size'),'')
-              AND coalesce(btrim(row.value->>'color'),'') = ''
+                )
+                AND (
+                  coalesce(btrim(row.value->>'color'),'') = ''
                   OR coalesce(btrim(row.value->>'color'),'') = coalesce(btrim(p_options->>'color'),'')
+                )
               THEN pg_catalog.jsonb_set(
                 row.value,
                 '{stock}',
