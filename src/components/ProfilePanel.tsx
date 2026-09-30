@@ -11,6 +11,7 @@ type ProfileRow={
  full_name:string|null;
  email:string|null;
  phone:string|null;
+ whatsapp_phone:string|null;
  avatar_url:string|null;
  city:string|null;
  language:'ku'|'ar'|'en';
@@ -46,6 +47,7 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
  const [profile,setProfile]=useState<ProfileRow|null>(null);
  const [name,setName]=useState('');
  const [phone,setPhone]=useState('');
+ const [whatsappPhone,setWhatsappPhone]=useState('');
  const [city,setCity]=useState('هەولێر');
  const [language,setLanguage]=useState<ProfileRow['language']>('ku');
  const [avatarUrl,setAvatarUrl]=useState('');
@@ -63,7 +65,7 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
   setLoading(true);
   setMessage('');
   const [{data,error:profileError},{count:countValue,error:countError},{data:latest,error:latestError}]=await Promise.all([
-   supabase.from('profiles').select('id,full_name,email,phone,avatar_url,city,language').eq('id',userId).maybeSingle(),
+   supabase.from('profiles').select('id,full_name,email,phone,whatsapp_phone,avatar_url,city,language').eq('id',userId).maybeSingle(),
    supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',userId),
    supabase.from('posts').select('id,title,status,created_at,visibility,post_type').eq('author_id',userId).order('created_at',{ascending:false}).limit(3)
   ]);
@@ -76,6 +78,7 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
   setProfile(next);
   setName(next?.full_name||'');
   setPhone(next?.phone||'');
+  setWhatsappPhone(next?.whatsapp_phone||'');
   setCity(next?.city||'هەولێر');
   setLanguage(next?.language||'ku');
   setAvatarUrl(next?.avatar_url||'');
@@ -106,6 +109,7 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
   if(!profile)return Boolean(file);
   return name.trim()!==(profile.full_name||'')
    ||phone.trim()!==(profile.phone||'')
+   ||whatsappPhone.trim()!==(profile.whatsapp_phone||'')
    ||city!==(profile.city||'هەولێر')
    ||language!==(profile.language||'ku')
    ||Boolean(file);
@@ -167,14 +171,16 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
   const trimmedName=name.trim();
   if(!trimmedName){setMessage('تکایە ناوی تەواو بنووسە.');return false;}
   if(trimmedName.length>80){setMessage('ناو نابێت لە ٨٠ پیت زیاتر بێت.');return false;}
-  if(phone.trim().length>20){setMessage('ژمارەی تەلەفون نابێت لە ٢٠ پیت زیاتر بێت.');return false;}
+  if(phone.trim().length<7||phone.trim().length>30){setMessage('ژمارەی مۆبایل پێویستە و دەبێت لە ٧ تا ٣٠ پیت بێت.');return false;}
+  if(whatsappPhone.trim().length<7||whatsappPhone.trim().length>30){setMessage('ژمارەی واتسئاپ پێویستە و دەبێت لە ٧ تا ٣٠ پیت بێت.');return false;}
   setSaving(true);
   setMessage('');
   try{
    const nextAvatar=await uploadAvatar();
    const {data,error}=await supabase.from('profiles').update({
     full_name:trimmedName,
-    phone:phone.trim()||null,
+    phone:phone.trim(),
+    whatsapp_phone:whatsappPhone.trim(),
     city:city||'هەولێر',
     language,
     avatar_url:nextAvatar
@@ -183,6 +189,7 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
    setProfile(data as ProfileRow);
    setName(data.full_name||'');
    setPhone(data.phone||'');
+   setWhatsappPhone(data.whatsapp_phone||'');
    setCity(data.city||'هەولێر');
    setLanguage(data.language||'ku');
    setAvatarUrl(data.avatar_url||'');
@@ -231,10 +238,12 @@ const ProfilePanel=forwardRef<ProfilePanelHandle,Props>(function ProfilePanel({u
   </div>
 
   <div className="profileSectionTitle"><div><span>زانیاریی کەسی</span><h3>پرۆفایلەکەت نوێ بکەرەوە</h3></div><small>ئیمەیڵ لێرە تەنها بۆ خوێندنەوەیە.</small></div>
+  {(!phone.trim()||!whatsappPhone.trim())&&<div className="profileContactRequiredNotice" role="alert"><ShieldCheck size={17}/><div><b>ژمارەکانی پەیوەندی پێویستن</b><small>بۆ تۆمارکردنی داواکاری، ژمارەی مۆبایل و واتسئاپت پاشەکەوت بکە.</small></div></div>}
 
   <div className="profileFormGrid">
    <label className="profileField">ناوی تەواو<input maxLength={80} autoComplete="name" value={name} onChange={e=>setName(e.target.value)} placeholder="ناوی تەواو"/></label>
-   <label className="profileField">ژمارەی تەلەفون<input maxLength={20} autoComplete="tel" value={phone} onChange={e=>setPhone(e.target.value)} inputMode="tel" placeholder="+964 7xx xxx xxxx"/></label>
+   <label className="profileField">ژمارەی مۆبایل <span className="profileRequiredMark">پێویستە</span><input required maxLength={30} autoComplete="tel" value={phone} onChange={e=>setPhone(e.target.value)} inputMode="tel" placeholder="+964 7xx xxx xxxx"/></label>
+   <label className="profileField">ژمارەی واتسئاپ <span className="profileRequiredMark">پێویستە</span><input required maxLength={30} autoComplete="tel" value={whatsappPhone} onChange={e=>setWhatsappPhone(e.target.value)} inputMode="tel" placeholder="+964 7xx xxx xxxx"/></label>
    <label className="profileField profileFieldWide">ئیمەیڵ<input value={profile?.email||''} readOnly aria-readonly="true" autoComplete="email"/></label>
    <label className="profileField">شار<select value={city} onChange={e=>setCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item} value={item}>{item}</option>)}</select></label>
   </div>
