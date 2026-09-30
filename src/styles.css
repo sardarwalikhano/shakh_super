@@ -1977,3 +1977,156 @@ html[data-theme='dark'] .couponApplied{
     transition:none!important;
   }
 }
+
+
+/* =========================================================
+   SHAKH — LIGHT MODE VISIBILITY GUARANTEE
+   Keep the premium dark presentation for dark mode, but never
+   allow dark-only header/hero rules to hide light-mode content.
+   ========================================================= */
+
+html:not([data-theme='dark']) .app header .nav>.plain,
+html:not([data-theme='dark']) .app header .nav>.cart,
+html:not([data-theme='dark']) .app header .nav>.locationIndicator,
+html:not([data-theme='dark']) .app header .nav>.themeToggleButton{
+  background:var(--surface)!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  box-shadow:none!important;
+}
+
+html:not([data-theme='dark']) .app header .nav>.plain:hover,
+html:not([data-theme='dark']) .app header .nav>.cart:hover,
+html:not([data-theme='dark']) .app header .nav>.locationIndicator:hover,
+html:not([data-theme='dark']) .app header .nav>.themeToggleButton:hover{
+  background:var(--surface-alt)!important;
+  color:var(--orange)!important;
+  border-color:var(--orange)!important;
+}
+
+html:not([data-theme='dark']) .app header .nav>.cart i{
+  background:var(--orange)!important;
+  color:#fff!important;
+  border-color:var(--surface)!important;
+}
+
+html:not([data-theme='dark']) .app header .logo{
+  background:var(--surface)!important;
+  border-color:var(--line)!important;
+}
+
+html:not([data-theme='dark']) .app header .search{
+  background:var(--surface-alt)!important;
+  border-color:var(--line)!important;
+  color:var(--muted)!important;
+}
+
+html:not([data-theme='dark']) .app header .search input{
+  background:transparent!important;
+  color:var(--text)!important;
+}
+
+html:not([data-theme='dark']) .app header .search input::placeholder{
+  color:var(--muted)!important;
+}
+
+/* Landing brand ribbon */
+html:not([data-theme='dark']) .app .brandRibbon{
+  background:
+    radial-gradient(circle at 12% 0%,rgba(255,255,255,.34),transparent 26%),
+    linear-gradient(135deg,#ff6b16,#d94f00)!important;
+  border-color:rgba(217,79,0,.20)!important;
+  box-shadow:0 18px 44px rgba(217,79,0,.16)!important;
+}
+
+html:not([data-theme='dark']) .app .brandRibbonLogo{
+  background:#fff!important;
+  border-color:rgba(255,255,255,.8)!important;
+}
+
+html:not([data-theme='dark']) .app .brandRibbonCopy b{
+  color:#fff!important;
+}
+
+html:not([data-theme='dark']) .app .brandRibbonCopy span{
+  color:#fff3e7!important;
+}
+
+/* Landing hero — light mode is intentionally bright and legible */
+html:not([data-theme='dark']) .app .hero{
+  background:
+    radial-gradient(circle at 90% 16%,rgba(255,124,42,.17),transparent 23%),
+    radial-gradient(circle at 10% 88%,rgba(49,126,202,.10),transparent 27%),
+    linear-gradient(135deg,#ffffff 0%,#fff9f3 48%,#f0f6ff 100%)!important;
+  border-color:#e8edf3!important;
+  box-shadow:0 28px 72px rgba(20,47,77,.10)!important;
+}
+
+html:not([data-theme='dark']) .app .hero .eyebrow{
+  color:#c65308!important;
+  background:#fff1e5!important;
+  border-color:#ffd7ba!important;
+}
+
+html:not([data-theme='dark']) .app .hero h1{
+  color:var(--text)!important;
+}
+
+html:not([data-theme='dark']) .app .hero h1 strong{
+  color:var(--orange)!important;
+}
+
+html:not([data-theme='dark']) .app .hero p{
+  color:#5d7086!important;
+}
+
+html:not([data-theme='dark']) .app .heroOrb{
+  background:
+    radial-gradient(circle at 30% 24%,#ffffff 0%,#f7fbfd 42%,#edf4f5 100%)!important;
+  border:1px solid #dce7ec!important;
+  box-shadow:0 30px 70px rgba(12,53,78,.13)!important;
+}
+
+html:not([data-theme='dark']) .app .heroOrb img{
+  filter:drop-shadow(0 18px 28px rgba(7,43,63,.12))!important;
+}
+
+/* Landing cards/features */
+html:not([data-theme='dark']) .app .postFeedFilters,
+html:not([data-theme='dark']) .app .features button,
+html:not([data-theme='dark']) .app .card,
+html:not([data-theme='dark']) .app .promotionCard{
+  background:var(--surface)!important;
+  border-color:var(--line)!important;
+  color:var(--text)!important;
+}
+
+html:not([data-theme='dark']) .app .postFeedFilters>button{
+  color:#5e7187!important;
+}
+
+html:not([data-theme='dark']) .app .postFeedFilters>button.active{
+  background:#123b68!important;
+  color:#fff!important;
+}
+
+/* Ensure common text/icon surfaces never inherit white from dark-only rules. */
+html:not([data-theme='dark']) .app .section .title h2,
+html:not([data-theme='dark']) .app .card h3,
+html:not([data-theme='dark']) .app .features button b,
+html:not([data-theme='dark']) .app .promotionCard b{
+  color:var(--text)!important;
+}
+
+html:not([data-theme='dark']) .app .features button small,
+html:not([data-theme='dark']) .app .card small,
+html:not([data-theme='dark']) .app .promotionCard p,
+html:not([data-theme='dark']) .app .promotionCard small{
+  color:var(--muted)!important;
+}
+
+@media(max-width:720px){
+  html:not([data-theme='dark']) .app .hero{
+    background:linear-gradient(145deg,#ffffff,#fff7ee 58%,#eef5ff)!important;
+  }
+}
