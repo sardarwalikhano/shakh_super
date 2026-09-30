@@ -27,6 +27,7 @@ const roleCategories=(role:string):Category[]=>{
   {id:'marketplace',kind:'store',value:'marketplace',label:'بازاڕ',description:'بەرهەمە گشتییەکانی شاخ',icon:Store},
   {id:'electronics',kind:'store',value:'electronics',label:'ئەلیکترۆنیات',description:'مۆبایل و ئامێرە ئەلیکترۆنییەکان',icon:Smartphone},
   {id:'jewelry',kind:'store',value:'jewelry',label:'جواهرات',description:'زێڕ، زیو و جواهرات',icon:Diamond},
+  {id:'car',kind:'role',value:'car',label:'ئۆتۆمبێل',description:'SHAKH Cars — بڵاوکردنەوەی ئۆتۆمبێل و پێشانگا',icon:Car},
   {id:'announcement',kind:'role',value:'announcement',label:'ئاگاداری',description:'ڕاگەیاندن و ئاگادارییەکانی شاخ',icon:Megaphone},
   {id:'support',kind:'role',value:'support',label:'پشتگیری',description:'پۆستی پشتیوانی و خزمەتگوزاری',icon:MessageCircle}
  ];
