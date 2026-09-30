@@ -244,6 +244,6 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
  </div>;
 }
 
-useEffect(()=>()=>{locationLookupAbortRef.current?.abort();if(locationLookupTimerRef.current!==null)window.clearTimeout(locationLookupTimerRef.current)},[]);
+ useEffect(()=>()=>{locationLookupAbortRef.current?.abort();if(locationLookupTimerRef.current!==null)window.clearTimeout(locationLookupTimerRef.current)},[]);
  const path=window.location.pathname;
 createRoot(document.getElementById('root')!).render(path==='/reset-password'?<PasswordReset/>:<App/>);
