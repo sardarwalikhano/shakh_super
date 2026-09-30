@@ -45,6 +45,7 @@ type NavItem = {
   label: string;
   description: string;
   icon: React.ElementType;
+  group?: string;
   show?: boolean;
 };
 
@@ -99,30 +100,35 @@ export default function DashboardShell({
     },
     {
       id: 'profile',
+      group: 'هەژمار و بەدواداچوون',
       label: 'پرۆفایل',
       description: 'ناو، تەلەفون، شار، زمان و وێنە',
       icon: UserRound,
     },
     {
       id: 'store',
+      group: 'هەژمار و بەدواداچوون',
       label: 'دوکانەکان',
       description: 'بینینی بازاڕ و ئۆردەر',
       icon: Store,
     },
     {
       id: 'orders',
+      group: 'هەژمار و بەدواداچوون',
       label: 'ئۆردەرەکان',
       description: 'بینین و بەدواداچوونی داواکارییەکان',
       icon: ClipboardList,
     },
     {
       id: 'delivery',
+      group: 'هەژمار و بەدواداچوون',
       label: 'گەیاندن',
       description: 'شوێنکەوتن و دۆخی گەیاندن',
       icon: Truck,
     },
     {
       id: 'delivery_zones',
+      group: 'هەژمار و بەدواداچوون',
       label: 'سنوری گەیاندن',
       description: 'ناوچە و سنوری خزمەتگوزاری',
       icon: MapPinned,
@@ -130,36 +136,42 @@ export default function DashboardShell({
     },
     {
       id: 'cars',
+      group: 'هەژمار و بەدواداچوون',
       label: 'SHAKH Cars',
       description: 'پێشانگا و ئۆتۆمبێلەکان',
       icon: Car,
     },
     {
       id: 'umrah',
+      group: 'هەژمار و بەدواداچوون',
       label: 'حەج و عومرە',
       description: 'حجز و زانیاریی گەشت',
       icon: Plane,
     },
     {
       id: 'wallet',
+      group: 'هەژمار و بەدواداچوون',
       label: 'جزدان',
       description: 'باڵانس، داهات و خاڵەکان',
       icon: WalletCards,
     },
     {
       id: 'notifications',
+      group: 'هەژمار و بەدواداچوون',
       label: 'ئاگادارکردنەوەکان',
       description: 'ئاگادارییەکانی ئۆردەر و هەژمار',
       icon: Bell,
     },
     {
       id: 'support',
+      group: 'هەژمار و بەدواداچوون',
       label: 'پشتگیری',
       description: 'تیکەت و بەدواداچوونی کێشەکان',
       icon: LifeBuoy,
     },
     {
       id: 'settings',
+      group: 'هەژمار و بەدواداچوون',
       label: 'ڕێکخستنەکان',
       description: 'هەژمار، ئاگاداری، شوێن و پلاتفۆرم',
       icon: Settings2,
@@ -266,30 +278,34 @@ export default function DashboardShell({
             </div>
 
             <nav className="dashboardShellNav">
-              {items.map((item) => {
+              {items.map((item, index) => {
                 const Icon = item.icon;
                 const isActive = item.id === view;
                 const isOrders = item.id === 'orders';
+                const previousGroup = items[index - 1]?.group;
+                const showGroup = Boolean(item.group && item.group !== previousGroup);
                 return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className={`dashboardShellNavItem ${isActive ? 'is-active' : ''}`}
-                    aria-current={isActive ? 'page' : undefined}
-                    onClick={() => onSelectView(item.id)}
-                  >
-                    <span className="dashboardShellNavIcon">
-                      <Icon size={18} strokeWidth={2} />
-                    </span>
-                    <span className="dashboardShellNavCopy">
-                      <strong>{item.label}</strong>
-                      <small>{item.description}</small>
-                    </span>
-                    {isOrders && activeOrders > 0 && (
-                      <span className="dashboardShellNavBadge">{activeOrders > 99 ? '99+' : activeOrders}</span>
-                    )}
-                    <ChevronLeft size={15} className="dashboardShellNavArrow" />
-                  </button>
+                  <React.Fragment key={item.id}>
+                    {showGroup && <div className="dashboardShellNavGroupLabel">{item.group}</div>}
+                    <button
+                      type="button"
+                      className={`dashboardShellNavItem ${isActive ? 'is-active' : ''}`}
+                      aria-current={isActive ? 'page' : undefined}
+                      onClick={() => onSelectView(item.id)}
+                    >
+                      <span className="dashboardShellNavIcon">
+                        <Icon size={18} strokeWidth={2} />
+                      </span>
+                      <span className="dashboardShellNavCopy">
+                        <strong>{item.label}</strong>
+                        <small>{item.description}</small>
+                      </span>
+                      {isOrders && activeOrders > 0 && (
+                        <span className="dashboardShellNavBadge">{activeOrders > 99 ? '99+' : activeOrders}</span>
+                      )}
+                      <ChevronLeft size={15} className="dashboardShellNavArrow" />
+                    </button>
+                  </React.Fragment>
                 );
               })}
             </nav>
@@ -338,41 +354,6 @@ export default function DashboardShell({
                     <span>کۆی نرخی ئۆردەر</span>
                     <strong>{money(totalValue)}</strong>
                     <small>لە زانیاریی بەردەست</small>
-                  </div>
-                </section>
-
-                <section className="dashboardShellServiceIndex" aria-labelledby="dashboard-services-title">
-                  <div className="dashboardShellSectionIntro">
-                    <div>
-                      <span>ناوەندی خزمەتگوزاری</span>
-                      <h2 id="dashboard-services-title">هەر شتێک لە شوێنی خۆی</h2>
-                    </div>
-                    <p>بەشی پێویست هەڵبژێرە؛ زانیارییەکان لە هەمان shell ـدا دەکرێنەوە.</p>
-                  </div>
-                  <div className="dashboardShellServiceList">
-                    {items.filter((item) => item.id !== 'home').map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          className="dashboardShellServiceRow"
-                          onClick={() => onSelectView(item.id)}
-                        >
-                          <span className="dashboardShellServiceIcon">
-                            <Icon size={20} />
-                          </span>
-                          <span className="dashboardShellServiceCopy">
-                            <strong>{item.label}</strong>
-                            <small>{item.description}</small>
-                          </span>
-                          <span className="dashboardShellServiceAction">
-                            کردنەوە
-                            <ChevronLeft size={16} />
-                          </span>
-                        </button>
-                      );
-                    })}
                   </div>
                 </section>
 
