@@ -1,0 +1,823 @@
+:root{
+  --dsx-bg:#eef2f6;
+  --dsx-surface:#ffffff;
+  --dsx-surface-alt:#f6f8fb;
+  --dsx-text:#10243f;
+  --dsx-muted:#6f8096;
+  --dsx-line:#dfe6ee;
+  --dsx-brand:#ff6a00;
+  --dsx-brand-soft:#fff1e7;
+  --dsx-blue:#184c7a;
+  --dsx-green:#138761;
+  --dsx-danger:#c94b4b;
+  --dsx-radius:18px;
+  --dsx-shadow:0 20px 60px rgba(16,36,63,.12);
+}
+
+html[data-theme='dark']{
+  --dsx-bg:#071321;
+  --dsx-surface:#0d1d30;
+  --dsx-surface-alt:#12243a;
+  --dsx-text:#edf4fc;
+  --dsx-muted:#9fb0c4;
+  --dsx-line:#243a54;
+  --dsx-brand:#ff8a3d;
+  --dsx-brand-soft:#372317;
+  --dsx-blue:#77a9d7;
+  --dsx-green:#41c08f;
+  --dsx-danger:#ef8585;
+}
+
+.dashboardShellBackdrop{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:grid;
+  place-items:center;
+  padding:2.5vh 2vw;
+  background:rgba(3,12,24,.74);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  overflow:hidden;
+}
+
+.dashboardShell{
+  position:relative;
+  width:min(1480px,96vw);
+  height:min(92vh,920px);
+  min-width:0;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:28px;
+  background:var(--dsx-bg);
+  color:var(--dsx-text);
+  box-shadow:0 38px 120px rgba(0,0,0,.28);
+}
+
+.dashboardShellHeader{
+  position:relative;
+  z-index:30;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:16px 20px;
+  border-bottom:1px solid var(--dsx-line);
+  background:var(--dsx-surface);
+}
+
+.dashboardShellIdentity,
+.dashboardShellHeaderActions{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.dashboardShellBrandMark{
+  width:52px;
+  height:52px;
+  flex:0 0 52px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--dsx-line);
+  border-radius:15px;
+  background:var(--dsx-surface-alt);
+  overflow:hidden;
+}
+
+.dashboardShellBrandMark img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.dashboardShellHeading{
+  min-width:0;
+}
+
+.dashboardShellOverline{
+  display:block;
+  margin-bottom:3px;
+  color:var(--dsx-brand);
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+  direction:ltr;
+  text-align:right;
+}
+
+.dashboardShellHeading h1{
+  margin:0;
+  color:var(--dsx-text);
+  font-size:clamp(20px,2vw,28px);
+  line-height:1.25;
+  font-weight:950;
+  letter-spacing:-.55px;
+}
+
+.dashboardShellHeading p{
+  margin:4px 0 0;
+  color:var(--dsx-muted);
+  font-size:11px;
+  line-height:1.75;
+  overflow-wrap:anywhere;
+}
+
+.dashboardShellAccount{
+  min-width:150px;
+  padding-inline-start:14px;
+  border-inline-start:1px solid var(--dsx-line);
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.dashboardShellAccount span{
+  color:var(--dsx-muted);
+  font-size:9px;
+  font-weight:800;
+}
+
+.dashboardShellAccount strong{
+  color:var(--dsx-text);
+  font-size:12px;
+  font-weight:950;
+}
+
+.dashboardShellAccount small{
+  color:var(--dsx-muted);
+  max-width:220px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  direction:ltr;
+  text-align:right;
+}
+
+.dashboardShellIconButton,
+.dashboardShellMobileMenu,
+.dashboardShellMobileClose{
+  appearance:none;
+  border:1px solid var(--dsx-line);
+  background:var(--dsx-surface-alt);
+  color:var(--dsx-text);
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  transition:background-color .2s ease,border-color .2s ease,transform .2s ease,color .2s ease;
+}
+
+.dashboardShellIconButton:hover,
+.dashboardShellMobileMenu:hover,
+.dashboardShellMobileClose:hover{
+  transform:translateY(-1px);
+  border-color:var(--dsx-brand);
+  color:var(--dsx-brand);
+  background:var(--dsx-brand-soft);
+}
+
+.dashboardShellClose:hover{
+  color:#fff;
+  background:var(--dsx-danger);
+  border-color:var(--dsx-danger);
+}
+
+.dashboardShellMobileMenu,
+.dashboardShellMobileClose{
+  display:none;
+}
+
+.dashboardShellBody{
+  position:relative;
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 300px;
+  grid-template-areas:"main sidebar";
+}
+
+.dashboardShellSidebar{
+  grid-area:sidebar;
+  min-width:0;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  padding:18px 14px;
+  border-inline-start:1px solid var(--dsx-line);
+  background:var(--dsx-surface);
+  overflow:auto;
+  scrollbar-width:thin;
+}
+
+.dashboardShellSidebarHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:3px 7px 14px;
+}
+
+.dashboardShellSidebarHead span{
+  display:block;
+  color:var(--dsx-muted);
+  font-size:9px;
+  font-weight:800;
+}
+
+.dashboardShellSidebarHead strong{
+  display:block;
+  margin-top:2px;
+  color:var(--dsx-text);
+  font-size:15px;
+  font-weight:950;
+}
+
+.dashboardShellNav{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.dashboardShellNavItem{
+  position:relative;
+  width:100%;
+  min-width:0;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid transparent;
+  border-radius:14px;
+  background:transparent;
+  color:var(--dsx-text);
+  text-align:right;
+  transition:background-color .18s ease,border-color .18s ease,transform .18s ease;
+}
+
+.dashboardShellNavItem:hover{
+  transform:translateX(-2px);
+  background:var(--dsx-surface-alt);
+  border-color:var(--dsx-line);
+}
+
+.dashboardShellNavItem.is-active{
+  background:var(--dsx-brand-soft);
+  border-color:rgba(255,106,0,.22);
+}
+
+.dashboardShellNavItem.is-active::before{
+  content:'';
+  position:absolute;
+  inset-inline-end:-14px;
+  width:3px;
+  height:26px;
+  border-radius:3px 0 0 3px;
+  background:var(--dsx-brand);
+}
+
+.dashboardShellNavIcon{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:var(--dsx-surface-alt);
+  color:var(--dsx-muted);
+  transition:background-color .18s ease,color .18s ease;
+}
+
+.dashboardShellNavItem.is-active .dashboardShellNavIcon,
+.dashboardShellNavItem:hover .dashboardShellNavIcon{
+  background:var(--dsx-brand);
+  color:#fff;
+}
+
+.dashboardShellNavCopy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.dashboardShellNavCopy strong{
+  min-width:0;
+  color:var(--dsx-text);
+  font-size:11px;
+  font-weight:900;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+}
+
+.dashboardShellNavCopy small{
+  min-width:0;
+  color:var(--dsx-muted);
+  font-size:8px;
+  line-height:1.7;
+  overflow-wrap:anywhere;
+}
+
+.dashboardShellNavBadge{
+  min-width:24px;
+  height:24px;
+  padding:0 6px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:var(--dsx-brand);
+  color:#fff;
+  font-size:8px;
+  font-weight:950;
+}
+
+.dashboardShellNavArrow{
+  color:#a1afbf;
+  flex:0 0 auto;
+}
+
+.dashboardShellSidebarFooter{
+  margin-top:auto;
+  padding:12px 10px 4px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border-top:1px solid var(--dsx-line);
+}
+
+.dashboardShellStatusDot{
+  width:9px;
+  height:9px;
+  flex:0 0 9px;
+  border-radius:50%;
+  background:var(--dsx-green);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--dsx-green) 12%,transparent);
+}
+
+.dashboardShellSidebarFooter strong{
+  display:block;
+  color:var(--dsx-text);
+  font-size:9px;
+  font-weight:900;
+}
+
+.dashboardShellSidebarFooter small{
+  display:block;
+  margin-top:2px;
+  color:var(--dsx-muted);
+  font-size:8px;
+}
+
+.dashboardShellMain{
+  grid-area:main;
+  min-width:0;
+  min-height:0;
+  overflow:auto;
+  background:
+    linear-gradient(180deg,var(--dsx-bg),var(--dsx-bg));
+  scrollbar-width:thin;
+}
+
+.dashboardShellToolbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px 20px;
+  border-bottom:1px solid var(--dsx-line);
+  background:color-mix(in srgb,var(--dsx-bg) 92%,transparent);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+
+.dashboardShellToolbar > div{
+  min-width:0;
+}
+
+.dashboardShellToolbar span{
+  display:block;
+  color:var(--dsx-muted);
+  font-size:8px;
+  font-weight:800;
+}
+
+.dashboardShellToolbar strong{
+  display:block;
+  margin-top:2px;
+  color:var(--dsx-text);
+  font-size:13px;
+  font-weight:950;
+}
+
+.dashboardShellDirty{
+  flex:0 0 auto;
+  padding:6px 9px;
+  border-radius:999px;
+  background:#fff3d9;
+  color:#936000;
+  font-size:8px!important;
+  font-weight:900!important;
+  white-space:nowrap;
+}
+
+html[data-theme='dark'] .dashboardShellDirty{
+  background:#3b2d13;
+  color:#ffcf75;
+}
+
+.dashboardShellOverview,
+.dashboardShellModule{
+  min-width:0;
+  padding:20px;
+}
+
+.dashboardShellStats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1px;
+  overflow:hidden;
+  border:1px solid var(--dsx-line);
+  border-radius:18px;
+  background:var(--dsx-line);
+}
+
+.dashboardShellStat{
+  min-width:0;
+  min-height:105px;
+  padding:17px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  background:var(--dsx-surface);
+}
+
+.dashboardShellStat + .dashboardShellStat{
+  border-inline-start:1px solid var(--dsx-line);
+}
+
+.dashboardShellStat span{
+  color:var(--dsx-muted);
+  font-size:9px;
+  font-weight:800;
+}
+
+.dashboardShellStat strong{
+  margin-top:4px;
+  color:var(--dsx-text);
+  font-size:24px;
+  line-height:1.25;
+  font-weight:950;
+  letter-spacing:-.5px;
+  overflow-wrap:anywhere;
+}
+
+.dashboardShellStat small{
+  margin-top:4px;
+  color:var(--dsx-muted);
+  font-size:8px;
+}
+
+.dashboardShellStat.is-attention strong{
+  color:var(--dsx-brand);
+}
+
+.dashboardShellStat.is-money strong{
+  font-size:18px;
+}
+
+.dashboardShellServiceIndex{
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px solid var(--dsx-line);
+}
+
+.dashboardShellSectionIntro{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:12px;
+}
+
+.dashboardShellSectionIntro > div{
+  min-width:0;
+}
+
+.dashboardShellSectionIntro span{
+  color:var(--dsx-brand);
+  font-size:9px;
+  font-weight:900;
+}
+
+.dashboardShellSectionIntro h2{
+  margin:4px 0 0;
+  color:var(--dsx-text);
+  font-size:22px;
+  line-height:1.3;
+  font-weight:950;
+  letter-spacing:-.5px;
+}
+
+.dashboardShellSectionIntro p{
+  max-width:360px;
+  margin:0;
+  color:var(--dsx-muted);
+  font-size:10px;
+  line-height:1.8;
+  text-align:left;
+}
+
+.dashboardShellServiceList{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1px;
+  border:1px solid var(--dsx-line);
+  border-radius:18px;
+  overflow:hidden;
+  background:var(--dsx-line);
+}
+
+.dashboardShellServiceRow{
+  min-width:0;
+  min-height:92px;
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  padding:13px 15px;
+  border:0;
+  border-radius:0;
+  background:var(--dsx-surface);
+  color:var(--dsx-text);
+  text-align:right;
+  transition:background-color .18s ease;
+}
+
+.dashboardShellServiceRow:hover{
+  background:var(--dsx-surface-alt);
+}
+
+.dashboardShellServiceIcon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:var(--dsx-brand-soft);
+  color:var(--dsx-brand);
+}
+
+.dashboardShellServiceCopy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+
+.dashboardShellServiceCopy strong{
+  color:var(--dsx-text);
+  font-size:12px;
+  font-weight:950;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+}
+
+.dashboardShellServiceCopy small{
+  color:var(--dsx-muted);
+  font-size:9px;
+  line-height:1.75;
+  overflow-wrap:anywhere;
+}
+
+.dashboardShellServiceAction{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  color:var(--dsx-blue);
+  font-size:8px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.dashboardShellHomeContent{
+  margin-top:18px;
+  min-width:0;
+}
+
+.dashboardShellModule{
+  min-height:100%;
+}
+
+.dashboardShellModule > .dashboard,
+.dashboardShellModule > .section,
+.dashboardShellModule > .vendor-dashboard{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+.dashboardShellModule > .dashboard > .dashboardHeader,
+.dashboardShellModule > .section > .title,
+.dashboardShellModule > .vendor-dashboard > .vendor-dashboard__header{
+  margin-top:0!important;
+}
+
+.dashboardShellModule .dashboardGrid{
+  min-width:0;
+}
+
+.dashboardShellModule img,
+.dashboardShellModule svg,
+.dashboardShellModule input,
+.dashboardShellModule select,
+.dashboardShellModule textarea,
+.dashboardShellModule button,
+.dashboardShellModule a{
+  max-width:100%;
+}
+
+.dashboardShellDrawerScrim{
+  display:none;
+}
+
+@media(max-width:1180px){
+  .dashboardShell{
+    width:97vw;
+    height:94vh;
+  }
+  .dashboardShellSidebar{
+    padding-inline:10px;
+  }
+  .dashboardShellBody{
+    grid-template-columns:minmax(0,1fr) 265px;
+  }
+  .dashboardShellServiceList{
+    grid-template-columns:1fr;
+  }
+  .dashboardShellStats{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .dashboardShellStat + .dashboardShellStat{
+    border-inline-start:0;
+  }
+  .dashboardShellStat:nth-child(n+3){
+    border-top:1px solid var(--dsx-line);
+  }
+}
+
+@media(max-width:860px){
+  .dashboardShellBackdrop{
+    padding:0;
+  }
+  .dashboardShell{
+    width:100vw;
+    height:100dvh;
+    border-radius:0;
+    border:0;
+  }
+  .dashboardShellBody{
+    grid-template-columns:1fr;
+    grid-template-areas:"main";
+  }
+  .dashboardShellSidebar{
+    position:absolute;
+    inset-block:0;
+    inset-inline-end:0;
+    z-index:25;
+    width:min(340px,88vw);
+    border-inline-start:1px solid var(--dsx-line);
+    box-shadow:-24px 0 70px rgba(0,0,0,.22);
+    transform:translateX(105%);
+    transition:transform .22s ease;
+  }
+  .dashboardShellSidebar.is-open{
+    transform:translateX(0);
+  }
+  .dashboardShellDrawerScrim{
+    position:absolute;
+    inset:0;
+    z-index:20;
+    display:block;
+    border:0;
+    background:rgba(3,12,24,.56);
+  }
+  .dashboardShellMobileMenu{
+    display:grid;
+  }
+  .dashboardShellMobileClose{
+    display:grid;
+  }
+  .dashboardShellHeaderActions{
+    gap:7px;
+  }
+  .dashboardShellAccount{
+    display:none;
+  }
+  .dashboardShellHeader{
+    padding:12px 14px;
+  }
+  .dashboardShellBrandMark{
+    width:46px;
+    height:46px;
+    flex-basis:46px;
+  }
+  .dashboardShellIdentity{
+    gap:9px;
+  }
+  .dashboardShellHeading h1{
+    font-size:19px;
+  }
+  .dashboardShellOverview,
+  .dashboardShellModule{
+    padding:15px;
+  }
+}
+
+@media(max-width:560px){
+  .dashboardShellStats{
+    grid-template-columns:1fr 1fr;
+  }
+  .dashboardShellStat{
+    min-height:92px;
+    padding:13px;
+  }
+  .dashboardShellStat strong{
+    font-size:20px;
+  }
+  .dashboardShellStat.is-money strong{
+    font-size:15px;
+  }
+  .dashboardShellSectionIntro{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:8px;
+  }
+  .dashboardShellSectionIntro h2{
+    font-size:19px;
+  }
+  .dashboardShellServiceRow{
+    min-height:82px;
+    grid-template-columns:42px minmax(0,1fr) auto;
+    gap:10px;
+    padding:11px;
+  }
+  .dashboardShellServiceIcon{
+    width:42px;
+    height:42px;
+  }
+  .dashboardShellServiceAction{
+    font-size:0;
+  }
+  .dashboardShellServiceAction svg{
+    width:17px;
+    height:17px;
+  }
+  .dashboardShellToolbar{
+    padding:11px 14px;
+  }
+  .dashboardShellDirty{
+    max-width:150px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
+
+@media(max-width:420px){
+  .dashboardShellStats{
+    grid-template-columns:1fr;
+  }
+  .dashboardShellStat + .dashboardShellStat{
+    border-top:1px solid var(--dsx-line);
+  }
+  .dashboardShellServiceRow{
+    grid-template-columns:40px minmax(0,1fr) auto;
+  }
+  .dashboardShellServiceIcon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+  }
+  .dashboardShellHeading p{
+    display:none;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dashboardShell *,
+  .dashboardShell *::before,
+  .dashboardShell *::after{
+    transition:none!important;
+    animation:none!important;
+  }
+}
