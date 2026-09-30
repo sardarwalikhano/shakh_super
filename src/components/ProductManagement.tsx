@@ -2,6 +2,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {Edit3,Save,Trash2,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
+type VariantInventoryEntry={size?:string;color?:string;shoe_size?:string;stock?:number;unlimited_stock?:boolean};
 type Product={
  id:string;
  store_id:string;
@@ -21,11 +22,13 @@ type Props={userId:string;role:string;onChanged?:()=>void};
 
 const variantSummary=(variants:unknown)=>{
  const sizes=new Set<string>(),colors=new Set<string>(),shoeSizes=new Set<string>();
- if(!Array.isArray(variants))return{sizes:[],colors:[],shoeSizes:[],unlimited:false};
+ if(!Array.isArray(variants))return{sizes:[],colors:[],shoeSizes:[],unlimited:false,inventory:[] as VariantInventoryEntry[]};
  const add=(target:Set<string>,value:unknown)=>{const values=Array.isArray(value)?value:[value];for(const item of values){if(typeof item==='string'&&item.trim())target.add(item.trim());else if(typeof item==='number')target.add(String(item))}};
  let unlimited=false;
- for(const item of variants){if(!item||typeof item!=='object')continue;const v=item as Record<string,unknown>;unlimited=unlimited||v.unlimited_stock===true;add(sizes,v.available_sizes);add(sizes,v.sizes);add(colors,v.available_colors);add(colors,v.colors);add(colors,v.color);add(shoeSizes,v.shoe_sizes);add(shoeSizes,v.shoeSizes);}
- return{sizes:[...sizes],colors:[...colors],shoeSizes:[...shoeSizes],unlimited};
+ const inventory:VariantInventoryEntry[]=[];
+ for(const item of variants){if(!item||typeof item!=='object')continue;const v=item as Record<string,unknown>;unlimited=unlimited||v.unlimited_stock===true;
+  if(Array.isArray(v.variant_inventory))for(const row of v.variant_inventory){if(row&&typeof row==='object'){const item=row as VariantInventoryEntry;inventory.push(item);unlimited=unlimited||item.unlimited_stock===true;}}add(sizes,v.available_sizes);add(sizes,v.sizes);add(colors,v.available_colors);add(colors,v.colors);add(colors,v.color);add(shoeSizes,v.shoe_sizes);add(shoeSizes,v.shoeSizes);}
+ return{sizes:[...sizes],colors:[...colors],shoeSizes:[...shoeSizes],unlimited,inventory};
 };
 
 const CLOTHING_SIZES=['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'];
@@ -37,7 +40,7 @@ const vendorCategories:Record<string,string[]>={
 };
 
 export default function ProductManagement({userId,role,onChanged}:Props){
- const [items,setItems]=useState<Product[]>([]),[loading,setLoading]=useState(true),[editing,setEditing]=useState<Product|null>(null),[editingVariants,setEditingVariants]=useState({sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[]}),[message,setMessage]=useState('');
+ const [items,setItems]=useState<Product[]>([]),[loading,setLoading]=useState(true),[editing,setEditing]=useState<Product|null>(null),[editingVariants,setEditingVariants]=useState({sizes:[] as string[],colors:[] as string[],shoeSizes:[] as string[]}),[editingVariantInventory,setEditingVariantInventory]=useState<VariantInventoryEntry[]>([]),[message,setMessage]=useState('');
 
  const load=async()=>{
   setLoading(true);
@@ -60,7 +63,12 @@ export default function ProductManagement({userId,role,onChanged}:Props){
  };
  const startEdit=(p:Product)=>{
   setEditing(p);
-  setEditingVariants(variantSummary(p.variants));
+  const summary=variantSummary(p.variants);
+  setEditingVariants(summary);
+  setEditingVariantInventory(summary.inventory);
+ };
+ const updateVariantInventory=(index:number,patch:Partial<VariantInventoryEntry>)=>{
+  setEditingVariantInventory(rows=>rows.map((row,i)=>i===index?{...row,...patch}:row));
  };
  const buildVariants=(p:Product)=>{
   const base=Array.isArray(p.variants)?p.variants:[];
@@ -69,6 +77,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
     available_sizes:editingVariants.sizes,
     available_colors:editingVariants.colors,
     shoe_sizes:editingVariants.shoeSizes,
+    ...(editingVariantInventory.length?{variant_inventory:editingVariantInventory}:{}),
   }:item):[{
     section:role,
     category:'fashion',
@@ -107,6 +116,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
   }
   setEditing(null);
   setEditingVariants({sizes:[],colors:[],shoeSizes:[]});
+  setEditingVariantInventory([]);
   setMessage('بەرهەمەکە نوێکرایەوە.');
   onChanged?.();
  };
@@ -139,7 +149,7 @@ export default function ProductManagement({userId,role,onChanged}:Props){
     const stock=Number(p.stock||0);
     const variants=variantSummary(p.variants);
     return editing?.id===p.id?<div className="orderCard" key={p.id}>
-     <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><b>دەستکاریکردنی بەرهەم</b><button className="plain" onClick={()=>{setEditing(null);setEditingVariants({sizes:[],colors:[],shoeSizes:[]})}}><X size={16}/></button></div>
+     <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><b>دەستکاریکردنی بەرهەم</b><button className="plain" onClick={()=>{setEditing(null);setEditingVariants({sizes:[],colors:[],shoeSizes:[]});setEditingVariantInventory([])}}><X size={16}/></button></div>
      <input value={editing.name_ku} onChange={e=>setEditing({...editing,name_ku:e.target.value})} placeholder="ناو"/>
      <input value={editing.product_type||''} onChange={e=>setEditing({...editing,product_type:e.target.value})} placeholder="جۆر"/>
      <input value={editing.brand||''} onChange={e=>setEditing({...editing,brand:e.target.value})} placeholder="مارکە"/>
@@ -152,6 +162,17 @@ export default function ProductManagement({userId,role,onChanged}:Props){
        <span>ڕەنگ</span><div className="postChoiceGrid postColorChoiceGrid">{COLORS.map(value=><button type="button" key={value} className={editingVariants.colors.includes(value)?'postChoiceChip active':'postChoiceChip'} onClick={()=>setEditVariant('colors',value)}>{value}</button>)}</div>
        <span>ژمارەی پێلاو</span><div className="postChoiceGrid">{SHOE_SIZES.map(value=><button type="button" key={value} className={editingVariants.shoeSizes.includes(value)?'postChoiceChip active':'postChoiceChip'} onClick={()=>setEditVariant('shoeSizes',value)}>{value}</button>)}</div>
      </div>}
+     {editingVariantInventory.length>0&&<div className="variantInventoryEditor">
+       <div className="postComposerLabel">📦 ستۆکی هەر هەڵبژاردە</div>
+       <div className="variantInventoryList">{editingVariantInventory.map((row,index)=><div className="variantInventoryRow" key={comboKey(row)+index}>
+        <div className="variantInventoryIdentity">{row.shoe_size&&<b>پێلاو {row.shoe_size}</b>}{row.size&&<b>قەبارە {row.size}</b>}{row.color&&<span>{row.color}</span>}</div>
+        <div className="variantInventoryControls">
+         <input inputMode="numeric" min="0" value={row.unlimited_stock?'':String(row.stock??0)} disabled={Boolean(row.unlimited_stock)} onChange={e=>updateVariantInventory(index,{stock:Math.max(0,Math.floor(Number(e.target.value)||0))})} placeholder="٠"/>
+         <button type="button" className={row.unlimited_stock?'postChoiceChip active':'postChoiceChip'} onClick={()=>updateVariantInventory(index,{unlimited_stock:!row.unlimited_stock})}>{row.unlimited_stock?'∞ بێ‌سنوور':'بێ‌سنوور ∞'}</button>
+        </div>
+       </div>)}</div>
+       <small>بڕی هەر قەبارە/ڕەنگ/ژمارە بە جیاوازی پاشەکەوت دەکرێت.</small>
+      </div>}
      {!editing.unlimited_stock&&<label>ژمارەی ستۆک<input type="number" min="0" step="1" value={String(editing.stock??0)} onChange={e=>setEditing({...editing,stock:Math.max(0,Math.floor(Number(e.target.value)||0))})} inputMode="numeric" placeholder="بڕی بەردەست"/></label>}
      <label><input type="checkbox" checked={editing.is_available||Boolean(editing.unlimited_stock)} onChange={e=>setEditing({...editing,is_available:e.target.checked})}/> لە بازاڕدا بەردەستە</label>
      <button className="primary full" onClick={()=>void update(editing)}><Save size={16}/> پاشەکەوتکردن</button>
