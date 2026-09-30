@@ -6030,3 +6030,74 @@ html[data-theme='dark'] .dashboardShellModule .deliveryZoneMapHint{
     animation:none!important;
   }
 }
+
+
+/* SHAKH — orders & delivery operations UI refinement */
+.dashboardShellModule .customer-orders-panel__orders,.dashboardShellModule .customer-orders-panel__detail{
+  background:var(--dsx-surface)!important;border:1px solid var(--dsx-line)!important;border-radius:18px!important;box-shadow:none!important;
+}
+.dashboardShellModule .customer-orders-panel__orders{position:sticky!important;top:12px!important;max-height:calc(100vh - 165px)!important;overflow:auto!important;scrollbar-width:thin}
+.dashboardShellModule .customer-orders-panel__detail{min-height:520px!important}
+.dashboardShellModule .customer-orders-panel__detail .summary{
+  background:var(--dsx-surface-alt)!important;border:1px solid var(--dsx-line)!important;border-top:1px solid var(--dsx-line)!important;border-radius:14px!important;padding:10px 12px!important;
+}
+.dashboardShellModule .customer-orders-panel__detail .summary>div{color:var(--dsx-muted)!important;border-bottom:1px solid color-mix(in srgb,var(--dsx-line) 75%,transparent)!important}
+.dashboardShellModule .customer-orders-panel__detail .summary>div:last-child{border-bottom:0!important}
+.dashboardShellModule .customer-orders-panel__detail .summary .grand{margin-top:7px!important;padding-top:11px!important;border-top:1px solid var(--dsx-line)!important}
+.dashboardShellModule .tracking-card__top{padding-bottom:12px!important;margin-bottom:12px!important;border-bottom:1px solid var(--dsx-line)!important}
+.dashboardShellModule .tracking-card__top h3{color:var(--dsx-text)!important;font-size:19px!important;font-weight:950!important}
+.dashboardShellModule .tracking-card__top svg{color:var(--dsx-brand)!important}
+.dashboardShellModule .tracking-card__timeline{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;padding:2px 0!important}
+.dashboardShellModule .tracking-step{position:relative!important;min-width:0!important;display:grid!important;justify-items:center!important;text-align:center!important;gap:6px!important;padding:9px 5px!important;border:1px solid var(--dsx-line)!important;border-radius:12px!important;background:var(--dsx-surface-alt)!important}
+.dashboardShellModule .tracking-step>span{width:28px!important;height:28px!important;display:grid!important;place-items:center!important;border-radius:50%!important;border:1px solid var(--dsx-line)!important;background:var(--dsx-surface)!important;color:var(--dsx-muted)!important;font-size:9px!important;font-weight:950!important}
+.dashboardShellModule .tracking-step.is-active{border-color:color-mix(in srgb,var(--dsx-brand) 30%,var(--dsx-line))!important;background:var(--dsx-brand-soft)!important}
+.dashboardShellModule .tracking-step.is-active>span{border-color:var(--dsx-brand)!important;background:var(--dsx-brand)!important;color:#fff!important}
+.dashboardShellModule .tracking-step strong{color:var(--dsx-text)!important;font-size:8px!important;line-height:1.5!important}
+.dashboardShellModule .tracking-step small{color:var(--dsx-brand)!important;font-size:6px!important;font-weight:900!important}
+.dashboardShellModule .locationPrivacyBanner,.dashboardShellModule .liveTrackingEmpty,.dashboardShellModule .tracking-card__footer{border-color:var(--dsx-line)!important;background:var(--dsx-surface-alt)!important;color:var(--dsx-muted)!important}
+.dashboardShellModule .liveDeliveryMapCard{overflow:hidden!important}
+.dashboardShellModule .liveDeliveryMapHeader strong{color:var(--dsx-text)!important;font-size:10px!important}
+.dashboardShellModule .liveDeliveryMapHeader small{color:var(--dsx-muted)!important}
+.dashboardShellModule .liveMapExternalLink,.dashboardShellModule .liveTrackingActions a{border-color:var(--dsx-line)!important;background:var(--dsx-surface-alt)!important;color:var(--dsx-text)!important}
+
+.dashboardShellModule .dashboard.platformOrderMonitor{padding:0!important}
+.dashboardShellModule .orderMonitorStats{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:1px!important;overflow:hidden!important;border:1px solid var(--dsx-line)!important;border-radius:16px!important;background:var(--dsx-line)!important}
+.dashboardShellModule .orderMonitorStats .orderMetricCard,.dashboardShellModule .orderMonitorStats .orderCard{border:0!important;border-radius:0!important;box-shadow:none!important;background:var(--dsx-surface)!important}
+.dashboardShellModule .orderMetricCard .metricIcon{background:var(--dsx-brand-soft)!important;color:var(--dsx-brand)!important}
+.dashboardShellModule .orderMetricCard strong{color:var(--dsx-text)!important}
+.dashboardShellModule .orderMetricCard span:not(.metricIcon){color:var(--dsx-muted)!important}
+.dashboardShellModule .orderMonitorControls{margin-top:13px!important;padding:12px!important;border:1px solid var(--dsx-line)!important;border-radius:16px!important;background:var(--dsx-surface)!important}
+.dashboardShellModule .orderMonitorSearchWrap{background:var(--dsx-surface-alt)!important;border-color:var(--dsx-line)!important;color:var(--dsx-muted)!important}
+.dashboardShellModule .orderMonitorSearchWrap input{color:var(--dsx-text)!important}
+.dashboardShellModule .orderMonitorFilterRow select{background:var(--dsx-surface-alt)!important;color:var(--dsx-text)!important;border-color:var(--dsx-line)!important}
+.dashboardShellModule .platformOrderCard{padding:15px!important;border:1px solid var(--dsx-line)!important;border-radius:17px!important;background:var(--dsx-surface)!important;box-shadow:none!important}
+.dashboardShellModule .platformOrderCard:hover{border-color:color-mix(in srgb,var(--dsx-brand) 28%,var(--dsx-line))!important}
+.dashboardShellModule .platformOrderSection,.dashboardShellModule .platformOrderItems{border-color:var(--dsx-line)!important;background:var(--dsx-surface-alt)!important}
+.dashboardShellModule .platformOrderSection strong,.dashboardShellModule .platformOrderItem b{color:var(--dsx-text)!important}
+.dashboardShellModule .platformOrderSection span,.dashboardShellModule .platformOrderItem,.dashboardShellModule .platformOrderMeta{color:var(--dsx-muted)!important}
+.dashboardShellModule .platformOrderFinance>div{background:var(--dsx-surface-alt)!important;color:var(--dsx-muted)!important}
+.dashboardShellModule .platformOrderFinance>div b{color:var(--dsx-text)!important}
+.dashboardShellModule .platformOrderFinance>div.grand{background:var(--dsx-brand-soft)!important;color:var(--dsx-brand)!important}
+.dashboardShellModule .platformOrderFinance>div.grand b{color:var(--dsx-brand)!important}
+.dashboardShellModule .captainBroadcastBox{border-color:color-mix(in srgb,var(--dsx-green) 25%,var(--dsx-line))!important;background:color-mix(in srgb,var(--dsx-green) 5%,var(--dsx-surface))!important}
+.dashboardShellModule .captainBroadcastBox b{color:var(--dsx-text)!important}
+.dashboardShellModule .captainBroadcastBox small{color:var(--dsx-muted)!important}
+.dashboardShellModule .whatsappSendButton{border-color:color-mix(in srgb,var(--dsx-green) 24%,var(--dsx-line))!important;background:color-mix(in srgb,var(--dsx-green) 8%,var(--dsx-surface))!important}
+.dashboardShellModule .assignedCaptainCard{border-color:var(--dsx-line)!important;background:var(--dsx-surface-alt)!important;color:var(--dsx-text)!important}
+
+@media(max-width:980px){
+ .dashboardShellModule .customer-orders-panel__orders{position:static!important;max-height:none!important}
+ .dashboardShellModule .tracking-card__timeline{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .dashboardShellModule .orderMonitorStats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .dashboardShellModule .platformOrderGrid{grid-template-columns:1fr!important}
+}
+@media(max-width:680px){
+ .dashboardShellModule .customer-orders-panel__grid{grid-template-columns:1fr!important;gap:10px!important}
+ .dashboardShellModule .customer-orders-panel__orders,.dashboardShellModule .customer-orders-panel__detail{padding:10px!important;border-radius:14px!important}
+ .dashboardShellModule .tracking-card__timeline{grid-template-columns:1fr 1fr!important}
+ .dashboardShellModule .etaCard{grid-template-columns:1fr!important}
+}
+@media(max-width:440px){
+ .dashboardShellModule .orderMonitorStats{grid-template-columns:1fr 1fr!important}
+ .dashboardShellModule .tracking-card__timeline{grid-template-columns:1fr!important}
+}
