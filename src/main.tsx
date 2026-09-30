@@ -163,35 +163,38 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   if(!user)return null;
   if(dashboardView==='services'){
    const serviceItems=[
-    {id:'profile' as const,label:'پرۆفایل',description:'ناو، تەلەفون، شار، زمان و وێنە',icon:UserIcon},
-    {id:'store' as const,label:'دوکان و پێشانگا',description:'بازاڕ، دوکان و بەرهەمەکانی شاخ',icon:Store},
-    {id:'orders' as const,label:'ئۆردەرەکان',description:'بینین و بەدواداچوونی داواکارییەکان',icon:ClipboardList},
-    {id:'delivery' as const,label:'گەیاندن',description:'شوێنکەوتن و دۆخی گەیاندن',icon:Truck},
+    {id:'profile' as const,label:'پرۆفایل',description:'ناو، تەلەفون، شار، زمان و وێنە',icon:UserIcon,group:'هەژمار',tone:'indigo'},
+    {id:'store' as const,label:'دوکان و پێشانگا',description:'بازاڕ، دوکان و بەرهەمەکانی شاخ',icon:Store,group:'بازاڕ و گەیاندن',tone:'orange'},
+    {id:'orders' as const,label:'ئۆردەرەکان',description:'بینین و بەدواداچوونی داواکارییەکان',icon:ClipboardList,group:'بازاڕ و گەیاندن',tone:'blue'},
+    {id:'delivery' as const,label:'گەیاندن',description:'شوێنکەوتن و دۆخی گەیاندن',icon:Truck,group:'بازاڕ و گەیاندن',tone:'green'},
     ...( ['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor','super_admin','admin'].includes(role)
-      ? [{id:'delivery_zones' as const,label:'سنوری گەیاندن',description:'ناوچە و سنوری خزمەتگوزاریی شاخ',icon:MapPin}]
+      ? [{id:'delivery_zones' as const,label:'سنوری گەیاندن',description:'ناوچە و سنوری خزمەتگوزاریی شاخ',icon:MapPin,group:'بازاڕ و گەیاندن',tone:'sky'}]
       : [] ),
-    {id:'cars' as const,label:'SHAKH Cars',description:'پێشانگا و بەڕێوەبردنی ئۆتۆمبێل',icon:Car},
-    {id:'umrah' as const,label:'حەج و عومرە',description:'پەکەج و حجزکردنی گەشت',icon:Plane},
-    {id:'wallet' as const,label:'جزدان',description:'باڵانس، مامەڵە و خاڵەکان',icon:Wallet},
-    {id:'notifications' as const,label:'ئاگادارکردنەوەکان',description:'ئاگادارییە نوێیەکانی هەژمار و ئۆردەر',icon:Bell},
-    {id:'support' as const,label:'پشتگیری',description:'تیکەت و پەیوەندی لەگەڵ پشتگیری',icon:MessageCircle},
-    {id:'settings' as const,label:'ڕێکخستنەکان',description:'ڕوکار، ئاگاداری، شوێن و هەژمار',icon:Settings},
+    {id:'cars' as const,label:'SHAKH Cars',description:'پێشانگا و بەڕێوەبردنی ئۆتۆمبێل',icon:Car,group:'خزمەتگوزاری تایبەت',tone:'violet'},
+    {id:'umrah' as const,label:'حەج و عومرە',description:'پەکەج و حجزکردنی گەشت',icon:Plane,group:'خزمەتگوزاری تایبەت',tone:'teal'},
+    {id:'wallet' as const,label:'جزدان',description:'باڵانس، مامەڵە و خاڵەکان',icon:Wallet,group:'خزمەتگوزاری تایبەت',tone:'gold'},
+    {id:'notifications' as const,label:'ئاگادارکردنەوەکان',description:'ئاگاداریی نوێی هەژمار و ئۆردەر',icon:Bell,group:'بەڕێوەبردنی هەژمار',tone:'rose'},
+    {id:'support' as const,label:'پشتگیری',description:'تیکەت و پەیوەندی لەگەڵ پشتگیری',icon:MessageCircle,group:'بەڕێوەبردنی هەژمار',tone:'cyan'},
+    {id:'settings' as const,label:'ڕێکخستنەکان',description:'ڕوکار، ئاگاداری، شوێن و هەژمار',icon:Settings,group:'بەڕێوەبردنی هەژمار',tone:'slate'},
    ];
    return <section className="dashboardAccountServices" aria-labelledby="dashboard-account-services-title">
     <div className="dashboardAccountServicesHero">
      <div>
       <span>ناوەندی خزمەتگوزاری</span>
-      <h2 id="dashboard-account-services-title">هەموو خزمەتگوزارییەکان لە یەک شوێن</h2>
-      <p>تەنها ئەو بەشە هەڵبژێرە کە پێویستتە؛ پاش کلیک، تەنها هەمان بەش لە ناو داشبۆرد دەکرێتەوە.</p>
+      <h2 id="dashboard-account-services-title">هەموو بەشەکانی شاخ لە یەک شوێن</h2>
+      <p>بەشێک هەڵبژێرە؛ داشبۆرد هەمان کاتەگۆری تەنها پیشان دەدات و ناوبەر و هێدەر لە شوێنی خۆیان دەمێننەوە.</p>
      </div>
      <div className="dashboardAccountServicesCount"><strong>{serviceItems.length.toLocaleString('ku-IQ')}</strong><small>بەشی بەردەست</small></div>
     </div>
     <div className="dashboardAccountServicesGrid">
-     {serviceItems.map(item=>{const Icon=item.icon;return <button key={item.id} type="button" className={`dashboardAccountServiceCard ${dashboardView===item.id?'is-active':''}`} onClick={()=>openDashboard(item.id)}>
-      <span className="dashboardAccountServiceCardIcon"><Icon size={20}/></span>
-      <span className="dashboardAccountServiceCardCopy"><strong>{item.label}</strong><small>{item.description}</small></span>
-      <span className="dashboardAccountServiceCardArrow"><ArrowLeft size={16}/></span>
-     </button>})}
+     {serviceItems.map((item,index)=>{const Icon=item.icon;const previousGroup=serviceItems[index-1]?.group;const showGroup=item.group!==previousGroup;return <React.Fragment key={item.id}>
+      {showGroup&&<div className="dashboardAccountServicesGroupLabel">{item.group}</div>}
+      <button key={item.id} type="button" className="dashboardAccountServiceCard" data-tone={item.tone} onClick={()=>openDashboard(item.id)}>
+       <span className="dashboardAccountServiceCardIcon"><Icon size={20}/></span>
+       <span className="dashboardAccountServiceCardCopy"><strong>{item.label}</strong><small>{item.description}</small></span>
+       <span className="dashboardAccountServiceCardArrow"><ArrowLeft size={16}/></span>
+      </button>
+     </React.Fragment>})}
     </div>
    </section>;
   }
