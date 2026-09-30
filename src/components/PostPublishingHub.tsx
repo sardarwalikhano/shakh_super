@@ -2,6 +2,7 @@ import React,{useEffect,useMemo,useState} from 'react';
 import {Megaphone,MessageCircle,ShoppingBag,Truck,Car,Plane,Store,Shirt,Smartphone,Diamond,Utensils,LayoutGrid,ArrowRight} from 'lucide-react';
 import ShakhStorePostComposer from './ShakhStorePostComposer';
 import RolePostComposer from './RolePostComposer';
+import VehicleShowroomModule from './VehicleShowroomModule';
 
 type Props={userId:string;role:string;onSaved?:()=>void};
 
@@ -75,7 +76,9 @@ export default function PostPublishingHub({userId,role,onSaved}:Props){
   {selected&&<div className="postHubSelectedForm">
    {selected.kind==='store'
     ?<ShakhStorePostComposer key={selected.id} userId={userId} initialSection={selected.value} hideSectionSelector onBack={()=>setSelected(null)}/>
-    :<RolePostComposer key={selected.id} userId={userId} role={role} initialType={selected.value} hideTypeSelector onBack={()=>setSelected(null)} onSaved={onSaved}/>
+    :selected.value==='car'
+      ?<VehicleShowroomModule key={selected.id} userId={userId} isAdmin={role==='super_admin'||role==='admin'} role={role}/>
+      :<RolePostComposer key={selected.id} userId={userId} role={role} initialType={selected.value} hideTypeSelector onBack={()=>setSelected(null)} onSaved={onSaved}/>
    }
   </div>}
  </section>;
