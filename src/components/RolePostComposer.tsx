@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {CheckCircle2,Eye,ImagePlus,Send,Sparkles,Tag,Upload,X} from 'lucide-react';
+import {Eye,ImagePlus,Send,Sparkles,Tag,Upload,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
 type Props={userId:string;role:string;onSaved?:()=>void;initialType?:string;hideTypeSelector?:boolean;onBack?:()=>void};
