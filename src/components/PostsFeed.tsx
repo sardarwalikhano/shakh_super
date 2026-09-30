@@ -19,7 +19,7 @@ const labelFor=(type?:string|null,label?:string|null)=>label||TYPES.find(item=>i
 const detailsOf=(post:Post)=>post.listing_details||{};
 const listDetail=(post:Post,key:string):string[]=>{
  const value=detailsOf(post)[key];
- if(Array.isArray(value))return value.filter((v):v is string=>typeof v==='string'||typeof v==='number').map(String);
+ if(Array.isArray(value))return value.filter(v=>typeof v==='string'||typeof v==='number').map(String);
  if(typeof value==='string'&&value.trim())return value.split(',').map(v=>v.trim()).filter(Boolean);
  if(typeof value==='number')return [String(value)];
  return[];
