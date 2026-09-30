@@ -1,111 +1,75 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Activity, Clock3, Package, RefreshCw, Search, Truck, Store, UserRound } from 'lucide-react';
+import { Activity, Clock3, Package, RefreshCw, Search, Truck, Store, UserRound, MapPin, MessageCircle, Navigation, CreditCard, ListChecks } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { buildWhatsAppOrderText, buildWhatsAppUrl } from '../lib/whatsapp';
 
-type Order = {
-  id: string;
-  status: string;
-  total_iqd: number | null;
-  delivery_fee_iqd: number | null;
-  created_at: string;
-  customer_id: string | null;
-  captain_id: string | null;
-  store_id: string | null;
-};
+type Item={product_id:string|null;product_name:string;quantity:number;unit_price_iqd:number;options?:Record<string,unknown>|null};
+type Order={id:string;status:string;subtotal_iqd:number|null;delivery_fee_iqd:number|null;platform_fee_iqd:number|null;discount_iqd:number|null;total_iqd:number|null;payment_method:string|null;payment_status:string|null;created_at:string;updated_at:string|null;customer_id:string|null;captain_id:string|null;store_id:string|null;address_id:string|null;customer?:{id:string;full_name:string|null;phone:string|null;whatsapp_phone:string|null}|null;store?:{id:string;name:string|null;address:string|null;city:string|null;latitude:number|null;longitude:number|null}|null;delivery_address?:{id:string;label:string|null;address:string|null;delivery_note:string|null;city:string|null;latitude:number|null;longitude:number|null}|null;items:Item[]};
+type OnlineCaptain={id:string;full_name:string|null;phone:string|null;whatsapp_phone:string|null};
+const STATUS:Record<string,string>={pending:'چاوەڕوان',accepted:'قبوڵکراو',preparing:'لە ئامادەکردندایە',ready_for_pickup:'ئامادەی وەرگرتن',assigned_to_captain:'کاپتن دیاریکراوە',picked_up:'وەرگیراوە',on_the_way:'لە ڕێگادایە',delivered:'گەیەندراوە',cancelled:'هەڵوەشێنراوەتەوە'};
 
-const STATUS: Record<string, string> = {
-  pending: 'چاوەڕوان',
-  accepted: 'قبوڵکراو',
-  preparing: 'لە ئامادەکردندایە',
-  ready_for_pickup: 'ئامادەی وەرگرتن',
-  assigned_to_captain: 'کاپتن دیاریکراوە',
-  picked_up: 'وەرگیراوە',
-  on_the_way: 'لە ڕێگادایە',
-  delivered: 'گەیەندراوە',
-  cancelled: 'هەڵوەشێنراوەتەوە',
-};
+export default function SuperAdminOrderMonitor(){
+ const [orders,setOrders]=useState<Order[]>([]),[status,setStatus]=useState('all'),[query,setQuery]=useState(''),[loading,setLoading]=useState(true),[error,setError]=useState(''),[captains,setCaptains]=useState<OnlineCaptain[]>([]),[captainsLoading,setCaptainsLoading]=useState(false);
 
-export default function SuperAdminOrderMonitor() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [status, setStatus] = useState('all');
-  const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+ const load=useCallback(async()=>{
+  setLoading(true);setError('');
+  try{
+   const {data:rows,error:oe}=await supabase.from('orders').select('id,status,subtotal_iqd,delivery_fee_iqd,platform_fee_iqd,discount_iqd,total_iqd,payment_method,payment_status,created_at,updated_at,customer_id,captain_id,store_id,address_id').order('created_at',{ascending:false}).limit(200);
+   if(oe)throw oe;
+   const base=rows??[],customerIds=[...new Set(base.map((r:any)=>r.customer_id).filter(Boolean))],storeIds=[...new Set(base.map((r:any)=>r.store_id).filter(Boolean))],addressIds=[...new Set(base.map((r:any)=>r.address_id).filter(Boolean))],orderIds=base.map((r:any)=>r.id);
+   const [cr,sr,ar,ir]=await Promise.all([
+    customerIds.length?supabase.from('profiles').select('id,full_name,phone,whatsapp_phone').in('id',customerIds):Promise.resolve({data:[],error:null}),
+    storeIds.length?supabase.from('stores').select('id,name,address,city,latitude,longitude').in('id',storeIds):Promise.resolve({data:[],error:null}),
+    addressIds.length?supabase.from('delivery_addresses').select('id,label,address,delivery_note,city,latitude,longitude').in('id',addressIds):Promise.resolve({data:[],error:null}),
+    orderIds.length?supabase.from('order_items').select('order_id,product_id,product_name,quantity,unit_price_iqd,options').in('order_id',orderIds):Promise.resolve({data:[],error:null})
+   ]);
+   if(cr.error)throw cr.error;if(sr.error)throw sr.error;if(ar.error)throw ar.error;if(ir.error)throw ir.error;
+   const cm=new Map((cr.data??[]).map((x:any)=>[x.id,x])),sm=new Map((sr.data??[]).map((x:any)=>[x.id,x])),am=new Map((ar.data??[]).map((x:any)=>[x.id,x])),im=new Map<string,Item[]>();
+   (ir.data??[]).forEach((x:any)=>{const list=im.get(x.order_id)??[];list.push({product_id:x.product_id??null,product_name:String(x.product_name??'بەرهەم'),quantity:Number(x.quantity??0),unit_price_iqd:Number(x.unit_price_iqd??0),options:x.options??{}});im.set(x.order_id,list)});
+   setOrders(base.map((row:any)=>({...row,customer:cm.get(row.customer_id)??null,store:sm.get(row.store_id)??null,delivery_address:am.get(row.address_id)??null,items:im.get(row.id)??[]})) as Order[]);
+  }catch(err){setError(err instanceof Error?err.message:'نەتوانرا زانیاریی تەواوی ئۆردەرەکان وەرگیرێت.')}
+  finally{setLoading(false)}
+ },[]);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    const { data, error: requestError } = await supabase
-      .from('orders')
-      .select('id,status,total_iqd,delivery_fee_iqd,created_at,customer_id,captain_id,store_id')
-      .order('created_at', { ascending: false })
-      .limit(200);
-    if (requestError) setError(requestError.message);
-    else setOrders((data ?? []) as Order[]);
-    setLoading(false);
-  }, []);
+ const loadCaptains=useCallback(async()=>{
+  setCaptainsLoading(true);
+  try{
+   const {data,error:e}=await supabase.from('captains').select('user_id').eq('is_online',true);
+   if(e)throw e;const ids=[...new Set((data??[]).map((x:any)=>x.user_id).filter(Boolean))];
+   if(!ids.length){setCaptains([]);return}
+   const {data:ps,error:pe}=await supabase.from('profiles').select('id,full_name,phone,whatsapp_phone').in('id',ids);
+   if(pe)throw pe;setCaptains((ps??[]) as OnlineCaptain[]);
+  }catch(err){setCaptains([]);setError(err instanceof Error?err.message:'نەتوانرا کاپتنە ئۆنلاینەکان وەرگیرێن.')}
+  finally{setCaptainsLoading(false)}
+ },[]);
 
-  useEffect(() => {
-    void load();
-    const channel = supabase
-      .channel('super-admin-orders-live')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => void load())
-      .subscribe();
-    return () => { void supabase.removeChannel(channel); };
-  }, [load]);
+ useEffect(()=>{void load();void loadCaptains();const ch=supabase.channel('super-admin-orders-live').on('postgres_changes',{event:'*',schema:'public',table:'orders'},()=>{void load();void loadCaptains()}).on('postgres_changes',{event:'*',schema:'public',table:'captains'},()=>void loadCaptains()).subscribe();return()=>{void supabase.removeChannel(ch)}},[load,loadCaptains]);
 
-  const filtered = useMemo(() => orders.filter((order) => {
-    const matchesStatus = status === 'all' || order.status === status;
-    const matchesQuery = !query || order.id.toLowerCase().includes(query.toLowerCase());
-    return matchesStatus && matchesQuery;
-  }), [orders, query, status]);
+ const filtered=useMemo(()=>{const q=query.trim().toLowerCase();return orders.filter(o=>(status==='all'||o.status===status)&&(!q||o.id.toLowerCase().includes(q)||(o.customer?.full_name||'').toLowerCase().includes(q)||(o.store?.name||'').toLowerCase().includes(q)))},[orders,query,status]);
+ const active=orders.filter(o=>!['delivered','cancelled'].includes(o.status)).length,delivered=orders.filter(o=>o.status==='delivered').length,revenue=orders.reduce((s,o)=>s+Number(o.total_iqd??0),0);
 
-  const active = orders.filter((o) => !['delivered', 'cancelled'].includes(o.status)).length;
-  const delivered = orders.filter((o) => o.status === 'delivered').length;
-  const revenue = orders.reduce((sum, o) => sum + Number(o.total_iqd ?? 0), 0);
+ const sendToCaptain=(order:Order,captain:OnlineCaptain)=>{const phone=captain.whatsapp_phone||captain.phone;if(!phone){setError('ئەم کاپتنە ژمارەی واتسئاپی نییە.');return}const text=buildWhatsAppOrderText({orderId:order.id,status:order.status,store:order.store,deliveryAddress:order.delivery_address,items:order.items,subtotal_iqd:order.subtotal_iqd,delivery_fee_iqd:order.delivery_fee_iqd,platform_fee_iqd:order.platform_fee_iqd,discount_iqd:order.discount_iqd,total_iqd:order.total_iqd,payment_method:order.payment_method,payment_status:order.payment_status,customer:order.customer});window.open(buildWhatsAppUrl(phone,text),'_blank','noopener,noreferrer')};
 
-  return (
-    <section className="dashboard" dir="rtl">
-      <div className="dashboardHeader">
-        <div>
-          <span className="eyebrow"><Activity size={16} /> چاودێری ئۆردەر</span>
-          <h2>Super Admin · Order Monitor</h2>
-          <p>هەموو ئۆردەرەکان لە یەک شوێن، بە نوێکردنەوەی Realtime.</p>
-        </div>
-        <button className="plain" onClick={() => void load()} disabled={loading} aria-label="نوێکردنەوە"><RefreshCw size={18} /></button>
-      </div>
-
-      {error && <div className="msg">{error}</div>}
-
-      <div className="orderMonitorStats dashboardGrid">
-        <div className="orderCard"><Package size={22} /><strong>{orders.length}</strong><span>کۆی ئۆردەر</span></div>
-        <div className="orderCard"><Truck size={22} /><strong>{active}</strong><span>ئۆردەری چالاک</span></div>
-        <div className="orderCard"><Store size={22} /><strong>{delivered}</strong><span>گەیەندراوە</span></div>
-      </div>
-
-      <div className="orderMonitorControls orderCard">
-        <label className="orderMonitorSearch"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="گەڕان بە ID ـی ئۆردەر..." aria-label="گەڕان بە ID ـی ئۆردەر" /></label>
-        <div className="orderMonitorFilterRow">
-          <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="فلتەری دۆخی ئۆردەر">
-            <option value="all">هەموو دۆخەکان</option>
-            {Object.entries(STATUS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
-          </select>
-          <span>کۆی نرخی پیشاندراو: {revenue.toLocaleString('ku-IQ')} دینار</span>
-        </div>
-      </div>
-
-      <div className="orderMonitorList dashboardGrid">
-        {loading ? <div className="empty">چاوەڕوان بە...</div> : filtered.length === 0 ? <div className="empty">هیچ ئۆردەرێک نەدۆزرایەوە.</div> : filtered.map((order) => (
-          <article className="orderCard" key={order.id}>
-            <div className="orderCardTop"><strong>#{order.id.slice(0, 8)}</strong><span>{STATUS[order.status] || order.status}</span></div>
-            <div className="orderMeta"><Clock3 size={15} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</div>
-            <div className="orderMeta"><UserRound size={15} /> کڕیار: {order.customer_id ? order.customer_id.slice(0, 8) : '—'}</div>
-            <div className="orderMeta"><Store size={15} /> دوکان: {order.store_id ? order.store_id.slice(0, 8) : '—'}</div>
-            <div className="orderMeta"><Truck size={15} /> کاپتن: {order.captain_id ? order.captain_id.slice(0, 8) : 'دیارینەکراوە'}</div>
-            <div className="orderTotal">{Number(order.total_iqd ?? 0).toLocaleString('ku-IQ')} دینار</div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
+ return <section className="dashboard platformOrderMonitor" dir="rtl">
+  <div className="dashboardHeader"><div><span className="eyebrow"><Activity size={16}/> چاودێری ئۆردەر</span><h2>چاودێری ئۆردەری پلاتفۆرم</h2><p>تەواوی زانیاریی کڕیار، دوکان، شوێنی ورد، بەرهەم، پارەدان و گەیاندن.</p></div><button className="plain" type="button" onClick={()=>{void load();void loadCaptains()}} disabled={loading} aria-label="نوێکردنەوە"><RefreshCw size={18}/></button></div>
+  {error&&<div className="msg" role="alert">{error}</div>}
+  <div className="orderMonitorStats dashboardGrid"><div className="orderCard"><Package size={22}/><strong>{orders.length}</strong><span>کۆی ئۆردەر</span></div><div className="orderCard"><Truck size={22}/><strong>{active}</strong><span>ئۆردەری چالاک</span></div><div className="orderCard"><Store size={22}/><strong>{delivered}</strong><span>گەیەندراوە</span></div></div>
+  <div className="orderMonitorControls orderCard"><label className="orderMonitorSearch"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="گەڕان بە ID، کڕیار یان دوکان..." aria-label="گەڕان"/></label><div className="orderMonitorFilterRow"><select value={status} onChange={e=>setStatus(e.target.value)} aria-label="فلتەر"><option value="all">هەموو دۆخەکان</option>{Object.entries(STATUS).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select><span>کۆی نرخی پیشاندراو: {revenue.toLocaleString('ku-IQ')} دینار</span></div></div>
+  <div className="orderMonitorList dashboardGrid">
+   {loading?<div className="empty">چاوەڕوان بە...</div>:filtered.length===0?<div className="empty">هیچ ئۆردەرێک نەدۆزرایەوە.</div>:filtered.map(order=><article className="orderCard platformOrderCard" key={order.id}>
+    <div className="orderCardTop"><strong>#{order.id.slice(0,8)}</strong><span>{STATUS[order.status]||order.status}</span></div>
+    <div className="platformOrderGrid">
+     <div className="platformOrderSection"><div className="platformOrderSectionHead"><UserRound size={15}/><b>کڕیار</b></div><strong>{order.customer?.full_name||'ناوی دیاری نەکراوە'}</strong><span>{order.customer?.phone||'ژمارەی مۆبایل نییە'}</span>{order.customer?.whatsapp_phone&&<span>واتسئاپ: {order.customer.whatsapp_phone}</span>}</div>
+     <div className="platformOrderSection"><div className="platformOrderSectionHead"><Store size={15}/><b>دوکان</b></div><strong>{order.store?.name||'دوکان دیاری نەکراوە'}</strong><span>{[order.store?.address,order.store?.city].filter(Boolean).join(' — ')||'ناونیشان نییە'}</span></div>
+     <div className="platformOrderSection"><div className="platformOrderSectionHead"><MapPin size={15}/><b>شوێنی وردی گەیاندن</b></div><strong>{order.delivery_address?.address||'شوێنی ورد نییە'}</strong><span>{[order.delivery_address?.city,order.delivery_address?.delivery_note].filter(Boolean).join(' — ')}</span></div>
+    </div>
+    {order.items.length>0&&<div className="platformOrderItems"><div className="platformOrderSectionHead"><ListChecks size={15}/><b>لیستی بەرهەمەکان</b></div>{order.items.map((item,i)=><div className="platformOrderItem" key={item.product_id||i}><span>{item.product_name} × {item.quantity}</span><b>{(Number(item.unit_price_iqd)*Number(item.quantity)).toLocaleString('ku-IQ')} د.ع</b></div>)}</div>}
+    <div className="platformOrderFinance"><div><span>کۆی بەرهەم</span><b>{Number(order.subtotal_iqd||0).toLocaleString('ku-IQ')} د.ع</b></div><div><span>گەیاندن</span><b>{Number(order.delivery_fee_iqd||0).toLocaleString('ku-IQ')} د.ع</b></div><div><span>خزمەتی شاخ</span><b>{Number(order.platform_fee_iqd||0).toLocaleString('ku-IQ')} د.ع</b></div>{Number(order.discount_iqd||0)>0&&<div><span>داشکاندن</span><b>-{Number(order.discount_iqd||0).toLocaleString('ku-IQ')} د.ع</b></div>}<div className="grand"><span>کۆی گشتی</span><b>{Number(order.total_iqd||0).toLocaleString('ku-IQ')} د.ع</b></div></div>
+    <div className="platformOrderMeta"><span><CreditCard size={14}/> {order.payment_method||'cash'} · {order.payment_status||'pending'}</span><span><Clock3 size={14}/> {new Date(order.created_at).toLocaleString('ku-IQ')}</span></div>
+    {order.delivery_address?.latitude!=null&&order.delivery_address?.longitude!=null&&<a className="plain full" href={'https://www.google.com/maps/dir/?api=1&destination='+order.delivery_address.latitude+','+order.delivery_address.longitude} target="_blank" rel="noreferrer"><Navigation size={15}/> ڕێگا بۆ شوێنی گەیاندن</a>}
+    {order.status==='ready_for_pickup'&&<div className="captainBroadcastBox"><div><b>ناردن بۆ کاپتنە ئۆنلاینەکان</b><small>{captains.length} کاپتن ئێستا ئۆنلاینە</small></div>{captainsLoading?<span>بارکردن...</span>:captains.length===0?<span>کاپتنی ئۆنلاین بەردەست نییە.</span>:<div className="captainBroadcastList">{captains.map(c=><button type="button" className="whatsappSendButton" key={c.id} onClick={()=>sendToCaptain(order,c)}><MessageCircle size={15}/>{c.full_name||'کاپتن'} · واتسئاپ</button>)}</div>}</div>}
+    {order.captain_id&&<div className="assignedCaptainCard"><div><Truck size={16}/><span><b>کاپتن:</b> {order.captain_id.slice(0,8)}</span></div></div>}
+   </article>)}
+  </div>
+ </section>;
 }
