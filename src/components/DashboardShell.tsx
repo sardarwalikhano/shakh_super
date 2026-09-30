@@ -21,6 +21,9 @@ import './dashboard-shell.css';
 
 export type DashboardView =
   | 'home'
+  | 'services'
+  | 'publish_post'
+  | 'manage_posts'
   | 'profile'
   | 'orders'
   | 'delivery'
@@ -94,9 +97,32 @@ export default function DashboardShell({
   const navItems: NavItem[] = [
     {
       id: 'home',
-      label: 'سەرەکی داشبۆرد',
-      description: 'پوختە و بەشە سەرەکییەکان',
+      label: 'پوختەی هەژمار',
+      description: 'کورتەی ئۆردەر و دۆخی هەژمار',
       icon: LayoutDashboard,
+      group: 'پوختە',
+    },
+    {
+      id: 'services',
+      label: 'ناوەندی خزمەتگوزاری',
+      description: 'هەموو خزمەتگوزارییەکانی شاخ لە یەک شوێن',
+      icon: Store,
+      group: 'خزمەتگوزاری و پۆست',
+    },
+    {
+      id: 'publish_post',
+      label: 'چی دەتەوێت بڵاو بکەیتەوە؟',
+      description: 'پۆست، بەرهەم، ئۆتۆمبێل و ناوەڕۆک',
+      icon: ClipboardList,
+      group: 'خزمەتگوزاری و پۆست',
+      show: !isVendor,
+    },
+    {
+      id: 'manage_posts',
+      label: 'بەڕێوەبردنی پۆستەکان',
+      description: 'پۆستەکانت ببینە، دەستکاری بکە و بەڕێوەیانبە',
+      icon: ClipboardList,
+      group: 'خزمەتگوزاری و پۆست',
     },
     {
       id: 'profile',
