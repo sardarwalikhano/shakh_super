@@ -161,6 +161,46 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
  const roleLabel=role==='super_admin'?'بەڕێوبەری باڵا':role==='admin'?'بەڕێوبەر':['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role)?'خاوەن دوکان':role==='captain'?'کاپتن':role==='car_dealer'?'پێشانگای ئۆتۆمبێل':role==='umrah_agency'?'کۆمپانیای حەج و عومرە':'کڕیار';
  const dashboardModule=()=>{
   if(!user)return null;
+  if(dashboardView==='services'){
+   const serviceItems=[
+    {id:'profile' as const,label:'پرۆفایل',description:'ناو، تەلەفون، شار، زمان و وێنە',icon:UserIcon},
+    {id:'store' as const,label:'دوکان و پێشانگا',description:'بازاڕ، دوکان و بەرهەمەکانی شاخ',icon:Store},
+    {id:'orders' as const,label:'ئۆردەرەکان',description:'بینین و بەدواداچوونی داواکارییەکان',icon:ClipboardList},
+    {id:'delivery' as const,label:'گەیاندن',description:'شوێنکەوتن و دۆخی گەیاندن',icon:Truck},
+    ...( ['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor','super_admin','admin'].includes(role)
+      ? [{id:'delivery_zones' as const,label:'سنوری گەیاندن',description:'ناوچە و سنوری خزمەتگوزاریی شاخ',icon:MapPin}]
+      : [] ),
+    {id:'cars' as const,label:'SHAKH Cars',description:'پێشانگا و بەڕێوەبردنی ئۆتۆمبێل',icon:Car},
+    {id:'umrah' as const,label:'حەج و عومرە',description:'پەکەج و حجزکردنی گەشت',icon:Plane},
+    {id:'wallet' as const,label:'جزدان',description:'باڵانس، مامەڵە و خاڵەکان',icon:Wallet},
+    {id:'notifications' as const,label:'ئاگادارکردنەوەکان',description:'ئاگادارییە نوێیەکانی هەژمار و ئۆردەر',icon:Bell},
+    {id:'support' as const,label:'پشتگیری',description:'تیکەت و پەیوەندی لەگەڵ پشتگیری',icon:MessageCircle},
+    {id:'settings' as const,label:'ڕێکخستنەکان',description:'ڕوکار، ئاگاداری، شوێن و هەژمار',icon:Settings},
+   ];
+   return <section className="dashboardAccountServices" aria-labelledby="dashboard-account-services-title">
+    <div className="dashboardAccountServicesHero">
+     <div>
+      <span>ناوەندی خزمەتگوزاری</span>
+      <h2 id="dashboard-account-services-title">هەموو خزمەتگوزارییەکان لە یەک شوێن</h2>
+      <p>تەنها ئەو بەشە هەڵبژێرە کە پێویستتە؛ پاش کلیک، تەنها هەمان بەش لە ناو داشبۆرد دەکرێتەوە.</p>
+     </div>
+     <div className="dashboardAccountServicesCount"><strong>{serviceItems.length.toLocaleString('ku-IQ')}</strong><small>بەشی بەردەست</small></div>
+    </div>
+    <div className="dashboardAccountServicesGrid">
+     {serviceItems.map(item=>{const Icon=item.icon;return <button key={item.id} type="button" className={`dashboardAccountServiceCard ${dashboardView===item.id?'is-active':''}`} onClick={()=>openDashboard(item.id)}>
+      <span className="dashboardAccountServiceCardIcon"><Icon size={20}/></span>
+      <span className="dashboardAccountServiceCardCopy"><strong>{item.label}</strong><small>{item.description}</small></span>
+      <span className="dashboardAccountServiceCardArrow"><ArrowLeft size={16}/></span>
+     </button>})}
+    </div>
+   </section>;
+  }
+  if(dashboardView==='publish_post'){
+   return <section className="dashboardAccountSingleModule"><PostPublishingHub userId={user.id} role={role} onSaved={()=>void loadOrders(user)}/></section>;
+  }
+  if(dashboardView==='manage_posts'){
+   return <section className="dashboardAccountSingleModule"><PostsManagement userId={user.id} role={role} focusRequest={postsFocusRequest}/></section>;
+  }
   if(dashboardView==='orders'){
    if(role==='super_admin'||role==='admin')return <SuperAdminOrderMonitor/>;
    return <CustomerOrdersPanel userId={user.id}/>;
@@ -178,7 +218,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
    if(role==='super_admin'||role==='admin')return <SuperAdminOrderMonitor/>;
    return <CustomerOrdersPanel userId={user.id}/>;
   }
-  if(dashboardView==='cars')return <VehicleShowroomModule userId={user.id} isAdmin={role==='super_admin'||role==='admin'} role={role}/>
+  if(dashboardView==='cars')return <VehicleShowroomModule userId={user.id} isAdmin={role==='super_admin'||role==='admin'} role={role}/>;
   if(dashboardView==='umrah')return <UmrahBookingModule userId={user.id} role={role}/>;
   if(dashboardView==='notifications')return <NotificationCenter userId={user.id}/>;
   if(dashboardView==='support')return <SupportTicketsPanel userId={user.id} role={role}/>;
@@ -187,7 +227,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   if(dashboardView==='profile')return <ProfilePanel ref={profileRef} userId={user.id} role={role} onSignOut={signout} onOpenPosts={(postId)=>{
    if(postId)setPostsFocusRequest(current=>({postId,nonce:(current?.nonce||0)+1}));
    else setPostsFocusRequest(null);
-   setDashboardView('home');
+   setDashboardView('manage_posts');
   }} onDirtyChange={setDashboardDirty}/>;
   return null;
  };
@@ -253,31 +293,25 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   onClose={closeDashboard}
   onRefresh={()=>loadOrders(user)}
   homeContent={
-   <>
-    {!['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role)&&
-      <PostPublishingHub userId={user.id} role={role} onSaved={()=>void loadOrders(user)}/>}
-    <PostsManagement userId={user.id} role={role} focusRequest={postsFocusRequest}/>
-    <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
-      <div className="dashboardShellRecentOrdersHead">
-        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
-        <button type="button" onClick={()=>openDashboard('orders')}>هەمووی ببینە</button>
-      </div>
-      {!orders.length
-        ? <div className="dashboardShellRecentEmpty">هێشتا هیچ ئۆردەرێکت نییە.</div>
-        : <div className="dashboardShellRecentList">
-          {orders.slice(0,6).map((order)=>(
-            <button type="button" className="dashboardShellRecentRow" key={order.id} onClick={()=>openDashboard('orders')}>
-              <span className="dashboardShellRecentId">#{order.id.slice(0,8)}</span>
-              <span className="dashboardShellRecentStatus">{order.status==='pending'?'چاوەڕوان':dashboardStatusLabel[order.status]||order.status}</span>
-              <strong>{Number(order.total_iqd).toLocaleString('ku-IQ')} د.ع</strong>
-              <small>{new Date(order.created_at).toLocaleString('ku-IQ')}</small>
-            </button>
-          ))}
-        </div>}
-    </section>
-   </>
-  }
- >
+   <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
+    <div className="dashboardShellRecentOrdersHead">
+     <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
+     <button type="button" onClick={()=>openDashboard('orders')}>هەمووی ببینە</button>
+    </div>
+    {!orders.length
+      ? <div className="dashboardShellRecentEmpty">هێشتا هیچ ئۆردەرێکت نییە.</div>
+      : <div className="dashboardShellRecentList">
+       {orders.slice(0,6).map((order)=>(
+        <button type="button" className="dashboardShellRecentRow" key={order.id} onClick={()=>openDashboard('orders')}>
+         <span className="dashboardShellRecentId">#{order.id.slice(0,8)}</span>
+         <span className="dashboardShellRecentStatus">{order.status==='pending'?'چاوەڕوان':dashboardStatusLabel[order.status]||order.status}</span>
+         <strong>{Number(order.total_iqd).toLocaleString('ku-IQ')} د.ع</strong>
+         <small>{new Date(order.created_at).toLocaleString('ku-IQ')}</small>
+        </button>
+       ))}
+      </div>}
+   </section>
+  } >
   {dashboardView!=='home'&&dashboardModule()}
  </DashboardShell>}
 
