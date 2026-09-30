@@ -21,10 +21,11 @@ type Props={userId:string;role:string;onChanged?:()=>void};
 
 const variantSummary=(variants:unknown)=>{
  const sizes=new Set<string>(),colors=new Set<string>(),shoeSizes=new Set<string>();
- if(!Array.isArray(variants))return{sizes:[],colors:[],shoeSizes:[]};
+ if(!Array.isArray(variants))return{sizes:[],colors:[],shoeSizes:[],unlimited:false};
  const add=(target:Set<string>,value:unknown)=>{const values=Array.isArray(value)?value:[value];for(const item of values){if(typeof item==='string'&&item.trim())target.add(item.trim());else if(typeof item==='number')target.add(String(item))}};
- for(const item of variants){if(!item||typeof item!=='object')continue;const v=item as Record<string,unknown>;add(sizes,v.available_sizes);add(sizes,v.sizes);add(colors,v.available_colors);add(colors,v.colors);add(colors,v.color);add(shoeSizes,v.shoe_sizes);add(shoeSizes,v.shoeSizes);}
- return{sizes:[...sizes],colors:[...colors],shoeSizes:[...shoeSizes]};
+ let unlimited=false;
+ for(const item of variants){if(!item||typeof item!=='object')continue;const v=item as Record<string,unknown>;unlimited=unlimited||v.unlimited_stock===true;add(sizes,v.available_sizes);add(sizes,v.sizes);add(colors,v.available_colors);add(colors,v.colors);add(colors,v.color);add(shoeSizes,v.shoe_sizes);add(shoeSizes,v.shoeSizes);}
+ return{sizes:[...sizes],colors:[...colors],shoeSizes:[...shoeSizes],unlimited};
 };
 
 const CLOTHING_SIZES=['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'];
