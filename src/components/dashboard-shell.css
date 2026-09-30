@@ -2915,3 +2915,967 @@ html[data-theme='dark'] .dashboardShellDirty{
     text-align:center!important;
   }
 }
+
+
+/* =========================================================
+   SHAKH — NOTIFICATIONS / SUPPORT / SETTINGS / WALLET
+   ========================================================= */
+
+.dashboardShellModule .notification-center,
+.dashboardShellModule .supportPanel,
+.dashboardShellModule .settingsPanel,
+.dashboardShellModule .walletPanel{
+  min-width:0!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .notification-center{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:14px!important;
+  padding:2px!important;
+}
+
+.dashboardShellModule .notification-center__header,
+.dashboardShellModule .supportHead,
+.dashboardShellModule .settingsPanel > .dashboardHeader,
+.dashboardShellModule .walletHead{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  padding:0 0 15px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+  background:transparent!important;
+}
+
+.dashboardShellModule .notification-center__header > div:first-child,
+.dashboardShellModule .supportHead > div:first-child,
+.dashboardShellModule .settingsPanel > .dashboardHeader > div,
+.dashboardShellModule .walletHead > div:first-child{
+  min-width:0!important;
+}
+
+.dashboardShellModule .notification-center__eyebrow,
+.dashboardShellModule .supportPanel .eyebrow,
+.dashboardShellModule .settingsPanel .eyebrow,
+.dashboardShellModule .walletPanel .eyebrow{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  color:var(--dsx-brand)!important;
+  font-size:9px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .notification-center h2,
+.dashboardShellModule .supportPanel h2,
+.dashboardShellModule .settingsPanel h2,
+.dashboardShellModule .walletPanel h2{
+  margin:5px 0 4px!important;
+  color:var(--dsx-text)!important;
+  font-size:clamp(20px,2.2vw,28px)!important;
+  line-height:1.25!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .notification-center p,
+.dashboardShellModule .supportPanel .supportHead p,
+.dashboardShellModule .settingsPanel .dashboardHeader p,
+.dashboardShellModule .walletPanel .walletHead p{
+  margin:0!important;
+  color:var(--dsx-muted)!important;
+  font-size:9px!important;
+  line-height:1.8!important;
+}
+
+.dashboardShellModule .notification-center__header-actions,
+.dashboardShellModule .supportHeadActions{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  flex:0 0 auto!important;
+}
+
+.dashboardShellModule .notification-center__header-actions button,
+.dashboardShellModule .supportHeadActions button{
+  min-height:38px!important;
+}
+
+.dashboardShellModule .notification-center__refresh,
+.dashboardShellModule .walletRefresh{
+  width:40px!important;
+  min-width:40px!important;
+  height:40px!important;
+  min-height:40px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:11px!important;
+  background:var(--dsx-surface)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .notification-center__error,
+.dashboardShellModule .supportMessage,
+.dashboardShellModule .walletMessage,
+.dashboardShellModule .settingsPanel > .msg{
+  margin:0!important;
+  padding:10px 12px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:12px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-danger)!important;
+  font-size:8px!important;
+  line-height:1.8!important;
+}
+
+.dashboardShellModule .notification-center__list{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  border-top:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .notification-center__item{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:start!important;
+  gap:11px!important;
+  padding:14px 2px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+  background:transparent!important;
+  transition:background .18s ease!important;
+}
+
+.dashboardShellModule .notification-center__item:hover{
+  background:var(--dsx-surface-alt)!important;
+}
+
+.dashboardShellModule .notification-center__item.is-unread{
+  border-inline-start:3px solid var(--dsx-brand)!important;
+  padding-inline-start:11px!important;
+  background:var(--dsx-brand-soft)!important;
+}
+
+.dashboardShellModule .notification-center__item.is-read{
+  opacity:.9!important;
+}
+
+.dashboardShellModule .notification-center__icon{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:11px!important;
+  background:var(--dsx-surface)!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .notification-center__content{
+  min-width:0!important;
+}
+
+.dashboardShellModule .notification-center__title-row{
+  min-width:0!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  gap:7px!important;
+  flex-wrap:wrap!important;
+}
+
+.dashboardShellModule .notification-center__title-row strong{
+  min-width:0!important;
+  color:var(--dsx-text)!important;
+  font-size:10px!important;
+  line-height:1.7!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .notification-center__title-row span{
+  flex:0 0 auto!important;
+  padding:3px 6px!important;
+  border-radius:999px!important;
+  background:var(--dsx-brand)!important;
+  color:#fff!important;
+  font-size:7px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .notification-center__content p{
+  margin:4px 0 7px!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  line-height:1.85!important;
+}
+
+.dashboardShellModule .notification-center__content small{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+  line-height:1.7!important;
+  overflow-wrap:anywhere!important;
+}
+
+.dashboardShellModule .notification-center__item > button{
+  width:34px!important;
+  height:34px!important;
+  min-height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:9px!important;
+  background:var(--dsx-surface)!important;
+  color:var(--dsx-green)!important;
+}
+
+.dashboardShellModule .notification-center__empty,
+.dashboardShellModule .supportEmpty,
+.dashboardShellModule .walletEmpty,
+.dashboardShellModule .settingsPanel .empty{
+  min-height:230px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:24px!important;
+  border:1px dashed var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-muted)!important;
+  text-align:center!important;
+}
+
+.dashboardShellModule .notification-center__empty strong,
+.dashboardShellModule .supportEmpty strong,
+.dashboardShellModule .walletEmpty strong{
+  color:var(--dsx-text)!important;
+  font-size:11px!important;
+}
+
+.dashboardShellModule .notification-center__empty span,
+.dashboardShellModule .supportEmpty span,
+.dashboardShellModule .walletEmpty small{
+  max-width:460px!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  line-height:1.85!important;
+}
+
+/* Support workspace */
+.dashboardShellModule .supportPanel{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:13px!important;
+}
+
+.dashboardShellModule .supportContactCard{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  padding:13px 14px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:14px!important;
+  background:linear-gradient(135deg,var(--dsx-surface),var(--dsx-surface-alt))!important;
+}
+
+.dashboardShellModule .supportContactCard > div:first-child{
+  min-width:0!important;
+}
+
+.dashboardShellModule .supportContactCard strong{
+  display:block!important;
+  color:var(--dsx-text)!important;
+  font-size:10px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .supportContactCard small{
+  display:block!important;
+  margin-top:3px!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+}
+
+.dashboardShellModule .supportContactActions{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-end!important;
+  gap:6px!important;
+}
+
+.dashboardShellModule .supportContactActions a{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  min-height:34px!important;
+  padding:7px 10px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:9px!important;
+  background:var(--dsx-surface)!important;
+  color:var(--dsx-text)!important;
+  text-decoration:none!important;
+  font-size:8px!important;
+  font-weight:850!important;
+}
+
+.dashboardShellModule .supportComposer{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  gap:11px!important;
+  padding:14px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:15px!important;
+  background:var(--dsx-surface)!important;
+}
+
+.dashboardShellModule .supportComposerBadge{
+  width:39px!important;
+  height:39px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:11px!important;
+  background:var(--dsx-brand-soft)!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .supportComposerFields{
+  min-width:0!important;
+  display:grid!important;
+  gap:8px!important;
+}
+
+.dashboardShellModule .supportComposer input,
+.dashboardShellModule .supportComposer textarea{
+  width:100%!important;
+  min-width:0!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:10px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .supportComposer input{
+  height:42px!important;
+}
+
+.dashboardShellModule .supportComposer textarea{
+  min-height:120px!important;
+  resize:vertical!important;
+}
+
+.dashboardShellModule .supportComposerFooter{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+
+.dashboardShellModule .supportComposerFooter small{
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+}
+
+.dashboardShellModule .supportList{
+  display:flex!important;
+  flex-direction:column!important;
+  border-top:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .supportTicket{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  gap:11px!important;
+  padding:14px 2px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .supportTicketIcon{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:11px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-blue)!important;
+}
+
+.dashboardShellModule .supportTicketBody{
+  min-width:0!important;
+}
+
+.dashboardShellModule .supportTicketTitle{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+
+.dashboardShellModule .supportTicketTitle strong{
+  min-width:0!important;
+  color:var(--dsx-text)!important;
+  font-size:10px!important;
+  line-height:1.7!important;
+  font-weight:950!important;
+  overflow-wrap:anywhere!important;
+}
+
+.dashboardShellModule .supportStatus{
+  flex:0 0 auto!important;
+  padding:4px 7px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:999px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .supportStatus-open,
+.dashboardShellModule .supportStatus-in_progress{
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .supportStatus-resolved,
+.dashboardShellModule .supportStatus-closed{
+  color:var(--dsx-green)!important;
+}
+
+.dashboardShellModule .supportTicketBody p{
+  margin:5px 0 7px!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  line-height:1.9!important;
+  overflow-wrap:anywhere!important;
+}
+
+.dashboardShellModule .supportTicketBody small{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  margin-inline-end:9px!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+}
+
+.dashboardShellModule .supportTicketUser{
+  direction:ltr!important;
+}
+
+/* Settings workspace */
+.dashboardShellModule .settingsPanel{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:13px!important;
+}
+
+.dashboardShellModule .settingsGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+
+.dashboardShellModule .settingsCard{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:10px!important;
+  padding:15px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:15px!important;
+  background:var(--dsx-surface)!important;
+  box-shadow:none!important;
+}
+
+.dashboardShellModule .settingsCardHeader{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding-bottom:10px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .settingsCardHeader > div{
+  min-width:0!important;
+}
+
+.dashboardShellModule .settingsCardHeader b{
+  display:block!important;
+  color:var(--dsx-text)!important;
+  font-size:10px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .settingsCardHeader small,
+.dashboardShellModule .settingsHint{
+  display:block!important;
+  margin-top:3px!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+  line-height:1.75!important;
+}
+
+.dashboardShellModule .settingsCardHeader > svg{
+  flex:0 0 auto!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .settingsChoiceGrid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+
+.dashboardShellModule .settingsChoice{
+  min-width:0!important;
+  min-height:55px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding:8px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:11px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  font-weight:850!important;
+}
+
+.dashboardShellModule .settingsChoice.active{
+  border-color:var(--dsx-brand)!important;
+  background:var(--dsx-brand-soft)!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .settingsSwitch{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  padding:10px 0!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .settingsSwitch:last-child{
+  border-bottom:0!important;
+  padding-bottom:0!important;
+}
+
+.dashboardShellModule .settingsSwitch > span{
+  min-width:0!important;
+}
+
+.dashboardShellModule .settingsSwitch b{
+  display:block!important;
+  color:var(--dsx-text)!important;
+  font-size:9px!important;
+  font-weight:900!important;
+}
+
+.dashboardShellModule .settingsSwitch small{
+  display:block!important;
+  margin-top:2px!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+  line-height:1.7!important;
+}
+
+.dashboardShellModule .settingsSwitch input{
+  width:42px!important;
+  height:22px!important;
+  flex:0 0 42px!important;
+  accent-color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .settingsCard label{
+  display:grid!important;
+  gap:5px!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  font-weight:850!important;
+}
+
+.dashboardShellModule .settingsCard input{
+  width:100%!important;
+  min-width:0!important;
+  height:40px!important;
+  margin-top:0!important;
+  padding:0 10px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:9px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .settingsPrivacyButton,
+.dashboardShellModule .settingsCard .profileLogoutButton{
+  width:100%!important;
+  min-height:40px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+}
+
+.dashboardShellModule .settingsAdminCard{
+  grid-column:1 / -1!important;
+  background:linear-gradient(135deg,var(--dsx-surface),var(--dsx-surface-alt))!important;
+}
+
+.dashboardShellModule .settingsAdminGrid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+}
+
+.dashboardShellModule .settingsAdminGrid label{
+  min-width:0!important;
+}
+
+.dashboardShellModule .settingsAdminGrid small{
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+}
+
+.dashboardShellModule .settingsInfoRow{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding-top:9px!important;
+  border-top:1px solid var(--dsx-line)!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+  overflow-wrap:anywhere!important;
+}
+
+.dashboardShellModule .settingsAccountCard{
+  grid-column:1 / -1!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(210px,auto)!important;
+  align-items:center!important;
+  gap:14px!important;
+}
+
+.dashboardShellModule .settingsAccountCard .settingsCardHeader{
+  border-bottom:0!important;
+  padding-bottom:0!important;
+}
+
+.dashboardShellModule .settingsSaveBar{
+  position:sticky!important;
+  bottom:0!important;
+  z-index:8!important;
+  display:flex!important;
+  justify-content:flex-start!important;
+  padding-top:7px!important;
+  border-top:1px solid var(--dsx-line)!important;
+  background:color-mix(in srgb,var(--dsx-bg) 92%,transparent)!important;
+  backdrop-filter:blur(8px)!important;
+}
+
+.dashboardShellModule .settingsSaveBar .primary{
+  min-height:42px!important;
+}
+
+/* Wallet workspace */
+.dashboardShellModule .walletPanel{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:13px!important;
+}
+
+.dashboardShellModule .walletPanel.orderCard{
+  margin:0!important;
+  padding:2px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+.dashboardShellModule .walletBalanceCard{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:13px!important;
+  padding:17px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:linear-gradient(135deg,var(--dsx-brand-soft),var(--dsx-surface))!important;
+}
+
+.dashboardShellModule .walletBalanceIcon{
+  width:47px!important;
+  height:47px!important;
+  flex:0 0 47px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:13px!important;
+  background:var(--dsx-surface)!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .walletBalanceCard small{
+  display:block!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+}
+
+.dashboardShellModule .walletBalanceCard strong{
+  display:block!important;
+  margin-top:4px!important;
+  color:var(--dsx-text)!important;
+  font-size:clamp(22px,3vw,34px)!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  direction:ltr!important;
+  text-align:right!important;
+}
+
+.dashboardShellModule .walletMiniStats{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+
+.dashboardShellModule .walletMiniStats > div{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  gap:5px 8px!important;
+  align-items:center!important;
+  padding:12px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:13px!important;
+  background:var(--dsx-surface)!important;
+}
+
+.dashboardShellModule .walletMiniStats svg{
+  grid-row:span 2!important;
+  color:var(--dsx-green)!important;
+}
+
+.dashboardShellModule .walletMiniStats > div:nth-child(2) svg{
+  color:var(--dsx-danger)!important;
+}
+
+.dashboardShellModule .walletMiniStats span{
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+}
+
+.dashboardShellModule .walletMiniStats b{
+  color:var(--dsx-text)!important;
+  font-size:9px!important;
+  font-weight:950!important;
+  direction:ltr!important;
+  text-align:right!important;
+}
+
+.dashboardShellModule .walletSectionTitle{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  padding:3px 0 9px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .walletSectionTitle span{
+  color:var(--dsx-text)!important;
+  font-size:10px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .walletSectionTitle b{
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+  font-weight:800!important;
+}
+
+.dashboardShellModule .walletTransactions{
+  display:flex!important;
+  flex-direction:column!important;
+  border-top:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .walletTx{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:12px 2px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .walletTxIcon{
+  width:37px!important;
+  height:37px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:10px!important;
+  background:var(--dsx-surface-alt)!important;
+}
+
+.dashboardShellModule .walletTxIcon.positive{
+  color:var(--dsx-green)!important;
+}
+
+.dashboardShellModule .walletTxIcon.negative{
+  color:var(--dsx-danger)!important;
+}
+
+.dashboardShellModule .walletTxBody{
+  min-width:0!important;
+}
+
+.dashboardShellModule .walletTxBody b{
+  display:block!important;
+  color:var(--dsx-text)!important;
+  font-size:9px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .walletTxBody small{
+  display:block!important;
+  margin-top:3px!important;
+  color:var(--dsx-muted)!important;
+  font-size:7px!important;
+  line-height:1.7!important;
+  overflow-wrap:anywhere!important;
+}
+
+.dashboardShellModule .walletTx > strong{
+  flex:0 0 auto!important;
+  font-size:9px!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  direction:ltr!important;
+  text-align:left!important;
+}
+
+.dashboardShellModule .walletTx > strong.positive{
+  color:var(--dsx-green)!important;
+}
+
+.dashboardShellModule .walletTx > strong.negative{
+  color:var(--dsx-danger)!important;
+}
+
+.dashboardShellModule .walletLoading{
+  min-height:180px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  color:var(--dsx-muted)!important;
+  font-size:9px!important;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .dashboardShellModule .settingsGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .settingsAdminCard,
+  .dashboardShellModule .settingsAccountCard{
+    grid-column:auto!important;
+  }
+  .dashboardShellModule .settingsAdminGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:680px){
+  .dashboardShellModule .notification-center__header,
+  .dashboardShellModule .supportHead,
+  .dashboardShellModule .settingsPanel > .dashboardHeader,
+  .dashboardShellModule .walletHead{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .dashboardShellModule .notification-center__header-actions,
+  .dashboardShellModule .supportHeadActions{
+    width:100%!important;
+    justify-content:flex-start!important;
+  }
+  .dashboardShellModule .notification-center__header-actions .plain,
+  .dashboardShellModule .supportHeadActions .supportNewButton{
+    flex:1 1 auto!important;
+  }
+  .dashboardShellModule .supportContactCard{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .dashboardShellModule .supportContactActions{
+    width:100%!important;
+    justify-content:flex-start!important;
+  }
+  .dashboardShellModule .supportContactActions a{
+    flex:1 1 auto!important;
+    justify-content:center!important;
+  }
+  .dashboardShellModule .supportComposer{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .settingsAdminGrid{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(max-width:520px){
+  .dashboardShellModule .notification-center__item{
+    grid-template-columns:auto minmax(0,1fr)!important;
+  }
+  .dashboardShellModule .notification-center__item > button{
+    grid-column:1 / -1!important;
+    width:100%!important;
+  }
+  .dashboardShellModule .supportTicketTitle{
+    flex-direction:column!important;
+  }
+  .dashboardShellModule .supportStatus{
+    align-self:flex-start!important;
+  }
+  .dashboardShellModule .walletMiniStats{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .walletTx{
+    grid-template-columns:auto minmax(0,1fr)!important;
+    align-items:start!important;
+  }
+  .dashboardShellModule .walletTx > strong{
+    grid-column:2!important;
+    justify-self:start!important;
+    margin-top:-3px!important;
+  }
+  .dashboardShellModule .settingsChoiceGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .settingsAccountCard{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dashboardShellModule .notification-center__item{
+    transition:none!important;
+  }
+}
