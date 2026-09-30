@@ -58,19 +58,6 @@ const typeLabels:Record<string,string>={
  umrah:'عومرە',delivery:'گەیاندن',announcement:'ئاگاداری',support:'پشتگیری',general:'گشتی'
 };
 
-const TYPE_FILTERS=[
- {value:'all',label:'هەموو جۆرەکان'},
- {value:'car',label:'ئۆتۆمبێل'},
- {value:'food',label:'خواردن'},
- {value:'fashion',label:'جل و بەرگ'},
- {value:'marketplace',label:'بازاڕ'},
- {value:'umrah',label:'عومرە'},
- {value:'delivery',label:'گەیاندن'},
- {value:'announcement',label:'ئاگاداری'},
- {value:'support',label:'پشتگیری'},
- {value:'general',label:'گشتی'}
-];
-
 const imageOf=(images:unknown)=>{
  if(Array.isArray(images)&&typeof images[0]==='string')return String(images[0]);
  return '';
@@ -94,7 +81,6 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
  const [query,setQuery]=useState('');
  const [statusFilter,setStatusFilter]=useState('all');
  const [roleFilter,setRoleFilter]=useState('all');
- const [typeFilter,setTypeFilter]=useState('all');
  const [page,setPage]=useState(1);
  const [editing,setEditing]=useState<Post|null>(null);
  const [editTitle,setEditTitle]=useState('');
@@ -147,24 +133,22 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
     || (statusFilter==='rejected'&&post.status==='rejected')
      || (statusFilter==='archived'&&!!post.archived_at);
    const roleOk=!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter;
-   const typeOk=typeFilter==='all'||post.post_type===typeFilter;
    const structured=post.listing_details&&typeof post.listing_details==='object'
     ?Object.values(post.listing_details).map(value=>value==null?'':String(value)).join(' ')
     :'';
    const haystack=[post.title,post.content,post.publisher_name,post.city,labelOf(post),structured].filter(Boolean).join(' ').toLowerCase();
-   return statusOk&&roleOk&&typeOk&&(!textQuery||haystack.includes(textQuery));
+   return statusOk&&roleOk&&(!textQuery||haystack.includes(textQuery));
   });
  },[posts,statusFilter,roleFilter,query,isAdmin]);
 
  const matchesStatus=(post:Post,value:string)=>value==='all'||(value==='public'&&post.status==='approved'&&post.visibility==='public')||(value==='private'&&post.visibility==='private')||(value==='pending'&&post.status==='pending')||(value==='rejected'&&post.status==='rejected');
- const filterCount=(value:string)=>posts.filter(post=>matchesStatus(post,value)&&(!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter)&&(typeFilter==='all'||post.post_type===typeFilter)).length;
- const typeFilterCount=(value:string)=>posts.filter(post=>(value==='all'||post.post_type===value)&&(statusFilter==='all'||matchesStatus(post,statusFilter))&&(!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter)).length;
+ const filterCount=(value:string)=>posts.filter(post=>matchesStatus(post,value)&&(!isAdmin||roleFilter==='all'||post.publisher_role===roleFilter)).length;
 
  const totalPages=Math.max(1,Math.ceil(filtered.length/pageSize));
  const currentPage=Math.min(page,totalPages);
  const pageItems=filtered.slice((currentPage-1)*pageSize,currentPage*pageSize);
 
- useEffect(()=>{setPage(1)},[statusFilter,roleFilter,typeFilter,query]);
+ useEffect(()=>{setPage(1)},[statusFilter,roleFilter,query]);
 
  useEffect(()=>{
   if(!focusRequest?.postId||!posts.length)return;
@@ -176,7 +160,6 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
   setQuery('');
   setStatusFilter('all');
   if(isAdmin)setRoleFilter('all');
-  setTypeFilter('all');
   setPage(Math.floor(index/pageSize)+1);
  },[focusRequest?.nonce,posts,isAdmin]);
 
@@ -380,9 +363,6 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
    <div className="postsFilters">
     {isAdmin&&<select value={roleFilter} onChange={e=>setRoleFilter(e.target.value)} aria-label="فلتەری ڕۆڵ">
      {ROLE_FILTERS.map(item=><option key={item.value} value={item.value}>{item.label}</option>)}
-    </select>}
-    {isAdmin&&<select value={typeFilter} onChange={e=>setTypeFilter(e.target.value)} aria-label="فلتەری جۆری پۆست">
-     {TYPE_FILTERS.map(item=><option key={item.value} value={item.value}>{item.label} ({typeFilterCount(item.value)})</option>)}
     </select>}
     {STATUS_FILTERS.map(item=><button key={item.value} type="button" className={statusFilter===item.value?'active':''} onClick={()=>setStatusFilter(item.value)}>{item.label} ({filterCount(item.value)})</button>)}
    </div>
