@@ -98,7 +98,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
     description_ku:form.description.trim()||null,price_iqd:Number(form.price),sale_price_iqd:form.salePrice?Number(form.salePrice):null,product_type:form.type.trim(),
     brand:isFashion?fashion.brand.trim()||null:form.brand.trim()||null,
     size:isFashion&&!isShoe&&fashion.sizes.length?fashion.sizes.join(', '):form.size.trim()||null,
-    image_url:imageUrls[0]||null,stock:stockMode==='unlimited'?0:Number(form.stock||0),unlimited_stock:stockMode==='unlimited',is_available:form.available&&(stockMode==='unlimited'||Number(form.stock)>0),
+    image_url:imageUrls[0]||null,stock:stockMode==='unlimited'?0:Number(form.stock||0),is_available:form.available&&(stockMode==='unlimited'||Number(form.stock)>0),
     variants:[{section:role,category,...fashionDetails,available_sizes:isFashion&&!isShoe?fashion.sizes:[],available_colors:isFashion?fashion.colors:[],shoe_sizes:isFashion&&isShoe?fashion.shoeSizes:[],unlimited_stock:stockMode==='unlimited'}]
    }).select('id').single();
    if(productError)throw productError;
