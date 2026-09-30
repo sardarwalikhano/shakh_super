@@ -2354,3 +2354,157 @@ html[data-theme='dark'] .dashboardShellDirty{
     padding:12px!important;
   }
 }
+
+
+/* Vendor product management + store location */
+.dashboardShellModule .vendor-dashboard > .orderCard{
+  margin:16px 0 0!important;
+  padding:16px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:16px!important;
+  background:var(--dsx-surface)!important;
+  box-shadow:none!important;
+}
+
+.dashboardShellModule .vendor-dashboard > .orderCard > div:first-child{
+  padding-bottom:11px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .vendor-dashboard > .orderCard h3{
+  color:var(--dsx-text)!important;
+  font-size:17px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .vendor-dashboard > .orderCard .dashboardGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+
+.dashboardShellModule .vendor-dashboard > .orderCard .dashboardGrid > .orderCard{
+  min-width:0!important;
+  margin:0!important;
+  padding:13px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:14px!important;
+  background:var(--dsx-surface-alt)!important;
+  box-shadow:none!important;
+}
+
+.dashboardShellModule .vendor-dashboard > .orderCard .dashboardGrid > .orderCard img{
+  height:140px!important;
+  max-height:140px!important;
+  border-radius:11px!important;
+}
+
+.dashboardShellModule .vendor-dashboard > .orderCard input,
+.dashboardShellModule .vendor-dashboard > .orderCard select,
+.dashboardShellModule .vendor-dashboard > .orderCard textarea{
+  width:100%!important;
+  min-width:0!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:10px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-text)!important;
+}
+
+.dashboardShellModule .vendor-dashboard > .orderCard label{
+  color:var(--dsx-text)!important;
+  font-size:8px!important;
+  font-weight:850!important;
+}
+
+.dashboardShellModule .vendor-dashboard > .orderCard .eyebrow{
+  background:var(--dsx-brand-soft)!important;
+  color:var(--dsx-brand)!important;
+}
+
+.dashboardShellModule .storeLocationManager{
+  margin-top:16px!important;
+  padding:16px!important;
+}
+
+.dashboardShellModule .storeLocationHeader{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin-bottom:12px!important;
+  padding-bottom:12px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+
+.dashboardShellModule .storeLocationHeader h3{
+  margin:4px 0 3px!important;
+  color:var(--dsx-text)!important;
+  font-size:17px!important;
+  font-weight:950!important;
+}
+
+.dashboardShellModule .storeLocationHeader p{
+  margin:0!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  line-height:1.75!important;
+}
+
+.dashboardShellModule .storeLocationHeader .plain{
+  min-height:38px!important;
+  flex:0 0 auto!important;
+}
+
+.dashboardShellModule .storeLocationManager .storeLocationFields{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.5fr) minmax(180px,.7fr)!important;
+  gap:10px!important;
+  margin-top:11px!important;
+}
+
+.dashboardShellModule .storeLocationManager .storeLocationFields label{
+  display:grid!important;
+  gap:5px!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+
+.dashboardShellModule .storeLocationManager .storeLocationCoords{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin-top:9px!important;
+  padding:8px 10px!important;
+  border:1px solid var(--dsx-line)!important;
+  border-radius:10px!important;
+  background:var(--dsx-surface-alt)!important;
+  color:var(--dsx-muted)!important;
+  font-size:8px!important;
+  direction:ltr!important;
+  justify-content:flex-start!important;
+}
+
+.dashboardShellModule .storeLocationManager .primary.full{
+  min-height:42px!important;
+  margin-top:10px!important;
+}
+
+@media(max-width:760px){
+  .dashboardShellModule .vendor-dashboard > .orderCard .dashboardGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardShellModule .storeLocationManager .storeLocationFields{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(max-width:480px){
+  .dashboardShellModule .storeLocationHeader{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .dashboardShellModule .storeLocationHeader .plain{
+    width:100%!important;
+  }
+}
