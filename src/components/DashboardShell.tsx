@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Bell,
   Car,
@@ -90,7 +90,7 @@ export default function DashboardShell({
   ].includes(role);
   const isAdmin = role === 'super_admin' || role === 'admin';
 
-  const items = useMemo((): NavItem[] => [
+  const navItems: NavItem[] = [
     {
       id: 'home',
       label: 'سەرەکی داشبۆرد',
@@ -164,7 +164,9 @@ export default function DashboardShell({
       description: 'هەژمار، ئاگاداری، شوێن و پلاتفۆرم',
       icon: Settings2,
     },
-  ].filter((item) => item.show !== false), [isAdmin, isVendor]);
+  ];
+
+  const items = navItems.filter((item) => item.show !== false);
 
   const activeItem = items.find((item) => item.id === view) ?? items[0];
 
