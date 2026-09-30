@@ -1317,3 +1317,229 @@ header{
   .siteFooterGrid>div:first-child{grid-column:auto!important}
   .captainStats{grid-template-columns:1fr!important}
 }
+
+
+/* =========================================================
+   SHAKH — GLOBAL THEME CONTRACT
+   ========================================================= */
+
+:root{
+  color-scheme:light;
+  --orange:#ff6b16;
+  --orange2:#ff9b4a;
+  --navy:#081a33;
+  --blue:#163f6b;
+  --muted:#718096;
+  --line:#e7ecf2;
+  --soft:#fff4ea;
+  --page:#f6f8fc;
+  --surface:#ffffff;
+  --surface-alt:#f8fafc;
+  --text:#132238;
+}
+
+html[data-theme='dark']{
+  color-scheme:dark;
+  --orange:#ff8a3d;
+  --orange2:#ffad72;
+  --navy:#eef4f8;
+  --blue:#79a8d4;
+  --muted:#9db0c2;
+  --line:#263a4e;
+  --soft:#2b2018;
+  --page:#08111c;
+  --surface:#0f1c29;
+  --surface-alt:#142536;
+  --text:#eef4f8;
+}
+
+html,
+body,
+#root{
+  background:var(--page);
+  color:var(--text);
+}
+
+body{
+  transition:background-color .22s ease,color .22s ease;
+}
+
+header{
+  background:color-mix(in srgb,var(--surface) 88%,transparent)!important;
+  border-bottom-color:var(--line)!important;
+}
+
+.nav,
+.search,
+.plain,
+.cart,
+.locationIndicator,
+.loginBtn{
+  background:var(--surface)!important;
+  border-color:var(--line)!important;
+  color:var(--text)!important;
+}
+
+.search{
+  background:var(--surface-alt)!important;
+}
+
+.search input{
+  color:var(--text)!important;
+}
+
+.logo b,
+.section .title h2,
+.hero h1,
+.card h3,
+.promotionCard b{
+  color:var(--text)!important;
+}
+
+.logo span,
+.search,
+.section .title small,
+.card small,
+.hero p,
+.promotionCard p,
+.promotionCard small{
+  color:var(--muted)!important;
+}
+
+.section,
+.card,
+.orderCard,
+.customer-order-card,
+.customer-orders-panel__detail,
+.auth,
+.cartPanel,
+.checkoutPanel,
+.supportContactCard,
+.notificationCard,
+.savedAddress,
+.paymentMethodOption,
+.couponCheckoutBox{
+  background:var(--surface)!important;
+  border-color:var(--line)!important;
+  color:var(--text)!important;
+}
+
+input,
+textarea,
+select{
+  background:var(--surface-alt)!important;
+  border-color:var(--line)!important;
+  color:var(--text)!important;
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:var(--muted)!important;
+}
+
+.search:focus-within{
+  border-color:var(--orange)!important;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--orange) 12%,transparent)!important;
+}
+
+.plain:hover,
+.cart:hover,
+.locationIndicator:hover,
+.loginBtn:hover{
+  color:var(--orange)!important;
+  border-color:var(--orange)!important;
+  background:var(--surface-alt)!important;
+}
+
+.themeToggleButton{
+  min-width:46px;
+  height:46px;
+  padding:0 10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:var(--surface);
+  color:var(--text);
+  font:inherit;
+  font-size:9px;
+  font-weight:900;
+  transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .2s ease;
+}
+
+.themeToggleButton:hover{
+  transform:translateY(-1px);
+  border-color:var(--orange);
+  color:var(--orange);
+  background:var(--surface-alt);
+}
+
+.themeToggleButton:focus-visible{
+  outline:2px solid var(--orange);
+  outline-offset:2px;
+}
+
+html[data-theme='dark'] .hero{
+  background:
+    radial-gradient(circle at 12% 15%,rgba(255,138,61,.12),transparent 30%),
+    linear-gradient(135deg,#102233,#0a1623)!important;
+  border-color:var(--line)!important;
+}
+
+html[data-theme='dark'] .brandRibbon{
+  background:linear-gradient(135deg,#0e1b28,#12263a)!important;
+  border-color:var(--line)!important;
+  color:var(--text)!important;
+}
+
+html[data-theme='dark'] .footer{
+  background:#07101a!important;
+  border-color:var(--line)!important;
+}
+
+html[data-theme='dark'] .modal{
+  background:rgba(2,8,14,.72)!important;
+}
+
+html[data-theme='dark'] .auth h2,
+html[data-theme='dark'] .auth p,
+html[data-theme='dark'] .auth label,
+html[data-theme='dark'] .auth small,
+html[data-theme='dark'] .cartHead h2,
+html[data-theme='dark'] .checkoutPanel h2,
+html[data-theme='dark'] .checkoutPanel p{
+  color:var(--text)!important;
+}
+
+html[data-theme='dark'] .reset,
+html[data-theme='dark'] .privacyInlineButton{
+  color:var(--orange)!important;
+}
+
+html[data-theme='dark'] .summary,
+html[data-theme='dark'] .paymentMethodOption.active,
+html[data-theme='dark'] .couponApplied{
+  background:var(--surface-alt)!important;
+  border-color:var(--line)!important;
+  color:var(--text)!important;
+}
+
+@media(max-width:700px){
+  .themeToggleButton{
+    width:46px;
+    min-width:46px;
+    padding:0;
+  }
+  .themeToggleButton span{
+    display:none;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  body,
+  .themeToggleButton{
+    transition:none;
+  }
+}
