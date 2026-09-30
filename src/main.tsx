@@ -173,7 +173,22 @@ function App(){
  const selectedFashionColors=selectedVariantOptions.colors;
  const selectedNeedsVariant=selectedShoeSizes.length>0||selectedFashionSizes.length>0||selectedFashionColors.length>0;
  const selectedVariantInventory=useMemo(()=>matchingVariantInventory(selectedProduct?.variants,selectedOptions),[selectedProduct,selectedOptions]);
+ const selectedVariantInventoryRows=useMemo(()=>getVariantInventory(selectedProduct?.variants),[selectedProduct]);
+ const selectedVariantSelectionComplete=Boolean(
+  (!selectedShoeSizes.length||Boolean(selectedOptions.shoe_size))&&
+  (!selectedFashionSizes.length||Boolean(selectedOptions.size))&&
+  (!selectedFashionColors.length||Boolean(selectedOptions.color))
+ );
+ const selectedVariantMissing=Boolean(selectedVariantInventoryRows.length&&selectedNeedsVariant&&selectedVariantSelectionComplete&&!selectedVariantInventory);
  const selectedVariantOutOfStock=Boolean(selectedVariantInventory&&!selectedVariantInventory.unlimited_stock&&Number(selectedVariantInventory.stock||0)<=0);
+ const selectedVariantUnavailable=selectedVariantMissing||selectedVariantOutOfStock;
+ const selectedAvailability=selectedVariantInventory
+  ? selectedVariantInventory.unlimited_stock
+    ? 'بێ سنوور ∞'
+    : Number(selectedVariantInventory.stock||0).toLocaleString('ku-IQ')+' دانە'
+  : selectedProduct?.unlimited_stock
+    ? 'بێ سنوور ∞'
+    : Number(selectedProduct?.stock||0).toLocaleString('ku-IQ')+' دانە';
  const openProductForCart=async(productId:string)=>{if(!supabase)return false;const {data,error}=await supabase.from('products').select('id,store_id,name_ku,name_ar,name_en,price_iqd,sale_price_iqd,image_url,is_available,stock,product_type,brand,size,variants').eq('id',productId).single();if(error||!data){setMessage('بەرهەمەکە نەدۆزرایەوە.');return false}const p=data as Product;setSelectedOptions({});if(getVariantOptions(p.variants).shoeSizes.length||getVariantOptions(p.variants).sizes.length||getVariantOptions(p.variants).colors.length){setSelectedProduct(p);return true}return addToCart(p)};
  const subtotal=cart.reduce((s,i)=>s+i.price*i.quantity,0);const delivery=cart.length?platformDeliveryFee:0;const fee=cart.length?platformFee:0;const total=subtotal+delivery+fee;const checkoutTotal=Math.max(0,total-couponDiscount);
  const ensureCart=async(u:User,storeId:string)=>{if(!supabase)throw new Error('پەیوەندی بە خزمەتگوزاری بەردەست نییە.');const {data,error}=await supabase.from('carts').select('id,store_id').eq('user_id',u.id).maybeSingle();if(error)throw error;if(data){if(data.store_id!==storeId){const {error:updateError}=await supabase.from('carts').update({store_id:storeId,updated_at:new Date().toISOString()}).eq('id',data.id);if(updateError)throw updateError;}return data.id as string}const {data:created,error:ce}=await supabase.from('carts').insert({user_id:u.id,store_id:storeId}).select('id').single();if(ce)throw ce;return created.id as string};
@@ -193,16 +208,38 @@ function App(){
    if(!options.color)return(setSelectedOptions(v=>({...v})),setSelectedProduct(p),setMessage('تکایە ڕەنگی بەردەست هەڵبژێرە.'),false);
    if(typeof options.color!=='string'||!variantOptions.colors.includes(options.color))return setMessage('ئەم ڕەنگە بەردەست نییە.'),false;
   }
+  const inventoryRows=getVariantInventory(p.variants);
+  const completeVariantSelection=Boolean(
+   (!variantOptions.shoeSizes.length||Boolean(options.shoe_size))&&
+   (!variantOptions.sizes.length||Boolean(options.size))&&
+   (!variantOptions.colors.length||Boolean(options.color))
+  );
+  if(inventoryRows.length&&completeVariantSelection&&!selectedInventory){
+   setSelectedProduct(p);
+   setMessage('ئەم کۆمبینەیشنەی هەڵبژێردراو بەردەست نییە.');
+   return false;
+  }
   try{
    setBusy(true);
    if(!p.is_available||(!selectedInventory&&!variantOptions.unlimited&&Number(p.stock||0)<=0)||selectedInventoryUnavailable){setMessage(selectedInventoryUnavailable?'ئەم هەڵبژاردەیە ستۆکی نەماوە.':'ئەم بەرهەمە ئێستا بەردەست نییە.');return false}
    if(cart.length&&cart[0].store_id!==p.store_id){setMessage('لە هەر سەلەیەکدا تەنها لە یەک دوکان دەتوانیت داواکاری بکەیت.');return false}
    const {data:live,error:liveError}=await supabase!.from('products').select('is_available,stock,price_iqd,sale_price_iqd,variants').eq('id',p.id).single();
    if(liveError)throw liveError;
-   const liveUnlimited=getVariantOptions(live?.variants).unlimited;
+   const liveVariantOptions=getVariantOptions(live?.variants);
+   const liveUnlimited=liveVariantOptions.unlimited;
    const liveInventory=matchingVariantInventory(live?.variants,options);
+   const liveInventoryRows=getVariantInventory(live?.variants);
+   const liveSelectionComplete=Boolean(
+    (!liveVariantOptions.shoeSizes.length||Boolean(options.shoe_size))&&
+    (!liveVariantOptions.sizes.length||Boolean(options.size))&&
+    (!liveVariantOptions.colors.length||Boolean(options.color))
+   );
+   const liveInventoryMissing=Boolean(liveInventoryRows.length&&liveSelectionComplete&&!liveInventory);
    const liveInventoryUnavailable=Boolean(liveInventory&&!liveInventory.unlimited_stock&&Number(liveInventory.stock||0)<=0);
-   if(!live?.is_available||(!liveInventory&&!liveUnlimited&&Number(live.stock||0)<=0)||liveInventoryUnavailable){setMessage(liveInventoryUnavailable?'ئەم هەڵبژاردەیە چیتر بەردەست نییە.':'ئەم بەرهەمە ئێستا بەردەست نییە.');await loadProducts();return false}
+   if(!live?.is_available||liveInventoryMissing||(!liveInventory&&!liveUnlimited&&Number(live.stock||0)<=0)||liveInventoryUnavailable){
+    setMessage(liveInventoryMissing?'ئەم کۆمبینەیشنەی هەڵبژێردراو چیتر بەردەست نییە.':liveInventoryUnavailable?'ئەم هەڵبژاردەیە چیتر بەردەست نییە.':'ئەم بەرهەمە ئێستا بەردەست نییە.');
+    await loadProducts();return false;
+   }
    const cartId=await ensureCart(user,p.store_id);
    const price=Number(live.sale_price_iqd??live.price_iqd);
    const optionsKey=JSON.stringify(options,Object.keys(options).sort());
@@ -225,10 +262,21 @@ function App(){
   if(delta>0){
    const {data:live,error}=await supabase.from('products').select('stock,is_available,variants').eq('id',item.product_id).single();
    if(error)return setMessage('نەتوانرا بەردەستیی بەرهەم پشکنرێت.');
+   const liveVariantOptions=getVariantOptions(live?.variants);
    const inventory=matchingVariantInventory(live?.variants,item.options||{});
-   const unlimited=inventory?.unlimited_stock===true||(!inventory&&getVariantOptions(live?.variants).unlimited);
+   const inventoryRows=getVariantInventory(live?.variants);
+   const selectionComplete=Boolean(
+    (!liveVariantOptions.shoeSizes.length||Boolean(item.options?.shoe_size))&&
+    (!liveVariantOptions.sizes.length||Boolean(item.options?.size))&&
+    (!liveVariantOptions.colors.length||Boolean(item.options?.color))
+   );
+   const inventoryMissing=Boolean(inventoryRows.length&&selectionComplete&&!inventory);
+   const unlimited=inventory?.unlimited_stock===true||(!inventory&&!inventoryRows.length&&liveVariantOptions.unlimited);
    const available=inventory?Number(inventory.stock||0):Number(live?.stock||0);
-   if(!live?.is_available||(!unlimited&&q>available)){setMessage(available>0&&!unlimited?'ژمارەی داواکراو لە ستۆک زیاترە.':'ئەم هەڵبژاردەیە ستۆکی نەماوە.');return}
+   if(!live?.is_available||inventoryMissing||(!unlimited&&q>available)){
+    setMessage(inventoryMissing?'ئەم هەڵبژاردەیە چیتر بەردەست نییە.':available>0&&!unlimited?'ژمارەی داواکراو لە ستۆک زیاترە.':'ئەم هەڵبژاردەیە ستۆکی نەماوە.');
+    return;
+   }
   }
   if(q<=0)await supabase.from('cart_items').delete().eq('id',item.id);
   else await supabase.from('cart_items').update({quantity:q}).eq('id',item.id);
@@ -395,10 +443,10 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   {selectedShoeSizes.length>0&&<div className="productVariantBox"><b>ژمارەی پێلاوی بەردەست</b><div className="shoeSizePicker">{selectedShoeSizes.map(size=>{const available=isVariantChoiceAvailable(selectedProduct.variants,'shoe_size',size,selectedOptions);return <button type="button" key={size} disabled={!available} className={selectedOptions.shoe_size===size?'shoeSizeChip active':'shoeSizeChip'} aria-pressed={selectedOptions.shoe_size===size} aria-disabled={!available} onClick={()=>available&&setSelectedOptions(v=>({...v,shoe_size:size}))}>{size}</button>})}</div><small>ژمارەی بێ‌ستۆک هەڵنابژێردرێت.</small></div>}
   <div className="productDetailsPriceRow"><span>نرخی بەرهەم</span><strong>{selectedProduct.sale_price_iqd!=null&&Number(selectedProduct.sale_price_iqd)>0&&Number(selectedProduct.sale_price_iqd)<Number(selectedProduct.price_iqd)?<>{Number(selectedProduct.sale_price_iqd).toLocaleString('en-US')} د.ع <small style={{textDecoration:'line-through',opacity:.6}}>{Number(selectedProduct.price_iqd).toLocaleString('en-US')} د.ع</small></>:<>{Number(selectedProduct.price_iqd).toLocaleString('en-US')} د.ع</>}</strong></div>
   <div className="productDetailsStats">
-   <div><small>بەردەستی</small><b>{selectedVariantInventory?(selectedVariantInventory.unlimited_stock?'بێ سنوور ∞':Number(selectedVariantInventory.stock||0).toLocaleString('ku-IQ')+' دانە'):selectedProduct.unlimited_stock?'بێ سنوور ∞':Number(selectedProduct.stock||0).toLocaleString('ku-IQ')+' دانە'}</b></div>
-   <div><small>دۆخ</small><b>{selectedProduct.is_available&& (selectedProduct.unlimited_stock||Number(selectedProduct.stock||0)>0)?'بەردەستە':'بەردەست نییە'}</b></div>
+   <div><small>بەردەستی</small><b>{selectedAvailability}</b></div>
+   <div><small>دۆخ</small><b>{!selectedProduct.is_available?'بەردەست نییە':selectedVariantUnavailable?'ئەم کۆمبینەیشنە بەردەست نییە':selectedVariantInventory?selectedVariantInventory.unlimited_stock||Number(selectedVariantInventory.stock||0)>0?'بەردەستە':'بەردەست نییە':selectedProduct.unlimited_stock||Number(selectedProduct.stock||0)>0?'بەردەستە':'بەردەست نییە'}</b></div>
   </div>
-  <button type="button" className="primary full productDetailsAdd" disabled={!selectedProduct.is_available||selectedVariantOutOfStock||(!selectedVariantInventory&&!selectedVariantOptions.unlimited&&Number(selectedProduct.stock||0)<=0)||busy||(selectedShoeSizes.length>0&&!selectedOptions.shoe_size)||(selectedFashionSizes.length>0&&!selectedOptions.size)||(selectedFashionColors.length>0&&!selectedOptions.color)} onClick={async()=>{const added=await addToCart(selectedProduct,selectedOptions);if(added){setSelectedProduct(null);setSelectedOptions({})}}}>{selectedProduct.is_available&&((selectedVariantInventory?selectedVariantInventory.unlimited_stock||Number(selectedVariantInventory.stock||0)>0:selectedVariantOptions.unlimited||Number(selectedProduct.stock||0)>0))?(selectedVariantOutOfStock?'بەردەستی نییە':selectedShoeSizes.length&&!selectedOptions.shoe_size?'سەرەتا ژمارەی پێلاو هەڵبژێرە':selectedFashionSizes.length&&!selectedOptions.size?'سەرەتا قەبارە هەڵبژێرە':selectedFashionColors.length&&!selectedOptions.color?'سەرەتا ڕەنگ هەڵبژێرە':'زیادکردن بۆ سەلە'):'بەردەست نییە'}</button>
+  <button type="button" className="primary full productDetailsAdd" disabled={!selectedProduct.is_available||selectedVariantUnavailable||(!selectedVariantInventory&&selectedVariantInventoryRows.length===0&&!selectedVariantOptions.unlimited&&Number(selectedProduct.stock||0)<=0)||busy||(selectedShoeSizes.length>0&&!selectedOptions.shoe_size)||(selectedFashionSizes.length>0&&!selectedOptions.size)||(selectedFashionColors.length>0&&!selectedOptions.color)} onClick={async()=>{const added=await addToCart(selectedProduct,selectedOptions);if(added){setSelectedProduct(null);setSelectedOptions({})}}}>{selectedProduct.is_available&&((selectedVariantInventory?selectedVariantInventory.unlimited_stock||Number(selectedVariantInventory.stock||0)>0:(selectedVariantInventoryRows.length?selectedVariantInventoryRows.length>0&&selectedVariantSelectionComplete&&Boolean(selectedVariantInventory):selectedVariantOptions.unlimited||Number(selectedProduct.stock||0)>0)))?(selectedVariantUnavailable?'بەردەستی نییە':selectedShoeSizes.length&&!selectedOptions.shoe_size?'سەرەتا ژمارەی پێلاو هەڵبژێرە':selectedFashionSizes.length&&!selectedOptions.size?'سەرەتا قەبارە هەڵبژێرە':selectedFashionColors.length&&!selectedOptions.color?'سەرەتا ڕەنگ هەڵبژێرە':'زیادکردن بۆ سەلە'):'بەردەست نییە'}</button>
  </div>
  </div></div>}{message&&<div className="toast"><span>{message}</span><button onClick={()=>setMessage('')}><X size={16}/></button></div>}
  {cartOpen&&<div className="modal" role="presentation" onClick={()=>setCartOpen(false)}><div className="auth cartPanel" role="dialog" aria-modal="true" aria-labelledby="cart-title" onClick={event=>event.stopPropagation()}>
