@@ -34,6 +34,7 @@ const variantSummary=(variants:unknown)=>{
 const CLOTHING_SIZES=['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'];
 const COLORS=['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'];
 const SHOE_SIZES=['35','36','37','38','39','40','41','42','43','44','45','46'];
+const comboKey=(row:{size?:string;color?:string;shoe_size?:string})=>[row.size||'',row.shoe_size||'',row.color||''].join('¦');
 
 const vendorCategories:Record<string,string[]>={
  restaurant_vendor:['restaurant'],supermarket_vendor:['supermarket'],fashion_vendor:['fashion'],vendor:['daily'],electronics_vendor:['electronics'],jewelry_vendor:['jewelry']
@@ -88,7 +89,9 @@ export default function ProductManagement({userId,role,onChanged}:Props){
   return next;
  };
  const update=async(p:Product)=>{
-  const stock=Math.max(0,Math.floor(Number(p.stock)||0));
+  const matrixHasUnlimited=editingVariantInventory.some(row=>row.unlimited_stock===true);
+  const matrixStock=editingVariantInventory.reduce((sum,row)=>sum+(row.unlimited_stock?0:Math.max(0,Math.floor(Number(row.stock)||0))),0);
+  const stock=editingVariantInventory.length?matrixStock:Math.max(0,Math.floor(Number(p.stock)||0));
   const price=Number(p.price_iqd);
   const sale=p.sale_price_iqd==null||Number(p.sale_price_iqd)<=0?null:Number(p.sale_price_iqd);
   if(!Number.isFinite(price)||price<=0)return setMessage('نرخ دەبێت زیاتر لە سفر بێت.');
@@ -100,18 +103,18 @@ export default function ProductManagement({userId,role,onChanged}:Props){
    product_type:p.product_type?.trim()||null,
    brand:p.brand?.trim()||null,
    size:p.size?.trim()||null,
-   stock:p.unlimited_stock?0:stock,
-   is_available:p.unlimited_stock||p.is_available,
+   stock,
+   is_available:editingVariantInventory.length?(matrixHasUnlimited||stock>0):p.is_available,
    variants:buildVariants(p)
   }).eq('id',p.id);
   if(error)return setMessage(error.message);
-  const saved={...p,stock:p.unlimited_stock?0:stock,variants:buildVariants(p),size:editingVariants.sizes.join(', ')||p.size};
+  const saved={...p,stock,unlimited_stock:editingVariantInventory.length?matrixHasUnlimited:p.unlimited_stock,variants:buildVariants(p),size:editingVariants.sizes.join(', ')||p.size,is_available:editingVariantInventory.length?(matrixHasUnlimited||stock>0):p.is_available};
   setItems(x=>x.map(i=>i.id===p.id?saved:i));
   if(role==='fashion_vendor'){
-   const variantPayload={available_sizes:editingVariants.sizes,available_colors:editingVariants.colors,shoe_sizes:editingVariants.shoeSizes};
+   const variantPayload={available_sizes:editingVariants.sizes,available_colors:editingVariants.colors,shoe_sizes:editingVariants.shoeSizes,variant_inventory:editingVariantInventory,stock,unlimited_stock:matrixHasUnlimited};
    const {data:linkedPosts}=await supabase.from('posts').select('id,listing_details').eq('author_id',userId).contains('listing_details',{product_id:p.id});
    for(const post of (linkedPosts||[]) as {id:string;listing_details?:Record<string,unknown>|null}[]){
-    await supabase.from('posts').update({listing_details:{...(post.listing_details||{}),...variantPayload,size:editingVariants.sizes.join(', ')||null,color:editingVariants.colors.join(', ')||null,shoe_sizes:editingVariants.shoeSizes}}).eq('id',post.id).eq('author_id',userId);
+    await supabase.from('posts').update({listing_details:{...(post.listing_details||{}),...variantPayload,size:editingVariants.sizes.join(', ')||null,color:editingVariants.colors.join(', ')||null,shoe_sizes:editingVariants.shoeSizes,inventory_stock:matrixHasUnlimited?null:stock,unlimited_stock:matrixHasUnlimited}}).eq('id',post.id).eq('author_id',userId);
    }
   }
   setEditing(null);
