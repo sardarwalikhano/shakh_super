@@ -33,7 +33,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
  const [form,setForm]=useState<FormState>(()=>initialForm());
  const [category,setCategory]=useState(cfg.cats[0].slug),[storeId,setStoreId]=useState(''),[storeLoading,setStoreLoading]=useState(true);
  const [files,setFiles]=useState<File[]>([]),[previews,setPreviews]=useState<string[]>([]);const previewsRef=useRef<string[]>([]);
- const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[showPreview,setShowPreview]=useState(true);
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[showPreview,setShowPreview]=useState(false);
  const [fashion,setFashionState]=useState({audience:'',clothingType:'',sizes:[] as string[],colors:[] as string[],shoeSize:'',shoeSizes:[] as string[],condition:'',brand:''});
  const [stockMode,setStockMode]=useState<'finite'|'unlimited'>('finite');
  const isFashion=role==='fashion_vendor';
@@ -130,7 +130,7 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
   }finally{setBusy(false)}
  };
  return <section className="orderCard postComposer" aria-label="پۆستکردنی بەرهەم" aria-busy={busy}>
-  <div className="postComposerHead"><div><span className="eyebrow"><Sparkles size={13}/> پۆستکردنی پیشەیی</span><h3>{cfg.heading}</h3><p>{cfg.label} · لەگەڵ شاخ دەگەیتە لوتکە</p></div><div className="postComposerBadge"><PackagePlus size={21}/><span>{cfg.label}</span></div></div>
+  <div className="postComposerHead"><div><span className="eyebrow"><Sparkles size={13}/> پۆستکردنی پیشەیی</span><h3>{cfg.heading}</h3><p>{cfg.label}</p></div><div className="postComposerBadge"><PackagePlus size={21}/><span>{cfg.label}</span></div></div>
   {!storeId&&<div className="postComposerNotice"><Store size={17}/><div><b>{storeLoading?'دۆزینەوەی دوکان...':'دوکانەکەت دیاری نەکراوە'}</b><small>{storeLoading?'زانیاریی دوکانەکەت پشکنین دەکرێت.':'ناوی دوکان بنووسە بۆ دروستکردنی دوکان.'}</small></div></div>}
   {!storeId&&<label className="postField">ناوی دوکان<input maxLength={100} value={form.storeName} onChange={e=>update({storeName:e.target.value})} placeholder={cfg.label}/></label>}
   <div className="postComposerLabel">کەتەگۆری</div><div className="postCategoryGrid">{cfg.cats.map(item=><button key={item.slug} type="button" className={category===item.slug?'postCategory active':'postCategory'} aria-pressed={category===item.slug} onClick={()=>setCategory(item.slug)}><span>{item.icon}</span><b>{item.label}</b></button>)}</div>
@@ -143,9 +143,9 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    <div className="postComposerLabel">👕 قەبارە و ڕەنگی بەردەست</div>
    <div className="postFormGrid">
     <label className="postField"><span>بۆ کێیە؟</span><select value={fashion.audience} onChange={e=>setFashion('audience',e.target.value)}><option value="">هەڵبژێرە</option>{FASHION_OPTIONS.audience.map(v=><option key={v}>{v}</option>)}</select></label>
-    <label className="postField"><span>جۆری جلوبەرگ</span><select value={fashion.clothingType} onChange={e=>{setFashion('clothingType',e.target.value);if(e.target.value==='پێلاو')setFashionState(v=>({...v,sizes:[]}));else setFashionState(v=>({...v,shoeSizes:[]}))}}><option value="">هەڵبژێرە</option>{FASHION_OPTIONS.types.map(v=><option key={v}>{v}</option>)}</select></label>
-    <label className="postField postFieldWide"><span>{isShoe?'ژمارەکانی پێلاوی بەردەست':'قەبارەکانی بەردەست'}</span><div className="postChoiceGrid">{(isShoe?SHOE_SIZES:FASHION_OPTIONS.sizes).map(v=><button type="button" key={v} className={(isShoe?fashion.shoeSizes:fashion.sizes).includes(v)?'postChoiceChip active':'postChoiceChip'} onClick={()=>toggleFashionChoice(isShoe?'shoeSizes':'sizes',v)}>{v}</button>)}</div><small>{isShoe?'چەند ژمارەی پێلاو هەیە هەڵیبژێرە.':'چەند قەبارەی بەردەستە هەیە هەڵیبژێرە.'}</small></label>
-    <label className="postField postFieldWide"><span>ڕەنگەکانی بەردەست</span><div className="postChoiceGrid postColorChoiceGrid">{FASHION_OPTIONS.colors.map(v=><button type="button" key={v} className={fashion.colors.includes(v)?'postChoiceChip active':'postChoiceChip'} onClick={()=>toggleFashionChoice('colors',v)}>{v}</button>)}</div><small>دەتوانیت چەند ڕەنگ هەڵبژێریت.</small></label>
+    <label className="postField"><span>جۆری جلوبەرگ</span><select value={fashion.clothingType} onChange={e=>{const value=e.target.value;setFashion('clothingType',value);update({type:value});if(value==='پێلاو')setFashionState(v=>({...v,sizes:[]}));else setFashionState(v=>({...v,shoeSizes:[]}))}}><option value="">هەڵبژێرە</option>{FASHION_OPTIONS.types.map(v=><option key={v}>{v}</option>)}</select></label>
+    <label className="postField postFieldWide"><span>{isShoe?'ژمارەکانی پێلاوی بەردەست':'قەبارەکانی بەردەست'}</span><div className="postChoiceGrid">{(isShoe?SHOE_SIZES:FASHION_OPTIONS.sizes).map(v=><button type="button" key={v} className={(isShoe?fashion.shoeSizes:fashion.sizes).includes(v)?'postChoiceChip active':'postChoiceChip'} onClick={()=>toggleFashionChoice(isShoe?'shoeSizes':'sizes',v)}>{v}</button>)}</div><!--variant hint removed--></label>
+    <label className="postField postFieldWide"><span>ڕەنگەکانی بەردەست</span><div className="postChoiceGrid postColorChoiceGrid">{FASHION_OPTIONS.colors.map(v=><button type="button" key={v} className={fashion.colors.includes(v)?'postChoiceChip active':'postChoiceChip'} onClick={()=>toggleFashionChoice('colors',v)}>{v}</button>)}</div><!--color hint removed--></label>
     <label className="postField"><span>حاڵەت</span><select value={fashion.condition} onChange={e=>setFashion('condition',e.target.value)}><option value="">هەڵبژێرە</option>{FASHION_OPTIONS.condition.map(v=><option key={v}>{v}</option>)}</select></label>
     <label className="postField"><span>براند</span><input value={fashion.brand} onChange={e=>setFashion('brand',e.target.value)} placeholder="Nike"/></label>
    </div>
@@ -158,6 +158,6 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
   <button type="button" className="postResetButton" disabled={busy||!hasChanges} onClick={()=>{if(!window.confirm('دڵنیایت؟ هەموو گۆڕانکارییەکانی فۆڕمەکە لەدەست دەچێت.'))return;setForm(initialForm(form.city));setFashionState({audience:'',clothingType:'',sizes:[],colors:[],shoeSize:'',shoeSizes:[],condition:'',brand:''});setStockMode('finite');setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);setCategory(cfg.cats[0].slug);setMessage('فۆڕمەکە پاک کرایەوە.')}}>پاککردنەوەی فۆڕم</button>
   <button type="button" className="primary postPublishButton" disabled={busy||!ready} onClick={()=>void submit()}>{busy?<><Upload size={17}/> بڵاوکردنەوە...</>:<><Send size={17}/> بڵاوکردنەوەی بەرهەم و پۆست</>}</button>
   {message&&<div className={message.includes('سەرکەوت')?'postComposerMessage success':'postComposerMessage'} role="alert" aria-live="polite">{message}</div>}
-  <small className="postComposerFoot"><CheckCircle2 size={14}/> لێبلی <b>{POST_META[role]?.label||cfg.label}</b> و زانیارییە structured ـەکان لەگەڵ پۆستەکە هەڵدەگیرێن.</small>
+  <span className="postComposerFoot" aria-hidden="true"></span>
  </section>;
 }
