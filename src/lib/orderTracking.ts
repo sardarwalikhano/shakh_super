@@ -11,64 +11,51 @@ export type OrderStatus =
   | 'delivered'
   | 'cancelled';
 
+export type RealtimeOrderChange = {
+  id: string;
+  status: OrderStatus;
+  customer_id: string;
+  store_id: string | null;
+  captain_id: string | null;
+  total_iqd: number;
+  updated_at: string;
+};
+
 export async function transitionOrderStatus(orderId: string, nextStatus: OrderStatus) {
   const { data, error } = await supabase.rpc('transition_order_status', {
     p_order_id: orderId,
     p_next_status: nextStatus,
   });
-
   if (error) throw error;
   return data;
 }
 
 export async function getMyNotifications(userId: string, limit = 30) {
-  const { data, error } = await supabase
-    .from('notifications')
-    .select('id,title,body,type,is_read,data,created_at')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .limit(limit);
-
+  const { data, error } = await supabase.from('notifications').select('id,title,body,type,is_read,data,created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(limit);
   if (error) throw error;
   return data ?? [];
 }
 
 export async function markNotificationRead(userId: string, notificationId: string) {
-  const { error } = await supabase
-    .from('notifications')
-    .update({ is_read: true })
-    .eq('id', notificationId)
-    .eq('user_id', userId);
-
+  const { error } = await supabase.from('notifications').update({ is_read: true }).eq('id', notificationId).eq('user_id', userId);
   if (error) throw error;
 }
 
-export function subscribeToOrder(orderId: string, onChange: (payload: unknown) => void) {
-  const channel = supabase
-    .channel(`order-${orderId}`)
-    .on(
-      'postgres_changes',
-      { event: 'UPDATE', schema: 'public', table: 'orders', filter: `id=eq.${orderId}` },
-      onChange,
-    )
-    .subscribe();
+/** Database remains the source of truth; Realtime only tells the UI to refresh. */
+export function subscribeToOrder(orderId: string, onChange: (payload: RealtimeOrderChange) => void) {
+  const channel = supabase.channel(`order-${orderId}`).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `id=eq.${orderId}` }, (payload) => onChange(payload.new as RealtimeOrderChange)).subscribe();
+  return () => { void supabase.removeChannel(channel); };
+}
 
-  return () => {
-    void supabase.removeChannel(channel);
-  };
+/** Customer-scoped stream; RLS remains the authority over which rows can be received. */
+export function subscribeToCustomerOrders(userId: string, onChange: (payload: RealtimeOrderChange) => void) {
+  if (!userId) return () => undefined;
+  const channel = supabase.channel(`customer-orders-${userId}`).on('postgres_changes', { event: '*', schema: 'public', table: 'orders', filter: `customer_id=eq.${userId}` }, (payload) => onChange(payload.new as RealtimeOrderChange)).subscribe();
+  return () => { void supabase.removeChannel(channel); };
 }
 
 export function subscribeToMyNotifications(userId: string, onChange: (payload: unknown) => void) {
-  const channel = supabase
-    .channel(`notifications-${userId}`)
-    .on(
-      'postgres_changes',
-      { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` },
-      onChange,
-    )
-    .subscribe();
-
-  return () => {
-    void supabase.removeChannel(channel);
-  };
+  if (!userId) return () => undefined;
+  const channel = supabase.channel(`notifications-${userId}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` }, onChange).subscribe();
+  return () => { void supabase.removeChannel(channel); };
 }
