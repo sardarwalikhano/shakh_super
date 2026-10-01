@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react';
-import {ArrowDownLeft,CalendarDays,CheckCircle2,Clock3,Copy,RefreshCw,Send,ShoppingBag,TrendingUp,WalletCards,X} from 'lucide-react';
+import {ArrowDownLeft,ArrowUpRight,CalendarDays,CheckCircle2,Clock3,RefreshCw,Send,TrendingUp,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
 type Props={userId:string;role:string};
@@ -47,7 +47,6 @@ export default function ReferralEarningsPanel({userId,role}:Props){
  const [withdrawNote,setWithdrawNote]=useState('');
  const [withdrawBusy,setWithdrawBusy]=useState(false);
  const [adminBusyId,setAdminBusyId]=useState('');
- const [copied,setCopied]=useState(false);
 
  const load=async()=>{
   setLoading(true);
@@ -102,14 +101,6 @@ export default function ReferralEarningsPanel({userId,role}:Props){
  const totalEarned=useMemo(()=>earnings.filter(row=>row.status==='earned').reduce((sum,row)=>sum+Number(row.earning_iqd||0),0),[earnings]);
  const pending=useMemo(()=>earnings.filter(row=>row.status==='pending').reduce((sum,row)=>sum+Number(row.earning_iqd||0),0),[earnings]);
 
- const copyBalanceCode=async()=>{
-  try{
-   await navigator.clipboard?.writeText(String(balance));
-   setCopied(true);
-   window.setTimeout(()=>setCopied(false),1600);
-  }catch{setCopied(false)}
- };
-
  const requestWithdrawal=async()=>{
   const amount=Number(withdrawAmount.replace(/\D/g,''));
   if(!Number.isFinite(amount)||amount<=0){setMessage('بڕی دەرکردن بە دروستی بنووسە.');return}
@@ -148,7 +139,6 @@ export default function ReferralEarningsPanel({userId,role}:Props){
    <div><small>باڵانسی قازانجی ئامادە</small><strong>{money(balance)}</strong><span>دەتوانرێت بۆ کڕینی شاخ بەکاربهێنرێت یان داوای دەرکردنی بکرێت.</span></div>
    <div className="referralHeroActions">
     <button type="button" className="primary" onClick={()=>{setWithdrawOpen(true);setMessage('')}} disabled={balance<=0}><Send size={16}/> داوای دەرکردن</button>
-    <button type="button" className="plain" onClick={()=>void copyBalanceCode()}>{copied?<CheckCircle2 size={16}/>:<Copy size={16}/>} {copied?'کۆپی کرا':'کۆپی باڵانس'}</button>
    </div>
   </div>
 
@@ -181,7 +171,7 @@ export default function ReferralEarningsPanel({userId,role}:Props){
 
   {transactions.length>0&&<div className="referralSectionTitle"><span>جوڵەکانی جزدانی قازانج</span><b>دوایین ٢٠</b></div>}
   {transactions.length>0&&<div className="referralTxList">{transactions.map(tx=><div className="referralTxRow" key={tx.id}>
-   <div className={'referralTxIcon '+(tx.type==='earning'||tx.type==='withdrawal_refund'?'positive':'negative')}>{tx.type==='earning'||tx.type==='withdrawal_refund'?<ArrowDownLeft size={16}/>:<ArrowDownLeft size={16}/>}</div>
+   <div className={'referralTxIcon '+(tx.type==='earning'||tx.type==='withdrawal_refund'?'positive':'negative')}>{tx.type==='earning'||tx.type==='withdrawal_refund'?<ArrowDownLeft size={16}/>:<ArrowUpRight size={16}/>}</div>
    <div><b>{txLabels[tx.type]||tx.type}</b><small>{tx.description||'مامەڵەی قازانجی پۆست'} · {new Date(tx.created_at).toLocaleString('ku-IQ')}</small></div>
    <strong className={tx.type==='earning'||tx.type==='withdrawal_refund'?'positive':'negative'}>{tx.type==='earning'||tx.type==='withdrawal_refund'?'+':'−'}{money(tx.amount_iqd)}</strong>
   </div>)}</div>}
