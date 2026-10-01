@@ -19,7 +19,7 @@ type Post={
  post_type?:string|null;
  publisher_role?:string|null;
  label?:string|null;
- referral_code?:string|null;
+ referral_reward_percent?:number|null;
  rejection_reason?:string|null;
  visibility:string;
  archived_at?:string|null;
@@ -109,7 +109,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
   setLoading(true);
   const builder=supabase
    .from('posts')
-   .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,archived_at,listing_details,post_referral_programs(code,commission_percent)')
+   .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,archived_at,listing_details,post_referral_programs(commission_percent)')
    .order('created_at',{ascending:false})
    .limit(200);
   const scoped=!isAdmin?builder.eq('author_id',userId):builder;
@@ -119,7 +119,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
    setLoading(false);
    return;
   }
-  setPosts((data||[]).map((row:any)=>({...row,referral_code:Array.isArray(row.post_referral_programs)?row.post_referral_programs[0]?.code||null:row.post_referral_programs?.code||null})) as Post[]);
+  setPosts((data||[]).map((row:any)=>({...row,referral_reward_percent:Array.isArray(row.post_referral_programs)?Number(row.post_referral_programs[0]?.commission_percent||0):Number(row.post_referral_programs?.commission_percent||0)})) as Post[]);
   setMessage('');
   setLoading(false);
  };
@@ -296,23 +296,27 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
  };
 
  const sharePost=async(post:Post)=>{
-  const urlObject=new URL(window.location.href);
-  urlObject.search='';
-  urlObject.searchParams.set('post',post.id);
-  if(post.referral_code)urlObject.searchParams.set('ref',post.referral_code);
-  urlObject.hash='shakh-posts';
-  const url=urlObject.toString();
   try{
-   if(navigator.share){await navigator.share({title:post.title,text:post.content||post.title,url});setMessage('پۆستەکە بە سەرکەوتوویی هاوبەش کرا.');}
-   else if(navigator.clipboard){await navigator.clipboard.writeText(url);setMessage('لینکی پۆستەکە کۆپی کرا.');}
-   else{setMessage('ئامرازێکی هاوبەشکردن لەم وێبگەڕەدا بەردەست نییە.');}
+   const{data:user}=await supabase.auth.getUser();
+   if(!user.user){setMessage('بۆ دروستکردنی لینکی قازانج، سەرەتا بچۆ ژوورەوە.');return;}
+   const{data:shareLink,error}=await supabase.rpc('create_post_share_link',{p_post_id:post.id});
+   if(error||!shareLink){setMessage('نەتوانرا لینکی قازانج دروست بکرێت.');return;}
+   const row=Array.isArray(shareLink)?shareLink[0]:shareLink;
+   if(!row?.code){setMessage('کۆدی Share دروست نەکرا.');return;}
+   const urlObject=new URL(window.location.href);
+   urlObject.search='';
+   urlObject.searchParams.set('post',post.id);
+   urlObject.searchParams.set('ref',row.code);
+   urlObject.hash='shakh-posts';
+   const url=urlObject.toString();
+   if(navigator.share){await navigator.share({title:post.title,text:post.content||post.title,url});setMessage('لینکی قازانجی Share دروست کرا.');}
+   else if(navigator.clipboard){await navigator.clipboard.writeText(url);setMessage('لینکی قازانجی Share کۆپی کرا.');}
+   else{setMessage(url);}
   }catch(error){
    if(error instanceof DOMException&&error.name==='AbortError')return;
-   setMessage('نەتوانرا پۆستەکە share بکرێت.');
+   setMessage('نەتوانرا لینکی Share دروست بکرێت.');
   }
  };
-
- const copyReferralCode=async(post:Post)=>{if(!post.referral_code||!navigator.clipboard){setMessage('نەتوانرا کۆدی قازانج کۆپی بکرێت.');return}try{await navigator.clipboard.writeText(post.referral_code);setMessage('کۆدی قازانج کۆپی کرا: '+post.referral_code)}catch{setMessage('نەتوانرا کۆدی قازانج کۆپی بکرێت.')}};
 
  const deletePost=async(post:Post)=>{
   if(!window.confirm('پۆستەکە دەچێتە ئەرشیف، نەک سڕینەوەی هەمیشەیی. دڵنیایت؟'))return;
@@ -402,7 +406,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
        {post.publisher_name&&<small>{post.publisher_name}</small>}
       </div>
       {post.rejection_reason&&<small className="postsManagementReason">هۆکاری ڕەتکردنەوە: {post.rejection_reason}</small>}
-      {post.price_iqd!=null&&<strong className="postsManagementPrice">{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>}{post.referral_code&&<div className="postsReferralCodeManagement"><span>کۆدی قازانج</span><strong dir="ltr">{post.referral_code}</strong><button type="button" className="plain" onClick={()=>void copyReferralCode(post)} disabled={disabled}><span>کۆپی</span></button></div>}
+      {post.price_iqd!=null&&<strong className="postsManagementPrice">{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>}
       <div className="postsManagementActions">
        <button type="button" onClick={()=>startEdit(post)} disabled={disabled}><Edit3 size={15}/> دەستکاری</button>
        <button type="button" onClick={()=>void sharePost(post)} disabled={disabled}><Share2 size={15}/> هاوبەشکردن</button>
