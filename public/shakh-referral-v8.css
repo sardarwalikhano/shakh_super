@@ -50,3 +50,21 @@
  .referralModalFoot{flex-direction:column-reverse}
  .referralModalFoot button{width:100%}
 }
+
+.postReferralCodeInline{display:flex;align-items:center;gap:6px;min-width:0;margin-inline-end:auto;padding:5px 8px;border:1px solid var(--border,#dbe2ea);border-radius:9px;background:var(--surface-soft,#f6f8fb);font-size:11px}
+.postReferralCodeInline b{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}
+.postReferralCodeInline button,.postsReferralCodeManagement button{border:0;background:transparent;color:var(--primary,#123b68);font-weight:900;cursor:pointer;padding:2px 4px}
+.postReferralCodeBox{margin-top:12px;padding:13px;border:1px solid var(--border,#dbe2ea);border-radius:14px;background:var(--surface-soft,#f6f8fb);display:flex;align-items:center;justify-content:space-between;gap:14px}
+.postReferralCodeBox>div{min-width:0}
+.postReferralCodeBox span,.postReferralCodeBox small{display:block}
+.postReferralCodeBox strong{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:18px;letter-spacing:.06em;margin:4px 0}
+.postReferralCodeBox small{max-width:660px}
+.postReferralCodeBox>button{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.postsReferralCodeManagement{display:flex;align-items:center;gap:8px;margin-top:8px;padding:8px 10px;border:1px dashed var(--border,#dbe2ea);border-radius:10px;background:var(--surface-soft,#f6f8fb)}
+.postsReferralCodeManagement strong{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em}
+@media(max-width:640px){
+ .postReferralCodeInline{width:100%;margin-inline-end:0;justify-content:space-between}
+ .postReferralCodeBox{flex-direction:column;align-items:stretch}
+ .postReferralCodeBox>button{justify-content:center}
+ .postsReferralCodeManagement{flex-wrap:wrap}
+}
