@@ -455,4 +455,109 @@ REVOKE ALL
   ON FUNCTION private.attribute_order_item_to_share()
   FROM PUBLIC, anon, authenticated;
 
+
+ALTER TABLE public.cart_post_share_attributions
+  ADD COLUMN IF NOT EXISTS share_code text;
+
+-- Securely attach a share link to the caller's own cart without exposing the
+-- sharer's account or requiring a client-side lookup.
+CREATE OR REPLACE FUNCTION private.attach_post_share_to_cart(
+  p_cart_id uuid,
+  p_product_id uuid,
+  p_code text
+)
+RETURNS boolean
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_user uuid := auth.uid();
+  v_share public.post_share_links%rowtype;
+BEGIN
+  IF v_user IS NULL THEN
+    RAISE EXCEPTION 'authentication_required';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM public.carts c
+    WHERE c.id = p_cart_id
+      AND c.user_id = v_user
+  ) THEN
+    RAISE EXCEPTION 'cart_not_owned';
+  END IF;
+
+  SELECT sl.*
+  INTO v_share
+  FROM public.post_share_links sl
+  JOIN public.post_referral_programs rp
+    ON rp.id = sl.referral_program_id
+  JOIN public.posts p
+    ON p.id = sl.post_id
+  WHERE lower(btrim(sl.code)) = lower(btrim(coalesce(p_code, '')))
+    AND sl.is_active = true
+    AND rp.is_active = true
+    AND p.status = 'approved'
+    AND p.visibility = 'public'
+    AND p.archived_at IS NULL
+    AND p.listing_details->>'product_id' = p_product_id::text
+  LIMIT 1;
+
+  IF NOT FOUND THEN
+    RETURN false;
+  END IF;
+
+  INSERT INTO public.cart_post_share_attributions(
+    cart_id,
+    product_id,
+    share_link_id,
+    share_code
+  )
+  VALUES(
+    p_cart_id,
+    p_product_id,
+    v_share.id,
+    v_share.code
+  )
+  ON CONFLICT (cart_id, product_id) DO UPDATE
+    SET share_link_id = EXCLUDED.share_link_id,
+        share_code = EXCLUDED.share_code;
+
+  RETURN true;
+END;
+$$;
+
+REVOKE ALL
+  ON FUNCTION private.attach_post_share_to_cart(uuid,uuid,text)
+  FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE
+  ON FUNCTION private.attach_post_share_to_cart(uuid,uuid,text)
+  TO authenticated;
+
+CREATE OR REPLACE FUNCTION public.attach_post_share_to_cart(
+  p_cart_id uuid,
+  p_product_id uuid,
+  p_code text
+)
+RETURNS boolean
+LANGUAGE sql
+SECURITY INVOKER
+SET search_path = ''
+AS $$
+  SELECT private.attach_post_share_to_cart(
+    p_cart_id,
+    p_product_id,
+    p_code
+  );
+$$;
+
+REVOKE ALL
+  ON FUNCTION public.attach_post_share_to_cart(uuid,uuid,text)
+  FROM PUBLIC, anon;
+GRANT EXECUTE
+  ON FUNCTION public.attach_post_share_to_cart(uuid,uuid,text)
+  TO authenticated;
+
+
 COMMIT;
