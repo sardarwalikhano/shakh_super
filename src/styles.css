@@ -4977,3 +4977,222 @@ html[data-theme='dark'] .app .mobileBottomNav button:hover{
 @media(prefers-reduced-motion:reduce){
   .app *, .app *::before, .app *::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
+
+
+/* =========================================================
+   SHAKH — FINAL UI/UX — STAGE 3 — COMMERCE EXPERIENCE
+   Visual-only refinement for catalog, product details, cart and checkout.
+   ========================================================= */
+
+.app .grid{gap:16px}
+.app .card{
+  border-radius:20px!important;
+  overflow:hidden;
+  background:var(--surface)!important;
+}
+.app .card .pic{
+  height:220px!important;
+  background:
+    radial-gradient(circle at 80% 15%,color-mix(in srgb,var(--accent-2) 13%,transparent),transparent 28%),
+    linear-gradient(145deg,color-mix(in srgb,var(--accent) 4%,var(--surface-alt)),var(--surface-alt))!important;
+}
+.app .card .pic img{transition:transform .35s ease,filter .35s ease}
+.app .card:hover .pic img{transform:scale(1.035)}
+.app .card .body{padding:15px 16px 16px!important}
+.app .card .body h3{margin:6px 0 12px!important;font-size:15px!important;line-height:1.55}
+.app .card .body small{font-size:9px!important;color:var(--muted)!important}
+.app .card .buy{padding-top:3px}
+.app .card .buy b{font-size:14px;color:var(--text)!important}
+.app .card .buy button{
+  min-height:38px;
+  padding:8px 11px;
+  border-radius:10px;
+  background:color-mix(in srgb,var(--accent) 8%,var(--surface))!important;
+  color:var(--accent)!important;
+  border:1px solid color-mix(in srgb,var(--accent) 15%,var(--line))!important;
+}
+.app .card .buy button:hover:not(:disabled){
+  background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;
+}
+.app .card .buy button:disabled{opacity:.45;cursor:not-allowed}
+
+.app .productDetailsBackdrop{background:rgba(3,11,22,.72)!important;backdrop-filter:blur(13px)}
+.app .productDetailsModal{
+  width:min(960px,96vw)!important;
+  max-height:min(88vh,780px)!important;
+  border-radius:24px!important;
+  overflow:hidden!important;
+  border:1px solid var(--line)!important;
+  background:var(--surface)!important;
+  box-shadow:0 34px 110px rgba(0,0,0,.32)!important;
+}
+.app .productDetailsImage{
+  background:
+    radial-gradient(circle at 20% 15%,color-mix(in srgb,var(--accent-2) 15%,transparent),transparent 28%),
+    var(--surface-alt)!important;
+}
+.app .productDetailsImage img{object-fit:cover!important}
+.app .productDetailsClose{
+  width:40px!important;height:40px!important;top:13px!important;left:13px!important;
+  border-radius:12px!important;
+  border:1px solid var(--line)!important;
+  background:color-mix(in srgb,var(--surface) 86%,transparent)!important;
+  color:var(--text)!important;
+  box-shadow:0 8px 22px rgba(8,26,51,.08);
+}
+.app .productDetailsBody{
+  padding:25px!important;
+  background:var(--surface)!important;
+}
+.app .productDetailsMeta{
+  display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important;
+}
+.app .productDetailsMeta span{
+  padding:5px 8px!important;border-radius:999px!important;
+  background:color-mix(in srgb,var(--accent) 8%,var(--surface))!important;
+  border:1px solid color-mix(in srgb,var(--accent) 15%,var(--line))!important;
+  color:var(--accent)!important;font-size:8px!important;font-weight:950!important;
+}
+.app .productDetailsMeta small{color:var(--muted)!important;font-size:9px!important}
+.app .productDetailsBody h2{
+  color:var(--text)!important;
+  font-size:24px!important;
+  line-height:1.35!important;
+  margin:10px 0 6px!important;
+  letter-spacing:-.35px;
+}
+.app .productDetailsType{
+  color:var(--muted)!important;
+  font-size:10px!important;
+  line-height:1.8!important;
+}
+.app .productDetailsPriceRow{
+  margin-top:15px!important;
+  padding:12px 0!important;
+  border-top:1px solid var(--line)!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.app .productDetailsPriceRow span{color:var(--muted)!important;font-size:9px!important}
+.app .productDetailsPriceRow strong{
+  color:var(--accent)!important;font-size:20px!important;font-weight:950!important;
+}
+.app .productDetailsStats{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:10px!important;
+}
+.app .productDetailsStats>div{
+  padding:10px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:var(--surface-alt)!important;
+}
+.app .productDetailsStats small{display:block;color:var(--muted)!important;font-size:7px!important}
+.app .productDetailsStats b{display:block;margin-top:4px;color:var(--text)!important;font-size:10px!important}
+.app .productDetailsAdd{margin-top:13px!important;min-height:50px!important}
+
+.app .cartPanel,.app .checkoutPanel{
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+}
+.app .cartHead{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:12px!important;padding:2px 0 14px!important;border-bottom:1px solid var(--line)!important;
+}
+.app .cartHead>div span{color:var(--accent)!important;font-size:8px!important;font-weight:950!important}
+.app .cartHead h2{
+  color:var(--text)!important;font-size:21px!important;margin:2px 0!important;
+}
+.app .cartHead small{color:var(--muted)!important;font-size:8px!important}
+.app .cartHeadIcon{
+  width:38px!important;height:38px!important;padding:9px!important;border-radius:12px!important;
+  background:color-mix(in srgb,var(--accent) 8%,var(--surface-alt))!important;color:var(--accent)!important;
+}
+.app .cartList{margin:14px 0!important;max-height:45vh!important}
+.app .cartRow{
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:12px!important;
+  padding:12px 0!important;border-color:var(--line)!important;
+}
+.app .cartItemInfo{
+  min-width:0;display:grid!important;grid-template-columns:54px minmax(0,1fr)!important;align-items:center!important;gap:10px!important;
+}
+.app .cartItemInfo>img,.app .cartItemPlaceholder{
+  width:54px!important;height:54px!important;border-radius:12px!important;
+  object-fit:cover!important;background:var(--surface-alt)!important;border:1px solid var(--line)!important;
+}
+.app .cartItemInfo>div{min-width:0}
+.app .cartItemInfo b{display:block;color:var(--text)!important;font-size:10px!important;line-height:1.55!important}
+.app .cartItemInfo small{display:block;color:var(--muted)!important;font-size:8px!important;margin-top:3px}
+.app .qty{
+  justify-content:flex-end!important;flex-wrap:wrap!important;
+}
+.app .qty b{
+  min-width:24px;text-align:center;color:var(--text)!important;font-size:10px;
+}
+.app .qty button{
+  width:32px!important;height:32px!important;border-radius:9px!important;
+  background:var(--surface-alt)!important;color:var(--text)!important;border:1px solid var(--line)!important;
+}
+.app .qty button:hover{border-color:var(--accent)!important;color:var(--accent)!important}
+.app .qty .danger:hover{border-color:#d85353!important;color:#d85353!important;background:color-mix(in srgb,#d85353 7%,var(--surface))!important}
+.app .cartSummary{
+  margin-top:10px!important;padding-top:10px!important;border-top:1px solid var(--line)!important;
+}
+.app .cartSummary>div{padding:6px 0!important;color:var(--muted)!important;font-size:9px!important}
+.app .cartSummary .grand{
+  padding-top:11px!important;margin-top:5px!important;font-size:14px!important;color:var(--text)!important;
+}
+.app .cartSummary .grand b{color:var(--accent)!important;font-size:18px!important}
+.app .cartCheckoutButton{margin-top:9px!important;min-height:50px!important}
+
+.app .checkoutPanel{
+  width:min(700px,100%)!important;
+  max-height:90vh!important;
+  overflow:auto!important;
+}
+.app .checkoutIcon{
+  width:52px!important;height:52px!important;border-radius:15px!important;
+  background:color-mix(in srgb,var(--accent) 9%,var(--surface-alt))!important;
+  color:var(--accent)!important;
+}
+.app .checkoutPanel>h2{color:var(--text)!important;font-size:21px!important}
+.app .checkoutPanel>p{color:var(--muted)!important}
+.app .checkoutAutoCity{
+  margin:10px 0!important;padding:10px 12px!important;border-radius:12px!important;
+  background:var(--surface-alt)!important;border:1px solid var(--line)!important;color:var(--text)!important;
+  font-size:8px!important;
+}
+.app .locationExactField,.app .deliveryNoteField{display:block!important;margin-top:10px!important}
+.app .locationExactField>span,.app .deliveryNoteField>span{color:var(--text)!important;font-size:9px!important;font-weight:900!important}
+.app .locationExactField input,.app .deliveryNoteField input{
+  margin:5px 0 0!important;background:var(--surface)!important;color:var(--text)!important;
+  border-color:var(--line)!important;border-radius:11px!important;
+}
+.app .checkoutCouponSummary .grand{
+  padding:11px 0 0!important;border-top:1px dashed var(--line)!important;
+}
+.app .paymentMethodOption{transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease!important}
+.app .paymentMethodOption:hover:not(:disabled){transform:translateY(-1px)!important}
+
+@media(max-width:720px){
+  .app .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .app .card .pic{height:160px!important}
+  .app .card .body{padding:12px!important}
+  .app .card .body h3{font-size:13px!important}
+  .app .productDetailsModal{
+    width:100%!important;max-height:93dvh!important;border-radius:22px 22px 0 0!important;
+    grid-template-columns:1fr!important;grid-template-rows:33vh auto!important;
+  }
+  .app .productDetailsBody{padding:17px!important}
+  .app .productDetailsBody h2{font-size:20px!important}
+  .app .cartPanel,.app .checkoutPanel{
+    width:100%!important;max-height:94dvh!important;border-radius:22px 22px 0 0!important;
+  }
+}
+@media(max-width:430px){
+  .app .grid{gap:8px}
+  .app .card .pic{height:132px!important}
+  .app .card .body h3{font-size:12px!important}
+  .app .card .buy b{font-size:12px}
+  .app .card .buy button{min-height:36px;width:100%!important}
+  .app .card .buy{display:grid!important;gap:7px!important}
+  .app .productDetailsModal{grid-template-rows:210px auto!important}
+  .app .productDetailsImage img{max-height:210px!important}
+  .app .cartRow{grid-template-columns:1fr!important}
+  .app .qty{justify-content:flex-start!important}
+}
