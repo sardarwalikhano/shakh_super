@@ -184,20 +184,29 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
     ?{category:'car',make:car.make,model:car.model,year:Number(car.year),trim:car.trim||null,mileage:Number(car.mileage),engine:car.engine||null,body_type:car.body,fuel:car.fuel,transmission:car.transmission,drivetrain:car.drivetrain||null,color:car.color,condition:car.condition,origin:car.origin||null,plate_status:car.plate||null,negotiable:car.negotiable,exchange_allowed:car.exchange}
     :{};
 
-   const {error}=await supabase.from('posts').insert({
+   const {data:createdPost,error}=await supabase.from('posts').insert({
     author_id:userId,title:title.trim(),content:content.trim()||null,images:imageUrls,
     price_iqd:price?Number(price):null,city:city.trim()||'هەولێر',status:'approved',
     section:postType,publisher_name:publisherName,post_type:postType,publisher_role:role,
     label:cfg.label,visibility:'public',listing_details:{...listingDetails,inventory_stock:isFashion?(fashionHasUnlimited?null:fashionTotalStock):(stockMode==='unlimited'?null:Number(stock||0)),unlimited_stock:isFashion?fashionHasUnlimited:stockMode==='unlimited',variant_inventory:isFashion?variantInventoryRows:[]}
-   });
+   }).select('id').single();
    if(error)throw error;
+
+   let referralCode='';
+   if(createdPost?.id){
+    const {data:referralProgram}=await supabase.from('post_referral_programs').select('code').eq('post_id',createdPost.id).maybeSingle();
+    referralCode=referralProgram?.code||'';
+    if(referralCode){
+      try{if(navigator.clipboard)await navigator.clipboard.writeText(referralCode)}catch{}
+    }
+   }
 
    setTitle('');setContent('');setPrice('');setCity('هەولێر');
    setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);
    setFashion({audience:'',clothingType:'',sizes:[],colors:[],shoeSizes:[],condition:'',brand:''});
    setVariantInventory({});setBulkVariantStock('1');setStockMode('finite');setStock('0');
    setCar({make:'',model:'',year:'',trim:'',mileage:'',engine:'',body:'',fuel:'',transmission:'',drivetrain:'',color:'',condition:'',origin:'',plate:'',negotiable:true,exchange:false});
-   setShowPreview(false);setMessage('پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە.');onSaved?.();
+   setShowPreview(false);setMessage(referralCode?'پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە. کۆدی قازانج کۆپی کرا: '+referralCode:'پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە.');onSaved?.();
   }catch(error:unknown){
    if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
    setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');
