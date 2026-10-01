@@ -13,7 +13,8 @@ const txLabels:Record<string,string>={
  earning:'خەڵاتی Share',
  purchase:'کڕین بە خەڵاتی Share',
  withdrawal_reserve:'قازانج بۆ دەرکردن قەدەغە کرا',
- withdrawal_refund:'گەڕانەوەی قازانجی دەرنەکراو'
+ withdrawal_refund:'گەڕانەوەی قازانجی دەرنەکراو',
+ withdrawal_payout:'پارەدانی دەرکراو'
 };
 
 const statusLabels:Record<string,string>={
