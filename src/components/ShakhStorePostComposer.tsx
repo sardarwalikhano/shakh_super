@@ -34,6 +34,7 @@ const CATEGORY_SLUGS:Record<string,string>={
 export default function ShakhStorePostComposer({userId,initialSection='marketplace',hideSectionSelector=false,onBack}:{userId:string;initialSection?:string;hideSectionSelector?:boolean;onBack?:()=>void}){
  const [section,setSection]=useState(initialSection);
  useEffect(()=>{setSection(initialSection);setMessage('');resetDetails()},[initialSection]);
+ useEffect(()=>{void supabase.from('platform_settings').select('referral_commission_percent').eq('id',true).maybeSingle().then(({data})=>{if(data?.referral_commission_percent!=null)setReferralRewardPercent(String(data.referral_commission_percent))})},[]);
  const [title,setTitle]=useState('');
  const [content,setContent]=useState('');
  const [price,setPrice]=useState('');
@@ -44,7 +45,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
  const [files,setFiles]=useState<File[]>([]);
  const [previews,setPreviews]=useState<string[]>([]);
  const [busy,setBusy]=useState(false);
- const [message,setMessage]=useState('');
+ const [message,setMessage]=useState(''); const [referralRewardPercent,setReferralRewardPercent]=useState('');
  const previewsRef=useRef<string[]>([]);
  const isFashion=section==='fashion';
  const isProductListing=PRODUCT_SECTIONS.has(section);
@@ -80,6 +81,8 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
   if(!supabase)return setMessage('پەیوەندی بە Supabase بەردەست نییە.');
   if(!title.trim())return setMessage('ناونیشانی پۆست بنووسە.');
   if(price&&!/^\d+$/.test(price))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');
+  if(referralRewardPercent&&!/^\d+(?:\.\d+)?$/.test(referralRewardPercent))return setMessage('خەڵاتی Share دەبێت ژمارە بێت.');
+  if(Number(referralRewardPercent)<0||Number(referralRewardPercent)>100)return setMessage('خەڵاتی Share دەبێت لە ٠ تا ١٠٠٪ بێت.');
   if(PRODUCT_SECTIONS.has(section)&&!price)return setMessage('بۆ پۆستی بەرهەم تکایە نرخێک دابنێ.');
   if(PRODUCT_SECTIONS.has(section)&&files.length===0)return setMessage('بۆ پۆستی بەرهەم لانیکەم یەک وێنە زیاد بکە.');
   if(isProductListing&&stockMode==='finite'&&(!/^\d+$/.test(stock)||Number(stock)<0))return setMessage('ژمارەی بەردەست دەبێت ٠ یان ژمارەیەکی دروست بێت.');
@@ -160,7 +163,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
     label:'بەڕێوبەری باڵا',
     status:'approved',
     visibility:'public',
-    listing_details:{source:'shakh_store',...(createdProductId?{product_id:createdProductId}:{}),stock:stockMode==='unlimited'?null:Number(stock||0),unlimited_stock:stockMode==='unlimited',...details,available_sizes:isFashion&&!isShoe?details.sizes:[],available_colors:isFashion?details.colors:[],shoe_sizes:isFashion&&isShoe?details.shoeSizes:[]}
+    listing_details:{source:'shakh_store',referral_reward_percent:Number(referralRewardPercent||0),...(createdProductId?{product_id:createdProductId}:{}),stock:stockMode==='unlimited'?null:Number(stock||0),unlimited_stock:stockMode==='unlimited',...details,available_sizes:isFashion&&!isShoe?details.sizes:[],available_colors:isFashion?details.colors:[],shoe_sizes:isFashion&&isShoe?details.shoeSizes:[]}
    }).select('id').single();
    if(postError)throw postError;
 
@@ -173,7 +176,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
     }
    }
 
-   setTitle('');setContent('');setPrice('');setFiles([]);previews.forEach(src=>URL.revokeObjectURL(src));setPreviews([]);resetDetails();setStockMode('finite');setStock('0');
+   setTitle('');setContent('');setPrice('');setReferralRewardPercent('');setFiles([]);previews.forEach(src=>URL.revokeObjectURL(src));setPreviews([]);resetDetails();setStockMode('finite');setStock('0');
    setMessage(referralCode?(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە. کۆدی قازانج کۆپی کرا: '+referralCode:'پۆست بە سەرکەوتوویی بڵاوکرایەوە. کۆدی قازانج کۆپی کرا: '+referralCode):(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە؛ کڕیار دەتوانێت بۆ سەلە زیادیکات.':'پۆست بە ناوی SHAKH Store بڵاوکرایەوە.'));
   }catch(error){
    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId);
@@ -191,7 +194,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
   {hideSectionSelector&&onBack&&<button type="button" className="postBackToCategories" onClick={onBack}>← گەڕانەوە بۆ هەڵبژاردنی کاتەگۆری</button>}
   <div className="postFormGrid">
    <label className="postField"><span>ناونیشانی پۆست</span><input value={title} onChange={e=>setTitle(e.target.value)} placeholder="نموونە: کەباب"/></label>
-   <label className="postField"><span>نرخ بە دینار</span><input value={price} onChange={e=>setPrice(e.target.value.replace(/\D/g,''))} inputMode="numeric" placeholder="5000" maxLength={14}/></label>
+   <label className="postField"><span>نرخ بە دینار</span><input value={price} onChange={e=>setPrice(e.target.value.replace(/\D/g,''))} inputMode="numeric" placeholder="5000" maxLength={14}/></label><label className="postField"><span>خەڵاتی Share (%)</span><input value={referralRewardPercent} onChange={e=>setReferralRewardPercent(e.target.value.replace(/[^0-9.]/g,''))} inputMode="decimal" min="0" max="100" placeholder="0"/><small>ئەو خەڵاتەی بۆ کەسی Share ـکەر دیاری دەکەیت؛ لە کاتی پۆستکردن قەفل دەکرێت.</small></label>
    <label className="postField"><span>شار</span><input value={city} onChange={e=>setCity(e.target.value)} placeholder="هەولێر"/></label>
    <label className="postField postFieldWide"><span>ناوەڕۆک</span><textarea value={content} onChange={e=>setContent(e.target.value)} placeholder="وەسف و زانیارییەکانی بەرهەم بنووسە..." rows={4}/></label>
   </div>
