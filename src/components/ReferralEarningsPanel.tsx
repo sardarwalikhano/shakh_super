@@ -87,10 +87,9 @@ export default function ReferralEarningsPanel({userId,role}:Props){
  useEffect(()=>{
   void load();
   const channel=supabase.channel('shakh-referral-wallet-'+userId)
-   .on('postgres_changes',{event:'*',schema:'public',table:'referral_wallets'},()=>{void load()})
-   .on('postgres_changes',{event:'*',schema:'public',table:'order_referral_earnings'},()=>{void load()})
-   .on('postgres_changes',{event:'*',schema:'public',table:'referral_wallet_transactions'},()=>{void load()})
-   .on('postgres_changes',{event:'*',schema:'public',table:'referral_withdrawal_requests'},()=>{void load()})
+   .on('postgres_changes',{event:'*',schema:'public',table:'referral_wallets',filter:'user_id=eq.'+userId},()=>{void load()})
+   .on('postgres_changes',{event:'*',schema:'public',table:'order_referral_earnings',filter:'beneficiary_user_id=eq.'+userId},()=>{void load()})
+   .on('postgres_changes',{event:'*',schema:'public',table:'referral_withdrawal_requests',...(isAdmin?{}:{filter:'user_id=eq.'+userId})},()=>{void load()})
    .subscribe();
   return()=>{void supabase.removeChannel(channel)};
  },[userId,isAdmin]);
