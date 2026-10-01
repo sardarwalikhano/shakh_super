@@ -107,32 +107,19 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
 
  const load=async()=>{
   setLoading(true);
-  const referralQuery=supabase
+  const builder=supabase
    .from('posts')
    .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,archived_at,listing_details,post_referral_programs(code,commission_percent)')
    .order('created_at',{ascending:false})
    .limit(200);
-  const scopedReferralQuery=!isAdmin?referralQuery.eq('author_id',userId):referralQuery;
-  const referralResult=await scopedReferralQuery;
-  if(!referralResult.error){
-   setPosts((referralResult.data||[]).map((row:any)=>({...row,referral_code:Array.isArray(row.post_referral_programs)?row.post_referral_programs[0]?.code||null:row.post_referral_programs?.code||null})) as Post[]);
-   setMessage('');
+  const scoped=!isAdmin?builder.eq('author_id',userId):builder;
+  const {data,error}=await scoped;
+  if(error){
+   setMessage('نەتوانرا پۆستەکان و کۆدی قازانج وەرگیرێن.');
    setLoading(false);
    return;
   }
-  const fallbackBase=supabase
-   .from('posts')
-   .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,archived_at,listing_details')
-   .order('created_at',{ascending:false})
-   .limit(200);
-  const scopedFallback=!isAdmin?fallbackBase.eq('author_id',userId):fallbackBase;
-  const fallbackResult=await scopedFallback;
-  if(fallbackResult.error){
-   setMessage('نەتوانرا پۆستەکان وەرگیرێن.');
-   setLoading(false);
-   return;
-  }
-  setPosts((fallbackResult.data||[]) as Post[]);
+  setPosts((data||[]).map((row:any)=>({...row,referral_code:Array.isArray(row.post_referral_programs)?row.post_referral_programs[0]?.code||null:row.post_referral_programs?.code||null})) as Post[]);
   setMessage('');
   setLoading(false);
  };
