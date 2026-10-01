@@ -5411,3 +5411,93 @@ html[data-theme='dark'] .app .mobileBottomNav button:hover{
   .dashboardShellModule .supportComposerFooter{flex-direction:column!important;align-items:stretch!important}
   .dashboardShellModule .supportComposerFooter .primary{width:100%!important}
 }
+
+
+/* =========================================================
+   SHAKH — FINAL UI/UX — STAGE 5 — FORMS + ACCESSIBILITY
+   Visual-only field, feedback and direction-system refinement.
+   ========================================================= */
+
+.app label{
+  color:var(--text);
+  font-weight:850;
+}
+.app input,.app textarea,.app select{
+  transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease;
+}
+.app input:hover,.app textarea:hover,.app select:hover{
+  border-color:color-mix(in srgb,var(--accent) 22%,var(--line))!important;
+}
+.app input:focus,.app textarea:focus,.app select:focus{
+  border-color:var(--accent)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 11%,transparent)!important;
+}
+.app input[aria-invalid="true"],
+.app textarea[aria-invalid="true"],
+.app select[aria-invalid="true"]{
+  border-color:#d85a5a!important;
+  box-shadow:0 0 0 3px rgba(216,90,90,.09)!important;
+}
+.app input::placeholder,.app textarea::placeholder{
+  color:var(--muted)!important;
+}
+.app input:disabled,.app textarea:disabled,.app select:disabled{
+  opacity:.62!important;
+  cursor:not-allowed!important;
+  background:color-mix(in srgb,var(--surface-alt) 80%,var(--line))!important;
+}
+.app input[type="checkbox"],.app input[type="radio"]{
+  accent-color:var(--accent);
+}
+.app .msg,.app .walletMessage{
+  border:1px solid var(--line)!important;
+  background:var(--surface-alt)!important;
+  color:var(--text)!important;
+  border-radius:12px!important;
+}
+.app .error,.app [role="alert"]{
+  border-color:rgba(210,76,76,.22)!important;
+  background:color-mix(in srgb,#d24c4c 6%,var(--surface))!important;
+  color:#a93f3f!important;
+}
+.app .success{
+  border-color:rgba(35,145,91,.20)!important;
+  background:color-mix(in srgb,#23915b 6%,var(--surface))!important;
+  color:#21724b!important;
+}
+.app [dir="rtl"]{
+  text-align:right;
+}
+.app [dir="ltr"],
+.app input[type="email"],
+.app input[type="url"],
+.app input[inputmode="numeric"]{
+  direction:ltr;
+}
+.app .eyebrow{
+  line-height:1.5;
+}
+.app button:disabled{
+  filter:none!important;
+}
+.app .primary:focus-visible{
+  box-shadow:0 0 0 3px color-mix(in srgb,#fff 80%,transparent),0 0 0 6px var(--accent)!important;
+}
+.app .plain:focus-visible,.app .cart:focus-visible,.app .themeToggleButton:focus-visible{
+  box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--accent)!important;
+}
+.app .modal [role="dialog"]{
+  overscroll-behavior:contain;
+}
+.app .cartList,.app .dashboardShellMain,.app .dashboardShellSidebar{
+  scrollbar-color:color-mix(in srgb,var(--accent) 35%,var(--muted)) transparent;
+}
+.app ::selection{
+  background:color-mix(in srgb,var(--accent) 22%,transparent);
+  color:var(--text);
+}
+
+@media(max-width:720px){
+  .app input,.app textarea,.app select{font-size:16px!important}
+  .app .postField input,.app .postField select,.app .postField textarea{font-size:16px!important}
+}
