@@ -5196,3 +5196,218 @@ html[data-theme='dark'] .app .mobileBottomNav button:hover{
   .app .cartRow{grid-template-columns:1fr!important}
   .app .qty{justify-content:flex-start!important}
 }
+
+
+/* =========================================================
+   SHAKH — FINAL UI/UX — STAGE 4 — SERVICE MODULES
+   Posts, Cars, Umrah, Wallet, Notifications and Support.
+   Visual-only refinement; existing data/actions preserved.
+   ========================================================= */
+
+.app .postFeed{
+  margin-top:44px!important;
+}
+.app .postFeedTitle{
+  margin-bottom:14px!important;
+}
+.app .postFeedFilters{
+  padding:11px!important;
+  border:1px solid var(--line)!important;
+  border-radius:15px!important;
+  background:var(--surface)!important;
+  box-shadow:0 8px 24px rgba(8,26,51,.045)!important;
+}
+.app .postAdvancedFilter{
+  border-radius:14px!important;
+  border-color:var(--line)!important;
+  background:var(--surface-alt)!important;
+}
+.app .postField input,
+.app .postField select,
+.app .postField textarea{
+  border-radius:10px!important;
+  background:var(--surface-alt)!important;
+}
+.app .postDetailsCart{
+  min-height:48px!important;
+  border-radius:12px!important;
+}
+
+.app .vehiclePostFormGrid,
+.app .umrahFormGrid{
+  gap:10px!important;
+}
+.dashboardShellModule .vehiclePostFormGrid label,
+.dashboardShellModule .umrahFormGrid label{
+  min-width:0!important;
+}
+.dashboardShellModule .vehiclePostFormGrid input,
+.dashboardShellModule .vehiclePostFormGrid select,
+.dashboardShellModule .vehiclePostFormGrid textarea,
+.dashboardShellModule .umrahFormGrid input,
+.dashboardShellModule .umrahFormGrid select,
+.dashboardShellModule .umrahFormGrid textarea{
+  border-radius:10px!important;
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-line)!important;
+}
+.dashboardShellModule .vehicleGallery,
+.dashboardShellModule .umrahPackageCard,
+.dashboardShellModule .vehicleCard{
+  border-radius:15px!important;
+  border-color:var(--dsx-line)!important;
+  box-shadow:0 8px 24px rgba(16,36,63,.05)!important;
+}
+
+.dashboardShellModule .walletPanel{
+  width:100%!important;
+  max-width:none!important;
+}
+.dashboardShellModule .walletBalanceCard{
+  border-radius:17px!important;
+  border:1px solid color-mix(in srgb,var(--dsx-brand) 14%,var(--dsx-line))!important;
+  background:
+    radial-gradient(circle at 90% 10%,color-mix(in srgb,var(--dsx-brand) 14%,transparent),transparent 28%),
+    linear-gradient(135deg,var(--dsx-surface),var(--dsx-surface-alt))!important;
+  box-shadow:0 12px 30px rgba(16,36,63,.07)!important;
+}
+.dashboardShellModule .walletBalanceIcon{
+  width:48px!important;height:48px!important;border-radius:14px!important;
+  background:var(--dsx-brand-soft)!important;color:var(--dsx-brand)!important;
+}
+.dashboardShellModule .walletMiniStats{
+  gap:8px!important;
+}
+.dashboardShellModule .walletMiniStats>div{
+  border-radius:12px!important;
+  border-color:var(--dsx-line)!important;
+  background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .walletSectionTitle{
+  margin-top:16px!important;
+  padding-bottom:9px!important;
+  border-bottom:1px solid var(--dsx-line)!important;
+}
+.dashboardShellModule .walletTransactions{
+  display:grid!important;
+  gap:5px!important;
+}
+.dashboardShellModule .walletTx{
+  border-radius:12px!important;
+  border:1px solid var(--dsx-line)!important;
+  background:var(--dsx-surface)!important;
+  padding:10px!important;
+}
+.dashboardShellModule .walletTx:hover{
+  background:var(--dsx-surface-alt)!important;
+}
+.dashboardShellModule .walletEmpty{
+  border-radius:15px!important;
+  background:var(--dsx-surface)!important;
+  border-color:var(--dsx-line)!important;
+}
+
+.dashboardShellModule .notification-center{
+  width:100%!important;
+}
+.dashboardShellModule .notification-center__header{
+  align-items:center!important;
+}
+.dashboardShellModule .notification-center__refresh{
+  width:40px!important;height:40px!important;border-radius:11px!important;
+  border:1px solid var(--dsx-line)!important;background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .notification-center__list{
+  display:grid!important;
+  gap:7px!important;
+}
+.dashboardShellModule .notificationCard{
+  border-radius:13px!important;
+  border-color:var(--dsx-line)!important;
+  background:var(--dsx-surface)!important;
+  box-shadow:0 7px 20px rgba(16,36,63,.045)!important;
+}
+.dashboardShellModule .notificationCard.is-unread{
+  border-color:color-mix(in srgb,var(--dsx-brand) 25%,var(--dsx-line))!important;
+  background:var(--dsx-brand-soft)!important;
+}
+.dashboardShellModule .notification-center__empty,
+.dashboardShellModule .notification-center__error{
+  border-radius:15px!important;
+  border-color:var(--dsx-line)!important;
+  background:var(--dsx-surface)!important;
+}
+
+.dashboardShellModule .supportPanel{
+  width:100%!important;
+}
+.dashboardShellModule .supportHead{
+  align-items:center!important;
+}
+.dashboardShellModule .supportNewButton{
+  min-height:42px!important;
+  border-radius:11px!important;
+}
+.dashboardShellModule .supportContactCard{
+  border-radius:14px!important;
+  border-color:var(--dsx-line)!important;
+  background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .supportContactActions{
+  gap:7px!important;
+}
+.dashboardShellModule .supportComposer{
+  border-radius:15px!important;
+  border:1px solid var(--dsx-line)!important;
+  background:var(--dsx-surface)!important;
+}
+.dashboardShellModule .supportComposerBadge{
+  border-radius:12px!important;
+  background:var(--dsx-brand-soft)!important;
+  color:var(--dsx-brand)!important;
+}
+.dashboardShellModule .supportComposerFields input,
+.dashboardShellModule .supportComposerFields select,
+.dashboardShellModule .supportComposerFields textarea{
+  border-radius:10px!important;
+  background:var(--dsx-surface-alt)!important;
+  border-color:var(--dsx-line)!important;
+}
+.dashboardShellModule .supportTicket{
+  border-radius:13px!important;
+  border-color:var(--dsx-line)!important;
+  background:var(--dsx-surface)!important;
+  box-shadow:0 7px 20px rgba(16,36,63,.045)!important;
+}
+.dashboardShellModule .supportTicket:hover{
+  background:var(--dsx-surface-alt)!important;
+}
+.dashboardShellModule .supportTicketIcon{
+  border-radius:11px!important;
+  background:var(--dsx-brand-soft)!important;
+  color:var(--dsx-brand)!important;
+}
+.dashboardShellModule .supportTicketTitle{
+  color:var(--dsx-text)!important;
+}
+.dashboardShellModule .supportTicketUser{
+  color:var(--dsx-muted)!important;
+}
+.dashboardShellModule .supportMessage{
+  border-radius:12px!important;
+}
+.dashboardShellModule .supportEmpty{
+  border-radius:15px!important;
+  border-color:var(--dsx-line)!important;
+  background:var(--dsx-surface)!important;
+}
+
+@media(max-width:720px){
+  .app .postFeed{margin-top:36px!important}
+  .dashboardShellModule .walletMiniStats{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:520px){
+  .dashboardShellModule .walletMiniStats{grid-template-columns:1fr!important}
+  .dashboardShellModule .supportComposerFooter{flex-direction:column!important;align-items:stretch!important}
+  .dashboardShellModule .supportComposerFooter .primary{width:100%!important}
+}
