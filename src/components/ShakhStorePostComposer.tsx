@@ -145,7 +145,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
     createdProductId=newProduct.id;
    }
 
-   const {error:postError}=await supabase.from('posts').insert({
+   const {data:createdPost,error:postError}=await supabase.from('posts').insert({
     author_id:userId,
     store_id:storeId,
     title:title.trim(),
@@ -161,11 +161,20 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
     status:'approved',
     visibility:'public',
     listing_details:{source:'shakh_store',...(createdProductId?{product_id:createdProductId}:{}),stock:stockMode==='unlimited'?null:Number(stock||0),unlimited_stock:stockMode==='unlimited',...details,available_sizes:isFashion&&!isShoe?details.sizes:[],available_colors:isFashion?details.colors:[],shoe_sizes:isFashion&&isShoe?details.shoeSizes:[]}
-   });
+   }).select('id').single();
    if(postError)throw postError;
 
+   let referralCode='';
+   if(createdPost?.id){
+    const {data:referralProgram}=await supabase.from('post_referral_programs').select('code').eq('post_id',createdPost.id).maybeSingle();
+    referralCode=referralProgram?.code||'';
+    if(referralCode){
+      try{if(navigator.clipboard)await navigator.clipboard.writeText(referralCode)}catch{}
+    }
+   }
+
    setTitle('');setContent('');setPrice('');setFiles([]);previews.forEach(src=>URL.revokeObjectURL(src));setPreviews([]);resetDetails();setStockMode('finite');setStock('0');
-   setMessage(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە؛ کڕیار دەتوانێت بۆ سەلە زیادیکات.':'پۆست بە ناوی SHAKH Store بڵاوکرایەوە.');
+   setMessage(referralCode?(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە. کۆدی قازانج کۆپی کرا: '+referralCode:'پۆست بە سەرکەوتوویی بڵاوکرایەوە. کۆدی قازانج کۆپی کرا: '+referralCode):(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە؛ کڕیار دەتوانێت بۆ سەلە زیادیکات.':'پۆست بە ناوی SHAKH Store بڵاوکرایەوە.'));
   }catch(error){
    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId);
    if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
