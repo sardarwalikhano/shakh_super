@@ -4884,3 +4884,96 @@ html[data-theme='dark'] .postInventoryBox{
     font-size:6.5px!important;
   }
 }
+
+
+/* =========================================================
+   SHAKH — FINAL UI/UX POLISH — STAGE 1
+   Additive visual layer only. No business logic or structure removed.
+   ========================================================= */
+
+.app header{box-shadow:0 4px 22px rgba(8,26,51,.04)}
+.app .nav{min-height:74px;gap:10px}
+.app .logoImage{width:50px;height:50px;border-radius:15px;box-shadow:0 9px 22px rgba(255,106,22,.16)}
+.app .search{min-height:50px;border-radius:15px}
+.app .search:focus-within{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 14%,transparent)!important}
+
+.app button,.app input,.app textarea,.app select{-webkit-tap-highlight-color:transparent}
+.app button:focus-visible,.app a:focus-visible,.app input:focus-visible,.app textarea:focus-visible,.app select:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;
+}
+
+.app .plain,.app .cart,.app .themeToggleButton{border-radius:13px;box-shadow:none}
+.app .plain:hover,.app .cart:hover,.app .themeToggleButton:hover{transform:translateY(-1px)}
+.app .loginBtn{border-radius:13px;min-height:44px;box-shadow:0 10px 25px rgba(8,26,51,.14)}
+.app .locationIndicator{min-height:44px;border-radius:13px}
+.app .brandRibbon{border-radius:22px!important;min-height:70px}
+.app .hero{border-radius:30px!important;min-height:400px!important;box-shadow:0 26px 70px rgba(6,24,44,.16)!important}
+.app .hero h1{max-width:820px}
+.app .section{margin-top:54px}
+.app .title{margin-bottom:18px}
+.app .card,.app .orderCard,.app .dashboardCard,.app .settingsCard,.app .notificationCard,.app .supportContactCard{
+  box-shadow:0 8px 24px rgba(8,26,51,.06);
+}
+.app .card:hover{box-shadow:0 18px 48px rgba(8,26,51,.09)}
+.app .primary{min-height:46px;border-radius:13px;font-weight:900}
+.app .empty{border-radius:18px}
+.app .modal{background:rgba(5,15,29,.68)}
+.app .auth,.app .cartPanel,.app .checkoutPanel,.app .dashboardPanel{
+  border-radius:24px;box-shadow:0 30px 90px rgba(0,0,0,.22);
+}
+.app .cartRow,.app .orderRow{border-color:var(--line)}
+.app .qty button{border-radius:9px}
+.app .toast{border-radius:13px;box-shadow:0 18px 48px rgba(7,26,51,.20)}
+.app .dashboard{padding-inline:18px}
+.app .dashboardGrid{gap:16px}
+.app .orderCard{border-radius:18px}
+.app .dashCards,.app .roleTiles{gap:12px}
+.app .dashCards div,.app .roleTiles div,.app .dashCards button,.app .roleTiles button{border-radius:14px}
+.app .dashboardAccountServicesHero{border-radius:20px!important}
+.app .dashboardAccountServiceCard{border-radius:15px!important}
+.app .postsManagement,.app .postPublishingHub,.app .postComposer{border-radius:18px}
+.app .postsManagementTools,.app .postsManagementStats{gap:8px}
+.app .postsSearch{border-radius:13px}
+.app .savedAddressList,.app .paymentMethodPicker,.app .couponCheckoutBox,.app .interactiveMapPicker,.app .liveDeliveryMap{border-radius:15px!important}
+.app .paymentMethodOption{border-radius:12px!important}
+
+html[data-theme='dark']{
+  color-scheme:dark;
+}
+html[data-theme='dark'] body{background:#07111d!important}
+html[data-theme='dark'] .app .card,
+html[data-theme='dark'] .app .orderCard,
+html[data-theme='dark'] .app .dashboardCard,
+html[data-theme='dark'] .app .settingsCard,
+html[data-theme='dark'] .app .notificationCard,
+html[data-theme='dark'] .app .supportContactCard{
+  box-shadow:0 16px 42px rgba(0,0,0,.20);
+}
+html[data-theme='dark'] .app .mobileBottomNav{
+  background:rgba(11,25,39,.94)!important;border-color:#263c50!important;
+}
+html[data-theme='dark'] .app .mobileBottomNav button{color:#b5c2cf!important}
+html[data-theme='dark'] .app .mobileBottomNav button.active,
+html[data-theme='dark'] .app .mobileBottomNav button:hover{
+  background:#182b3f!important;color:#ff9a5a!important;
+}
+
+@media(max-width:1050px){
+  .app .nav{padding-inline:16px}
+  .app .brandRibbon,.app .hero{width:calc(100% - 28px)!important}
+}
+@media(max-width:720px){
+  .app .nav{min-height:68px;padding:9px 12px}
+  .app .logoImage{width:46px;height:46px}
+  .app .section{margin-top:42px}
+  .app .hero{min-height:340px!important;border-radius:24px!important}
+  .app .dashboard{padding-inline:12px}
+}
+@media(max-width:520px){
+  .app .brandRibbon{width:calc(100% - 20px)!important}
+  .app .hero{width:calc(100% - 20px)!important}
+  .app .primary{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+  .app *, .app *::before, .app *::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
