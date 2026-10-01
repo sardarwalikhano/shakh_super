@@ -1,8 +1,9 @@
 import React,{useEffect,useMemo,useState} from 'react';
 import {ArrowDownLeft,ArrowUpRight,RefreshCw,WalletCards} from 'lucide-react';
 import {supabase} from '../lib/supabase';
+import ReferralEarningsPanel from './ReferralEarningsPanel';
 
-type Props={userId:string};
+type Props={userId:string;role?:string};
 type WalletRow={id:string;balance_iqd:number};
 type Tx={id:string;type:'credit'|'debit'|'refund'|'commission'|'earning'|'withdrawal';amount_iqd:number;description:string|null;created_at:string};
 
@@ -17,7 +18,7 @@ const TYPE_LABELS:Record<Tx['type'],string>={
 
 const positiveTypes=new Set<Tx['type']>(['credit','refund','earning']);
 
-export default function WalletPanel({userId}:Props){
+export default function WalletPanel({userId,role='customer'}:Props){
  const [wallet,setWallet]=useState<WalletRow|null>(null);
  const [transactions,setTransactions]=useState<Tx[]>([]);
  const [loading,setLoading]=useState(true);
@@ -60,6 +61,7 @@ export default function WalletPanel({userId}:Props){
  if(loading)return <section className="walletPanel orderCard"><div className="walletLoading"><RefreshCw size={22}/> جزدان بار دەکرێت...</div></section>;
 
  return <section className="walletPanel orderCard" aria-label="جزدانی شاخ">
+  <ReferralEarningsPanel userId={userId} role={role}/>
   <div className="walletHead">
    <div>
     <span className="eyebrow">جزدانی شاخ</span>
