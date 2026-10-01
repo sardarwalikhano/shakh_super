@@ -189,10 +189,11 @@ function App(){
   : selectedProduct?.unlimited_stock
     ? 'بێ سنوور ∞'
     : Number(selectedProduct?.stock||0).toLocaleString('ku-IQ')+' دانە';
- const openProductForCart=async(productId:string)=>{if(!supabase)return false;const {data,error}=await supabase.from('products').select('id,store_id,name_ku,name_ar,name_en,price_iqd,sale_price_iqd,image_url,is_available,stock,product_type,brand,size,variants').eq('id',productId).single();if(error||!data){setMessage('بەرهەمەکە نەدۆزرایەوە.');return false}const p=data as Product;setSelectedOptions({});if(getVariantOptions(p.variants).shoeSizes.length||getVariantOptions(p.variants).sizes.length||getVariantOptions(p.variants).colors.length){setSelectedProduct(p);return true}return addToCart(p)};
+ const openProductForCart=async(productId:string,referralCode?:string)=>{if(!supabase)return false;const code=referralCode||selectedReferralCode||undefined;const {data,error}=await supabase.from('products').select('id,store_id,name_ku,name_ar,name_en,price_iqd,sale_price_iqd,image_url,is_available,stock,product_type,brand,size,variants').eq('id',productId).single();if(error||!data){setMessage('بەرهەمەکە نەدۆزرایەوە.');return false}const p=data as Product;setSelectedOptions({});setSelectedReferralCode(code||null);if(getVariantOptions(p.variants).shoeSizes.length||getVariantOptions(p.variants).sizes.length||getVariantOptions(p.variants).colors.length){setSelectedProduct(p);return true}return addToCart(p,{},code)};
  const subtotal=cart.reduce((s,i)=>s+i.price*i.quantity,0);const delivery=cart.length?platformDeliveryFee:0;const fee=cart.length?platformFee:0;const total=subtotal+delivery+fee;const checkoutTotal=Math.max(0,total-couponDiscount);
  const ensureCart=async(u:User,storeId:string)=>{if(!supabase)throw new Error('پەیوەندی بە خزمەتگوزاری بەردەست نییە.');const {data,error}=await supabase.from('carts').select('id,store_id').eq('user_id',u.id).maybeSingle();if(error)throw error;if(data){if(data.store_id!==storeId){const {error:updateError}=await supabase.from('carts').update({store_id:storeId,updated_at:new Date().toISOString()}).eq('id',data.id);if(updateError)throw updateError;}return data.id as string}const {data:created,error:ce}=await supabase.from('carts').insert({user_id:u.id,store_id:storeId}).select('id').single();if(ce)throw ce;return created.id as string};
- const addToCart=async(p:Product,options:CartOptions={}):Promise<boolean>=>{
+ const attachReferralToCart=async(cartIdValue:string,productId:string,code?:string|null)=>{if(!supabase||!code)return;const {data:program,error}=await supabase.from('post_referral_programs').select('id,code').eq('code',code).eq('is_active',true).maybeSingle();if(error||!program)return;const {error:insertError}=await supabase.from('cart_post_referrals').insert({cart_id:cartIdValue,product_id:productId,referral_program_id:program.id});if(insertError&&insertError.code!=='23505')setMessage('کۆدی قازانج پشتڕاست نەکرا؛ بەڵام کڕینەکە بەردەوامە.');};
+ const addToCart=async(p:Product,options:CartOptions={},referralCode?:string):Promise<boolean>=>{
   if(!user){setAuthMode('login');setAuth(true);setMessage('بۆ زیادکردن بۆ سەلە، تکایە بچۆ ژوورەوە یان خۆت تۆمار بکە.');return false}
   const variantOptions=getVariantOptions(p.variants);
   const selectedInventory=matchingVariantInventory(p.variants,options);
@@ -240,7 +241,7 @@ function App(){
     setMessage(liveInventoryMissing?'ئەم کۆمبینەیشنەی هەڵبژێردراو چیتر بەردەست نییە.':liveInventoryUnavailable?'ئەم هەڵبژاردەیە چیتر بەردەست نییە.':'ئەم بەرهەمە ئێستا بەردەست نییە.');
     await loadProducts();return false;
    }
-   const cartId=await ensureCart(user,p.store_id);
+   const ensuredCartId=await ensureCart(user,p.store_id);const effectiveReferralCode=referralCode||selectedReferralCode;
    const price=Number(live.sale_price_iqd??live.price_iqd);
    const optionsKey=JSON.stringify(options,Object.keys(options).sort());
    const existing=cart.find(i=>i.product_id===p.id&&JSON.stringify(i.options||{},Object.keys(i.options||{}).sort())===optionsKey);
@@ -252,7 +253,7 @@ function App(){
     const {error}=await supabase!.from('cart_items').insert({cart_id:cartId,product_id:p.id,quantity:1,unit_price_iqd:price,options});
     if(error)throw error;
    }
-   setCouponDiscount(0);await loadCart(user);setMessage('بەرهەمەکە بۆ سەلە زیاد کرا.');return true;
+   if(effectiveReferralCode)await attachReferralToCart(ensuredCartId,p.id,effectiveReferralCode);setCouponDiscount(0);await loadCart(user);setMessage(effectiveReferralCode?'بەرهەمەکە بۆ سەلە زیاد کرا و کۆدی قازانج پەیوەست کرا.':'بەرهەمەکە بۆ سەلە زیاد کرا.');return true;
   }catch(e:any){setMessage(e?.message||'زیادکردنی بەرهەم سەرکەوتوو نەبوو.');return false}finally{setBusy(false)}
  };
  const changeQty=async(item:CartItem,delta:number)=>{
@@ -278,11 +279,11 @@ function App(){
     return;
    }
   }
-  if(q<=0)await supabase.from('cart_items').delete().eq('id',item.id);
+  if(q<=0){await supabase.from('cart_items').delete().eq('id',item.id);if(cartId)await supabase.from('cart_post_referrals').delete().eq('cart_id',cartId).eq('product_id',item.product_id);}
   else await supabase.from('cart_items').update({quantity:q}).eq('id',item.id);
   if(user)await loadCart(user);
 };
- const clearCart=async()=>{if(!supabase||!user)return;setCouponDiscount(0);const ids=cart.map(i=>i.id).filter(Boolean) as string[];if(ids.length)await supabase.from('cart_items').delete().in('id',ids);setCart([])};
+ const clearCart=async()=>{if(!supabase||!user)return;setCouponDiscount(0);if(cartId)await supabase.from('cart_post_referrals').delete().eq('cart_id',cartId);const ids=cart.map(i=>i.id).filter(Boolean) as string[];if(ids.length)await supabase.from('cart_items').delete().in('id',ids);setCart([]);setCartReferralCodes({})};
  const queueReverseGeocode=(coords:{latitude:number;longitude:number})=>{setExactLocationAddress(`شوێنی دیاریکراو لە نەخشە — ${coords.latitude.toFixed(7)}, ${coords.longitude.toFixed(7)}`);setLocationLookupBusy(true);if(locationLookupTimerRef.current!==null)window.clearTimeout(locationLookupTimerRef.current);locationLookupAbortRef.current?.abort();const controller=new AbortController();locationLookupAbortRef.current=controller;locationLookupTimerRef.current=window.setTimeout(()=>{void reverseGeocodeExactLocation(coords,controller.signal).then(result=>{if(controller.signal.aborted)return;if(result.displayName)setExactLocationAddress(result.displayName);if(result.city)setDeliveryCity(result.city)}).catch(error=>{if(error?.name==='AbortError')return}).finally(()=>{if(!controller.signal.aborted)setLocationLookupBusy(false)})},1100)};
  const detectLocation=()=>{if(!('geolocation' in navigator)){setLocationReady(false);return setMessage('وێبگەڕەکەت پشتگیری جی‌پی‌ئێس ناکات.')}setLocating(true);setMessage('تکایە مۆڵەتی شوێن بدە بۆ ئەوەی شوێنی وردت دیاری بکرێت...');navigator.geolocation.getCurrentPosition(pos=>{const latitude=Number(pos.coords.latitude.toFixed(7));const longitude=Number(pos.coords.longitude.toFixed(7));const coords={latitude,longitude};setMapCoords(coords);setExactLocationAddress(`شوێنی دیاریکراو لە نەخشە — ${latitude.toFixed(7)}, ${longitude.toFixed(7)}`);queueReverseGeocode(coords);setLocationReady(true);setLocating(false);setSelectedAddressId(null);setMessage('شوێنی وردت دیاریکرا ✓');},()=>{setLocationReady(false);setLocating(false);setMessage('شوێنەکەت دیاری نەکراوە؛ لە ڕێکخستنی وێبگەڕ مۆڵەتی شوێن بدە.')},{enableHighAccuracy:true,timeout:12000,maximumAge:30000});};
  const beginSignup=()=>{setAuthMode('signup');setPrivacyAccepted(false);setPrivacyOpen(true);setConfirmationPendingEmail('')};
