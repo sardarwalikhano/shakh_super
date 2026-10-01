@@ -113,7 +113,17 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
    .order('created_at',{ascending:false})
    .limit(200);
   if(!isAdmin)builder=builder.eq('author_id',userId);
-  const {data,error}=await builder;
+  let result=await builder;
+  if(result.error){
+   let fallback=supabase
+    .from('posts')
+    .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,archived_at,listing_details')
+    .order('created_at',{ascending:false})
+    .limit(200);
+   if(!isAdmin)fallback=fallback.eq('author_id',userId);
+   result=await fallback;
+  }
+  const {data,error}=result;
   if(error){
    setMessage('نەتوانرا پۆستەکان وەرگیرێن.');
    setLoading(false);
