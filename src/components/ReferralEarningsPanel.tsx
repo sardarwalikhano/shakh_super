@@ -9,8 +9,8 @@ type ReferralEarning={id:string;order_id:string;earning_iqd:number;base_amount_i
 type WithdrawalRequest={id:string;user_id:string;amount_iqd:number;status:string;note:string|null;admin_note:string|null;requested_at:string;processed_at:string|null};
 
 const txLabels:Record<string,string>={
- earning:'قازانجی پۆست',
- purchase:'کڕین بە قازانجی پۆست',
+ earning:'خەڵاتی Share',
+ purchase:'کڕین بە خەڵاتی Share',
  withdrawal_reserve:'قازانج بۆ دەرکردن قەدەغە کرا',
  withdrawal_refund:'گەڕانەوەی قازانجی دەرنەکراو'
 };
@@ -54,7 +54,7 @@ export default function ReferralEarningsPanel({userId,role}:Props){
   const{start,end}=monthRange();
   const walletResult=await supabase.from('referral_wallets').select('id,balance_iqd').eq('user_id',userId).maybeSingle();
   if(walletResult.error&&!String(walletResult.error.message||'').toLowerCase().includes('schema cache')){
-   setMessage('نەتوانرا جزدانی قازانجی پۆستەکان وەرگیرێت.');
+   setMessage('نەتوانرا جزدانی خەڵاتی Shareەکان وەرگیرێت.');
   }
   setWallet(walletResult.data as ReferralWallet|null);
 
@@ -123,14 +123,14 @@ export default function ReferralEarningsPanel({userId,role}:Props){
   await load();
  };
 
- if(loading)return <section className="referralEarningsPanel orderCard"><div className="walletLoading"><RefreshCw size={22}/> سیستەمی قازانجی پۆستەکان بار دەکرێت...</div></section>;
+ if(loading)return <section className="referralEarningsPanel orderCard"><div className="walletLoading"><RefreshCw size={22}/> سیستەمی خەڵاتی Shareەکان بار دەکرێت...</div></section>;
 
- return <section className="referralEarningsPanel orderCard" aria-label="قازانجی پۆستەکان">
+ return <section className="referralEarningsPanel orderCard" aria-label="خەڵاتی Shareەکان">
   <div className="referralHead">
    <div>
-    <span className="eyebrow"><TrendingUp size={15}/> قازانجی پۆستەکان</span>
+    <span className="eyebrow"><TrendingUp size={15}/> خەڵاتی Shareەکان</span>
     <h2>قازانج لە بانگهێشتکردنی کڕیار</h2>
-    <p>هەر کڕینێک کە لە کۆدی پۆستی تۆوە بکرێت، قازانجەکە بۆ خاوەن پۆستی سەرەکی تۆمار دەکرێت.</p>
+    <p>هەر کڕینێک کە لە لینکی Share ـی تایبەتی تۆوە بکرێت، خەڵاتی ئەو پۆستە بۆ حیسابی تۆ تۆمار دەکرێت.</p>
    </div>
    <button type="button" className="walletRefresh" onClick={()=>void load()} aria-label="نوێکردنەوە"><RefreshCw size={17}/></button>
   </div>
@@ -150,7 +150,7 @@ export default function ReferralEarningsPanel({userId,role}:Props){
 
   <div className="referralSectionTitle"><span>دوایین قازانجەکان</span><b>{earnings.length.toLocaleString('ku-IQ')} تۆمار</b></div>
   {!earnings.length
-   ?<div className="walletEmpty"><TrendingUp size={30}/><strong>هێشتا قازانجی پۆستێکت نییە.</strong><small>کاتێک کڕیار لە لینکی پۆستەکەتوە بکڕێت و ئۆردەرەکە بگەیەنرێت، قازانجەکە لێرە دەردەکەوێت.</small></div>
+   ?<div className="walletEmpty"><TrendingUp size={30}/><strong>هێشتا خەڵاتی Shareێکت نییە.</strong><small>کاتێک کڕیار لە لینکی Share ـی تۆوە بکڕێت و ئۆردەرەکە بگەیەنرێت، خەڵاتەکە لێرە دەردەکەوێت.</small></div>
    :<div className="referralEarningList">{earnings.slice(0,12).map(row=><div className="referralEarningRow" key={row.id}>
       <div className="referralEarningIcon"><ArrowDownLeft size={17}/></div>
       <div><b>{money(row.earning_iqd)}</b><small>ئۆردەر #{row.order_id.slice(0,8)} · {row.commission_percent}% · بنەما {money(row.base_amount_iqd)}</small></div>
@@ -172,7 +172,7 @@ export default function ReferralEarningsPanel({userId,role}:Props){
   {transactions.length>0&&<div className="referralSectionTitle"><span>جوڵەکانی جزدانی قازانج</span><b>دوایین ٢٠</b></div>}
   {transactions.length>0&&<div className="referralTxList">{transactions.map(tx=><div className="referralTxRow" key={tx.id}>
    <div className={'referralTxIcon '+(tx.type==='earning'||tx.type==='withdrawal_refund'?'positive':'negative')}>{tx.type==='earning'||tx.type==='withdrawal_refund'?<ArrowDownLeft size={16}/>:<ArrowUpRight size={16}/>}</div>
-   <div><b>{txLabels[tx.type]||tx.type}</b><small>{tx.description||'مامەڵەی قازانجی پۆست'} · {new Date(tx.created_at).toLocaleString('ku-IQ')}</small></div>
+   <div><b>{txLabels[tx.type]||tx.type}</b><small>{tx.description||'مامەڵەی خەڵاتی Share'} · {new Date(tx.created_at).toLocaleString('ku-IQ')}</small></div>
    <strong className={tx.type==='earning'||tx.type==='withdrawal_refund'?'positive':'negative'}>{tx.type==='earning'||tx.type==='withdrawal_refund'?'+':'−'}{money(tx.amount_iqd)}</strong>
   </div>)}</div>}
 
