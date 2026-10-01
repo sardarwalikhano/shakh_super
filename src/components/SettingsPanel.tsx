@@ -25,8 +25,11 @@ export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { 
     const nextPrefs=({...prefs,...(prefResult.data||{})}) as Preferences;setPrefs(nextPrefs);applyTheme(nextPrefs.theme);
     if(profileResult.data?.city)setCity(profileResult.data.city);
     if(isAdmin){
-      const {data,error}=await supabase.from('platform_settings').select('default_delivery_fee_iqd,platform_fee_iqd,commission_percent,referral_commission_percent,support_phone,support_whatsapp,default_city,privacy_policy_version').eq('id',true).maybeSingle();
-      if(error)setMessage(error.message);else if(data)setPlatform({default_delivery_fee_iqd:Number(data.default_delivery_fee_iqd||0),platform_fee_iqd:Number(data.platform_fee_iqd||0),commission_percent:Number(data.commission_percent||0),referral_commission_percent:Number(data.referral_commission_percent||0),support_phone:data.support_phone||'',support_whatsapp:data.support_whatsapp||'',default_city:data.default_city||'هەولێر',privacy_policy_version:data.privacy_policy_version||'1.0'});
+      let platformResult=await supabase.from('platform_settings').select('default_delivery_fee_iqd,platform_fee_iqd,commission_percent,referral_commission_percent,support_phone,support_whatsapp,default_city,privacy_policy_version').eq('id',true).maybeSingle();
+      if(platformResult.error){
+        platformResult=await supabase.from('platform_settings').select('default_delivery_fee_iqd,platform_fee_iqd,commission_percent,support_phone,support_whatsapp,default_city,privacy_policy_version').eq('id',true).maybeSingle();
+      }
+      if(platformResult.error)setMessage(platformResult.error.message);else if(platformResult.data)setPlatform({default_delivery_fee_iqd:Number(platformResult.data.default_delivery_fee_iqd||0),platform_fee_iqd:Number(platformResult.data.platform_fee_iqd||0),commission_percent:Number(platformResult.data.commission_percent||0),referral_commission_percent:Number((platformResult.data as any).referral_commission_percent||0),support_phone:platformResult.data.support_phone||'',support_whatsapp:platformResult.data.support_whatsapp||'',default_city:platformResult.data.default_city||'هەولێر',privacy_policy_version:platformResult.data.privacy_policy_version||'1.0'});
     }
     setLoading(false);
   };
@@ -54,8 +57,11 @@ export default function SettingsPanel({ userId, role, onSignOut, onPrivacy }: { 
     if(prefError||profileError){setMessage(prefError?.message||profileError?.message||'پاشەکەوتکردن سەرکەوتوو نەبوو.');setSaving(false);return}
     applyTheme(prefs.theme);
     if(isAdmin){
-      const {error}=await supabase.from('platform_settings').update({default_delivery_fee_iqd:Number(platform.default_delivery_fee_iqd||0),platform_fee_iqd:Number(platform.platform_fee_iqd||0),support_phone:platform.support_phone.trim(),support_whatsapp:platform.support_whatsapp.trim(),default_city:platform.default_city.trim()||'هەولێر',referral_commission_percent:Math.min(100,Math.max(0,Number(platform.referral_commission_percent||0))),updated_at:new Date().toISOString(),updated_by:userId}).eq('id',true);
-      if(error){setMessage(error.message);setSaving(false);return}
+      let platformWrite=await supabase.from('platform_settings').update({default_delivery_fee_iqd:Number(platform.default_delivery_fee_iqd||0),platform_fee_iqd:Number(platform.platform_fee_iqd||0),support_phone:platform.support_phone.trim(),support_whatsapp:platform.support_whatsapp.trim(),default_city:platform.default_city.trim()||'هەولێر',referral_commission_percent:Math.min(100,Math.max(0,Number(platform.referral_commission_percent||0))),updated_at:new Date().toISOString(),updated_by:userId}).eq('id',true);
+      if(platformWrite.error){
+        platformWrite=await supabase.from('platform_settings').update({default_delivery_fee_iqd:Number(platform.default_delivery_fee_iqd||0),platform_fee_iqd:Number(platform.platform_fee_iqd||0),support_phone:platform.support_phone.trim(),support_whatsapp:platform.support_whatsapp.trim(),default_city:platform.default_city.trim()||'هەولێر',updated_at:new Date().toISOString(),updated_by:userId}).eq('id',true);
+      }
+      if(platformWrite.error){setMessage(platformWrite.error.message);setSaving(false);return}
     }
     setMessage('هەموو ڕێکخستنەکان پاشەکەوت کران.');setSaving(false);
   };
