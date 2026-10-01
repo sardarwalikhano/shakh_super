@@ -167,17 +167,11 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
    }).select('id').single();
    if(postError)throw postError;
 
-   let referralCode='';
-   if(createdPost?.id){
-    const {data:referralProgram}=await supabase.from('post_referral_programs').select('code').eq('post_id',createdPost.id).maybeSingle();
-    referralCode=referralProgram?.code||'';
-    if(referralCode){
-      try{if(navigator.clipboard)await navigator.clipboard.writeText(referralCode)}catch{}
-    }
-   }
+   const {data:referralProgram}=createdPost?.id?await supabase.from('post_referral_programs').select('commission_percent').eq('post_id',createdPost.id).maybeSingle():{data:null};
+   const savedReward=referralProgram?.commission_percent??Number(referralRewardPercent||0);
 
    setTitle('');setContent('');setPrice('');setReferralRewardPercent('');setFiles([]);previews.forEach(src=>URL.revokeObjectURL(src));setPreviews([]);resetDetails();setStockMode('finite');setStock('0');
-   setMessage(referralCode?(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە. کۆدی قازانج کۆپی کرا: '+referralCode:'پۆست بە سەرکەوتوویی بڵاوکرایەوە. کۆدی قازانج کۆپی کرا: '+referralCode):(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە؛ کڕیار دەتوانێت بۆ سەلە زیادیکات.':'پۆست بە ناوی SHAKH Store بڵاوکرایەوە.'));
+   setMessage(savedReward>0?(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە. خەڵاتی Share: '+savedReward+'٪.':'پۆست بە سەرکەوتوویی بڵاوکرایەوە. خەڵاتی Share: '+savedReward+'٪.'):(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە؛ کڕیار دەتوانێت بۆ سەلە زیادیکات.':'پۆست بە ناوی SHAKH Store بڵاوکرایەوە.'));
   }catch(error){
    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId);
    if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
