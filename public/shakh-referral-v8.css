@@ -1,0 +1,52 @@
+/* SHAKH Stage 8 — referral profit UI */
+.referralEarningsPanel{margin-top:18px;overflow:hidden}
+.referralHead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.referralHead h2{margin:7px 0 4px}
+.referralHead p{margin:0;max-width:780px}
+.referralHeroBalance{margin-top:18px;padding:20px;border:1px solid var(--border,#dbe2ea);border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:18px;background:var(--surface,#fff)}
+.referralHeroBalance small,.referralHeroBalance span,.referralEarningRow small,.referralRequestRow small,.referralTxRow small{display:block}
+.referralHeroBalance strong{display:block;font-size:30px;line-height:1.15;margin:6px 0}
+.referralHeroActions{display:flex;flex-wrap:wrap;gap:8px}
+.referralStatsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.referralStatsGrid>div{padding:15px;border:1px solid var(--border,#dbe2ea);border-radius:14px;display:grid;grid-template-columns:auto 1fr;gap:4px 9px;align-items:center;background:var(--surface,#fff)}
+.referralStatsGrid svg{grid-row:1 / span 2}
+.referralStatsGrid span{font-size:12px}
+.referralStatsGrid b{font-size:18px}
+.referralSectionTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:20px 0 9px}
+.referralSectionTitle span{font-weight:900}
+.referralSectionTitle b{font-size:12px;opacity:.7}
+.referralEarningList,.referralRequestList,.referralTxList{display:grid;gap:7px}
+.referralEarningRow,.referralRequestRow,.referralTxRow{display:flex;align-items:center;gap:10px;padding:12px 13px;border:1px solid var(--border,#dbe2ea);border-radius:13px;background:var(--surface,#fff)}
+.referralEarningIcon,.referralTxIcon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;background:color-mix(in srgb,var(--success,#15803d) 12%,transparent);color:var(--success,#15803d)}
+.referralEarningRow>div:nth-child(2),.referralRequestRow>div:first-child,.referralTxRow>div:nth-child(2){min-width:0;flex:1}
+.referralStatus{font-size:11px;font-weight:900;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.referralStatus.earned,.referralStatus.approved{background:color-mix(in srgb,var(--success,#15803d) 12%,transparent);color:var(--success,#15803d)}
+.referralStatus.pending{background:color-mix(in srgb,#b7791f 12%,transparent);color:#9a650e}
+.referralStatus.cancelled,.referralStatus.rejected{background:color-mix(in srgb,#b91c1c 10%,transparent);color:#a61b1b}
+.referralAdminActions{display:flex;gap:6px}
+.referralApprove,.referralReject{display:inline-flex;align-items:center;gap:5px}
+.referralApprove{color:var(--success,#15803d)}
+.referralReject{color:#b42318}
+.referralTxIcon.negative{background:color-mix(in srgb,#b91c1c 10%,transparent);color:#b42318}
+.referralTxRow strong{white-space:nowrap}
+.referralTxRow strong.positive{color:var(--success,#15803d)}
+.referralTxRow strong.negative{color:#b42318}
+.referralModalBackdrop{position:fixed;inset:0;z-index:1200;background:rgb(15 23 42 / .42);display:grid;place-items:center;padding:18px}
+.referralModal{width:min(520px,100%);background:var(--surface,#fff);border:1px solid var(--border,#dbe2ea);border-radius:18px;padding:18px;box-shadow:0 22px 70px rgb(15 23 42 / .22)}
+.referralModalHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.referralModalHead h3{margin:7px 0 4px}
+.referralField{display:grid;gap:6px;margin-top:13px}
+.referralField span{font-size:13px;font-weight:800}
+.referralField input,.referralField textarea{width:100%;padding:12px;border:1px solid var(--border,#dbe2ea);border-radius:12px;background:var(--surface,#fff);color:inherit;font:inherit}
+.referralModalFoot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+@media(max-width:720px){
+ .referralHead,.referralHeroBalance{flex-direction:column;align-items:stretch}
+ .referralHeroBalance strong{font-size:25px}
+ .referralStatsGrid{grid-template-columns:1fr}
+ .referralEarningRow,.referralRequestRow,.referralTxRow{align-items:flex-start}
+ .referralAdminActions{width:100%;flex-wrap:wrap}
+ .referralRequestRow{flex-wrap:wrap}
+ .referralRequestRow>.referralStatus{margin-inline-start:auto}
+ .referralModalFoot{flex-direction:column-reverse}
+ .referralModalFoot button{width:100%}
+}
