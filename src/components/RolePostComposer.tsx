@@ -301,7 +301,8 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
 
    <div className="postFormGrid">
      <label className="postField"><span className="postLabelRow"><span>سەردێڕ</span><small>{title.length}/100</small></span><input maxLength={100} value={title} onChange={e=>setTitle(e.target.value)} placeholder={isCar?'نموونە: Toyota Land Cruiser 2024':isFashion?'نموونە: جلی ژنانەی نوێ':'سەردێڕی پۆست'}/></label>
-     {isPriceVisible&&<label className="postField"><span>نرخ بە د.ع</span><input maxLength={14} value={price} onChange={e=>setPrice(e.target.value.replace(/\D/g,''))} inputMode="numeric" placeholder="نموونە: ٢٥٠٠٠"/></label><label className="postField"><span>خەڵاتی Share (%)</span><input value={referralRewardPercent} onChange={e=>setReferralRewardPercent(e.target.value.replace(/[^0-9.]/g,''))} inputMode="decimal" min="0" max="100" placeholder="0"/><small>خەڵاتی ئەو کەسەی Share ـی ئەم پۆستە دەکات؛ لە کاتی پۆستکردن قەفل دەکرێت.</small></label>}
+     {isPriceVisible&&<label className="postField"><span>نرخ بە د.ع</span><input maxLength={14} value={price} onChange={e=>setPrice(e.target.value.replace(/\D/g,''))} inputMode="numeric" placeholder="نموونە: ٢٥٠٠٠"/></label>}
+     <label className="postField"><span>خەڵاتی Share (%)</span><input value={referralRewardPercent} onChange={e=>setReferralRewardPercent(e.target.value.replace(/[^0-9.]/g,''))} inputMode="decimal" min="0" max="100" placeholder="0"/><small>خەڵاتی ئەو کەسەی Share ـی ئەم پۆستە دەکات؛ لە کاتی پۆستکردن قەفل دەکرێت.</small></label>
      <label className="postField"><span>شار</span><select value={city} onChange={e=>setCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item}>{item}</option>)}</select></label>
    </div>
 
