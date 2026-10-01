@@ -19,6 +19,7 @@ type Post={
  post_type?:string|null;
  publisher_role?:string|null;
  label?:string|null;
+ referral_code?:string|null;
  rejection_reason?:string|null;
  visibility:string;
  archived_at?:string|null;
@@ -108,7 +109,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
   setLoading(true);
   let builder=supabase
    .from('posts')
-   .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,archived_at,listing_details')
+   .select('id,author_id,title,content,images,price_iqd,city,status,created_at,updated_at,publisher_name,post_type,publisher_role,label,rejection_reason,visibility,archived_at,listing_details,post_referral_programs(code,commission_percent)')
    .order('created_at',{ascending:false})
    .limit(200);
   if(!isAdmin)builder=builder.eq('author_id',userId);
@@ -118,7 +119,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
    setLoading(false);
    return;
   }
-  setPosts((data||[]) as Post[]);
+  setPosts((data||[]).map((row:any)=>({...row,referral_code:Array.isArray(row.post_referral_programs)?row.post_referral_programs[0]?.code||null:row.post_referral_programs?.code||null})) as Post[]);
   setMessage('');
   setLoading(false);
  };
@@ -298,6 +299,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
   const urlObject=new URL(window.location.href);
   urlObject.search='';
   urlObject.searchParams.set('post',post.id);
+  if(post.referral_code)urlObject.searchParams.set('ref',post.referral_code);
   urlObject.hash='shakh-posts';
   const url=urlObject.toString();
   try{
@@ -309,6 +311,8 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
    setMessage('نەتوانرا پۆستەکە share بکرێت.');
   }
  };
+
+ const copyReferralCode=async(post:Post)=>{if(!post.referral_code||!navigator.clipboard){setMessage('نەتوانرا کۆدی قازانج کۆپی بکرێت.');return}try{await navigator.clipboard.writeText(post.referral_code);setMessage('کۆدی قازانج کۆپی کرا: '+post.referral_code)}catch{setMessage('نەتوانرا کۆدی قازانج کۆپی بکرێت.')}};
 
  const deletePost=async(post:Post)=>{
   if(!window.confirm('پۆستەکە دەچێتە ئەرشیف، نەک سڕینەوەی هەمیشەیی. دڵنیایت؟'))return;
@@ -398,7 +402,7 @@ export default function PostsManagement({userId,role,focusRequest}:Props){
        {post.publisher_name&&<small>{post.publisher_name}</small>}
       </div>
       {post.rejection_reason&&<small className="postsManagementReason">هۆکاری ڕەتکردنەوە: {post.rejection_reason}</small>}
-      {post.price_iqd!=null&&<strong className="postsManagementPrice">{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>}
+      {post.price_iqd!=null&&<strong className="postsManagementPrice">{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>}{post.referral_code&&<div className="postsReferralCodeManagement"><span>کۆدی قازانج</span><strong dir="ltr">{post.referral_code}</strong><button type="button" className="plain" onClick={()=>void copyReferralCode(post)} disabled={disabled}><span>کۆپی</span></button></div>}
       <div className="postsManagementActions">
        <button type="button" onClick={()=>startEdit(post)} disabled={disabled}><Edit3 size={15}/> دەستکاری</button>
        <button type="button" onClick={()=>void sharePost(post)} disabled={disabled}><Share2 size={15}/> هاوبەشکردن</button>
