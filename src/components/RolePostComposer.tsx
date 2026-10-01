@@ -195,6 +195,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    }).select('id').single();
    if(error)throw error;
 
+   const {data:referralProgram}=createdPost?.id?await supabase.from('post_referral_programs').select('commission_percent').eq('post_id',createdPost.id).maybeSingle():{data:null};
    const savedReward=referralProgram?.commission_percent??Number(referralRewardPercent||0);
 
 
