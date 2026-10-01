@@ -1,4 +1,4 @@
-import React,{useEffect,useMemo,useState} from 'react';
+import React,{useEffect,useState} from 'react';
 import {ArrowDownLeft,ArrowUpRight,CalendarDays,CheckCircle2,Clock3,RefreshCw,Send,TrendingUp,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
@@ -6,6 +6,7 @@ type Props={userId:string;role:string};
 type ReferralWallet={id:string;balance_iqd:number};
 type ReferralTx={id:string;type:string;amount_iqd:number;description:string|null;created_at:string};
 type ReferralEarning={id:string;order_id:string;earning_iqd:number;base_amount_iqd:number;commission_percent:number;status:string;earned_at:string|null;created_at:string};
+type ReferralSummary={balance_iqd:number;total_earned_iqd:number;monthly_earned_iqd:number;pending_iqd:number};
 type WithdrawalRequest={id:string;user_id:string;amount_iqd:number;status:string;note:string|null;admin_note:string|null;requested_at:string;processed_at:string|null};
 
 const txLabels:Record<string,string>={
@@ -23,20 +24,12 @@ const statusLabels:Record<string,string>={
  rejected:'ڕەتکراوە'
 };
 
-const monthRange=()=>{
- const start=new Date();
- start.setDate(1);
- start.setHours(0,0,0,0);
- const end=new Date(start);
- end.setMonth(end.getMonth()+1);
- return{start:start.toISOString(),end:end.toISOString()};
-};
-
 const money=(value:number)=>Number(value||0).toLocaleString('en-US')+' د.ع';
 
 export default function ReferralEarningsPanel({userId,role}:Props){
  const isAdmin=role==='admin'||role==='super_admin';
  const [wallet,setWallet]=useState<ReferralWallet|null>(null);
+ const [summary,setSummary]=useState<ReferralSummary|null>(null);
  const [earnings,setEarnings]=useState<ReferralEarning[]>([]);
  const [transactions,setTransactions]=useState<ReferralTx[]>([]);
  const [requests,setRequests]=useState<WithdrawalRequest[]>([]);
@@ -51,8 +44,16 @@ export default function ReferralEarningsPanel({userId,role}:Props){
  const load=async()=>{
   setLoading(true);
   setMessage('');
-  const{start,end}=monthRange();
-  const walletResult=await supabase.from('referral_wallets').select('id,balance_iqd').eq('user_id',userId).maybeSingle();
+  const [walletResult,summaryResult]=await Promise.all([
+   supabase.from('referral_wallets').select('id,balance_iqd').eq('user_id',userId).maybeSingle(),
+   supabase.rpc('get_referral_earnings_summary')
+  ]);
+  if(summaryResult.error){
+   setSummary(null);
+  }else{
+   const row=Array.isArray(summaryResult.data)?summaryResult.data[0]:summaryResult.data;
+   setSummary(row as ReferralSummary|null);
+  }
   if(walletResult.error&&!String(walletResult.error.message||'').toLowerCase().includes('schema cache')){
    setMessage('نەتوانرا جزدانی خەڵاتی Shareەکان وەرگیرێت.');
   }
@@ -81,6 +82,7 @@ export default function ReferralEarningsPanel({userId,role}:Props){
   const requestResult=await requestQuery;
   if(!requestResult.error)setRequests((requestResult.data||[]) as WithdrawalRequest[]);
   if(walletResult.error&&walletResult.error.code!=='PGRST116')setMessage(walletResult.error.message||'هەڵەیەک ڕوویدا.');
+  if(summaryResult.error&&!String(summaryResult.error.message||'').toLowerCase().includes('schema cache'))setMessage('نەتوانرا کۆی قازانج لە database هەژمار بکرێت.');
   setLoading(false);
  };
 
@@ -94,11 +96,10 @@ export default function ReferralEarningsPanel({userId,role}:Props){
   return()=>{void supabase.removeChannel(channel)};
  },[userId,isAdmin]);
 
- const balance=Number(wallet?.balance_iqd||0);
- const{start,end}=monthRange();
- const monthlyEarnings=useMemo(()=>earnings.filter(row=>row.status==='earned'&&row.earned_at&&row.earned_at>=start&&row.earned_at<end).reduce((sum,row)=>sum+Number(row.earning_iqd||0),0),[earnings,start,end]);
- const totalEarned=useMemo(()=>earnings.filter(row=>row.status==='earned').reduce((sum,row)=>sum+Number(row.earning_iqd||0),0),[earnings]);
- const pending=useMemo(()=>earnings.filter(row=>row.status==='pending').reduce((sum,row)=>sum+Number(row.earning_iqd||0),0),[earnings]);
+ const balance=Number(summary?.balance_iqd ?? wallet?.balance_iqd ?? 0);
+ const monthlyEarnings=Number(summary?.monthly_earned_iqd||0);
+ const totalEarned=Number(summary?.total_earned_iqd||0);
+ const pending=Number(summary?.pending_iqd||0);
 
  const requestWithdrawal=async()=>{
   const amount=Number(withdrawAmount.replace(/\D/g,''));
