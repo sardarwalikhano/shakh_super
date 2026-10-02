@@ -24,13 +24,13 @@ const OPTIONS={
  clothingType:['تیشێرت','کراس','پانتۆڵ','جین','جاکەت','پۆشاک','جلوبەرگی وەرزشی','پێلاو','جانتا','ئاکسسوارات','کۆمەڵە جلوبەرگ'],
  fashionCondition:['نوێ','بەکارهاتوو'],
  colors:['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'],
- carCondition:['نوێ','کارکراو'],
- fuel:['بنزین','دیزڵ','هايبرید','کارەبا'],
- transmission:['ئۆتۆماتیک','مانوێڵ'],
- body:['سێدان','SUV','کروس ئۆڤەر','هەچبەک','پیکاپ','ڤان','کوپێ'],
+ carCondition:['نوێ','دەستی دوو'],
+ fuel:['بنزین','دیزڵ','هايبرید','پلاگین هایبرید','کارەبا','گاز'],
+ transmission:['ئۆتۆماتیک','مانوێڵ','CVT','DCT','AMT'], 
+ body:['سێدان','SUV','کروس ئۆڤەر','هاچباک','پیکاپ','ڤان','مینی‌وان','کوپێ','واگن'], 
  drivetrain:['FWD','RWD','AWD','4WD'],
  plate:['هەیە','نییە'],
- origin:['ئیمارات','ئەڵمانیا','ئەمریکا','کۆریا','ژاپۆن','چین','تورکیا','عێراق']
+ origin:['عێراق','ئیمارات','ئەڵمانیا','ئەمریکا','کۆریا','ژاپۆن','چین','تورکیا','ئۆردن','کەنەدا','بەریتانیا']
 };
 const CLOTHING_SIZES=['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'];
 const SHOE_SIZES=['35','36','37','38','39','40','41','42','43','44','45','46'];
@@ -282,7 +282,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
      <div className="postComposerLabel">🚗 SHAKH Cars — زانیاریی تەواوی ئۆتۆمبێل</div>
      <div className="postFormGrid">
        <label className="postField"><span>مارکە</span><input value={car.make} onChange={e=>setC('make',e.target.value)} placeholder="Toyota"/></label>
-       <label className="postField"><span>مۆدێل</span><input value={car.model} onChange={e=>setC('model',e.target.value)} placeholder="Land Cruiser"/></label>
+       <label className="postField"><span>مۆدێل</span><input value={car.model} onChange={e=>setC('model',e.target.value)} placeholder="Land Cruiser / Camry / X5"/></label>
        <label className="postField"><span>ساڵ</span><input inputMode="numeric" value={car.year} onChange={e=>setC('year',e.target.value.replace(/\D/g,''))} placeholder="2024"/></label>
        <label className="postField"><span>تریم</span><input value={car.trim} onChange={e=>setC('trim',e.target.value)} placeholder="GXR / Limited"/></label>
        <label className="postField"><span>کیلۆمەتر</span><input inputMode="numeric" value={car.mileage} onChange={e=>setC('mileage',e.target.value.replace(/\D/g,''))} placeholder="45000"/></label>
