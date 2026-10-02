@@ -1,6 +1,17 @@
 {
-  "currentVersion": "v1.9.8",
+  "currentVersion": "v1.9.9",
   "updates": [
+    {
+      "version": "v1.9.9",
+      "title": "یەکخستنی Supabase و ڕێکخستنی وەشانی ئەپ",
+      "date": "2026-10-02",
+      "changes": [
+        "یەکخستنی پەیوەندیی Supabase لە هەموو بەشە سەرەکییەکانی ئەپ",
+        "پشتیوانی لە VITE_SUPABASE_PUBLISHABLE_KEY بە پاشەکشە بۆ ANON_KEY",
+        "یەکخستنی version و Service Worker و manifest بۆ v1.9.9",
+        "زیادکردنی typing ـی VITE_ROUTING_API_URL بۆ build ـی پاکتر"
+      ]
+    },
     {
       "version": "v1.9.8",
       "title": "باشترکردنی شوێن، هەژمار، پشتگیری و پارەدانی پۆست",

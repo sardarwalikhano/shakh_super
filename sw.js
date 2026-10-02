@@ -1,4 +1,4 @@
-const CACHE_NAME='shakh-v1.9.6';
+const CACHE_NAME='shakh-v1.9.9';
 const ASSETS=['/','/index.html','/manifest.webmanifest','/version.json','/shakh-logo.svg','/shakh-icon.svg'];
 
 self.addEventListener('install', event => {

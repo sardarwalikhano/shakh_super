@@ -1,6 +1,6 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {createClient,User} from '@supabase/supabase-js';
+import type {User} from '@supabase/supabase-js';
 import {Search,ShoppingBag,User as UserIcon,Bell,Store,Truck,Wallet,ArrowLeft,LogOut,Minus,Plus,Trash2,X,MapPin,PackageCheck,LayoutDashboard,RefreshCw,Car,Plane,Home,MessageCircle,ShieldCheck,Settings,Moon,Sun,ClipboardList} from 'lucide-react';
 import './styles.css';
 import CustomerOrdersPanel from './components/CustomerOrdersPanel';
@@ -22,11 +22,8 @@ import SettingsPanel from './components/SettingsPanel';
 import InteractiveMapPicker from './components/InteractiveMapPicker';
 import DashboardShell,{type DashboardView} from './components/DashboardShell';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
+import {supabase} from './lib/supabase';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
-
-const url=import.meta.env.VITE_SUPABASE_URL as string|undefined;
-const key=import.meta.env.VITE_SUPABASE_ANON_KEY as string|undefined;
-const supabase=url&&key?createClient(url,key):null;
 
 type Product={id:string;store_id:string;name_ku:string;name_ar?:string;name_en?:string;price_iqd:number;sale_price_iqd?:number|null;image_url?:string|null;is_available:boolean;stock?:number|null;unlimited_stock?:boolean|null;product_type?:string|null;brand?:string|null;size?:string|null;category?:string;store_name?:string;variants?:unknown};
 type CartOptions=Record<string,string|number>;

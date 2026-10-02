@@ -1,10 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {ImagePlus,Send,Store,Upload,X} from 'lucide-react';
-import {createClient} from '@supabase/supabase-js';
-
-const url=import.meta.env.VITE_SUPABASE_URL as string|undefined;
-const key=import.meta.env.VITE_SUPABASE_ANON_KEY as string|undefined;
-const supabase=url&&key?createClient(url,key):null;
+import {supabase} from '../lib/supabase';
 
 const SHOE_SIZES=['35','36','37','38','39','40','41','42','43','44','45','46'];
 
@@ -78,7 +74,6 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
  };
 
  const submit=async()=>{
-  if(!supabase)return setMessage('پەیوەندی بە Supabase بەردەست نییە.');
   if(!title.trim())return setMessage('ناونیشانی پۆست بنووسە.');
   if(price&&!/^\d+$/.test(price))return setMessage('نرخ دەبێت تەنها ژمارە بێت.');
   if(referralRewardPercent&&!/^\d+(?:\.\d+)?$/.test(referralRewardPercent))return setMessage('خەڵاتی Share دەبێت ژمارە بێت.');
