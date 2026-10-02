@@ -45,6 +45,29 @@ const variantDetails=(post:Post)=>{
 };
 const stringDetail=(post:Post,key:string)=>{const value=detailsOf(post)[key];return value==null?'':String(value)};
 const postImages=(images:unknown):string[]=>{if(Array.isArray(images))return images.filter((value):value is string=>typeof value==='string'&&value.trim().length>0).slice(0,12);if(typeof images==='string'){try{const parsed=JSON.parse(images);return Array.isArray(parsed)?parsed.filter((value):value is string=>typeof value==='string'&&value.trim().length>0).slice(0,12):[]}catch{return images.startsWith('http')?[images]:[]}}return[]};
+
+function PostMediaCarousel({images,title,badge,isNewPost,onOpen}:{images:string[];title:string;badge:string;isNewPost:boolean;onOpen?:()=>void}){
+ const [index,setIndex]=useState(0);
+ const trackRef=useRef<HTMLDivElement|null>(null);
+ const slideRefs=useRef<Array<HTMLDivElement|null>>([]);
+ const count=images.length;
+ const moveTo=(next:number)=>{if(!count)return;const target=(next+count)%count;setIndex(target);slideRefs.current[target]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});};
+ const handleScroll=()=>{const track=trackRef.current;if(!track)return;const center=track.getBoundingClientRect().left+track.clientWidth/2;let nearest=0;let distance=Number.POSITIVE_INFINITY;slideRefs.current.forEach((node,i)=>{if(!node)return;const rect=node.getBoundingClientRect();const d=Math.abs(rect.left+rect.width/2-center);if(d<distance){distance=d;nearest=i;}});if(nearest!==index)setIndex(nearest);};
+ if(!count)return <div className="postFeedImage postFeedImageEmpty" onClick={onOpen}><ImageIcon size={42}/><span className="postFeedBadge">{badge}</span></div>;
+ return <div className="postMediaCarousel" dir="rtl" onClick={(e)=>e.stopPropagation()}>
+   <div className="postMediaCarouselTrack" ref={trackRef} onScroll={handleScroll} aria-label="سلایدی وێنەکانی پۆست">
+    {images.map((src,i)=><div className="postMediaCarouselSlide" ref={node=>{slideRefs.current[i]=node}} key={src+'-'+i}><img src={src} alt={title+' — وێنەی '+(i+1)} loading={i===0?'eager':'lazy'} decoding="async"/></div>)}
+   </div>
+   <div className="postMediaOverlay"><span className="postFeedBadge">{badge}</span><span className="postMediaCounter">{(index+1).toLocaleString('ku-IQ')} / {count.toLocaleString('ku-IQ')}</span></div>
+   {isNewPost&&<span className="postFeedNew postMediaNew">نوێ</span>}
+   {count>1&&<>
+    <button type="button" className="postMediaArrow postMediaPrev" aria-label="وێنەی پێشوو" onClick={(e)=>{e.stopPropagation();moveTo(index-1)}}><ChevronRight size={18}/></button>
+    <button type="button" className="postMediaArrow postMediaNext" aria-label="وێنەی دواتر" onClick={(e)=>{e.stopPropagation();moveTo(index+1)}}><ChevronLeft size={18}/></button>
+    <div className="postMediaDots" aria-hidden="true">{images.map((_,i)=><span key={i} className={i===index?'active':''}/>)}</div>
+   </>}
+   <button type="button" className="postMediaOpen" aria-label="کردنەوەی وردەکاری پۆست" onClick={onOpen}>بینین</button>
+ </div>;
+}
 const isNew=(createdAt:string)=>Date.now()-new Date(createdAt).getTime()<86400000;
 const timeLabel=(createdAt:string)=>{const m=Math.floor(Math.max(0,Date.now()-new Date(createdAt).getTime())/60000);if(m<1)return 'ئێستا';if(m<60)return m+' خولەک لەمەوبەر';const h=Math.floor(m/60);if(h<24)return h+' کاتژمێر لەمەوبەر';return Math.floor(h/24)+' ڕۆژ لەمەوبەر'};
 async function sharePost(post:Post){try{
@@ -173,28 +196,25 @@ export default function PostsFeed({onAddToCart}:Props){
     </div>}
   </div>}
 
-  {loading&&!posts.length?<div className="postFeedEmpty"><RefreshCw size={35}/><strong>پۆستەکان بار دەکرێن...</strong><small>کەمێک چاوەڕوان بە.</small></div>:!filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>فلتەرەکان بگۆڕە یان پاکیان بکەرەوە.</small></div>:<div className="postFeedCarouselWrap">
-   <div className="postFeedCarouselTop">
-    <div><span>پۆستەکان</span><strong>بە شێوەی سلاید بگەڕێ</strong><small>لە ڕاستەوە بۆ چەپ swipe بکە، یان ئەم دوو دوگمەیە بەکاربهێنە.</small></div>
-    <div className="postFeedCarouselControls">
-      <button type="button" className="postFeedCarouselButton" onClick={()=>slidePosts('prev')} aria-label="گەڕان بۆ پۆستی پێشوو"><ChevronRight size={18}/></button>
-      <button type="button" className="postFeedCarouselButton is-primary" onClick={()=>slidePosts('next')} aria-label="گەڕان بۆ پۆستی دواتر"><ChevronLeft size={18}/></button>
-    </div>
-   </div>
-   <div className="postFeedGrid postFeedCarousel" ref={postRailRef} aria-label="سلایدی پۆستەکانی شاخ">{shown.map(post=>{const imgs=postImages(post.images),img=imgs[0],postChips=chips(post);return <article className={'postFeedCard '+(post.post_type==='car'?'postFeedCardCar':post.post_type==='fashion'?'postFeedCardFashion':'')} key={post.id} id={'post-'+post.id} tabIndex={0} role="button" aria-label={'پۆستی '+post.title+' بکەرەوە'} onClick={()=>openPost(post)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPost(post)}}}>
-   <div className="postFeedImage">{img?<img src={img} alt={post.title} loading="lazy" decoding="async"/>:<ImageIcon size={40}/>}<span className="postFeedBadge">{labelFor(post.post_type,post.label)}</span>{imgs.length>1&&<span className="postFeedImageCount">{imgs.length} وێنە</span>}{isNew(post.created_at)&&<span className="postFeedNew">نوێ</span>}</div>
-   <div className="postFeedBody"><div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{timeLabel(post.created_at)}</small></div><h3>{post.title}</h3>{post.content&&<p>{post.content}</p>}{postChips.length>0&&<div className="postSpecChips">{postChips.map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}<div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div><div className="postFeedFooter">{post.referral_reward_percent&&post.referral_reward_percent>0&&<div className="postRewardLabel"><Gift size={13}/><span>خەڵاتی Share: <b>{post.referral_reward_percent}%</b></span></div>}{post.price_iqd!=null?<strong><WalletCards size={14}/>{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>:<small>بێ نرخ</small>}{productIdOf(post)&&onAddToCart?<button type="button" className="postAddToCart" onClick={e=>{e.stopPropagation();addProduct(productIdOf(post)!,activeSharePostId===post.id?(activeShareCode||undefined):undefined)}} disabled={addingProductId===productIdOf(post)}>{addingProductId===productIdOf(post)?'زیاد دەکرێت...':'زیادکردن بۆ سەلە'}</button>:<span>وردەکاری</span>}</div></div>
-  </article>})}</div>
-  </div>}
+  {loading&&!posts.length?<div className="postFeedEmpty"><RefreshCw size={35}/><strong>پۆستەکان بار دەکرێن...</strong><small>کەمێک چاوەڕوان بە.</small></div>:!filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>فلتەرەکان بگۆڕە یان پاکیان بکەرەوە.</small></div>:<div className="postFeedGrid">{shown.map(post=>{const imgs=postImages(post.images),postChips=chips(post);return <article className={'postFeedCard postFeedCardEditorial '+(post.post_type==='car'?'postFeedCardCar':post.post_type==='fashion'?'postFeedCardFashion':'')} key={post.id} id={'post-'+post.id} tabIndex={0} role="button" aria-label={'پۆستی '+post.title+' بکەرەوە'} onClick={()=>openPost(post)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPost(post)}}}>
+    <PostMediaCarousel images={imgs} title={post.title} badge={labelFor(post.post_type,post.label)} isNewPost={isNew(post.created_at)} onOpen={()=>openPost(post)}/>
+    <div className="postFeedBody"><div className="postEditorialTopline"><div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{timeLabel(post.created_at)}</small></div>{post.referral_reward_percent&&post.referral_reward_percent>0?<span className="postRewardPill"><Gift size={12}/> {post.referral_reward_percent}%</span>:null}</div><h3>{post.title}</h3>{post.content&&<p>{post.content}</p>}{postChips.length>0&&<div className="postSpecChips">{postChips.slice(0,6).map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}{postChips.length>6&&<span>+{(postChips.length-6).toLocaleString('ku-IQ')}</span>}</div>}<div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div><div className="postFeedFooter">{post.price_iqd!=null?<strong><WalletCards size={14}/>{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>:<small>بێ نرخ</small>}{productIdOf(post)&&onAddToCart?<button type="button" className="postAddToCart" onClick={e=>{e.stopPropagation();addProduct(productIdOf(post)!,activeSharePostId===post.id?(activeShareCode||undefined):undefined)}} disabled={addingProductId===productIdOf(post)}>{addingProductId===productIdOf(post)?'زیاد دەکرێت...':'زیادکردن بۆ سەلە'}</button>:<button type="button" className="postDetailsMiniAction" onClick={e=>{e.stopPropagation();openPost(post)}}>وردەکاری</button>}</div></div>
+   </article>})}</div>}
   {shown.length<filtered.length&&<div className="postFeedMore"><button type="button" className="plain" onClick={()=>setPage(v=>v+1)}>زیاتر پیشاندان</button></div>}{message&&<div className="msg postFeedMessage" role="alert" aria-live="polite">{message}</div>}
 
   {selectedPost&&<div className="postDetailsBackdrop" role="presentation" onClick={closePost}><div className="postDetailsModal postDetailsModalRich" role="dialog" aria-modal="true" aria-labelledby="post-details-title" onClick={e=>e.stopPropagation()}>
    <button ref={closeButtonRef} type="button" className="postDetailsClose" onClick={closePost} aria-label="داخستن"><X size={20}/></button>
-   <div className="postDetailsGallery">
-     <div className="postDetailsMainImage">{postImages(selectedPost.images)[activeImage]?<img src={postImages(selectedPost.images)[activeImage]} alt={selectedPost.title}/>:<ImageIcon size={50}/>}</div>
-     {postImages(selectedPost.images).length>1&&<div className="postDetailsThumbs">{postImages(selectedPost.images).map((src,index)=><button key={src} type="button" className={activeImage===index?'active':''} onClick={()=>setActiveImage(index)}><img src={src} alt=""/><span>{index+1}</span></button>)}</div>}
-   </div>
-   <div className="postDetailsBody">
+   <div className="postDetailsGallery postDetailsGalleryCarousel" dir="rtl">
+     <div className="postDetailsMainImage">
+      {postImages(selectedPost.images)[activeImage]?<img src={postImages(selectedPost.images)[activeImage]} alt={selectedPost.title}/>:<ImageIcon size={50}/>}
+      {postImages(selectedPost.images).length>1&&<>
+       <button type="button" className="postDetailsGalleryArrow postDetailsGalleryPrev" aria-label="وێنەی پێشوو" onClick={()=>setActiveImage(i=>(i-1+postImages(selectedPost.images).length)%postImages(selectedPost.images).length)}><ChevronRight size={20}/></button>
+       <button type="button" className="postDetailsGalleryArrow postDetailsGalleryNext" aria-label="وێنەی دواتر" onClick={()=>setActiveImage(i=>(i+1)%postImages(selectedPost.images).length)}><ChevronLeft size={20}/></button>
+       <span className="postDetailsGalleryCount">{(activeImage+1).toLocaleString('ku-IQ')} / {postImages(selectedPost.images).length.toLocaleString('ku-IQ')}</span>
+      </>}
+     </div>
+     {postImages(selectedPost.images).length>1&&<div className="postDetailsThumbs">{postImages(selectedPost.images).map((src,index)=><button key={src+'-'+index} type="button" className={activeImage===index?'active':''} aria-current={activeImage===index?'true':undefined} onClick={()=>setActiveImage(index)}><img src={src} alt=""/><span>{index+1}</span></button>)}</div>}
+    </div>className="postDetailsBody">
     <div className="postDetailsMeta"><span>{labelFor(selectedPost.post_type,selectedPost.label)}</span><small>{selectedPost.city||'هەولێر'}</small></div>
     <h3 id="post-details-title">{selectedPost.title}</h3>{selectedPost.content&&<p>{selectedPost.content}</p>}
     {chips(selectedPost).length>0&&<div className="postSpecChips postSpecChipsDetails">{chips(selectedPost).map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}
