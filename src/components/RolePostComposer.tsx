@@ -46,7 +46,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  const defaultType=initialType&&cfg.types.some(item=>item.value===initialType)?initialType:cfg.types[0].value;
  const [postType,setPostType]=useState(defaultType);
  useEffect(()=>{setPostType(defaultType);setMessage('')},[defaultType]);
- useEffect(()=>{void supabase.from('platform_settings').select('referral_commission_percent').eq('id',true).maybeSingle().then(({data})=>{if(data?.referral_commission_percent!=null)setReferralRewardPercent(String(data.referral_commission_percent))})},[]);
+ useEffect(()=>{if(role==='customer')return;void supabase.from('platform_settings').select('referral_commission_percent').eq('id',true).maybeSingle().then(({data})=>{if(data?.referral_commission_percent!=null)setReferralRewardPercent(String(data.referral_commission_percent))})},[role]);
  const [title,setTitle]=useState('');
  const [content,setContent]=useState('');
  const [price,setPrice]=useState('');
@@ -64,6 +64,9 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
  const [car,setCar]=useState({make:'',model:'',year:'',trim:'',mileage:'',engine:'',body:'',fuel:'',transmission:'',drivetrain:'',color:'',condition:'',origin:'',plate:'',negotiable:true,exchange:false});
  const isFashion=postType==='fashion';
  const isCar=postType==='car';
+ const isCustomer=role==='customer';
+ const isGeneralPost=isCustomer&&postType==='general';
+ const isShareRewardVisible=!isCustomer&&!isGeneralPost;
  const isProductListing=isFashion||postType==='marketplace'||postType==='food';
  const isShoe=isFashion&&fashion.clothingType==='پێلاو';
  const isPriceVisible=useMemo(()=>postType==='marketplace'||isCar||postType==='umrah',[postType]);
@@ -141,8 +144,8 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
   try{
    if(!title.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');
    if(isPriceVisible&&(!/^\d+$/.test(price)||Number(price)<=0))return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
-   if(referralRewardPercent&&!/^\d+(?:\.\d+)?$/.test(referralRewardPercent))return setMessage('خەڵاتی Share دەبێت ژمارە بێت.');
-   if(Number(referralRewardPercent)<0||Number(referralRewardPercent)>100)return setMessage('خەڵاتی Share دەبێت لە ٠ تا ١٠٠٪ بێت.');
+   if(isShareRewardVisible&&referralRewardPercent&&!/^\d+(?:\.\d+)?$/.test(referralRewardPercent))return setMessage('خەڵاتی Share دەبێت ژمارە بێت.');
+   if(isShareRewardVisible&&(Number(referralRewardPercent)<0||Number(referralRewardPercent)>100))return setMessage('خەڵاتی Share دەبێت لە ٠ تا ١٠٠٪ بێت.');
    if(isProductListing&&!isFashion){
     if(stockMode==='finite'&&(!/^\d+$/.test(stock)||Number(stock)<0))return setMessage('ژمارەی بەردەست دەبێت ٠ یان ژمارەیەکی دروست بێت.');
    }
@@ -191,7 +194,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
     author_id:userId,title:title.trim(),content:content.trim()||null,images:imageUrls,
     price_iqd:price?Number(price):null,city:city.trim()||'هەولێر',status:'approved',
     section:postType,publisher_name:publisherName,post_type:postType,publisher_role:role,
-    label:cfg.label,visibility:'public',listing_details:{...listingDetails,referral_reward_percent:Number(referralRewardPercent||0),inventory_stock:isFashion?(fashionHasUnlimited?null:fashionTotalStock):(stockMode==='unlimited'?null:Number(stock||0)),unlimited_stock:isFashion?fashionHasUnlimited:stockMode==='unlimited',variant_inventory:isFashion?variantInventoryRows:[]}
+    label:cfg.label,visibility:'public',listing_details:{...listingDetails,referral_reward_percent:isShareRewardVisible?Number(referralRewardPercent||0):0,inventory_stock:isFashion?(fashionHasUnlimited?null:fashionTotalStock):(stockMode==='unlimited'?null:Number(stock||0)),unlimited_stock:isFashion?fashionHasUnlimited:stockMode==='unlimited',variant_inventory:isFashion?variantInventoryRows:[]}
    }).select('id').single();
    if(error)throw error;
 
@@ -199,7 +202,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    const savedReward=referralProgram?.commission_percent??Number(referralRewardPercent||0);
 
 
-   setTitle('');setContent('');setPrice('');setCity('هەولێر');
+   setTitle('');setContent('');setPrice('');setReferralRewardPercent(isShareRewardVisible?'':'0');setCity('هەولێر');
    setFiles([]);previews.forEach(URL.revokeObjectURL);setPreviews([]);
    setFashion({audience:'',clothingType:'',sizes:[],colors:[],shoeSizes:[],condition:'',brand:''});
    setVariantInventory({});setBulkVariantStock('1');setStockMode('finite');setStock('0');
@@ -302,7 +305,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    <div className="postFormGrid">
      <label className="postField"><span className="postLabelRow"><span>سەردێڕ</span><small>{title.length}/100</small></span><input maxLength={100} value={title} onChange={e=>setTitle(e.target.value)} placeholder={isCar?'نموونە: Toyota Land Cruiser 2024':isFashion?'نموونە: جلی ژنانەی نوێ':'سەردێڕی پۆست'}/></label>
      {isPriceVisible&&<label className="postField"><span>نرخ بە د.ع</span><input maxLength={14} value={price} onChange={e=>setPrice(e.target.value.replace(/\D/g,''))} inputMode="numeric" placeholder="نموونە: ٢٥٠٠٠"/></label>}
-     <label className="postField"><span>خەڵاتی Share (%)</span><input value={referralRewardPercent} onChange={e=>setReferralRewardPercent(e.target.value.replace(/[^0-9.]/g,''))} inputMode="decimal" min="0" max="100" placeholder="0"/><small>خەڵاتی ئەو کەسەی Share ـی ئەم پۆستە دەکات؛ لە کاتی پۆستکردن قەفل دەکرێت.</small></label>
+     {isShareRewardVisible&&<label className="postField"><span>خەڵاتی Share (%)</span><input value={referralRewardPercent} onChange={e=>setReferralRewardPercent(e.target.value.replace(/[^0-9.]/g,''))} inputMode="decimal" min="0" max="100" placeholder="0"/><small>خەڵاتی ئەو کەسەی Share ـی ئەم پۆستە دەکات؛ لە کاتی پۆستکردن قەفل دەکرێت.</small></label>}
      <label className="postField"><span>شار</span><select value={city} onChange={e=>setCity(e.target.value)}>{IRAQ_CITIES.map(item=><option key={item}>{item}</option>)}</select></label>
    </div>
 
