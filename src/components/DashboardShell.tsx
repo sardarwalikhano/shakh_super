@@ -91,8 +91,13 @@ export default function DashboardShell({
     'vendor',
     'electronics_vendor',
     'jewelry_vendor',
+    'beauty_vendor',
   ].includes(role);
   const isAdmin = role === 'super_admin' || role === 'admin';
+  const isCaptain = role === 'captain';
+  const isCustomer = role === 'customer';
+  const isCarDealer = role === 'car_dealer';
+  const isUmrahAgency = role === 'umrah_agency';
 
   const navItems: NavItem[] = [
     {
@@ -115,7 +120,7 @@ export default function DashboardShell({
       description: 'پۆست، بەرهەم، ئۆتۆمبێل و ناوەڕۆک',
       icon: ClipboardList,
       group: 'خزمەتگوزاری و پۆست',
-      show: !isVendor,
+      show: isCustomer || isAdmin || isCarDealer || isUmrahAgency,
     },
     {
       id: 'manage_posts',
@@ -137,6 +142,7 @@ export default function DashboardShell({
       label: 'دوکانەکان',
       description: 'بینینی بازاڕ و ئۆردەر',
       icon: Store,
+      show: !isCaptain,
     },
     {
       id: 'orders',
@@ -151,6 +157,7 @@ export default function DashboardShell({
       label: 'گەیاندن',
       description: 'شوێنکەوتن و دۆخی گەیاندن',
       icon: Truck,
+      show: !isVendor || isAdmin,
     },
     {
       id: 'delivery_zones',
@@ -166,6 +173,7 @@ export default function DashboardShell({
       label: 'SHAKH Cars',
       description: 'پێشانگا و ئۆتۆمبێلەکان',
       icon: Car,
+      show: !isCaptain,
     },
     {
       id: 'umrah',
@@ -173,6 +181,7 @@ export default function DashboardShell({
       label: 'حەج و عومرە',
       description: 'حجز و زانیاریی گەشت',
       icon: Plane,
+      show: !isCaptain,
     },
     {
       id: 'wallet',
@@ -236,6 +245,7 @@ export default function DashboardShell({
     }}>
       <section
         className="dashboardShell"
+        data-role={role}
         role="dialog"
         aria-modal="true"
         aria-labelledby="shakh-dashboard-title"
