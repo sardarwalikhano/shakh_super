@@ -217,7 +217,8 @@ export default function PostsFeed({onAddToCart}:Props){
       </>}
      </div>
      {postImages(selectedPost.images).length>1&&<div className="postDetailsThumbs">{postImages(selectedPost.images).map((src,index)=><button key={src+'-'+index} type="button" className={activeImage===index?'active':''} aria-current={activeImage===index?'true':undefined} onClick={()=>setActiveImage(index)}><img src={src} alt=""/><span>{index+1}</span></button>)}</div>}
-    </div>className="postDetailsBody">
+    </div>
+    <div className="postDetailsBody">
     <div className="postDetailsMeta"><span>{labelFor(selectedPost.post_type,selectedPost.label)}</span><small>{selectedPost.city||'هەولێر'}</small></div>
     <h3 id="post-details-title">{selectedPost.title}</h3>{selectedPost.content&&<p>{selectedPost.content}</p>}
     {chips(selectedPost).length>0&&<div className="postSpecChips postSpecChipsDetails">{chips(selectedPost).map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}
