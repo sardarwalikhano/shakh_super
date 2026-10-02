@@ -670,3 +670,104 @@ button,
     forced-color-adjust:auto;
   }
 }
+
+
+/* =========================================================
+   MOBILE DRAWER VISIBILITY HOTFIX
+   Keeps the existing dashboard navigation and interactions,
+   while ensuring the drawer is always above the mobile canvas.
+   ========================================================= */
+
+@media(max-width:860px){
+  .dashboardShellBody{
+    position:relative;
+    isolation:isolate;
+  }
+
+  .dashboardShellDrawerScrim{
+    position:fixed!important;
+    inset:0!important;
+    z-index:1990!important;
+    display:block!important;
+    width:100vw!important;
+    height:100dvh!important;
+    min-height:100svh!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:rgba(3,12,24,.46)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    cursor:pointer!important;
+  }
+
+  .dashboardShellSidebar{
+    position:fixed!important;
+    inset-block:0!important;
+    inset-inline-end:0!important;
+    z-index:2000!important;
+    width:min(350px,88vw)!important;
+    max-width:88vw!important;
+    height:100dvh!important;
+    min-height:100svh!important;
+    max-height:none!important;
+    overflow:hidden auto!important;
+    overscroll-behavior:contain;
+    visibility:hidden!important;
+    opacity:0!important;
+    transform:translate3d(105%,0,0)!important;
+    background:var(--dsx-surface,#fff)!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    box-shadow:-24px 0 70px rgba(0,0,0,.28)!important;
+    transition:transform .24s ease,opacity .18s ease,visibility .18s ease!important;
+  }
+
+  .dashboardShellSidebar.is-open{
+    visibility:visible!important;
+    opacity:1!important;
+    transform:translate3d(0,0,0)!important;
+  }
+
+  .dashboardShellSidebarHead,
+  .dashboardShellNav,
+  .dashboardShellSidebarFooter{
+    position:relative;
+    z-index:1;
+  }
+
+  .dashboardShellSidebarHead{
+    min-height:64px;
+  }
+
+  .dashboardShellNavItem{
+    min-height:54px!important;
+  }
+
+  .dashboardShellNavCopy{
+    min-width:0;
+    overflow:hidden;
+  }
+
+  .dashboardShellNavCopy strong,
+  .dashboardShellNavCopy small{
+    display:block;
+    overflow-wrap:anywhere;
+  }
+}
+
+@media(max-width:480px){
+  .dashboardShellSidebar{
+    width:calc(100vw - 34px)!important;
+    max-width:calc(100vw - 34px)!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dashboardShellSidebar{
+    transition:none!important;
+  }
+}
