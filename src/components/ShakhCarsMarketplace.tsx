@@ -27,32 +27,32 @@ export default function ShakhCarsMarketplace(){
   return (!q||hay.includes(q.toLowerCase()))&&(make==='all'||x.make===make)&&(condition==='all'||x.condition===condition)&&(body==='all'||x.body_type===body)&&(city==='all'||x.city===city)&&(!min||price>=Number(min))&&(!max||price<=Number(max));
  }),[items,q,make,condition,body,city,min,max]);
 
- return <section className="section" style={{marginTop:0}}>
-  <div className="title"><div><span>SHAKH CARS</span><h2><Car size={25} style={{verticalAlign:'middle'}}/> بازاڕی ئۆتۆمبێلی شاخ</h2></div><small>پۆستە پەسەندکراوەکان</small></div>
-  <div className="orderCard" style={{marginBottom:18}}>
-   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}><SlidersHorizontal size={18}/><b>گەڕان و فلتەر</b></div>
-   <div className="carsMarketplaceFilterGrid">
-    <label style={{display:'flex',alignItems:'center',gap:7}}><Search size={16}/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="مارکە، مۆدێل یان تریم"/></label>
-    <select value={make} onChange={e=>setMake(e.target.value)}><option value="all">هەموو مارکەکان</option>{options('make').map(x=><option key={x}>{x}</option>)}</select>
-    <select value={condition} onChange={e=>setCondition(e.target.value)}><option value="all">نوێ و بەکارهاتوو</option><option value="new">نوێ</option><option value="used">بەکارهاتوو</option></select>
-    <select value={body} onChange={e=>setBody(e.target.value)}><option value="all">هەموو جۆرە جەستەکان</option>{options('body_type').map(x=><option key={x}>{x}</option>)}</select>
+ return <section className="section shakh-cars-marketplace" style={{marginTop:0}}>
+  <div className="title shakh-cars-header"><div><span>SHAKH CARS</span><h2><Car size={25} style={{verticalAlign:'middle'}}/> بازاڕی ئۆتۆمبێلی شاخ</h2></div><small>پۆستە پەسەندکراوەکان</small></div>
+  <div className="orderCard shakh-cars-filter-shell" style={{marginBottom:18}}>
+   <div className="shakh-cars-filter-heading"><SlidersHorizontal size={18}/><b>گەڕان و فلتەر</b></div>
+   <div className="carsMarketplaceFilterGrid shakh-cars-filter-grid">
+    <label className="shakh-cars-filter-field shakh-cars-search"><Search size={16}/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="مارکە، مۆدێل یان تریم"/></label>
+    <select className="shakh-cars-filter-field" value={make} onChange={e=>setMake(e.target.value)}><option value="all">هەموو مارکەکان</option>{options('make').map(x=><option key={x}>{x}</option>)}</select>
+    <select className="shakh-cars-filter-field" value={condition} onChange={e=>setCondition(e.target.value)}><option value="all">نوێ و بەکارهاتوو</option><option value="new">نوێ</option><option value="used">بەکارهاتوو</option></select>
+    <select className="shakh-cars-filter-field" value={body} onChange={e=>setBody(e.target.value)}><option value="all">هەموو جۆرە جەستەکان</option>{options('body_type').map(x=><option key={x}>{x}</option>)}</select>
    </div>
-   <div className="carsMarketplacePriceGrid">
-    <select value={city} onChange={e=>setCity(e.target.value)}><option value="all">هەموو شارەکان</option>{options('city').map(x=><option key={x}>{x}</option>)}</select>
-    <input value={min} onChange={e=>setMin(e.target.value)} inputMode="numeric" placeholder="کەمترین نرخ"/>
-    <input value={max} onChange={e=>setMax(e.target.value)} inputMode="numeric" placeholder="زۆرترین نرخ"/>
-    <div style={{display:'flex',alignItems:'center',gap:8,color:'#718096'}}><Filter size={16}/> {filtered.length.toLocaleString('ku-IQ')} ئەنجام</div>
+   <div className="carsMarketplacePriceGrid shakh-cars-price-grid">
+    <select className="shakh-cars-filter-field" value={city} onChange={e=>setCity(e.target.value)}><option value="all">هەموو شارەکان</option>{options('city').map(x=><option key={x}>{x}</option>)}</select>
+    <input className="shakh-cars-filter-field" value={min} onChange={e=>setMin(e.target.value)} inputMode="numeric" placeholder="کەمترین نرخ"/>
+    <input className="shakh-cars-filter-field" value={max} onChange={e=>setMax(e.target.value)} inputMode="numeric" placeholder="زۆرترین نرخ"/>
+    <div className="shakh-cars-results-meta"><Filter size={16}/> {filtered.length.toLocaleString('ku-IQ')} ئەنجام</div>
    </div>
   </div>
-  {loading?<div className="empty">چاوەڕێ بکە...</div>:!filtered.length?<div className="empty"><Car size={42}/><h3>هیچ ئۆتۆمبێلێک نەدۆزرایەوە</h3><p>فلتەرەکان بگۆڕە و دوبارە هەوڵ بدە.</p></div>:<div className="grid">{filtered.map(x=><article className="card" key={x.id}>
-   <div className="pic" style={{height:220}}>{x.images?.[0]?<img src={x.images[0]} alt={x.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:<span style={{fontSize:70}}>🚗</span>}</div>
-   <div className="body">
-    <small>{x.vehicle_showrooms?.business_name||'پێشانگا'} · {x.city||'هەولێر'}</small>
-    <h3>{x.title}</h3>
-    <div style={{display:'flex',gap:6,flexWrap:'wrap',margin:'7px 0'}}><span className="badge">{x.model_year||'—'}</span><span className="badge">{x.condition==='new'?'نوێ':'بەکارهاتوو'}</span><span className="badge">{Number(x.mileage_km||0).toLocaleString('en-US')} km</span></div>
-    <small>{x.transmission||'—'} · {x.fuel_type||'—'} · {x.body_type||'—'} {x.engine_size_cc?'· '+x.engine_size_cc+' CC':''}</small>
-    <div className="buy"><b>{Number(x.price_iqd).toLocaleString('en-US')} د.ع</b><small>{x.negotiable?'قابیلی گفتوگۆ':'نرخی کۆتایی'}</small></div>
-    <div style={{display:'flex',gap:8,alignItems:'center'}}><ShieldCheck size={15}/><small>پۆستی پەسەندکراوی شاخ</small>{x.exchange_allowed&&<small> · معاوضە</small>}</div>
+  {loading?<div className="empty">چاوەڕێ بکە...</div>:!filtered.length?<div className="empty shakh-cars-empty"><Car size={42}/><h3>هیچ ئۆتۆمبێلێک نەدۆزرایەوە</h3><p>فلتەرەکان بگۆڕە و دوبارە هەوڵ بدە.</p></div>:<div className="grid shakh-cars-card-grid">{filtered.map(x=><article className="card shakh-car-card" key={x.id}>
+   <div className="pic shakh-car-media" style={{height:220}}>{x.images?.[0]?<img src={x.images[0]} alt={x.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:<span style={{fontSize:70}}>🚗</span>}</div>
+   <div className="body shakh-car-body">
+    <div className="shakh-car-dealer-line"><small>{x.vehicle_showrooms?.business_name||'پێشانگا'}</small><small>{x.city||'هەولێر'}</small></div>
+    <h3 className="shakh-car-title">{x.title}</h3>
+    <div className="shakh-car-specs"><span className="shakh-car-spec">{x.model_year||'—'}</span><span className="shakh-car-spec">{x.condition==='new'?'نوێ':'بەکارهاتوو'}</span><span className="shakh-car-spec">{Number(x.mileage_km||0).toLocaleString('en-US')} km</span></div>
+    <div className="shakh-car-details"><span>{x.transmission||'—'}</span><span>·</span><span>{x.fuel_type||'—'}</span><span>·</span><span>{x.body_type||'—'}</span>{x.engine_size_cc&&<><span>·</span><span>{x.engine_size_cc} CC</span></>}</div>
+    <div className="shakh-car-finance"><div><b className="shakh-car-price">{Number(x.price_iqd).toLocaleString('en-US')} د.ع</b><small className="shakh-car-price-note">{x.negotiable?'قابیلی گفتوگۆ':'نرخی کۆتایی'}</small></div></div>
+    <div className="shakh-car-trust"><ShieldCheck size={15}/><small>پۆستی پەسەندکراوی شاخ</small>{x.exchange_allowed&&<small> · معاوضە</small>}</div>
    </div>
   </article>)}</div>}
  </section>;
