@@ -1,0 +1,672 @@
+/* =========================================================
+   SHAKH — STAGE 10/13 — MOBILE-FIRST UI/UX
+   Presentation-only responsive hardening layer.
+   Existing pages, components, routes, Supabase queries, auth,
+   permissions and business logic are intentionally preserved.
+   ========================================================= */
+
+:root{
+  --shakh-mobile-gutter:clamp(12px,4vw,18px);
+  --shakh-mobile-gap:10px;
+}
+
+html,body,#root{
+  max-width:100%;
+  min-width:320px;
+  overflow-x:clip;
+}
+
+*,*::before,*::after{
+  box-sizing:border-box;
+}
+
+img,svg,video,canvas{
+  max-width:100%;
+}
+
+button,
+a,
+input,
+select,
+textarea{
+  touch-action:manipulation;
+}
+
+button,
+.dashboardShellNavItem,
+.customer-order-card,
+.customer-tracking .order-select,
+.postHubCard,
+.shakh-car-card,
+.notification-center__item,
+.walletTx,
+.supportTicket{
+  -webkit-tap-highlight-color:transparent;
+}
+
+@media(max-width:860px){
+  .dashboardShellBackdrop{
+    padding:0;
+    min-height:100dvh;
+    min-height:100svh;
+    overscroll-behavior:none;
+  }
+
+  .dashboardShell{
+    width:100%;
+    max-width:none;
+    min-width:0;
+    height:100dvh;
+    min-height:100svh;
+    max-height:none;
+    border-radius:0;
+  }
+
+  .dashboardShellHeader,
+  .dashboardShellBody,
+  .dashboardShellMain,
+  .dashboardShellToolbar,
+  .dashboardShellOverview,
+  .dashboardShellModule{
+    min-width:0;
+  }
+
+  .dashboardShellBody{
+    overflow:hidden;
+  }
+
+  .dashboardShellMain{
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .dashboardShellHeading{
+    min-width:0;
+    max-width:100%;
+  }
+
+  .dashboardShellHeading h1,
+  .dashboardShellHeading p,
+  .dashboardShellToolbar strong,
+  .dashboardShellToolbar span{
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+
+  .dashboardShellHeaderActions{
+    flex-shrink:0;
+  }
+
+  .dashboardShellIconButton,
+  .dashboardShellMobileMenu,
+  .dashboardShellMobileClose{
+    min-width:44px;
+    min-height:44px;
+  }
+
+  .dashboardShellToolbar{
+    position:sticky;
+    top:0;
+    z-index:25;
+    backdrop-filter:blur(12px);
+  }
+
+  .dashboardShellOverview,
+  .dashboardShellModule{
+    padding-inline:var(--shakh-mobile-gutter);
+  }
+
+  .dashboardShellHomeContent > *,
+  .dashboardShellModule > *,
+  .dashboardShellOverview > *{
+    min-width:0;
+    max-width:100%;
+  }
+
+  .dashboardShellHomeContent{
+    margin-top:12px;
+  }
+
+  .dashboardShellStats,
+  .dashboardShellServiceGrid,
+  .dashboardShellRecentGrid{
+    width:100%;
+    min-width:0;
+  }
+
+  .dashboardShellStats{
+    gap:1px;
+  }
+
+  .dashboardShellStat{
+    min-width:0;
+    overflow:hidden;
+  }
+
+  .dashboardShellStat strong{
+    overflow-wrap:anywhere;
+  }
+
+  .dashboardShellNav{
+    padding-bottom:max(12px,env(safe-area-inset-bottom));
+  }
+
+  .dashboardShellNavItem{
+    min-height:50px;
+  }
+
+  .dashboardShellNavCopy{
+    min-width:0;
+  }
+
+  .dashboardShellNavCopy strong,
+  .dashboardShellNavCopy small{
+    overflow-wrap:anywhere;
+  }
+
+  .dashboardShellSidebarFooter{
+    padding-bottom:max(12px,env(safe-area-inset-bottom));
+  }
+
+  .dashboardShellDrawerScrim{
+    min-height:100%;
+  }
+}
+
+@media(max-width:760px){
+  .dashboardShellOverview,
+  .dashboardShellModule{
+    padding-block:10px 18px;
+  }
+
+  .dashboardShellHeader{
+    padding-inline:var(--shakh-mobile-gutter);
+  }
+
+  .dashboardGrid,
+  .dashboardGrid2,
+  .dashboard-grid,
+  .settingsGrid,
+  .settingsAdminGrid,
+  .profileFormGrid,
+  .deliveryZoneFormGrid,
+  .storeLocationFields,
+  .postHubGrid,
+  .postFeedGrid,
+  .customer-orders-panel__grid,
+  .customer-orders-panel__orders,
+  .customer-tracking__orders,
+  .supportTicketsList{
+    min-width:0;
+    width:100%;
+  }
+
+  .dashboardGrid,
+  .dashboardGrid2,
+  .dashboard-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .postFeed,
+  .postPublishingHub,
+  .customer-orders-panel,
+  .customer-tracking,
+  .notification-center,
+  .walletPanel,
+  .profilePanel,
+  .settingsPanel,
+  .supportPanel,
+  .deliveryZoneManager,
+  .storeLocationManager,
+  .orderReviewCard,
+  .vendor-dashboard,
+  .shakh-cars-marketplace,
+  .shakh-cars-workspace{
+    width:100%;
+    max-width:none;
+    min-width:0;
+  }
+
+  .postFeed,
+  .postPublishingHub,
+  .vendor-dashboard,
+  .shakh-cars-marketplace,
+  .shakh-cars-workspace{
+    margin-inline:auto!important;
+  }
+
+  .postFeedFilters{
+    display:flex;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
+    max-width:100%;
+    padding-inline:2px;
+    scrollbar-width:none;
+    overscroll-behavior-inline:contain;
+  }
+
+  .postFeedFilters::-webkit-scrollbar{
+    display:none;
+  }
+
+  .postFeedFilters button{
+    min-height:44px;
+    flex:0 0 auto;
+  }
+
+  .postFeedGrid,
+  .postHubGrid{
+    grid-template-columns:1fr!important;
+  }
+
+  .postFeedGrid>article,
+  .postHubCard,
+  .shakh-car-card,
+  .customer-order-card,
+  .deliveryZoneCard,
+  .notification-center__item,
+  .walletTx,
+  .supportTicket{
+    min-width:0;
+    max-width:100%;
+  }
+
+  .postDetailsModal{
+    width:min(100% - 14px,1000px);
+    max-height:calc(100dvh - 14px);
+    max-height:calc(100svh - 14px);
+    overflow:hidden;
+  }
+
+  .postDetailsBody{
+    min-height:0;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .shakh-cars-filter-grid,
+  .shakh-cars-posting-grid,
+  .shakh-cars-card-grid,
+  .shakh-cars-managed-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .shakh-cars-card-grid,
+  .shakh-cars-managed-grid{
+    gap:10px!important;
+  }
+
+  .shakh-cars-image-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .customer-orders-panel__grid{
+    gap:10px;
+  }
+
+  .customer-orders-panel__orders,
+  .customer-tracking__orders{
+    grid-template-columns:1fr!important;
+  }
+
+  .liveDeliveryMap,
+  .liveDeliveryMapCanvas,
+  .deliveryZoneMap{
+    min-height:300px;
+    height:min(60svh,420px);
+  }
+
+  .deliveryZoneMapHint{
+    max-width:calc(100% - 20px);
+    overflow-wrap:anywhere;
+  }
+
+  .notification-center__content,
+  .walletPanel,
+  .profilePanel,
+  .settingsPanel,
+  .supportPanel{
+    min-width:0;
+  }
+
+  .notification-center__item,
+  .walletTx,
+  .supportTicket{
+    overflow:hidden;
+  }
+
+  .profilePanelHero,
+  .supportContactCard,
+  .supportComposerFooter,
+  .orderReviewFooter,
+  .deliveryZoneEditorActions{
+    width:100%;
+    max-width:100%;
+  }
+
+  .settingsSaveBar{
+    padding-bottom:max(8px,env(safe-area-inset-bottom));
+  }
+
+  .settingsSaveBar button{
+    width:100%;
+    min-height:48px;
+    justify-content:center;
+  }
+
+  .vendor-dashboard__header,
+  .vendor-dashboard__stats,
+  .vendor-dashboard__empty{
+    width:100%;
+  }
+
+  .vendor-dashboard__actions{
+    width:100%;
+  }
+
+  .vendor-dashboard__actions button{
+    min-height:46px;
+  }
+
+  .shakh-cars-admin-row,
+  .shakh-cars-payment-row{
+    width:100%;
+    min-width:0;
+  }
+
+  table{
+    display:block;
+    width:100%;
+    max-width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  th,td{
+    white-space:nowrap;
+  }
+
+  pre,
+  code{
+    max-width:100%;
+    overflow-x:auto;
+  }
+
+  input,
+  select,
+  textarea{
+    min-width:0;
+    max-width:100%;
+    font-size:16px;
+  }
+
+  textarea{
+    resize:vertical;
+  }
+}
+
+@media(max-width:560px){
+  :root{
+    --shakh-mobile-gutter:12px;
+  }
+
+  .dashboardShellHeader{
+    min-height:64px;
+  }
+
+  .dashboardShellIdentity{
+    min-width:0;
+  }
+
+  .dashboardShellBrandMark{
+    flex:0 0 40px;
+    width:40px;
+    height:40px;
+  }
+
+  .dashboardShellHeading h1{
+    font-size:16px;
+    line-height:1.25;
+  }
+
+  .dashboardShellHeading .dashboardShellOverline{
+    font-size:7px;
+  }
+
+  .dashboardShellIconButton,
+  .dashboardShellMobileMenu,
+  .dashboardShellMobileClose{
+    min-width:42px;
+    min-height:42px;
+  }
+
+  .dashboardShellToolbar{
+    padding-inline:12px;
+  }
+
+  .dashboardShellStats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:1px;
+    border-radius:14px;
+  }
+
+  .dashboardShellStat{
+    min-height:76px;
+    padding:10px;
+  }
+
+  .dashboardShellStat span,
+  .dashboardShellStat small{
+    overflow-wrap:anywhere;
+  }
+
+  .dashboardShellStat strong{
+    font-size:18px!important;
+  }
+
+  .dashboardShellStat.is-money strong{
+    font-size:14px!important;
+  }
+
+  .postFeedTitle,
+  .postHubHeader,
+  .shakh-cars-header,
+  .shakh-cars-workspace-head,
+  .customer-orders-panel__header,
+  .customer-tracking__header,
+  .notification-center__header,
+  .walletHead,
+  .supportHead,
+  .deliveryZoneManager .dashboardHeader,
+  .storeLocationHeader{
+    padding:12px!important;
+    border-radius:15px!important;
+  }
+
+  .postFeedTitle h1,
+  .postHubHeader h1,
+  .shakh-cars-header h1,
+  .shakh-cars-workspace-head h2,
+  .customer-orders-panel__header h2,
+  .customer-tracking__header h2{
+    font-size:20px;
+    line-height:1.3;
+  }
+
+  .postDetailsModal{
+    width:calc(100vw - 10px);
+    width:calc(100svw - 10px);
+    max-height:calc(100dvh - 10px);
+    max-height:calc(100svh - 10px);
+    border-radius:15px;
+  }
+
+  .postDetailsBody{
+    padding:12px;
+  }
+
+  .shakh-cars-price-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .shakh-cars-image-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .customer-orders-panel__detail,
+  .customer-tracking__card,
+  .liveDeliveryMapCard,
+  .etaCard,
+  .locationPrivacyBanner,
+  .deliveryZoneEditorCard,
+  .supportContactCard{
+    border-radius:15px!important;
+  }
+
+  .tracking-card__top,
+  .orderReviewHead{
+    padding:12px!important;
+  }
+
+  .liveDeliveryMap,
+  .liveDeliveryMapCanvas,
+  .deliveryZoneMap{
+    min-height:260px;
+    height:54svh;
+  }
+
+  .notification-center__item{
+    grid-template-columns:40px minmax(0,1fr);
+  }
+
+  .profilePanelHero{
+    grid-template-columns:auto minmax(0,1fr);
+    gap:10px;
+  }
+
+  .profileAvatar{
+    width:64px!important;
+    height:64px!important;
+  }
+
+  .profileHeroText h2{
+    font-size:20px!important;
+  }
+
+  .profileAccountActions,
+  .profileUploadHint,
+  .supportContactActions{
+    width:100%;
+  }
+
+  .profileAccountActions button,
+  .supportContactActions a{
+    min-height:46px;
+    justify-content:center;
+  }
+
+  .walletMiniStats{
+    grid-template-columns:1fr!important;
+  }
+
+  .supportComposer{
+    grid-template-columns:1fr;
+  }
+
+  .supportComposer button,
+  .supportComposerBadge{
+    min-height:46px;
+  }
+
+  .settingsChoice,
+  .settingsSaveBar,
+  .deliveryZoneEditorActions button,
+  .deliveryZoneCardActions button{
+    min-height:46px;
+  }
+
+  .deliveryZonePointList{
+    max-width:100%;
+    overflow-x:auto;
+    display:flex;
+    flex-wrap:nowrap;
+    scrollbar-width:none;
+  }
+
+  .deliveryZonePointList::-webkit-scrollbar{
+    display:none;
+  }
+
+  .deliveryZonePointList span{
+    flex:0 0 auto;
+  }
+
+  .orderReviewFooter{
+    gap:8px;
+  }
+}
+
+@media(max-width:400px){
+  .dashboardShellHeader{
+    padding-inline:10px;
+  }
+
+  .dashboardShellIdentity{
+    gap:6px;
+  }
+
+  .dashboardShellBrandMark{
+    flex-basis:36px;
+    width:36px;
+    height:36px;
+    border-radius:11px;
+  }
+
+  .dashboardShellHeading h1{
+    font-size:15px;
+  }
+
+  .dashboardShellIconButton,
+  .dashboardShellMobileMenu,
+  .dashboardShellMobileClose{
+    min-width:40px;
+    min-height:40px;
+  }
+
+  .dashboardShellStats{
+    grid-template-columns:1fr!important;
+  }
+
+  .shakh-cars-image-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dashboardShellMain,
+  .postDetailsBody,
+  .postFeedFilters,
+  table{
+    scroll-behavior:auto!important;
+  }
+
+  *{
+    scroll-behavior:auto!important;
+  }
+}
+
+@media(forced-colors:active){
+  .dashboardShellIconButton,
+  .dashboardShellMobileMenu,
+  .dashboardShellMobileClose,
+  .dashboardShellNavItem,
+  button,
+  input,
+  select,
+  textarea{
+    forced-color-adjust:auto;
+  }
+}
