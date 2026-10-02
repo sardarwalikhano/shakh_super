@@ -297,6 +297,14 @@ export default function DashboardShell({
         </header>
 
         <div className="dashboardShellBody">
+          {menuOpen && (
+            <button
+              type="button"
+              className="dashboardShellDrawerScrim"
+              aria-label="داخستنی ناوبەری بەشەکان"
+              onClick={() => setMenuOpen(false)}
+            />
+          )}
           <aside className={`dashboardShellSidebar ${menuOpen ? 'is-open' : ''}`} aria-label="بەشەکانی داشبۆرد">
             <div className="dashboardShellSidebarHead">
               <div>
