@@ -332,7 +332,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   }else if(dashboardDirty&&!window.confirm('گۆڕانکارییەکانی پرۆفایل پاشەکەوت نەکراون. دڵنیایت دەتەوێت داشبۆرد دابخەیت؟'))return;
   setDashboard(false);setDashboardView('home');setDashboardDirty(false);
  };
- const roleLabel=role==='super_admin'?'بەڕێوبەری باڵا':role==='admin'?'بەڕێوبەر':['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role)?'خاوەن دوکان':role==='captain'?'کاپتن':role==='car_dealer'?'پێشانگای ئۆتۆمبێل':role==='umrah_agency'?'کۆمپانیای حەج و عومرە':'کڕیار';
+ const roleLabel=role==='super_admin'?'بەڕێوبەری باڵا':role==='admin'?'بەڕێوبەر':['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role)?'خاوەن دوکان':role==='captain'?'کاپتن':role==='car_dealer'?'پێشانگای ئۆتۆمبێل':role==='umrah_agency'?'کۆمپانیای حەج و عومرە':role==='beauty_vendor'?'جوانکاری':'کڕیار';
  const dashboardModule=()=>{
   if(!user)return null;
   if(dashboardView==='services'){
