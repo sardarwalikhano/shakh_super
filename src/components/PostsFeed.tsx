@@ -11,10 +11,10 @@ const AUDIENCE=['پیاوان','ئافرەتان','منداڵان','هەمووا
 const CLOTHING_TYPES=['تیشێرت','کراس','پانتۆڵ','جین','جاکەت','پۆشاک','جلوبەرگی وەرزشی','پێلاو','جانتا','ئاکسسوارات','کۆمەڵە جلوبەرگ'];
 const SIZES=['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'];
 const COLORS=['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'];
-const FUEL=['بنزین','دیزڵ','هايبرید','کارەبا'];
-const TRANSMISSION=['ئۆتۆماتیک','مانوێڵ'];
-const BODY=['سێدان','SUV','کروس ئۆڤەر','هەچبەک','پیکاپ','ڤان','کوپێ'];
-const CAR_CONDITIONS=['نوێ','کارکراو'];
+const FUEL=['بنزین','دیزڵ','هايبرید','پلاگین هایبرید','کارەبا','گاز'];
+const TRANSMISSION=['ئۆتۆماتیک','مانوێڵ','CVT','DCT','AMT'];
+const BODY=['سێدان','SUV','کروس ئۆڤەر','هاچباک','پیکاپ','ڤان','مینی‌وان','کوپێ','واگن'];
+const CAR_CONDITIONS=['نوێ','دەستی دوو'];
 const CAR_ORIGINS=['ئیمارات','ئەڵمانیا','ئەمریکا','کۆریا','ژاپۆن','چین','تورکیا','عێراق'];
 
 const labelFor=(type?:string|null,label?:string|null)=>label||TYPES.find(item=>item.value===type)?.label||'گشتی';
@@ -116,18 +116,21 @@ export default function PostsFeed({onAddToCart}:Props){
    return [d.audience,d.clothing_type,v.sizes.length?'قەبارە: '+v.sizes.join('، '):'',v.colors.length?'ڕەنگ: '+v.colors.join('، '):'',v.shoeSizes.length?'پێلاو: '+v.shoeSizes.join('، '):'',v.unlimited?'بەردەستی: بێ‌سنوور':v.stock!==null&&!Number.isNaN(v.stock)?'بەردەستی: '+v.stock+' دانە':'',d.condition,d.brand].filter(Boolean).map(String);
   }
   if(post.post_type==='car')return[
-   d.make&&d.model?d.make+' '+d.model:d.make,
-   d.year,
-   d.mileage&&Number(d.mileage).toLocaleString('en-US')+' km',
-   d.body_type,
-   d.fuel,
-   d.transmission,
-   d.color,
-   d.engine,
-   d.condition,
-   d.origin&&'سەرچاوە: '+d.origin,
-   d.negotiable?'دانوستاندن هەیە':'',
-   d.exchange_allowed?'ئەکسچێنج قبوڵە':''
+   d.make&&d.model?'مارکە/مۆدێل: '+d.make+' '+d.model:d.make?'مارکە: '+d.make:'',
+   d.year?'ساڵ: '+d.year:'',
+   d.trim?'تریم: '+d.trim:'',
+   d.mileage?'کیلۆمەتر: '+Number(d.mileage).toLocaleString('en-US')+' km':'',
+   d.body_type?'بۆدی: '+d.body_type:'',
+   d.color?'ڕەنگ: '+d.color:'',
+   d.engine?'مەکینە: '+d.engine:'',
+   d.fuel?'سووتەمەنی: '+d.fuel:'',
+   d.transmission?'گێڕ: '+d.transmission:'',
+   d.drivetrain?'سیستەمی جوڵان: '+d.drivetrain:'',
+   d.condition?'حاڵەت: '+d.condition:'',
+   d.origin?'سەرچاوە: '+d.origin:'',
+   d.plate_status?'پلیت: '+d.plate_status:'',
+   d.negotiable?'نرخ دانوستاندن هەیە':'',
+   d.exchange_allowed?'گۆڕین/ئەکسچێنج قبوڵە':''
   ].filter(Boolean).map(String);
   return[];
  };
@@ -166,7 +169,7 @@ export default function PostsFeed({onAddToCart}:Props){
 
   {loading&&!posts.length?<div className="postFeedEmpty"><RefreshCw size={35}/><strong>پۆستەکان بار دەکرێن...</strong><small>کەمێک چاوەڕوان بە.</small></div>:!filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>فلتەرەکان بگۆڕە یان پاکیان بکەرەوە.</small></div>:<div className="postFeedGrid">{shown.map(post=>{const imgs=postImages(post.images),img=imgs[0],postChips=chips(post);return <article className={'postFeedCard '+(post.post_type==='car'?'postFeedCardCar':post.post_type==='fashion'?'postFeedCardFashion':'')} key={post.id} id={'post-'+post.id} tabIndex={0} role="button" aria-label={'پۆستی '+post.title+' بکەرەوە'} onClick={()=>openPost(post)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPost(post)}}}>
    <div className="postFeedImage">{img?<img src={img} alt={post.title} loading="lazy" decoding="async"/>:<ImageIcon size={40}/>}<span className="postFeedBadge">{labelFor(post.post_type,post.label)}</span>{imgs.length>1&&<span className="postFeedImageCount">{imgs.length} وێنە</span>}{isNew(post.created_at)&&<span className="postFeedNew">نوێ</span>}</div>
-   <div className="postFeedBody"><div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{timeLabel(post.created_at)}</small></div><h3>{post.title}</h3>{post.content&&<p>{post.content}</p>}{postChips.length>0&&<div className="postSpecChips">{postChips.slice(0,7).map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}<div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div><div className="postFeedFooter">{post.referral_reward_percent&&post.referral_reward_percent>0&&<div className="postRewardLabel"><Gift size={13}/><span>خەڵاتی Share: <b>{post.referral_reward_percent}%</b></span></div>}{post.price_iqd!=null?<strong><WalletCards size={14}/>{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>:<small>بێ نرخ</small>}{productIdOf(post)&&onAddToCart?<button type="button" className="postAddToCart" onClick={e=>{e.stopPropagation();addProduct(productIdOf(post)!,activeSharePostId===post.id?(activeShareCode||undefined):undefined)}} disabled={addingProductId===productIdOf(post)}>{addingProductId===productIdOf(post)?'زیاد دەکرێت...':'زیادکردن بۆ سەلە'}</button>:<span>وردەکاری</span>}</div></div>
+   <div className="postFeedBody"><div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{timeLabel(post.created_at)}</small></div><h3>{post.title}</h3>{post.content&&<p>{post.content}</p>}{postChips.length>0&&<div className="postSpecChips">{postChips.map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}<div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div><div className="postFeedFooter">{post.referral_reward_percent&&post.referral_reward_percent>0&&<div className="postRewardLabel"><Gift size={13}/><span>خەڵاتی Share: <b>{post.referral_reward_percent}%</b></span></div>}{post.price_iqd!=null?<strong><WalletCards size={14}/>{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>:<small>بێ نرخ</small>}{productIdOf(post)&&onAddToCart?<button type="button" className="postAddToCart" onClick={e=>{e.stopPropagation();addProduct(productIdOf(post)!,activeSharePostId===post.id?(activeShareCode||undefined):undefined)}} disabled={addingProductId===productIdOf(post)}>{addingProductId===productIdOf(post)?'زیاد دەکرێت...':'زیادکردن بۆ سەلە'}</button>:<span>وردەکاری</span>}</div></div>
   </article>})}</div>}
   {shown.length<filtered.length&&<div className="postFeedMore"><button type="button" className="plain" onClick={()=>setPage(v=>v+1)}>زیاتر پیشاندان</button></div>}{message&&<div className="msg postFeedMessage" role="alert" aria-live="polite">{message}</div>}
 
