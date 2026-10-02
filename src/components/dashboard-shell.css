@@ -7524,3 +7524,241 @@ html[data-theme='dark'] .dashboardShellMain{
 
 /* SHAKH Dashboard V5 — role-aware command-center layer */
 .dashboardShell[data-role] .dashboardShellHeader{position:relative;overflow:hidden}.dashboardShell[data-role] .dashboardShellHeader:after{content:'';position:absolute;inset:auto 0 0 0;height:2px;background:linear-gradient(90deg,var(--dsx-brand),var(--dsx-blue),transparent);opacity:.75}.dashboardShell[data-role="super_admin"]{--dsx-brand:#ff6200;--dsx-brand-soft:#fff0e7}.dashboardShell[data-role="admin"]{--dsx-brand:#245b91;--dsx-brand-soft:#edf5fd}.dashboardShell[data-role="captain"]{--dsx-brand:#148a62;--dsx-brand-soft:#eaf8f2}.dashboardShell[data-role="customer"]{--dsx-brand:#ff7a18;--dsx-brand-soft:#fff3e8}.dashboardShell[data-role="car_dealer"]{--dsx-brand:#6d5bd0;--dsx-brand-soft:#f1efff}.dashboardShell[data-role="umrah_agency"]{--dsx-brand:#0d8b86;--dsx-brand-soft:#e9f8f7}.dashboardShell[data-role="beauty_vendor"]{--dsx-brand:#b34f86;--dsx-brand-soft:#fbeef6}.dashboardShell[data-role="restaurant_vendor"],.dashboardShell[data-role="supermarket_vendor"],.dashboardShell[data-role="fashion_vendor"],.dashboardShell[data-role="vendor"],.dashboardShell[data-role="electronics_vendor"],.dashboardShell[data-role="jewelry_vendor"]{--dsx-brand:#e76616;--dsx-brand-soft:#fff1e7}.dashboardShell[data-role] .dashboardShellNavItem.is-active{box-shadow:inset 3px 0 0 var(--dsx-brand),0 7px 20px rgba(16,36,63,.06)}.dashboardShell[data-role] .dashboardShellNavItem.is-active .dashboardShellNavIcon{background:var(--dsx-brand);color:#fff}.dashboardShell[data-role] .dashboardShellStat.is-attention strong{color:var(--dsx-brand)}.dashboardShell[data-role] .dashboardShellStat.is-money strong{font-size:clamp(19px,2vw,27px)}.dashboardShell[data-role="captain"] .dashboardShellStat.is-attention{background:linear-gradient(145deg,var(--dsx-surface),var(--dsx-brand-soft))}.dashboardShell[data-role="super_admin"] .dashboardShellSidebarFooter,.dashboardShell[data-role="captain"] .dashboardShellSidebarFooter{background:linear-gradient(135deg,var(--dsx-brand-soft),var(--dsx-surface));border-radius:16px;padding:12px}@media(max-width:720px){.dashboardShell[data-role] .dashboardShellHeader{border-radius:0}.dashboardShell[data-role] .dashboardShellStats{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(max-width:520px){.dashboardShell[data-role] .dashboardShellStats{grid-template-columns:1fr!important}}
+
+
+/* =========================================================
+   SHAKH — STAGE 3/13 — APPLICATION SHELL
+   Presentation-only shell layer. Existing navigation, routes,
+   handlers, role visibility and data flow are intentionally preserved.
+   ========================================================= */
+
+.dashboardShellBackdrop{
+  padding:clamp(10px,2vw,28px);
+  background:rgba(3,12,24,.78);
+}
+.dashboardShell{
+  width:min(1540px,97vw);
+  height:min(94vh,960px);
+  border-radius:30px;
+  border-color:color-mix(in srgb,var(--dsx-line) 76%,#fff);
+  box-shadow:0 42px 130px rgba(0,0,0,.32);
+}
+.dashboardShellHeader{
+  min-height:82px;
+  padding:14px 18px;
+  gap:16px;
+  background:color-mix(in srgb,var(--dsx-surface) 96%,var(--dsx-brand-soft));
+}
+.dashboardShellIdentity{gap:12px}
+.dashboardShellBrandMark{
+  width:50px;height:50px;flex-basis:50px;
+  border-radius:15px;
+  background:var(--dsx-surface);
+  box-shadow:0 7px 22px rgba(16,36,63,.08);
+}
+.dashboardShellHeading h1{
+  font-size:clamp(19px,1.8vw,26px);
+  letter-spacing:-.45px;
+}
+.dashboardShellHeading p{font-size:10px}
+.dashboardShellHeaderActions{gap:7px}
+.dashboardShellAccount{
+  min-width:185px;
+  padding-inline-start:14px;
+}
+.dashboardShellIconButton{
+  width:42px;height:42px;border-radius:13px;
+}
+.dashboardShellBody{
+  grid-template-columns:minmax(0,1fr) 292px;
+}
+.dashboardShellSidebar{
+  padding:15px 11px;
+  border-inline-start:1px solid var(--dsx-line);
+  box-shadow:-8px 0 28px rgba(16,36,63,.025);
+}
+.dashboardShellSidebarHead{
+  padding:5px 8px 12px;
+}
+.dashboardShellSidebarHead strong{font-size:14px}
+.dashboardShellNav{gap:4px}
+.dashboardShellNavGroupLabel{
+  margin:11px 8px 4px;
+  font-size:8px;
+  letter-spacing:.25px;
+}
+.dashboardShellNavItem{
+  grid-template-columns:40px minmax(0,1fr) auto auto;
+  gap:9px;
+  min-height:56px;
+  padding:8px;
+  border-radius:13px;
+}
+.dashboardShellNavItem:hover{
+  transform:translateX(-1px);
+}
+.dashboardShellNavIcon{
+  width:40px;height:40px;border-radius:12px;
+}
+.dashboardShellNavCopy strong{font-size:10px}
+.dashboardShellNavCopy small{font-size:7px}
+.dashboardShellNavArrow{width:13px;height:13px}
+.dashboardShellNavBadge{
+  min-width:22px;
+  height:22px;
+  padding:0 6px;
+  border-radius:999px;
+  font-size:9px;
+}
+.dashboardShellSidebarFooter{
+  margin-top:auto;
+  padding:11px 9px 5px;
+  border-top:1px solid var(--dsx-line);
+}
+.dashboardShellMain{
+  min-width:0;
+  background:
+    radial-gradient(circle at 100% 0,color-mix(in srgb,var(--dsx-brand) 4%,transparent),transparent 30%),
+    var(--dsx-bg);
+}
+.dashboardShellToolbar{
+  min-height:62px;
+  padding:11px 20px;
+  border-bottom:1px solid color-mix(in srgb,var(--dsx-line) 72%,transparent);
+  background:color-mix(in srgb,var(--dsx-bg) 92%,transparent);
+}
+.dashboardShellOverview,
+.dashboardShellModule{
+  padding:20px;
+}
+.dashboardShellStats{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  border-radius:17px;
+  overflow:hidden;
+}
+.dashboardShellStat{
+  min-width:0;
+  min-height:104px;
+  padding:15px;
+}
+.dashboardShellHomeContent{margin-top:17px}
+.dashboardShellDrawerScrim{
+  display:none;
+}
+
+@media (max-width:1080px){
+  .dashboardShell{width:98vw}
+  .dashboardShellBody{grid-template-columns:minmax(0,1fr) 260px}
+  .dashboardShellAccount{min-width:150px}
+  .dashboardShellHeading p{max-width:38vw}
+}
+@media (max-width:860px){
+  .dashboardShell{
+    width:100vw;
+    height:100dvh;
+    border-radius:0;
+    border-inline:0;
+  }
+  .dashboardShellHeader{
+    min-height:70px;
+    padding:10px 13px;
+  }
+  .dashboardShellMobileMenu{display:grid;flex:0 0 40px}
+  .dashboardShellAccount{display:none}
+  .dashboardShellHeaderActions{margin-inline-start:auto}
+  .dashboardShellBody{
+    display:block;
+    overflow:hidden;
+  }
+  .dashboardShellSidebar{
+    position:absolute;
+    z-index:60;
+    inset-block:0;
+    inset-inline-end:0;
+    width:min(340px,88vw);
+    height:100%;
+    border-inline-start:1px solid var(--dsx-line);
+    box-shadow:-20px 0 55px rgba(0,0,0,.22);
+    transform:translateX(105%);
+    transition:transform .24s ease;
+    visibility:hidden;
+  }
+  .dashboardShellSidebar.is-open{
+    transform:translateX(0);
+    visibility:visible;
+  }
+  .dashboardShellMobileClose{display:grid}
+  .dashboardShellDrawerScrim{
+    position:absolute;
+    z-index:50;
+    inset:0;
+    display:block;
+    width:100%;
+    height:100%;
+    border:0;
+    background:rgba(3,12,24,.42);
+    backdrop-filter:blur(2px);
+  }
+  .dashboardShellToolbar{padding:10px 15px}
+  .dashboardShellOverview,
+  .dashboardShellModule{padding:15px}
+}
+@media (max-width:620px){
+  .dashboardShellHeader{
+    gap:8px;
+    padding:9px 10px;
+  }
+  .dashboardShellIdentity{gap:8px}
+  .dashboardShellBrandMark{
+    width:43px;height:43px;flex-basis:43px;border-radius:12px;
+  }
+  .dashboardShellHeading h1{font-size:17px}
+  .dashboardShellHeading p{
+    display:none;
+  }
+  .dashboardShellOverline{
+    margin-bottom:1px;
+    font-size:8px;
+  }
+  .dashboardShellIconButton{
+    width:38px;height:38px;border-radius:11px;
+  }
+  .dashboardShellMobileMenu{
+    width:38px;height:38px;
+  }
+  .dashboardShellToolbar{
+    min-height:54px;
+    padding:9px 11px;
+  }
+  .dashboardShellOverview,
+  .dashboardShellModule{padding:11px}
+  .dashboardShellStats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px;
+    border-radius:14px;
+  }
+  .dashboardShellStat{
+    min-height:78px;
+    padding:10px;
+  }
+  .dashboardShellStat strong{font-size:19px}
+  .dashboardShellStat.is-money strong{font-size:15px}
+}
+@media (max-width:420px){
+  .dashboardShellHeaderActions{gap:4px}
+  .dashboardShellClose{width:36px;height:36px}
+  .dashboardShellMobileMenu{width:36px;height:36px}
+  .dashboardShellBrandMark{width:40px;height:40px;flex-basis:40px}
+  .dashboardShellHeading h1{font-size:16px}
+  .dashboardShellStats{
+    grid-template-columns:1fr!important;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .dashboardShellSidebar{transition:none}
+  .dashboardShellNavItem,
+  .dashboardShellIconButton,
+  .dashboardShellMobileMenu,
+  .dashboardShellMobileClose{transition:none}
+}
