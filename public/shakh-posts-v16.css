@@ -1,0 +1,794 @@
+/* =========================================================
+   SHAKH — STAGE 11/13 — DARK MODE + ACCESSIBILITY
+   Includes the redesigned RTL post carousel.
+   Presentation-only. Existing data, auth, routing, cart,
+   referral, sharing and publish behavior remain intact.
+   ========================================================= */
+
+/* ---------- Post feed: new visual language ---------- */
+
+.postFeed{
+  --post-accent:var(--shakh-primary,var(--shakh-orange,#f97316));
+  --post-surface:var(--shakh-surface,#fff);
+  --post-surface-2:var(--shakh-surface-2,#f8fafc);
+  --post-canvas:var(--shakh-bg,#f6f8fc);
+  --post-text:var(--shakh-text,#10233f);
+  --post-muted:var(--shakh-muted,#708097);
+  --post-line:var(--shakh-line,#e5eaf1);
+  --post-shadow:0 18px 55px rgba(16,35,63,.08);
+  --post-shadow-hover:0 28px 75px rgba(16,35,63,.14);
+}
+
+.postFeedTitle{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:92px;
+  border:1px solid var(--post-line)!important;
+  border-radius:26px!important;
+  padding:20px 22px!important;
+  background:
+    radial-gradient(circle at 88% 10%,color-mix(in srgb,var(--post-accent) 10%,transparent),transparent 34%),
+    linear-gradient(135deg,var(--post-surface),var(--post-surface-2))!important;
+  box-shadow:var(--post-shadow);
+}
+
+.postFeedTitle::after{
+  content:'';
+  position:absolute;
+  inset:auto 0 0 0;
+  height:3px;
+  background:linear-gradient(90deg,var(--post-accent),transparent 72%);
+  opacity:.8;
+}
+
+.postFeedTitle>div{
+  min-width:0;
+}
+
+.postFeedTitle>div>span{
+  display:inline-flex;
+  align-items:center;
+  min-height:27px;
+  padding-inline:10px;
+  border:1px solid color-mix(in srgb,var(--post-accent) 20%,var(--post-line));
+  border-radius:999px;
+  background:color-mix(in srgb,var(--post-accent) 8%,var(--post-surface));
+  color:var(--post-accent)!important;
+  font-size:10px;
+  font-weight:950;
+}
+
+.postFeedTitle h2{
+  margin:7px 0 0!important;
+  font-size:clamp(21px,3vw,30px)!important;
+  line-height:1.25;
+  letter-spacing:-.5px;
+}
+
+.postFeedTitle>button{
+  flex:0 0 44px;
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--post-line)!important;
+  border-radius:15px!important;
+  background:var(--post-surface)!important;
+  color:var(--post-text)!important;
+}
+
+.postFeedTitle>button:hover{
+  border-color:color-mix(in srgb,var(--post-accent) 42%,var(--post-line))!important;
+  color:var(--post-accent)!important;
+  transform:translateY(-1px);
+}
+
+.postFeedFilters{
+  margin-top:12px;
+  padding:4px 0 8px!important;
+  gap:8px!important;
+  background:transparent!important;
+  backdrop-filter:none!important;
+  position:relative!important;
+  top:auto!important;
+}
+
+.postFeedFilters button{
+  min-height:42px!important;
+  padding-inline:14px!important;
+  border:1px solid var(--post-line)!important;
+  border-radius:999px!important;
+  background:var(--post-surface)!important;
+  color:var(--post-muted)!important;
+  box-shadow:0 5px 18px rgba(16,35,63,.04);
+}
+
+.postFeedFilters button:hover{
+  border-color:color-mix(in srgb,var(--post-accent) 30%,var(--post-line))!important;
+  color:var(--post-accent)!important;
+  transform:translateY(-1px);
+}
+
+.postFeedFilters button.active,
+.postFeedFilters button[aria-selected="true"]{
+  background:var(--post-accent)!important;
+  border-color:var(--post-accent)!important;
+  color:#fff!important;
+  box-shadow:0 10px 24px color-mix(in srgb,var(--post-accent) 20%,transparent);
+}
+
+/* Carousel rail */
+.postFeedCarouselWrap{
+  margin-top:14px;
+  padding:16px;
+  border:1px solid var(--post-line);
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 12% 0,color-mix(in srgb,var(--post-accent) 8%,transparent),transparent 28%),
+    var(--post-canvas);
+  box-shadow:var(--post-shadow);
+}
+
+.postFeedCarouselTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:14px;
+  padding-inline:4px;
+}
+
+.postFeedCarouselTop>div:first-child{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+
+.postFeedCarouselTop span{
+  color:var(--post-accent);
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.12em;
+}
+
+.postFeedCarouselTop strong{
+  color:var(--post-text);
+  font-size:17px;
+  font-weight:950;
+}
+
+.postFeedCarouselTop small{
+  color:var(--post-muted);
+  font-size:10px;
+  line-height:1.7;
+}
+
+.postFeedCarouselControls{
+  display:flex;
+  gap:7px;
+  flex:0 0 auto;
+}
+
+.postFeedCarouselButton{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--post-line);
+  border-radius:14px;
+  background:var(--post-surface);
+  color:var(--post-text);
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(16,35,63,.06);
+  transition:transform .18s ease,box-shadow .18s ease,color .18s ease,border-color .18s ease,background-color .18s ease;
+}
+
+.postFeedCarouselButton:hover{
+  transform:translateY(-2px);
+  color:var(--post-accent);
+  border-color:color-mix(in srgb,var(--post-accent) 38%,var(--post-line));
+  box-shadow:0 12px 26px rgba(16,35,63,.10);
+}
+
+.postFeedCarouselButton.is-primary{
+  color:#fff;
+  background:var(--post-accent);
+  border-color:var(--post-accent);
+  box-shadow:0 12px 28px color-mix(in srgb,var(--post-accent) 22%,transparent);
+}
+
+.postFeedCarouselButton.is-primary:hover{
+  color:#fff;
+}
+
+.postFeedCarousel{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:stretch;
+  gap:14px!important;
+  max-width:none!important;
+  width:100%;
+  margin:0!important;
+  padding:4px 2px 12px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  direction:rtl;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+  overscroll-behavior-inline:contain;
+  -webkit-overflow-scrolling:touch;
+  mask-image:linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%);
+}
+
+.postFeedCarousel::-webkit-scrollbar{
+  display:none;
+}
+
+.postFeedCarousel>article{
+  flex:0 0 clamp(305px,29vw,390px);
+  width:clamp(305px,29vw,390px);
+  min-width:0;
+  scroll-snap-align:start;
+  scroll-snap-stop:normal;
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  border:1px solid var(--post-line)!important;
+  border-radius:24px!important;
+  background:var(--post-surface)!important;
+  box-shadow:0 14px 38px rgba(16,35,63,.08)!important;
+  transform:none!important;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+
+.postFeedCarousel>article:hover{
+  transform:translateY(-5px)!important;
+  border-color:color-mix(in srgb,var(--post-accent) 28%,var(--post-line))!important;
+  box-shadow:var(--post-shadow-hover)!important;
+}
+
+.postFeedCarousel>article:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--post-accent) 65%,#fff);
+  outline-offset:3px;
+}
+
+.postFeedCarousel .postFeedImage{
+  position:relative;
+  aspect-ratio:4/4.25;
+  min-height:250px;
+  background:
+    linear-gradient(180deg,color-mix(in srgb,var(--post-accent) 9%,var(--post-canvas)),var(--post-canvas));
+  overflow:hidden;
+}
+
+.postFeedCarousel .postFeedImage::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.03) 0%,transparent 42%,rgba(0,0,0,.28) 100%),
+    linear-gradient(135deg,transparent 52%,rgba(255,255,255,.12) 52%,transparent 72%);
+  pointer-events:none;
+}
+
+.postFeedCarousel .postFeedImage img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transform:scale(1.01);
+  transition:transform .45s ease,filter .35s ease;
+}
+
+.postFeedCarousel>article:hover .postFeedImage img{
+  transform:scale(1.06);
+  filter:saturate(1.04) contrast(1.02);
+}
+
+.postFeedCarousel .postFeedBadge,
+.postFeedCarousel .postFeedImageCount,
+.postFeedCarousel .postFeedNew{
+  position:absolute;
+  z-index:2;
+  display:inline-flex;
+  align-items:center;
+  min-height:29px;
+  padding-inline:10px;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:999px;
+  background:rgba(7,19,34,.66);
+  color:#fff;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  font-size:9px;
+  font-weight:950;
+}
+
+.postFeedCarousel .postFeedBadge{
+  inset-block-start:12px;
+  inset-inline-start:12px;
+}
+
+.postFeedCarousel .postFeedImageCount{
+  inset-block-start:12px;
+  inset-inline-end:12px;
+}
+
+.postFeedCarousel .postFeedNew{
+  inset-block-end:12px;
+  inset-inline-start:12px;
+  color:#fff;
+  background:var(--post-accent);
+  border-color:color-mix(in srgb,var(--post-accent) 55%,#fff);
+}
+
+.postFeedCarousel .postFeedBody{
+  position:relative;
+  z-index:3;
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  gap:10px;
+  min-width:0;
+  margin:-24px 8px 0;
+  padding:17px 15px 15px;
+  border:1px solid var(--post-line);
+  border-bottom:0;
+  border-radius:22px 22px 0 0;
+  background:color-mix(in srgb,var(--post-surface) 96%,transparent);
+  box-shadow:0 -8px 24px rgba(16,35,63,.04);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.postFeedCarousel .postFeedMeta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-width:0;
+  font-size:10px;
+}
+
+.postFeedCarousel .postFeedMeta>span,
+.postFeedCarousel .postFeedMeta>small{
+  min-width:0;
+  color:var(--post-muted);
+}
+
+.postFeedCarousel .postFeedMeta>span{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+
+.postFeedCarousel .postFeedBody h3{
+  margin:0;
+  color:var(--post-text)!important;
+  font-size:20px;
+  line-height:1.35;
+  letter-spacing:-.25px;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+}
+
+.postFeedCarousel .postFeedBody>p{
+  margin:0;
+  color:var(--post-muted)!important;
+  font-size:11px;
+  line-height:1.9;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  overflow:hidden;
+}
+
+.postFeedCarousel .postSpecChips{
+  max-height:61px;
+  overflow:hidden;
+  mask-image:linear-gradient(180deg,#000 68%,transparent 100%);
+}
+
+.postFeedCarousel .postSpecChips>*{
+  padding:5px 9px;
+  border-color:var(--post-line);
+  background:var(--post-canvas);
+  color:var(--post-muted);
+  font-size:9px;
+}
+
+.postFeedCarousel .postFeedPublisher{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  color:var(--post-muted);
+  font-size:10px;
+}
+
+.postFeedCarousel .postFeedPublisher span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.postFeedCarousel .postFeedFooter{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:8px;
+  margin-top:auto;
+  padding-top:11px;
+  border-top:1px solid var(--post-line);
+}
+
+.postFeedCarousel .postRewardLabel{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-height:30px;
+  padding:6px 8px;
+  border-radius:10px;
+  background:color-mix(in srgb,var(--post-accent) 7%,var(--post-surface));
+  color:var(--post-accent);
+  font-size:9px;
+  font-weight:800;
+}
+
+.postFeedCarousel .postFeedFooter>strong{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+  color:var(--post-accent);
+  font-size:16px;
+  font-weight:950;
+}
+
+.postFeedCarousel .postFeedFooter>small{
+  color:var(--post-muted);
+}
+
+.postFeedCarousel .postAddToCart{
+  min-height:42px;
+  padding-inline:12px;
+  border:1px solid color-mix(in srgb,var(--post-accent) 25%,var(--post-line));
+  border-radius:12px;
+  background:var(--post-accent);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.postFeedCarousel .postAddToCart:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 24px color-mix(in srgb,var(--post-accent) 20%,transparent);
+}
+
+.postFeedMore{
+  display:flex;
+  justify-content:center;
+  padding-top:12px;
+}
+
+.postFeedMore button{
+  min-height:44px;
+  padding-inline:18px;
+  border-radius:13px;
+  border:1px solid var(--post-line);
+  background:var(--post-surface);
+  color:var(--post-text);
+}
+
+/* ---------- Details modal: richer gallery controls ---------- */
+
+.postDetailsModalRich{
+  overflow:hidden!important;
+  border-radius:26px!important;
+  border-color:var(--post-line)!important;
+  background:var(--post-surface)!important;
+  box-shadow:0 34px 100px rgba(0,0,0,.24)!important;
+}
+
+.postDetailsGallery{
+  min-width:0;
+  background:var(--post-canvas)!important;
+}
+
+.postDetailsMainImage{
+  min-height:350px;
+  background:
+    radial-gradient(circle at 50% 0,color-mix(in srgb,var(--post-accent) 8%,transparent),transparent 40%),
+    var(--post-canvas)!important;
+}
+
+.postDetailsMainImage img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.postDetailsThumbs{
+  gap:8px!important;
+  padding:10px 12px!important;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.postDetailsThumbs::-webkit-scrollbar{
+  display:none;
+}
+
+.postDetailsThumbs button{
+  flex:0 0 60px;
+  width:60px;
+  height:60px;
+  border:2px solid transparent!important;
+  border-radius:13px!important;
+  background:var(--post-surface);
+}
+
+.postDetailsThumbs button.active{
+  border-color:var(--post-accent)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--post-accent) 12%,transparent);
+}
+
+.postDetailsBody{
+  background:var(--post-surface)!important;
+  color:var(--post-text)!important;
+}
+
+.postDetailsBody h3{
+  color:var(--post-text)!important;
+}
+
+.postDetailsBody p{
+  color:var(--post-muted)!important;
+}
+
+.postDetailsClose{
+  width:44px;
+  height:44px;
+  z-index:5;
+  box-shadow:0 10px 24px rgba(0,0,0,.12);
+}
+
+/* ---------- Dark mode ---------- */
+
+html[data-theme='dark'] .postFeed{
+  --post-surface:#0d1d32;
+  --post-surface-2:#11253e;
+  --post-canvas:#071426;
+  --post-text:#edf5ff;
+  --post-muted:#9aadc4;
+  --post-line:#20364f;
+  --post-shadow:0 18px 55px rgba(0,0,0,.22);
+  --post-shadow-hover:0 30px 78px rgba(0,0,0,.34);
+}
+
+html[data-theme='dark'] .postFeedCarouselWrap{
+  background:
+    radial-gradient(circle at 12% 0,color-mix(in srgb,var(--post-accent) 10%,transparent),transparent 28%),
+    var(--post-canvas);
+}
+
+html[data-theme='dark'] .postFeedCarousel>article{
+  box-shadow:0 16px 42px rgba(0,0,0,.28)!important;
+}
+
+html[data-theme='dark'] .postFeedCarousel .postFeedBody{
+  background:color-mix(in srgb,var(--post-surface) 97%,transparent);
+  box-shadow:0 -10px 26px rgba(0,0,0,.20);
+}
+
+html[data-theme='dark'] .postFeedCarousel .postSpecChips>*{
+  background:var(--post-surface-2);
+}
+
+html[data-theme='dark'] .postFeedCarousel .postFeedFooter .postRewardLabel{
+  background:color-mix(in srgb,var(--post-accent) 11%,var(--post-surface));
+}
+
+html[data-theme='dark'] .postDetailsBackdrop{
+  background:rgba(0,0,0,.74)!important;
+  backdrop-filter:blur(10px)!important;
+}
+
+html[data-theme='dark'] .postDetailsThumbs button{
+  background:var(--post-surface);
+}
+
+/* ---------- Accessibility ---------- */
+
+:where(
+  .postFeed button,
+  .postFeed a,
+  .postFeed input,
+  .postFeed select,
+  .postFeed textarea
+):focus-visible{
+  outline:3px solid color-mix(in srgb,var(--post-accent) 68%,#fff)!important;
+  outline-offset:3px;
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--post-accent) 16%,transparent)!important;
+}
+
+@media(max-width:900px){
+  .postFeedCarousel>article{
+    flex-basis:min(410px,68vw);
+    width:min(410px,68vw);
+  }
+}
+
+@media(max-width:720px){
+  .postFeedTitle{
+    min-height:82px;
+  }
+
+  .postFeedCarouselWrap{
+    padding:12px;
+    border-radius:22px;
+  }
+
+  .postFeedCarouselTop{
+    align-items:flex-start;
+  }
+
+  .postFeedCarouselTop small{
+    max-width:42ch;
+  }
+
+  .postFeedCarousel{
+    gap:10px!important;
+    padding-bottom:8px!important;
+    mask-image:none;
+  }
+
+  .postFeedCarousel>article{
+    flex-basis:calc(100vw - 50px);
+    width:calc(100vw - 50px);
+    border-radius:21px!important;
+  }
+
+  .postFeedCarousel .postFeedImage{
+    aspect-ratio:4/4.6;
+    min-height:240px;
+  }
+
+  .postFeedCarousel .postFeedBody{
+    margin:-22px 7px 0;
+    padding:15px 13px 13px;
+    border-radius:20px 20px 0 0;
+  }
+
+  .postFeedCarousel .postFeedBody h3{
+    font-size:19px;
+  }
+
+  .postFeedCarouselControls{
+    gap:5px;
+  }
+
+  .postFeedCarouselButton{
+    width:40px;
+    height:40px;
+  }
+}
+
+@media(max-width:560px){
+  .postFeedTitle{
+    align-items:flex-start;
+    padding:14px!important;
+  }
+
+  .postFeedTitle h2{
+    font-size:20px!important;
+  }
+
+  .postFeedTitle>button{
+    width:42px;
+    height:42px;
+    flex-basis:42px;
+  }
+
+  .postFeedCarouselTop{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+  }
+
+  .postFeedCarouselTop strong{
+    font-size:15px;
+  }
+
+  .postFeedCarouselTop small{
+    font-size:9px;
+  }
+
+  .postFeedCarousel>article{
+    flex-basis:calc(100svw - 44px);
+    width:calc(100svw - 44px);
+  }
+
+  .postFeedCarousel .postFeedImage{
+    min-height:230px;
+  }
+
+  .postFeedCarousel .postFeedFooter{
+    grid-template-columns:1fr;
+  }
+
+  .postFeedCarousel .postAddToCart{
+    width:100%;
+    min-height:46px;
+  }
+
+  .postFeedCarousel .postFeedFooter>strong{
+    font-size:15px;
+  }
+
+  .postFeedCarousel .postRewardLabel{
+    min-height:32px;
+  }
+
+  .postDetailsMainImage{
+    min-height:280px;
+  }
+}
+
+@media(max-width:390px){
+  .postFeedCarousel>article{
+    flex-basis:calc(100svw - 34px);
+    width:calc(100svw - 34px);
+  }
+
+  .postFeedCarousel .postFeedImage{
+    min-height:215px;
+  }
+
+  .postFeedCarousel .postFeedBody h3{
+    font-size:18px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .postFeedCarousel{
+    scroll-behavior:auto!important;
+  }
+
+  .postFeedCarousel>article,
+  .postFeedCarousel .postFeedImage img,
+  .postFeedCarouselButton,
+  .postFeedTitle>button,
+  .postFeedFilters button,
+  .postAddToCart{
+    transition:none!important;
+    transform:none!important;
+  }
+}
+
+/* High contrast / forced colors */
+@media(forced-colors:active){
+  .postFeedCarousel>article,
+  .postFeedCarouselButton,
+  .postFeedFilters button,
+  .postFeedTitle,
+  .postFeedTitle>button,
+  .postFeedMore button{
+    border:1px solid ButtonText!important;
+  }
+
+  .postFeedCarouselButton.is-primary,
+  .postFeedFilters button.active{
+    background:Highlight!important;
+    color:HighlightText!important;
+  }
+}
