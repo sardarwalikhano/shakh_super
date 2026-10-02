@@ -1,0 +1,273 @@
+/* SHAKH — Cars UI v12
+ * Stage 7/13: SHAKH Cars presentation layer.
+ * Presentation only: no data, auth, routing, Supabase, payment or business logic changes.
+ */
+
+.shakh-cars-marketplace,
+.shakh-cars-workspace{
+  --cars-primary:var(--shakh-primary,#f97316);
+  --cars-secondary:var(--shakh-secondary,#2563eb);
+  --cars-success:var(--shakh-success,#16a34a);
+  --cars-danger:var(--shakh-danger,#dc2626);
+  --cars-surface:var(--shakh-surface-raised,#fff);
+  --cars-canvas:var(--shakh-surface-canvas,#f7f8fb);
+  --cars-border:var(--shakh-border,#e6e9ef);
+  --cars-text:var(--shakh-text,#172033);
+  --cars-muted:var(--shakh-text-muted,#6b7280);
+  color:var(--cars-text);
+}
+
+.shakh-cars-marketplace{max-width:1240px;margin-inline:auto!important;}
+
+.shakh-cars-header,
+.shakh-cars-workspace-head{
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:18px 20px;margin-bottom:14px;border:1px solid var(--cars-border);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 100% 0,color-mix(in srgb,var(--cars-primary) 11%,transparent),transparent 34%),
+    linear-gradient(135deg,color-mix(in srgb,var(--cars-primary) 5%,var(--cars-surface)),
+    color-mix(in srgb,var(--cars-secondary) 4%,var(--cars-surface)));
+  box-shadow:0 10px 30px rgba(15,23,42,.055);
+}
+.shakh-cars-header::after,
+.shakh-cars-workspace-head::after{
+  content:'';position:absolute;inset:auto 18px 0;height:2px;
+  background:linear-gradient(90deg,var(--cars-primary),color-mix(in srgb,var(--cars-secondary) 55%,transparent),transparent);
+  opacity:.5;
+}
+.shakh-cars-header span,
+.shakh-cars-workspace-head>div>span{
+  display:inline-flex;align-items:center;gap:6px;color:var(--cars-primary);font-size:11px;
+  font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+}
+.shakh-cars-header h2,
+.shakh-cars-workspace-head h2{
+  display:flex;align-items:center;gap:8px;margin:5px 0 0;color:var(--cars-text);
+  font-size:clamp(22px,2.3vw,30px);line-height:1.15;
+}
+.shakh-cars-header small,.shakh-cars-workspace-head small{color:var(--cars-muted);font-weight:700;}
+
+.shakh-cars-filter-shell{
+  border:1px solid var(--cars-border)!important;border-radius:20px!important;background:var(--cars-surface)!important;
+  box-shadow:0 7px 24px rgba(15,23,42,.045);padding:14px!important;
+}
+.shakh-cars-filter-heading{display:flex;align-items:center;gap:8px;margin:2px 2px 12px;color:var(--cars-text);}
+.shakh-cars-filter-heading svg{color:var(--cars-primary);}
+.shakh-cars-filter-grid{display:grid;grid-template-columns:minmax(1.45fr,2fr) repeat(3,minmax(0,1fr));gap:9px;}
+.shakh-cars-price-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:9px;margin-top:9px;align-items:center;}
+.shakh-cars-filter-field{min-width:0;min-height:44px;}
+.shakh-cars-filter-field input,
+.shakh-cars-filter-field select,
+.shakh-cars-filter-field:not(.shakh-cars-search){
+  width:100%;border:1px solid var(--cars-border)!important;border-radius:12px!important;
+  background:var(--cars-canvas)!important;color:var(--cars-text)!important;padding:0 12px;
+  outline:none;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.shakh-cars-filter-field input:focus,
+.shakh-cars-filter-field select:focus{
+  border-color:color-mix(in srgb,var(--cars-primary) 55%,var(--cars-border))!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--cars-primary) 12%,transparent);
+  background:var(--cars-surface)!important;
+}
+.shakh-cars-filter-field.shakh-cars-search{
+  display:flex;align-items:center;gap:7px;padding:0 12px;border:1px solid var(--cars-border);
+  border-radius:12px;background:var(--cars-canvas);color:var(--cars-muted);
+}
+.shakh-cars-search input{min-width:0;flex:1;border:0!important;outline:0;padding:0!important;background:transparent!important;box-shadow:none!important;}
+.shakh-cars-results-meta{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:0 12px;
+  border:1px solid var(--cars-border);border-radius:999px;background:var(--cars-canvas);color:var(--cars-muted);
+  font-size:12px;font-weight:800;white-space:nowrap;
+}
+.shakh-cars-results-meta svg{color:var(--cars-primary);}
+
+.shakh-cars-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;margin-top:14px;}
+.shakh-car-card{
+  position:relative;min-width:0;overflow:hidden;border:1px solid var(--cars-border)!important;border-radius:20px!important;
+  background:var(--cars-surface)!important;box-shadow:0 7px 24px rgba(15,23,42,.05);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.shakh-car-card:hover{
+  transform:translateY(-4px);border-color:color-mix(in srgb,var(--cars-primary) 32%,var(--cars-border))!important;
+  box-shadow:0 16px 34px rgba(15,23,42,.10);
+}
+.shakh-car-media{
+  position:relative;height:auto!important;aspect-ratio:16/10;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(circle at 70% 20%,color-mix(in srgb,var(--cars-secondary) 14%,transparent),transparent 35%),
+    linear-gradient(135deg,color-mix(in srgb,var(--cars-primary) 9%,var(--cars-canvas)),var(--cars-canvas));
+}
+.shakh-car-media::after{
+  content:'SHAKH CARS';position:absolute;inset:auto 11px 10px auto;padding:4px 7px;
+  border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(8,12,20,.45);color:#fff;
+  font-size:9px;font-weight:900;letter-spacing:.12em;backdrop-filter:blur(7px);
+}
+.shakh-car-media img{width:100%!important;height:100%!important;object-fit:cover;transition:transform .35s ease;}
+.shakh-car-card:hover .shakh-car-media img{transform:scale(1.035);}
+.shakh-car-media>span{filter:drop-shadow(0 12px 16px rgba(15,23,42,.18));}
+
+.shakh-car-body{padding:15px!important;}
+.shakh-car-dealer-line{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--cars-muted);font-size:11px;font-weight:700;}
+.shakh-car-title{margin:7px 0 8px!important;color:var(--cars-text)!important;font-size:17px!important;line-height:1.35!important;}
+.shakh-car-specs{display:flex!important;gap:6px!important;flex-wrap:wrap!important;margin:0 0 9px!important;}
+.shakh-car-spec{
+  display:inline-flex;align-items:center;min-height:27px;padding:4px 8px;border:1px solid var(--cars-border);
+  border-radius:999px;background:var(--cars-canvas);color:var(--cars-muted);font-size:10px;font-weight:800;
+}
+.shakh-car-details{display:flex;align-items:center;gap:6px;color:var(--cars-muted);font-size:11px;line-height:1.65;}
+.shakh-car-finance{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--cars-border);}
+.shakh-car-price{color:var(--cars-primary)!important;font-size:18px;font-weight:950;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.shakh-car-price-note{display:block;margin-top:3px;color:var(--cars-muted);font-size:10px;font-weight:700;}
+.shakh-car-trust{display:flex;align-items:center;gap:6px;margin-top:10px;color:var(--cars-success);font-size:10px;font-weight:800;white-space:nowrap;}
+
+.shakh-cars-empty{
+  display:grid!important;min-height:220px;place-items:center;align-content:center;gap:5px;padding:30px 18px;
+  border:1px dashed var(--cars-border)!important;border-radius:20px!important;
+  background:linear-gradient(135deg,var(--cars-surface),var(--cars-canvas))!important;color:var(--cars-muted);text-align:center;
+}
+.shakh-cars-empty svg{color:color-mix(in srgb,var(--cars-primary) 75%,var(--cars-secondary));}
+.shakh-cars-empty h3{margin:3px 0;color:var(--cars-text);}
+
+.shakh-cars-workspace{max-width:1240px;margin-inline:auto!important;}
+.shakh-cars-workspace-head>div:last-child{display:flex!important;flex-wrap:wrap;gap:7px!important;}
+.shakh-cars-count{
+  display:inline-flex;align-items:center;min-height:34px;padding:0 10px;border:1px solid var(--cars-border);
+  border-radius:999px;background:var(--cars-surface);color:var(--cars-text);font-size:11px;font-weight:850;
+}
+.shakh-cars-count:first-child{
+  border-color:color-mix(in srgb,var(--cars-success) 26%,var(--cars-border));color:var(--cars-success);
+  background:color-mix(in srgb,var(--cars-success) 6%,var(--cars-surface));
+}
+.shakh-cars-register-card,.shakh-cars-posting-card,.shakh-cars-admin-card,.shakh-cars-fee-summary{
+  border:1px solid var(--cars-border)!important;border-radius:20px!important;background:var(--cars-surface)!important;
+  box-shadow:0 7px 24px rgba(15,23,42,.045);
+}
+.shakh-cars-register-card{max-width:640px;padding:22px!important;}
+.shakh-cars-register-card h3,.shakh-cars-posting-card h3,.shakh-cars-admin-card h3{margin:0 0 6px;color:var(--cars-text);}
+.shakh-cars-register-card p,.shakh-cars-admin-note{color:var(--cars-muted);line-height:1.65;}
+.shakh-cars-register-card input,.shakh-cars-posting-card input,.shakh-cars-posting-card select,.shakh-cars-posting-card textarea,.shakh-cars-admin-card input{
+  width:100%;min-height:44px;border:1px solid var(--cars-border)!important;border-radius:12px!important;
+  background:var(--cars-canvas)!important;color:var(--cars-text)!important;padding:10px 12px;
+}
+.shakh-cars-posting-card{padding:16px!important;}
+.shakh-cars-posting-card>h3{display:flex;align-items:center;gap:8px;}
+.shakh-cars-posting-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px!important;}
+.shakh-cars-posting-grid input:focus,.shakh-cars-posting-card select:focus,.shakh-cars-posting-card textarea:focus,.shakh-cars-register-card input:focus,.shakh-cars-admin-card input:focus{
+  border-color:color-mix(in srgb,var(--cars-primary) 55%,var(--cars-border))!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--cars-primary) 12%,transparent);outline:none;
+}
+.shakh-cars-posting-card textarea{resize:vertical;min-height:108px;margin-top:10px;}
+.shakh-cars-upload{
+  margin-top:10px!important;padding:12px;border:1px dashed color-mix(in srgb,var(--cars-primary) 28%,var(--cars-border));
+  border-radius:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--cars-primary) 4%,var(--cars-surface)),var(--cars-canvas));
+}
+.shakh-cars-upload>div:first-child{display:flex;align-items:center;gap:7px;color:var(--cars-text);}
+.shakh-cars-upload input[type="file"]{margin-top:8px;min-height:auto;padding:8px;background:transparent!important;border:0!important;box-shadow:none!important;}
+.shakh-cars-image-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin-top:9px;}
+.shakh-cars-image-grid img{width:100%!important;aspect-ratio:1/1;height:auto!important;object-fit:cover;border:1px solid var(--cars-border);border-radius:11px!important;}
+.shakh-cars-primary-action{min-height:44px!important;margin-top:12px;border-radius:12px!important;font-weight:850;box-shadow:0 8px 18px rgba(249,115,22,.16);}
+
+.shakh-cars-fee-summary{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:14px 16px!important;}
+.shakh-cars-fee-summary svg{color:var(--cars-success);}
+.shakh-cars-fee-summary small{color:var(--cars-muted);}
+
+.shakh-cars-admin-list{display:grid;gap:8px;margin-top:12px;}
+.shakh-cars-admin-row,.shakh-cars-payment-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--cars-border)!important;
+  border-radius:14px!important;background:var(--cars-canvas)!important;
+}
+.shakh-cars-admin-row>div,.shakh-cars-payment-row>div{min-width:0;}
+.shakh-cars-admin-row small,.shakh-cars-payment-row small{display:block;margin-top:3px;color:var(--cars-muted);}
+.shakh-cars-admin-row>div:last-child,.shakh-cars-payment-row>div:last-child{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:7px;}
+.shakh-cars-admin-row input{min-width:170px;margin:0;}
+.shakh-cars-payment-row .plain,.shakh-cars-payment-row .primary,.shakh-cars-payment-row .reset,.shakh-cars-managed-card .primary,.shakh-cars-managed-card .reset{
+  min-height:38px;border-radius:11px;font-weight:800;
+}
+
+.shakh-cars-managed-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;margin-top:14px;}
+.shakh-cars-managed-card{
+  overflow:hidden;border:1px solid var(--cars-border)!important;border-radius:18px!important;background:var(--cars-surface)!important;
+  box-shadow:0 7px 22px rgba(15,23,42,.045);
+}
+.shakh-cars-managed-image{width:100%!important;aspect-ratio:16/10;height:auto!important;object-fit:cover;border:0!important;border-radius:0!important;margin:0!important;}
+.shakh-cars-managed-card .orderCardTop{
+  align-items:flex-start;gap:10px;padding:0 14px 10px;border-bottom:1px solid var(--cars-border);
+}
+.shakh-cars-managed-card .orderCardTop strong{min-width:0;color:var(--cars-text);line-height:1.45;}
+.shakh-cars-managed-card .orderCardTop span{
+  flex:0 0 auto;padding:5px 9px;border:1px solid var(--cars-border);border-radius:999px;background:var(--cars-canvas);
+  color:var(--cars-muted);font-size:10px;font-weight:850;
+}
+.shakh-cars-managed-card .orderMeta{padding:7px 14px 0;color:var(--cars-muted);line-height:1.6;}
+.shakh-cars-managed-card .orderMeta svg{color:var(--cars-primary);}
+.shakh-cars-managed-card .orderTotal{
+  margin:10px 14px 0;color:var(--cars-primary);font-size:19px;font-weight:950;font-variant-numeric:tabular-nums;
+}
+.shakh-cars-payment-box{
+  display:grid;gap:8px;margin:12px 14px 0!important;padding:11px!important;border:1px solid var(--cars-border)!important;
+  border-radius:14px!important;background:var(--cars-canvas)!important;
+}
+.shakh-cars-payment-box small{color:var(--cars-muted);}
+.shakh-cars-managed-actions{display:flex;flex-wrap:wrap;gap:8px;margin:11px 14px 14px;}
+.shakh-cars-managed-actions button{flex:1;justify-content:center;}
+
+.shakh-cars-message{
+  position:sticky;bottom:12px;z-index:15;max-width:760px;margin:12px auto 0;padding:11px 14px!important;
+  border:1px solid color-mix(in srgb,var(--cars-primary) 22%,var(--cars-border));border-radius:14px!important;
+  background:color-mix(in srgb,var(--cars-primary) 5%,var(--cars-surface))!important;color:var(--cars-text)!important;
+  box-shadow:0 12px 28px rgba(15,23,42,.09);font-size:12px;font-weight:750;
+}
+.shakh-cars-workspace>.empty,.shakh-cars-marketplace>.empty{
+  min-height:180px;display:grid;place-items:center;border:1px dashed var(--cars-border);border-radius:18px;
+  background:var(--cars-canvas);color:var(--cars-muted);
+}
+
+html[data-theme='dark'] .shakh-cars-header,
+html[data-theme='dark'] .shakh-cars-workspace-head{
+  background:
+    radial-gradient(circle at 100% 0,color-mix(in srgb,var(--cars-primary) 12%,transparent),transparent 34%),
+    linear-gradient(135deg,color-mix(in srgb,var(--cars-primary) 7%,var(--cars-surface)),
+    color-mix(in srgb,var(--cars-secondary) 6%,var(--cars-surface)));
+  box-shadow:none;
+}
+html[data-theme='dark'] .shakh-cars-filter-shell,
+html[data-theme='dark'] .shakh-car-card,
+html[data-theme='dark'] .shakh-cars-register-card,
+html[data-theme='dark'] .shakh-cars-posting-card,
+html[data-theme='dark'] .shakh-cars-admin-card,
+html[data-theme='dark'] .shakh-cars-fee-summary,
+html[data-theme='dark'] .shakh-cars-managed-card{box-shadow:none;}
+html[data-theme='dark'] .shakh-car-media::after{border-color:rgba(255,255,255,.1);background:rgba(0,0,0,.42);}
+html[data-theme='dark'] .shakh-cars-message{box-shadow:none;}
+
+@media(max-width:1050px){
+  .shakh-cars-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .shakh-cars-card-grid,.shakh-cars-managed-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  .shakh-cars-posting-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:760px){
+  .shakh-cars-header,.shakh-cars-workspace-head{align-items:flex-start;flex-direction:column;padding:15px;border-radius:17px;}
+  .shakh-cars-filter-grid,.shakh-cars-posting-grid,.shakh-cars-card-grid,.shakh-cars-managed-grid{grid-template-columns:1fr!important;}
+  .shakh-cars-price-grid{grid-template-columns:1fr 1fr;}
+  .shakh-cars-results-meta{width:100%;}
+  .shakh-cars-fee-summary{grid-template-columns:auto 1fr;}
+  .shakh-cars-fee-summary>span,.shakh-cars-fee-summary>small{grid-column:2;}
+  .shakh-cars-admin-row,.shakh-cars-payment-row{align-items:stretch;flex-direction:column;}
+  .shakh-cars-admin-row>div:last-child,.shakh-cars-payment-row>div:last-child{width:100%;justify-content:stretch;}
+  .shakh-cars-admin-row input,.shakh-cars-admin-row button,.shakh-cars-payment-row button{flex:1;}
+  .shakh-cars-image-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media(max-width:480px){
+  .shakh-cars-filter-shell,.shakh-cars-register-card,.shakh-cars-posting-card,.shakh-cars-admin-card{border-radius:16px!important;}
+  .shakh-cars-price-grid{grid-template-columns:1fr;}
+  .shakh-cars-count{flex:1;justify-content:center;}
+  .shakh-cars-workspace-head>div:last-child{width:100%;}
+  .shakh-cars-message{bottom:7px;margin-inline:7px;}
+}
+[dir='rtl'] .shakh-cars-marketplace,[dir='rtl'] .shakh-cars-workspace{text-align:right;}
+[dir='ltr'] .shakh-cars-marketplace,[dir='ltr'] .shakh-cars-workspace{text-align:left;}
+[dir='ltr'] .shakh-car-dealer-line,[dir='ltr'] .shakh-car-finance{direction:ltr;}
+@media(prefers-reduced-motion:reduce){
+  .shakh-car-card,.shakh-car-media img{transition:none!important;}
+}
