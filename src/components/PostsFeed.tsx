@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {Filter,Gift,Image as ImageIcon,MapPin,RefreshCw,Share2,Tag,UserRound,WalletCards,X,SlidersHorizontal} from 'lucide-react';
+import {ChevronLeft,ChevronRight,Filter,Gift,Image as ImageIcon,MapPin,RefreshCw,Share2,Tag,UserRound,WalletCards,X,SlidersHorizontal} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
 type Details=Record<string,unknown>;
@@ -69,7 +69,7 @@ export default function PostsFeed({onAddToCart}:Props){
  const [carMake,setCarMake]=useState(''),[carFuel,setCarFuel]=useState(''),[carTransmission,setCarTransmission]=useState(''),[carBody,setCarBody]=useState(''),[carCondition,setCarCondition]=useState(''),[carOrigin,setCarOrigin]=useState(''),[carMinYear,setCarMinYear]=useState(''),[carMaxYear,setCarMaxYear]=useState(''),[carMaxMileage,setCarMaxMileage]=useState(''),[carMinPrice,setCarMinPrice]=useState(''),[carMaxPrice,setCarMaxPrice]=useState('');
  const [activeImage,setActiveImage]=useState(0); const [activeShareCode,setActiveShareCode]=useState<string|null>(new URLSearchParams(window.location.search).get('ref')); const [activeSharePostId,setActiveSharePostId]=useState<string|null>(new URLSearchParams(window.location.search).get('post'));
  const [codeMessage,setCodeMessage]=useState('');
- const pageSize=12,closeButtonRef=useRef<HTMLButtonElement|null>(null);
+ const pageSize=12,closeButtonRef=useRef<HTMLButtonElement|null>(null),postRailRef=useRef<HTMLDivElement|null>(null);
 
  const load=async()=>{setLoading(true);const referralResult=await supabase.from('posts').select('id,author_id,store_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility,listing_details,post_referral_programs(commission_percent)').eq('status','approved').eq('visibility','public').order('created_at',{ascending:false}).limit(200);if(!referralResult.error){const rows=(referralResult.data||[]).map((row:any)=>({...row,referral_reward_percent:Array.isArray(row.post_referral_programs)?Number(row.post_referral_programs[0]?.commission_percent||0):Number(row.post_referral_programs?.commission_percent||0)}));setPosts(rows as Post[]);setMessage('');setLoading(false);return}const fallbackResult=await supabase.from('posts').select('id,author_id,store_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility,listing_details').eq('status','approved').eq('visibility','public').order('created_at',{ascending:false}).limit(200);if(fallbackResult.error){setMessage('نەتوانرا پۆستەکان وەرگیرێن.');setLoading(false);return}setPosts((fallbackResult.data||[]) as Post[]);setMessage('');setLoading(false)};
  useEffect(()=>{void load();const c=supabase.channel('shakh-live-posts').on('postgres_changes',{event:'*',schema:'public',table:'posts'},()=>{void load()}).subscribe();return()=>{void supabase.removeChannel(c)}},[]);
@@ -104,6 +104,12 @@ export default function PostsFeed({onAddToCart}:Props){
    return true;
  }),[posts,filter,fashionAudience,fashionType,fashionSize,fashionColor,fashionShoe,carMake,carFuel,carTransmission,carBody,carCondition,carOrigin,carMinYear,carMaxYear,carMaxMileage,carMinPrice,carMaxPrice]);
  const shown=filtered.slice(0,page*pageSize);
+ const slidePosts=(direction:'next'|'prev')=>{
+  const rail=postRailRef.current;
+  if(!rail)return;
+  const amount=Math.max(280,Math.min(560,rail.clientWidth*0.78));
+  rail.scrollBy({left:direction==='next'?-amount:amount,behavior:'smooth'});
+ };
  const productIdOf=(post:Post)=>{const value=detailsOf(post).product_id;return typeof value==='string'&&value?value:null};
  const addProduct=(productId:string,referralCode?:string)=>{if(!onAddToCart)return;setAddingProductId(productId);void onAddToCart(productId,referralCode).then(ok=>setMessage(ok?'بەرهەمەکە بۆ سەلە زیاد کرا.':'')).finally(()=>setAddingProductId(null));};
 
@@ -167,7 +173,15 @@ export default function PostsFeed({onAddToCart}:Props){
     </div>}
   </div>}
 
-  {loading&&!posts.length?<div className="postFeedEmpty"><RefreshCw size={35}/><strong>پۆستەکان بار دەکرێن...</strong><small>کەمێک چاوەڕوان بە.</small></div>:!filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>فلتەرەکان بگۆڕە یان پاکیان بکەرەوە.</small></div>:<div className="postFeedGrid">{shown.map(post=>{const imgs=postImages(post.images),img=imgs[0],postChips=chips(post);return <article className={'postFeedCard '+(post.post_type==='car'?'postFeedCardCar':post.post_type==='fashion'?'postFeedCardFashion':'')} key={post.id} id={'post-'+post.id} tabIndex={0} role="button" aria-label={'پۆستی '+post.title+' بکەرەوە'} onClick={()=>openPost(post)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPost(post)}}}>
+  {loading&&!posts.length?<div className="postFeedEmpty"><RefreshCw size={35}/><strong>پۆستەکان بار دەکرێن...</strong><small>کەمێک چاوەڕوان بە.</small></div>:!filtered.length?<div className="postFeedEmpty"><Tag size={38}/><strong>هیچ پۆستێک نەدۆزرایەوە</strong><small>فلتەرەکان بگۆڕە یان پاکیان بکەرەوە.</small></div>:<div className="postFeedCarouselWrap">
+   <div className="postFeedCarouselTop">
+    <div><span>پۆستەکان</span><strong>بە شێوەی سلاید بگەڕێ</strong><small>لە ڕاستەوە بۆ چەپ swipe بکە، یان ئەم دوو دوگمەیە بەکاربهێنە.</small></div>
+    <div className="postFeedCarouselControls">
+      <button type="button" className="postFeedCarouselButton" onClick={()=>slidePosts('prev')} aria-label="گەڕان بۆ پۆستی پێشوو"><ChevronRight size={18}/></button>
+      <button type="button" className="postFeedCarouselButton is-primary" onClick={()=>slidePosts('next')} aria-label="گەڕان بۆ پۆستی دواتر"><ChevronLeft size={18}/></button>
+    </div>
+   </div>
+   <div className="postFeedGrid postFeedCarousel" ref={postRailRef} aria-label="سلایدی پۆستەکانی شاخ">{shown.map(post=>{const imgs=postImages(post.images),img=imgs[0],postChips=chips(post);return <article className={'postFeedCard '+(post.post_type==='car'?'postFeedCardCar':post.post_type==='fashion'?'postFeedCardFashion':'')} key={post.id} id={'post-'+post.id} tabIndex={0} role="button" aria-label={'پۆستی '+post.title+' بکەرەوە'} onClick={()=>openPost(post)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPost(post)}}}>
    <div className="postFeedImage">{img?<img src={img} alt={post.title} loading="lazy" decoding="async"/>:<ImageIcon size={40}/>}<span className="postFeedBadge">{labelFor(post.post_type,post.label)}</span>{imgs.length>1&&<span className="postFeedImageCount">{imgs.length} وێنە</span>}{isNew(post.created_at)&&<span className="postFeedNew">نوێ</span>}</div>
    <div className="postFeedBody"><div className="postFeedMeta"><span><MapPin size={12}/>{post.city||'هەولێر'}</span><small>{timeLabel(post.created_at)}</small></div><h3>{post.title}</h3>{post.content&&<p>{post.content}</p>}{postChips.length>0&&<div className="postSpecChips">{postChips.map((chip,i)=><span key={chip+'-'+i}>{chip}</span>)}</div>}<div className="postFeedPublisher"><UserRound size={14}/><span>{post.publisher_name||'بڵاوکەرەوە'}</span></div><div className="postFeedFooter">{post.referral_reward_percent&&post.referral_reward_percent>0&&<div className="postRewardLabel"><Gift size={13}/><span>خەڵاتی Share: <b>{post.referral_reward_percent}%</b></span></div>}{post.price_iqd!=null?<strong><WalletCards size={14}/>{Number(post.price_iqd).toLocaleString('en-US')} د.ع</strong>:<small>بێ نرخ</small>}{productIdOf(post)&&onAddToCart?<button type="button" className="postAddToCart" onClick={e=>{e.stopPropagation();addProduct(productIdOf(post)!,activeSharePostId===post.id?(activeShareCode||undefined):undefined)}} disabled={addingProductId===productIdOf(post)}>{addingProductId===productIdOf(post)?'زیاد دەکرێت...':'زیادکردن بۆ سەلە'}</button>:<span>وردەکاری</span>}</div></div>
   </article>})}</div>}
