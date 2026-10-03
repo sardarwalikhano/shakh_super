@@ -26,6 +26,7 @@ export type DashboardView =
   | 'publish_post'
   | 'manage_posts'
   | 'profile'
+  | 'users'
   | 'orders'
   | 'delivery'
   | 'delivery_zones'
