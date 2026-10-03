@@ -24,6 +24,7 @@ import DashboardShell,{type DashboardView} from './components/DashboardShell';
 import SuperAdminControlCenter from './components/SuperAdminControlCenter';
 import AdminControlCenter from './components/AdminControlCenter';
 import CustomerControlCenter from './components/CustomerControlCenter';
+import CaptainControlCenter from './components/CaptainControlCenter';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -481,6 +482,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     ? <AdminControlCenter onNavigate={openDashboard} />
     : role==='customer'
     ? <CustomerControlCenter userId={user.id} onNavigate={openDashboard} />
+    : role==='captain'
+    ? <CaptainControlCenter onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
