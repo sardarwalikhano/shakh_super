@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import './dashboard-shell.css';
 import UmrahAgencyModule from './UmrahAgencyModule';
+import SupportCustomerServiceModule from './SupportCustomerServiceModule';
 import SupportAgentModule from './SupportAgentModule';
 import SupportModule from './SupportModule';
 import { supabase } from '../lib/supabase';
@@ -146,6 +147,7 @@ export default function DashboardShell({
   const isCustomer = role === 'customer';
   const isCarDealer = role === 'car_dealer';
   const isUmrahAgency = role === 'umrah_agency';
+  const isSupport = role === 'support';
   const isSupport = role === 'support';
   const isSupport = role === 'support';
   const showGenericStats = role === 'customer';
