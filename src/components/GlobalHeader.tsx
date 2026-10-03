@@ -13,6 +13,7 @@ type Props = {
   cartCount: number;
   onOpenDashboard: (view?: 'home' | 'notifications' | 'profile') => void;
   onLogin: () => void;
+  onOpenCart: () => void;
 };
 
 export default function GlobalHeader({
@@ -28,6 +29,7 @@ export default function GlobalHeader({
   cartCount,
   onOpenDashboard,
   onLogin,
+  onOpenCart,
 }: Props) {
   return (
     <header className="shakhGlobalHeader">
@@ -77,7 +79,7 @@ export default function GlobalHeader({
           <button
             type="button"
             className="shakhIconAction has-badge"
-            onClick={() => onOpenDashboard(user ? 'notifications' : undefined)}
+            onClick={() => (user ? onOpenDashboard('notifications') : onLogin())}
             aria-label="ئاگادارکردنەوەکان"
           >
             <Bell size={18} />
@@ -89,7 +91,7 @@ export default function GlobalHeader({
           <button
             type="button"
             className="shakhIconAction has-badge"
-            onClick={() => window.dispatchEvent(new CustomEvent('shakh-open-cart'))}
+            onClick={onOpenCart}
             aria-label="سەلە"
           >
             <ShoppingBag size={18} />
