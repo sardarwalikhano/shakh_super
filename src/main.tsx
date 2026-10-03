@@ -19,6 +19,7 @@ import WalletPanel from './components/WalletPanel';
 import SupportTicketsPanel from './components/SupportTicketsPanel';
 import DeliveryZoneManager from './components/DeliveryZoneManager';
 import SettingsPanel from './components/SettingsPanel';
+import AdminUsersPanel from './components/AdminUsersPanel';
 import InteractiveMapPicker from './components/InteractiveMapPicker';
 import DashboardShell,{type DashboardView} from './components/DashboardShell';
 import SuperAdminControlCenter from './components/SuperAdminControlCenter';
@@ -360,6 +361,9 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   if(dashboardView==='services'){
    const serviceItems=[
     {id:'profile' as const,label:'پرۆفایل',description:'ناو، تەلەفون، شار، زمان و وێنە',icon:UserIcon,group:'هەژمار',tone:'indigo'},
+    ...( ['super_admin','admin'].includes(role)
+      ? [{id:'users' as const,label:'بەکارهێنەران',description:'بینینی لیستی بەکارهێنەران و ڕۆڵەکانیان',icon:UserIcon,group:'بەڕێوبەرایەتی',tone:'slate'}]
+      : [] ),
     {id:'store' as const,label:'دوکان و پێشانگا',description:'بازاڕ، دوکان و بەرهەمەکانی شاخ',icon:Store,group:'بازاڕ و گەیاندن',tone:'orange'},
     {id:'orders' as const,label:'ئۆردەرەکان',description:'بینین و بەدواداچوونی داواکارییەکان',icon:ClipboardList,group:'بازاڕ و گەیاندن',tone:'blue'},
     {id:'delivery' as const,label:'گەیاندن',description:'شوێنکەوتن و دۆخی گەیاندن',icon:Truck,group:'بازاڕ و گەیاندن',tone:'green'},
@@ -399,6 +403,10 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   }
   if(dashboardView==='manage_posts'){
    return <section className="dashboardAccountSingleModule"><PostsManagement userId={user.id} role={role} focusRequest={postsFocusRequest}/></section>;
+  }
+  if(dashboardView==='users'){
+   if(role==='super_admin'||role==='admin')return <AdminUsersPanel />;
+   return <CustomerOrdersPanel userId={user.id}/>;
   }
   if(dashboardView==='orders'){
    if(role==='super_admin'||role==='admin')return <SuperAdminOrderMonitor/>;
