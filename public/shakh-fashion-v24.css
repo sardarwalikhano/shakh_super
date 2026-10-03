@@ -1,0 +1,40 @@
+.shakhFashionCenter{max-width:1240px;margin:0 auto;padding:0;color:var(--dsx-text)}
+.shakhFashionHero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px;background:var(--dsx-surface);border:1px solid var(--dsx-line);border-radius:20px}
+.shakhFashionEyebrow{display:inline-flex;align-items:center;gap:7px;color:var(--dsx-brand);font-size:11px;font-weight:900}
+.shakhFashionHero h2{margin:7px 0 4px;font-size:clamp(22px,3vw,30px);color:var(--dsx-text)}
+.shakhFashionHero p{margin:0;color:var(--dsx-muted);line-height:1.7}
+.shakhFashionRefresh{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--dsx-line);background:var(--dsx-surface-alt);color:var(--dsx-text);font-weight:900;cursor:pointer;white-space:nowrap}
+.shakhFashionRefresh:hover{border-color:var(--dsx-brand);color:var(--dsx-brand)}
+.shakhFashionRefresh:disabled{opacity:.65;cursor:wait}
+.shakhFashionStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:10px;background:var(--dsx-line);border:1px solid var(--dsx-line);border-radius:18px;overflow:hidden}
+.shakhFashionStat{min-width:0;min-height:96px;display:flex;align-items:center;gap:12px;padding:14px;background:var(--dsx-surface)}
+.shakhFashionStatIcon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--dsx-surface-alt);color:var(--dsx-brand);flex:none}
+.shakhFashionStat small{display:block;color:var(--dsx-muted);font-size:10px;font-weight:800}
+.shakhFashionStat strong{display:block;margin-top:3px;color:var(--dsx-text);font-size:19px;line-height:1.2}
+.shakhFashionStat strong.is-money{font-size:16px}
+.shakhFashionStat[data-tone="blue"] .shakhFashionStatIcon{color:#2563eb}
+.shakhFashionStat[data-tone="violet"] .shakhFashionStatIcon{color:#7c3aed}
+.shakhFashionStat[data-tone="green"] .shakhFashionStatIcon{color:var(--dsx-green)}
+.shakhFashionStat[data-tone="teal"] .shakhFashionStatIcon{color:#0f766e}
+.shakhFashionStat[data-tone="amber"] .shakhFashionStatIcon{color:#d97706}
+.shakhFashionStat[data-tone="rose"] .shakhFashionStatIcon{color:#e11d48}
+.shakhFashionStat[data-tone="slate"] .shakhFashionStatIcon{color:#475569}
+.shakhFashionWorkspace{margin-top:10px;padding:16px;background:var(--dsx-surface);border:1px solid var(--dsx-line);border-radius:20px}
+.shakhFashionWorkspaceHead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px}
+.shakhFashionWorkspaceHead span{font-size:10px;color:var(--dsx-muted);font-weight:900}
+.shakhFashionWorkspaceHead h3{margin:5px 0 0;color:var(--dsx-text);font-size:20px}
+.shakhFashionWorkspaceHead small{color:var(--dsx-muted);font-size:10px}
+.shakhFashionActionGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.shakhFashionActionGrid button{display:flex;align-items:center;gap:11px;min-width:0;text-align:right;padding:13px;border:1px solid var(--dsx-line);border-radius:15px;background:var(--dsx-surface-alt);color:var(--dsx-text);cursor:pointer}
+.shakhFashionActionGrid button:hover{border-color:var(--dsx-brand);transform:translateY(-1px)}
+.shakhFashionActionGrid svg{width:20px;height:20px;flex:none;color:var(--dsx-brand)}
+.shakhFashionActionGrid span{display:grid;gap:3px;min-width:0}
+.shakhFashionActionGrid b{font-size:12px}
+.shakhFashionActionGrid small{color:var(--dsx-muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fashionOrdersRoute{min-width:0}
+.fashionOrdersRouteState{min-height:220px;display:grid;place-items:center;align-content:center;gap:8px;text-align:center;padding:28px;border:1px solid var(--dsx-line);border-radius:18px;background:var(--dsx-surface);color:var(--dsx-muted)}
+.fashionOrdersRouteState svg{color:var(--dsx-brand)}
+.fashionOrdersRouteState h3{margin:2px 0;color:var(--dsx-text)}
+.fashionOrdersRouteState p{margin:0;max-width:520px;line-height:1.7}
+@media(max-width:980px){.shakhFashionStats{grid-template-columns:repeat(2,minmax(0,1fr))}.shakhFashionActionGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.shakhFashionHero{align-items:stretch;flex-direction:column}.shakhFashionRefresh{width:100%}.shakhFashionStats{grid-template-columns:1fr}.shakhFashionActionGrid{grid-template-columns:1fr}.shakhFashionWorkspace{padding:12px}.shakhFashionWorkspaceHead{align-items:flex-start;flex-direction:column}}
