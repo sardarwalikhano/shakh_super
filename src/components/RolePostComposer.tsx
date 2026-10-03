@@ -179,10 +179,10 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    for(const [index,file] of files.entries()){
     const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
     const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;
-    const {error}=await supabase.storage.from('posts').upload(path,file,{upsert:false,contentType:file.type});
+    const {error}=await supabase.storage.from(uploadBucket).upload(path,file,{upsert:false,contentType:file.type});
     if(error)throw error;
     uploadedPaths.push(path);
-    imageUrls.push(supabase.storage.from('posts').getPublicUrl(path).data.publicUrl);
+    imageUrls.push(supabase.storage.from(uploadBucket).getPublicUrl(path).data.publicUrl);
    }
 
    const listingDetails=isFashion
