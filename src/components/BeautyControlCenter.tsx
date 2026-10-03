@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Bell, ClipboardList, FileText, LifeBuoy, Package, PackageCheck, RefreshCw,
-  Sparkles, Store, Settings2, UserRound, WalletCards, HeartPulse, WandSparkles,
+  Sparkles, Store, Settings2, UserRound, WalletCards, Heart,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { DashboardView } from './DashboardShell';
@@ -130,8 +130,8 @@ export default function BeautyControlCenter({ userId, onNavigate }: Props) {
 
   const cards = useMemo(() => [
     { label: 'بەرهەمەکانی جوانکاری', value: metrics.products, icon: Sparkles, tone: 'orange' },
-    { label: 'کۆسمەتیک', value: metrics.cosmetics, icon: WandSparkles, tone: 'violet' },
-    { label: 'چاودێری پێست', value: metrics.skincare, icon: HeartPulse, tone: 'rose' },
+    { label: 'کۆسمەتیک', value: metrics.cosmetics, icon: Sparkles, tone: 'violet' },
+    { label: 'چاودێری پێست', value: metrics.skincare, icon: Heart, tone: 'rose' },
     { label: 'چاودێری قژ', value: metrics.haircare, icon: Sparkles, tone: 'teal' },
     { label: 'بۆن و عەتری', value: metrics.fragrance, icon: Sparkles, tone: 'gold' },
     { label: 'ئەکسسوارات', value: metrics.accessories, icon: Sparkles, tone: 'blue' },
