@@ -1,0 +1,53 @@
+.shakhUmrahAgencyCenter{max-width:1240px;margin:0 auto;color:var(--dsx-text)}
+.shakhUmrahAgencyHero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px;background:var(--dsx-surface);border:1px solid var(--dsx-line);border-radius:20px}
+.shakhUmrahAgencyEyebrow{display:inline-flex;align-items:center;gap:7px;color:var(--dsx-brand);font-size:11px;font-weight:900}
+.shakhUmrahAgencyHero h2{margin:7px 0 4px;font-size:clamp(22px,3vw,30px)}
+.shakhUmrahAgencyHero p{margin:0;color:var(--dsx-muted);line-height:1.7}
+.shakhUmrahAgencyRefresh{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--dsx-line);background:var(--dsx-surface-alt);color:var(--dsx-text);font-weight:900;cursor:pointer;white-space:nowrap}
+.shakhUmrahAgencyRefresh:hover{border-color:var(--dsx-brand);color:var(--dsx-brand)}
+.shakhUmrahAgencyRefresh:disabled{opacity:.65;cursor:wait}
+.shakhUmrahAgencySetup{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:10px;padding:14px 16px;border:1px solid var(--dsx-line);border-radius:16px;background:var(--dsx-surface)}
+.shakhUmrahAgencySetup div{display:grid;gap:4px}
+.shakhUmrahAgencySetup strong{font-size:13px}
+.shakhUmrahAgencySetup span{font-size:11px;color:var(--dsx-muted)}
+.shakhUmrahAgencySetup button{display:inline-flex;align-items:center;gap:7px;padding:10px 13px;border:0;border-radius:11px;background:var(--dsx-brand);color:#fff;font-weight:900;cursor:pointer}
+.shakhUmrahAgencyStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:10px;background:var(--dsx-line);border:1px solid var(--dsx-line);border-radius:18px;overflow:hidden}
+.shakhUmrahAgencyStat{display:flex;align-items:center;gap:12px;min-width:0;min-height:96px;padding:14px;background:var(--dsx-surface)}
+.shakhUmrahAgencyStatIcon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--dsx-surface-alt);color:var(--dsx-brand);flex:none}
+.shakhUmrahAgencyStat small{display:block;color:var(--dsx-muted);font-size:10px;font-weight:800}
+.shakhUmrahAgencyStat strong{display:block;margin-top:3px;font-size:19px}
+.shakhUmrahAgencyStat strong.is-money{font-size:15px}
+.shakhUmrahAgencyStat[data-tone="green"] .shakhUmrahAgencyStatIcon{color:var(--dsx-green)}
+.shakhUmrahAgencyStat[data-tone="amber"] .shakhUmrahAgencyStatIcon{color:#d97706}
+.shakhUmrahAgencyStat[data-tone="violet"] .shakhUmrahAgencyStatIcon{color:#7c3aed}
+.shakhUmrahAgencyStat[data-tone="blue"] .shakhUmrahAgencyStatIcon{color:#2563eb}
+.shakhUmrahAgencyStat[data-tone="teal"] .shakhUmrahAgencyStatIcon{color:#0f766e}
+.shakhUmrahAgencyStat[data-tone="rose"] .shakhUmrahAgencyStatIcon{color:#e11d48}
+.shakhUmrahAgencyStat[data-tone="gold"] .shakhUmrahAgencyStatIcon{color:#b7791f}
+.shakhUmrahAgencyWorkspace,.shakhUmrahAgencyRecent{margin-top:10px;padding:16px;background:var(--dsx-surface);border:1px solid var(--dsx-line);border-radius:20px}
+.shakhUmrahAgencyWorkspaceHead,.shakhUmrahAgencyRecentHead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px}
+.shakhUmrahAgencyWorkspaceHead span,.shakhUmrahAgencyRecentHead span{font-size:10px;color:var(--dsx-muted);font-weight:900}
+.shakhUmrahAgencyWorkspaceHead h3,.shakhUmrahAgencyRecentHead h3{margin:5px 0 0;font-size:20px}
+.shakhUmrahAgencyWorkspaceHead small,.shakhUmrahAgencyRecentHead small{color:var(--dsx-muted);font-size:10px}
+.shakhUmrahAgencyActionGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.shakhUmrahAgencyActionGrid button{display:flex;align-items:center;gap:11px;min-width:0;text-align:right;padding:13px;border:1px solid var(--dsx-line);border-radius:15px;background:var(--dsx-surface-alt);color:var(--dsx-text);cursor:pointer}
+.shakhUmrahAgencyActionGrid button:hover{border-color:var(--dsx-brand);transform:translateY(-1px)}
+.shakhUmrahAgencyActionGrid svg{width:20px;height:20px;flex:none;color:var(--dsx-brand)}
+.shakhUmrahAgencyActionGrid span{display:grid;gap:3px;min-width:0}
+.shakhUmrahAgencyActionGrid b{font-size:12px}
+.shakhUmrahAgencyActionGrid small{color:var(--dsx-muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shakhUmrahAgencyEmpty{min-height:110px;display:grid;place-items:center;color:var(--dsx-muted);font-size:12px}
+.shakhUmrahAgencyRecentList{display:grid;gap:8px}
+.shakhUmrahAgencyRecentRow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(130px,.7fr) auto;align-items:center;gap:12px;width:100%;text-align:right;padding:12px;border:1px solid var(--dsx-line);border-radius:14px;background:var(--dsx-surface-alt);color:var(--dsx-text);cursor:pointer}
+.shakhUmrahAgencyRecentRow:hover{border-color:var(--dsx-brand)}
+.shakhUmrahAgencyRecentRow span{display:grid;gap:3px;min-width:0}
+.shakhUmrahAgencyRecentRow b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shakhUmrahAgencyRecentRow small{color:var(--dsx-muted);font-size:10px}
+.shakhUmrahAgencyRecentRow strong{font-size:11px}
+.shakhUmrahAgencyRecentRow em{font-size:11px;font-style:normal;font-weight:900;white-space:nowrap}
+.umrahAgencyOrdersRoute{min-width:0}
+.umrahAgencyOrdersRouteState{min-height:220px;display:grid;place-items:center;align-content:center;gap:8px;text-align:center;padding:28px;border:1px solid var(--dsx-line);border-radius:18px;background:var(--dsx-surface);color:var(--dsx-muted)}
+.umrahAgencyOrdersRouteState svg{color:var(--dsx-brand)}
+.umrahAgencyOrdersRouteState p{margin:0;max-width:540px;line-height:1.7}
+@media(max-width:980px){.shakhUmrahAgencyStats{grid-template-columns:repeat(2,minmax(0,1fr))}.shakhUmrahAgencyActionGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.shakhUmrahAgencyHero{align-items:stretch;flex-direction:column}.shakhUmrahAgencyRefresh{width:100%}.shakhUmrahAgencySetup{align-items:stretch;flex-direction:column}.shakhUmrahAgencySetup button{justify-content:center}.shakhUmrahAgencyStats{grid-template-columns:1fr}.shakhUmrahAgencyActionGrid{grid-template-columns:1fr}.shakhUmrahAgencyWorkspace,.shakhUmrahAgencyRecent{padding:12px}.shakhUmrahAgencyWorkspaceHead,.shakhUmrahAgencyRecentHead{align-items:flex-start;flex-direction:column}.shakhUmrahAgencyRecentRow{grid-template-columns:1fr;gap:6px}}
