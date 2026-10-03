@@ -44,14 +44,20 @@ const VENDOR_ROLES = [
 
 export default function AdminControlCenter({ onNavigate }: Props) {
   const [metrics, setMetrics] = useState<Metrics>(initialMetrics);
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [trendRows, setTrendRows] = useState<TrendPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
+  const [realtimeStatus, setRealtimeStatus] = useState('CONNECTING');
 
   const load = useCallback(async () => {
     setLoading(true);
     setMessage('');
     try {
+      const since = new Date();
+      since.setHours(0, 0, 0, 0);
+      since.setDate(since.getDate() - 6);
       const [
         users,
         vendors,
@@ -81,10 +87,12 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         activeOrders,
         onlineCaptains,
         openTickets,
+        recentOrders,
       ].find((result) => result.error)?.error;
 
       if (firstError) throw firstError;
 
+      const rows = (recentOrders.data ?? []) as RecentOrder[];
       setMetrics({
         users: users.count ?? 0,
         vendors: vendors.count ?? 0,
@@ -95,6 +103,8 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         onlineCaptains: onlineCaptains.count ?? 0,
         openTickets: openTickets.count ?? 0,
       });
+      setRecentOrders(rows.slice(0, 8));
+      setTrendRows(makeTrend(rows));
       setSyncedAt(new Date());
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'نەتوانرا داتای ناوەندی بەڕێوبەر وەرگیرێت.');
@@ -113,12 +123,18 @@ export default function AdminControlCenter({ onNavigate }: Props) {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'captains' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'support_tickets' }, () => void load())
-      .subscribe();
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => void load())
+      .subscribe((status) => setRealtimeStatus(status));
 
     return () => {
       void supabase.removeChannel(channel);
     };
   }, [load]);
+
+  const trendMax = Math.max(1, ...trendRows.map((point) => point.count));
+  const trendOrderCount = trendRows.reduce((sum, point) => sum + point.count, 0);
+  const trendRevenue = trendRows.reduce((sum, point) => sum + point.revenue, 0);
+  const realtimeReady = realtimeStatus === 'SUBSCRIBED';
 
   const statCards = useMemo(() => [
     { label: 'بەکارهێنەرەکان', value: metrics.users, icon: Users, tone: 'orange' },
@@ -139,10 +155,16 @@ export default function AdminControlCenter({ onNavigate }: Props) {
           <h2 id="admin-center-title">SHAKH Admin Center</h2>
           <p>پوختەی ڕاستەقینەی بەڕێوبەرایەتی بۆ ئۆردەر، بازاڕ، کاپتن و پشتگیری؛ بەبێ داتای ساختە.</p>
         </div>
-        <button type="button" className="shakhAdminRefresh" onClick={() => void load()} disabled={loading}>
-          <RefreshCw size={17} className={loading ? 'is-spinning' : ''} />
-          نوێکردنەوە
-        </button>
+        <div className="shakhAdminHeroActions">
+          <span className={'shakhAdminLiveStatus ' + (realtimeReady ? 'is-live' : 'is-warn')} role="status" aria-live="polite">
+            {realtimeReady ? <CheckCircle2 size={13} /> : <Clock3 size={13} />}
+            {realtimeReady ? 'Realtime چالاکە' : 'Realtime پەیوەندی دەکات'}
+          </span>
+          <button type="button" className="shakhAdminRefresh" onClick={() => void load()} disabled={loading}>
+            <RefreshCw size={17} className={loading ? 'is-spinning' : ''} />
+            نوێکردنەوە
+          </button>
+        </div>
       </div>
 
       {message && <div className="msg" role="alert">{message}</div>}
@@ -158,6 +180,58 @@ export default function AdminControlCenter({ onNavigate }: Props) {
           </article>
         ))}
       </div>
+
+      <section className="shakhAdminTrendPanel" aria-labelledby="admin-trend-title">
+        <div className="shakhAdminPanelHead">
+          <div>
+            <span>٧ ڕۆژی ڕابردوو</span>
+            <h3 id="admin-trend-title">هەستی ئۆردەر</h3>
+          </div>
+          <div className="shakhAdminTrendSummary">
+            <strong>{loading ? '—' : trendOrderCount.toLocaleString('ku-IQ')}</strong>
+            <small>{loading ? '—' : trendRevenue.toLocaleString('ku-IQ') + ' د.ع'}</small>
+          </div>
+        </div>
+        {loading ? (
+          <div className="shakhAdminTrendSkeleton" aria-label="هەستی ئۆردەر بار دەکرێت">
+            {Array.from({ length: 7 }, (_, index) => <span key={index} />)}
+          </div>
+        ) : trendOrderCount === 0 ? (
+          <div className="shakhAdminEmpty">لەم ٧ ڕۆژەی ڕابردوودا هیچ ئۆردەرێکی نوێ تۆمار نەکراوە.</div>
+        ) : (
+          <div className="shakhAdminTrendBars">
+            {trendRows.map((point) => (
+              <div className="shakhAdminTrendBarItem" key={point.key} title={point.count.toLocaleString('ku-IQ') + ' ئۆردەر · ' + point.revenue.toLocaleString('ku-IQ') + ' د.ع'}>
+                <div className="shakhAdminTrendBarTrack"><span style={{ height: Math.max(point.count ? 12 : 4, (point.count / trendMax) * 100) + '%' }} /></div>
+                <strong>{point.count.toLocaleString('ku-IQ')}</strong>
+                <small>{point.label}</small>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="shakhAdminRecentPanel" aria-labelledby="admin-recent-title">
+        <div className="shakhAdminPanelHead">
+          <div><span>Live operational feed</span><h3 id="admin-recent-title">نوێترین ئۆردەرەکان</h3></div>
+          <button type="button" className="shakhAdminTextAction" onClick={() => onNavigate('orders')}>بینینی هەموو ←</button>
+        </div>
+        {loading ? (
+          <div className="shakhAdminRecentSkeleton" aria-label="ئۆردەرەکان بار دەکرێن">{Array.from({ length: 5 }, (_, index) => <span key={index} />)}</div>
+        ) : recentOrders.length === 0 ? (
+          <div className="shakhAdminEmpty">هێشتا هیچ ئۆردەرێکی نوێ نییە.</div>
+        ) : (
+          <div className="shakhAdminRecentList">
+            {recentOrders.map((order) => (
+              <button type="button" className="shakhAdminRecentRow" key={order.id} onClick={() => onNavigate('orders')}>
+                <span><strong>#{order.id.slice(0, 8)}</strong><small>{new Date(order.created_at).toLocaleString('ku-IQ')}</small></span>
+                <em>{STATUS_LABEL[order.status] || order.status}</em>
+                <b>{Number(order.total_iqd || 0).toLocaleString('ku-IQ')} د.ع</b>
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
 
       <div className="shakhAdminWorkspace">
         <div className="shakhAdminWorkspaceHead">
