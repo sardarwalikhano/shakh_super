@@ -787,3 +787,5 @@ html,body,#root,.app{
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{transition:none!important;animation:none!important}
 }
+
+/* final SHEIN-v6 deployment trigger */
