@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createClient,User} from '@supabase/supabase-js';
 import {Search,ShoppingBag,User as UserIcon,Bell,Store,Truck,Wallet,ArrowLeft,LogOut,Minus,Plus,Trash2,X,MapPin,PackageCheck,LayoutDashboard,RefreshCw,Car,Plane,Home,MessageCircle,ShieldCheck,Settings,Moon,Sun,ClipboardList} from 'lucide-react';
-import './styles.css';
+import './shakh-design-system.css';
 import CustomerOrdersPanel from './components/CustomerOrdersPanel';
 import CaptainDashboard from './components/CaptainDashboard';
 import VendorDashboard from './components/VendorDashboard';
