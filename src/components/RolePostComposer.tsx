@@ -207,7 +207,10 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    setFashion({audience:'',clothingType:'',sizes:[],colors:[],shoeSizes:[],condition:'',brand:''});
    setVariantInventory({});setBulkVariantStock('1');setStockMode('finite');setStock('0');
    setCar({make:'',model:'',year:'',trim:'',mileage:'',engine:'',body:'',fuel:'',transmission:'',drivetrain:'',color:'',condition:'',origin:'',plate:'',negotiable:true,exchange:false});
-   setShowPreview(false);setMessage(savedReward>0?'پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە. خەڵاتی Share: '+savedReward+'٪.':'پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە.');onSaved?.();
+   setShowPreview(false);
+   setMessage(savedReward>0?'پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە. خەڵاتی Share: '+savedReward+'٪.':'پۆستەکە بە سەرکەوتوویی بڵاوکرایەوە.');
+   window.dispatchEvent(new CustomEvent('shakh-post-created',{detail:{postId:createdPost.id}}));
+   onSaved?.();
   }catch(error:unknown){
    if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
    setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');

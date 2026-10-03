@@ -172,6 +172,7 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
 
    setTitle('');setContent('');setPrice('');setReferralRewardPercent('');setFiles([]);previews.forEach(src=>URL.revokeObjectURL(src));setPreviews([]);resetDetails();setStockMode('finite');setStock('0');
    setMessage(savedReward>0?(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە. خەڵاتی Share: '+savedReward+'٪.':'پۆست بە سەرکەوتوویی بڵاوکرایەوە. خەڵاتی Share: '+savedReward+'٪.'):(createdProductId?'بەرهەم و پۆست بە سەرکەوتوویی بڵاوکرانەوە؛ کڕیار دەتوانێت بۆ سەلە زیادیکات.':'پۆست بە ناوی SHAKH Store بڵاوکرایەوە.'));
+   if(createdPost?.id)window.dispatchEvent(new CustomEvent('shakh-post-created',{detail:{postId:createdPost.id}}));
   }catch(error){
    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId);
    if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
