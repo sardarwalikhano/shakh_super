@@ -14,6 +14,7 @@ import {
   Store,
   Truck,
   UserRound,
+  Users,
   WalletCards,
   X,
 } from 'lucide-react';
@@ -136,6 +137,14 @@ export default function DashboardShell({
       label: 'پرۆفایل',
       description: 'ناو، تەلەفون، شار، زمان و وێنە',
       icon: UserRound,
+    },
+    {
+      id: 'users',
+      group: 'بەڕێوبەرایەتی',
+      label: 'بەکارهێنەران',
+      description: 'لیستی بەکارهێنەران و ڕۆڵەکان',
+      icon: Users,
+      show: isAdmin,
     },
     {
       id: 'store',
