@@ -37,7 +37,7 @@ const SHOE_SIZES=['35','36','37','38','39','40','41','42','43','44','45','46'];
 const comboKey=(row:{size?:string;color?:string;shoe_size?:string})=>[row.size||'',row.shoe_size||'',row.color||''].join('¦');
 
 const vendorCategories:Record<string,string[]>={
- restaurant_vendor:['restaurant'],supermarket_vendor:['supermarket'],fashion_vendor:['fashion'],vendor:['daily'],electronics_vendor:['electronics'],jewelry_vendor:['jewelry']
+ restaurant_vendor:['restaurant'],supermarket_vendor:['supermarket'],fashion_vendor:['fashion'],vendor:['daily'],electronics_vendor:['electronics'],jewelry_vendor:['jewelry'],beauty_vendor:['beauty']
 };
 
 export default function ProductManagement({userId,role,onChanged}:Props){
