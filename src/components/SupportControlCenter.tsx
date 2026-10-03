@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Bell, CheckCircle2, Clock3, LifeBuoy, MessageCircle, RefreshCw,
-  Settings2, UserRound, XCircle, Users, ClipboardList,
+  Settings2, UserRound, XCircle, ClipboardList,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { DashboardView } from './DashboardShell';
@@ -94,7 +94,6 @@ export default function SupportControlCenter({ userId, onNavigate }: Props) {
         <button type="button" onClick={() => onNavigate('notifications')}><Bell/><span><b>ئاگادارییەکان</b><small>{metrics.unreadNotifications} نوێ</small></span></button>
         <button type="button" onClick={() => onNavigate('profile')}><UserRound/><span><b>پرۆفایل</b><small>زانیاری هەژمار</small></span></button>
         <button type="button" onClick={() => onNavigate('settings')}><Settings2/><span><b>ڕێکخستنەکان</b><small>ڕێکخستنی هەژمار</small></span></button>
-        <button type="button" onClick={() => onNavigate('orders')}><Users/><span><b>بەدواداچوون</b><small>پشکنینی داواکارییە پەیوەندیدارەکان</small></span></button>
       </div>
     </div>
   </section>;
