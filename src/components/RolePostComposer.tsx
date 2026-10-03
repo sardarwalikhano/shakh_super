@@ -178,10 +178,10 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    for(const [index,file] of files.entries()){
     const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
     const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;
-    const {error}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});
+    const {error}=await supabase.storage.from('posts').upload(path,file,{upsert:false,contentType:file.type});
     if(error)throw error;
     uploadedPaths.push(path);
-    imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
+    imageUrls.push(supabase.storage.from('posts').getPublicUrl(path).data.publicUrl);
    }
 
    const listingDetails=isFashion
@@ -212,7 +212,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    window.dispatchEvent(new CustomEvent('shakh-post-created',{detail:{postId:createdPost.id}}));
    onSaved?.();
   }catch(error:unknown){
-   if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
+   if(uploadedPaths.length)await supabase.storage.from('posts').remove(uploadedPaths);
    setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');
   }finally{setBusy(false)}
  };

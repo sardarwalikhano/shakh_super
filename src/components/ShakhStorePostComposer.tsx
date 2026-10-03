@@ -140,7 +140,6 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
      size:isFashion&&!isShoe&&details.sizes.length?details.sizes.join(', '):null,
      image_url:imageUrls[0]||null,
      stock:stockMode==='unlimited'?0:Number(stock||0),
-     unlimited_stock:stockMode==='unlimited',
      is_available:stockMode==='unlimited'||Number(stock||0)>0,
      variants:[{section,category:isFashion?'fashion':section,clothing_type:isFashion?details.type:null,available_sizes:isFashion&&!isShoe?details.sizes:[],available_colors:isFashion?details.colors:[],shoe_sizes:isFashion&&isShoe?details.shoeSizes:[],unlimited_stock:stockMode==='unlimited'}]
     }).select('id').single();
