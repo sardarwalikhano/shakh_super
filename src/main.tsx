@@ -464,6 +464,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   cartCount={cart.reduce((sum,item)=>sum+item.quantity,0)}
   onOpenDashboard={(view)=>openDashboard(view || 'notifications')}
   onLogin={()=>{setAuthMode('login');setAuth(true)}}
+  onOpenCart={()=>setCartOpen(true)}
  />
  <main><section className="hero"><div><span className="eyebrow">بازاڕی زیندووی شاخ</span><h1>هەموو شتێک،<strong> لە یەک شوێن.</strong></h1><p>خواردن، سوپرمارکێت، جل و بەرگ، ئۆتۆمبێل و گەشتەکانی حەج و عومرە لە یەک پلاتفۆرم.</p><button className="primary" onClick={()=>document.querySelector('.section')?.scrollIntoView({behavior:'smooth'})}>دەستپێبکە <ArrowLeft/></button></div><div className="heroOrb" aria-hidden="true"><img src="/shakh-logo.svg?v=1.9.8" alt="" /></div></section>
  {promotions.length>0&&<section className="section promotionsSection" aria-label="پرۆمۆشنەکانی شاخ"><div className="title"><div><span>پرۆمۆشنەکانی شاخ</span><h2>داشکاندن و ئۆفەری چالاک</h2></div></div><div className="promotionsGrid">{promotions.map(p=><article className="promotionCard" key={p.id}>{p.image_url&&<img src={p.image_url} alt={p.title} loading="lazy" decoding="async"/>}<div><b>{p.title}</b>{p.description&&<p>{p.description}</p>}{p.ends_at&&<small>تا {new Date(p.ends_at).toLocaleDateString('ku-IQ')}</small>}</div></article>)}</div></section>}
