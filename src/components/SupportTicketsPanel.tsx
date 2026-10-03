@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { MessageCircle, Plus, RefreshCw, Send, ShieldCheck, Clock3, Phone, ExternalLink } from 'lucide-react';
+import { MessageCircle, Plus, RefreshCw, Send, ShieldCheck, Clock3, Phone, ExternalLink, CheckCircle2, XCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 type Props = { userId: string; role: string };
@@ -30,6 +30,7 @@ export default function SupportTicketsPanel({ userId, role }: Props) {
   const [showComposer, setShowComposer] = useState(false);
   const [error, setError] = useState('');
   const canReadAll = role === 'support' || role === 'admin' || role === 'super_admin';
+  const canManageStatus = role === 'support' || role === 'admin' || role === 'super_admin';
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -59,6 +60,19 @@ export default function SupportTicketsPanel({ userId, role }: Props) {
       void supabase.removeChannel(channel);
     };
   }, [load, userId]);
+
+  const updateStatus = async (ticket: Ticket, status: string) => {
+    if (!canManageStatus) return;
+    setError('');
+    const { error: updateError } = await supabase.from('support_tickets')
+      .update({ status })
+      .eq('id', ticket.id);
+    if (updateError) {
+      setError('گۆڕینی دۆخی تیکەت سەرکەوتوو نەبوو.');
+      return;
+    }
+    setTickets(current => current.map(item => item.id === ticket.id ? { ...item, status, updated_at: new Date().toISOString() } : item));
+  };
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -171,6 +185,22 @@ export default function SupportTicketsPanel({ userId, role }: Props) {
                 <p>{ticket.message}</p>
                 <small><Clock3 size={13} /> {new Date(ticket.updated_at || ticket.created_at).toLocaleString('ku-IQ')}</small>
                 {canReadAll && <small className="supportTicketUser">هەژمار: {ticket.user_id.slice(0, 8)}</small>}
+                {canManageStatus && (
+                  <div className="supportTicketActions" role="group" aria-label="گۆڕینی دۆخی تیکەت">
+                    <button type="button" className="supportStatusAction" onClick={() => void updateStatus(ticket, 'open')} disabled={ticket.status === 'open'}>
+                      <MessageCircle size={14} /> کراوە
+                    </button>
+                    <button type="button" className="supportStatusAction" onClick={() => void updateStatus(ticket, 'in_progress')} disabled={ticket.status === 'in_progress'}>
+                      <Clock3 size={14} /> لە کاردایە
+                    </button>
+                    <button type="button" className="supportStatusAction" onClick={() => void updateStatus(ticket, 'resolved')} disabled={ticket.status === 'resolved'}>
+                      <CheckCircle2 size={14} /> چارەسەرکراو
+                    </button>
+                    <button type="button" className="supportStatusAction" onClick={() => void updateStatus(ticket, 'closed')} disabled={ticket.status === 'closed'}>
+                      <XCircle size={14} /> داخراو
+                    </button>
+                  </div>
+                )}
               </div>
             </article>
           ))}
