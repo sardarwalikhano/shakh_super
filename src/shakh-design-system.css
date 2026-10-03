@@ -1247,3 +1247,55 @@ html[data-theme="dark"] .dashboardShellDirty{background:#332510;color:#f3c36e}
 @media(max-width:900px){.customer-orders-panel__grid,.settingsGrid,.profileFormGrid{grid-template-columns:1fr}.postsManagementList{grid-template-columns:1fr}.postHubGrid{grid-template-columns:1fr}}
 @media(max-width:640px){.dashboardGrid,.orderMonitorList{grid-template-columns:1fr}.profileStats,.walletMiniStats{grid-template-columns:1fr 1fr}.postsManagementItem{grid-template-columns:76px minmax(0,1fr)}.postsManagementImage{width:76px;height:76px}.dashboardHeader,.customer-orders-panel__header,.vendor-dashboard__header,.profilePanelHero,.walletHead,.postHubHeader,.postsManagementHead{padding:13px}.postHubGrid{padding:10px}}
 @media(max-width:430px){.profileStats,.walletMiniStats{grid-template-columns:1fr}.postsManagementItem{grid-template-columns:1fr}.postsManagementImage{width:100%;height:150px}}
+
+
+/* =========================================================
+   SHAKH — GLOBAL DESIGN SYSTEM v2
+   Quiet surfaces, typography-led hierarchy, restrained chrome.
+   ========================================================= */
+:root{
+  --sh-bg:#f7f8fa;
+  --sh-surface:#fff;
+  --sh-surface-2:#f3f5f7;
+  --sh-text:#101820;
+  --sh-muted:#6d7782;
+  --sh-line:#e2e6ea;
+  --sh-brand:#f26a21;
+  --sh-brand-strong:#dc5915;
+  --sh-brand-soft:#fff3ec;
+  --sh-blue:#245d8f;
+  --sh-blue-soft:#edf4f9;
+  --sh-green:#16805b;
+  --sh-green-soft:#edf8f3;
+  --sh-shadow-sm:0 1px 2px rgba(16,24,32,.035);
+  --sh-shadow-md:0 10px 30px rgba(16,24,32,.075);
+  --sh-radius-sm:9px;
+  --sh-radius-md:13px;
+  --sh-radius-lg:17px;
+}
+html[data-theme="dark"],html.dark{
+  --sh-bg:#0b1117;--sh-surface:#111820;--sh-surface-2:#151e27;--sh-text:#eef2f5;--sh-muted:#9ba7b2;
+  --sh-line:#26323d;--sh-brand:#ff7b32;--sh-brand-strong:#ff8b42;--sh-brand-soft:#2b1d15;
+  --sh-blue:#79a9ce;--sh-blue-soft:#162532;--sh-green:#57bd91;--sh-green-soft:#152a22;
+  --sh-shadow-sm:0 1px 2px rgba(0,0,0,.2);--sh-shadow-md:0 16px 38px rgba(0,0,0,.24);
+}
+.app{background:var(--sh-bg)}
+.hero,.heroOrb,.brandRibbon{display:none!important}
+.section{padding-top:26px}
+.title{margin-bottom:11px}
+.title h2{font-size:20px;letter-spacing:-.2px}
+.title span{font-size:8px}
+.promotionsGrid,.grid,.features{gap:1px;background:var(--sh-line);border:1px solid var(--sh-line);border-radius:14px;overflow:hidden}
+.promotionCard,.card,.features>button{border:0;border-radius:0;box-shadow:none;background:var(--sh-surface)}
+.promotionCard:hover,.card:hover,.features>button:hover{transform:none;box-shadow:none;background:var(--sh-surface-2)}
+.card .pic{height:190px}
+.card .body{padding:12px}
+.features{grid-template-columns:repeat(6,minmax(0,1fr))}
+.features>button{min-height:86px;padding:12px}
+.siteFooter{margin:32px 0 16px;border-radius:14px;box-shadow:none}
+.primary{border-radius:9px;box-shadow:none}
+.primary:hover{box-shadow:none}
+.modal,.productDetailsBackdrop{background:rgba(2,11,22,.72);backdrop-filter:blur(16px)}
+.auth,.productDetailsModal{border-radius:18px;box-shadow:0 30px 90px rgba(0,0,0,.22)}
+@media(max-width:900px){.features{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.features{grid-template-columns:repeat(2,minmax(0,1fr))}.card .pic{height:155px}}
