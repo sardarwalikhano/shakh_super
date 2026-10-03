@@ -37,6 +37,8 @@ import ElectronicsControlCenter from './components/ElectronicsControlCenter';
 import ElectronicsOrdersPanel from './components/ElectronicsOrdersPanel';
 import JewelryControlCenter from './components/JewelryControlCenter';
 import JewelryOrdersPanel from './components/JewelryOrdersPanel';
+import BeautyControlCenter from './components/BeautyControlCenter';
+import BeautyOrdersPanel from './components/BeautyOrdersPanel';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -401,6 +403,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
    if(role==='fashion_vendor')return <FashionOrdersPanel userId={user.id}/>;
    if(role==='electronics_vendor')return <ElectronicsOrdersPanel userId={user.id}/>;
    if(role==='jewelry_vendor')return <JewelryOrdersPanel userId={user.id}/>;
+   if(role==='beauty_vendor')return <BeautyOrdersPanel userId={user.id}/>;
    if(role==='vendor')return <VendorOrdersPanel userId={user.id}/>;
    return <CustomerOrdersPanel userId={user.id}/>;
   }
@@ -411,7 +414,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   }
   if(dashboardView==='delivery_zones')return <DeliveryZoneManager userId={user.id} role={role}/>;
   if(dashboardView==='store'){
-   if(['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role))return <VendorDashboard userId={user.id} role={role} onRefresh={()=>void loadProducts()} productCount={products.length} pendingOrders={orders.filter(o=>o.status==='pending').length} todaySales={orders.reduce((s,o)=>s+Number(o.total_iqd||0),0)}/>;
+   if(['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor','beauty_vendor'].includes(role))return <VendorDashboard userId={user.id} role={role} onRefresh={()=>void loadProducts()} productCount={products.length} pendingOrders={orders.filter(o=>o.status==='pending').length} todaySales={orders.reduce((s,o)=>s+Number(o.total_iqd||0),0)}/>;
    if(role==='car_dealer')return <VehicleShowroomModule userId={user.id} role={role}/>;
    if(role==='umrah_agency')return <UmrahBookingModule userId={user.id} role={role}/>;
    if(role==='super_admin'||role==='admin')return <SuperAdminOrderMonitor/>;
@@ -514,6 +517,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     ? <ElectronicsControlCenter userId={user.id} onNavigate={openDashboard} />
     : role==='jewelry_vendor'
     ? <JewelryControlCenter userId={user.id} onNavigate={openDashboard} />
+    : role==='beauty_vendor'
+    ? <BeautyControlCenter userId={user.id} onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
