@@ -25,6 +25,7 @@ import DashboardShell,{type DashboardView} from './components/DashboardShell';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import './shakh-redesign.css';
+import './shakh-complete-redesign.css';
 import SuperAdminControlCenter from './components/SuperAdminControlCenter';
 import AdminControlCenter from './components/AdminControlCenter';
 import CustomerControlCenter from './components/CustomerControlCenter';
@@ -467,28 +468,15 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   onOpenCart={()=>setCartOpen(true)}
  />
  <main className="shakhHome">
-  <section className="shakhHomeHero" aria-labelledby="shakh-home-title">
-    <div className="shakhHomeHeroCopy">
-      <span className="shakhHomeKicker">SHAKH • بازاڕی زیندوو</span>
-      <h1 id="shakh-home-title">هەموو پێویستییەکانت، <strong>لە یەک پلاتفۆرم.</strong></h1>
-      <p>خواردن، بازاڕ، جل و بەرگ، ئەلیکترۆنیات، ئۆتۆمبێل، حەج و عومرە و گەیاندن؛ بە داتای ڕاستەقینە و خزمەتگوزارییەکانی شاخ.</p>
-      <div className="shakhHomeHeroActions">
-        <button type="button" className="shakhPrimaryAction" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}>بینینی بازاڕ <ArrowLeft size={17}/></button>
-        <button type="button" className="shakhSecondaryAction" onClick={()=>openDashboard('services')}>هەموو خزمەتگوزارییەکان</button>
-      </div>
-      <div className="shakhHomeTrust">
-        <span><span className="shakhTrustDot is-green"></span>داتا لە Supabase</span>
-        <span><span className="shakhTrustDot is-blue"></span>ڕووکاری RTL</span>
-        <span><span className="shakhTrustDot is-orange"></span>گیراوی موبایل</span>
-      </div>
+  <section className="shakhHomeIntro" aria-labelledby="shakh-home-intro-title">
+    <div>
+      <span>SHAKH • بازاڕی زیندوو</span>
+      <h1 id="shakh-home-intro-title">هەموو پێویستییەکانت لە یەک پلاتفۆرم</h1>
+      <p>بازاڕ، پۆست و ئۆفەر، گەیاندن، ئۆتۆمبێل و عومرە لە یەک شوێن.</p>
     </div>
-    <div className="shakhHomeHeroPanel" aria-label="پوختەی شاخ">
-      <div className="shakhHeroPanelLogo"><img src="/shakh-logo.svg?v=1.9.8" alt="شاخ" /></div>
-      <div className="shakhHeroPanelStats">
-        <article><small>بەرهەمە بەردەستەکان</small><strong>{products.length.toLocaleString('ku-IQ')}</strong></article>
-        <article><small>پرۆمۆشنە چالاکەکان</small><strong>{promotions.length.toLocaleString('ku-IQ')}</strong></article>
-        <article><small>ژمارەی سەلە</small><strong>{cart.reduce((sum,item)=>sum+item.quantity,0).toLocaleString('ku-IQ')}</strong></article>
-      </div>
+    <div className="shakhHomeIntroActions">
+      <button type="button" className="shakhPrimaryAction" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}>بینینی بازاڕ <ArrowLeft size={16}/></button>
+      <button type="button" className="shakhSecondaryAction" onClick={()=>openDashboard('services')}>خزمەتگوزارییەکان</button>
     </div>
   </section>
 
