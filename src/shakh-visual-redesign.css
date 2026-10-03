@@ -833,3 +833,314 @@ html[data-theme="dark"] .shakhHeaderSearch{
   outline:2px solid var(--shv-brand)!important;
   outline-offset:2px!important;
 }
+
+
+/* =========================================================
+   SHAKH FINAL VISUAL HIERARCHY — 2026
+   Visual layer only. No business logic/data/auth changes.
+   ========================================================= */
+
+/* Quiet page intro: no hero/banner treatment. */
+.shakhHomeIntro{
+  margin:26px 0 8px!important;
+  padding:0 0 18px!important;
+  min-height:0!important;
+  border:0!important;
+  border-bottom:1px solid var(--shv-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:22px!important;
+}
+.shakhHomeIntro>div:first-child{max-width:760px!important}
+.shakhHomeIntro>div:first-child>span{
+  display:block!important;
+  padding:0!important;
+  margin:0 0 7px!important;
+  background:none!important;
+  color:var(--shv-brand)!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  letter-spacing:.45px!important;
+}
+.shakhHomeIntro h1{
+  margin:0!important;
+  font-size:clamp(28px,4vw,46px)!important;
+  line-height:1.1!important;
+  letter-spacing:-1.2px!important;
+  font-weight:850!important;
+}
+.shakhHomeIntro p{margin:8px 0 0!important;color:var(--shv-muted)!important;font-size:10px!important;line-height:1.8!important}
+.shakhHomeIntroActions{display:flex!important;gap:7px!important;flex:0 0 auto!important}
+.shakhPrimaryAction,.shakhSecondaryAction{
+  min-height:36px!important;padding:0 11px!important;border-radius:8px!important;
+  font-size:8px!important;box-shadow:none!important;
+}
+.shakhPrimaryAction{background:var(--shv-brand)!important}
+.shakhSecondaryAction{background:var(--shv-surface)!important;border:1px solid var(--shv-line)!important;color:var(--shv-text)!important}
+
+/* Utility rail instead of six decorative cards. */
+.shakhHomeCategoryRail{
+  display:flex!important;gap:2px!important;margin:7px 0 0!important;padding:4px 0!important;
+  border-bottom:1px solid var(--shv-line)!important;overflow:auto!important;
+}
+.shakhHomeCategoryRail button{
+  min-width:104px!important;display:flex!important;align-items:center!important;gap:7px!important;
+  padding:7px 8px!important;border:0!important;border-radius:7px!important;
+  background:transparent!important;box-shadow:none!important;color:var(--shv-muted)!important;
+}
+.shakhHomeCategoryRail button>svg{
+  width:22px!important;height:22px!important;padding:4px!important;border-radius:6px!important;
+  background:var(--shv-surface-2)!important;color:var(--shv-brand)!important;
+}
+.shakhHomeCategoryRail span{font-size:8px!important;font-weight:900!important}
+.shakhHomeCategoryRail small{font-size:6.5px!important;color:var(--shv-muted)!important}
+.shakhHomeCategoryRail button:hover{background:var(--shv-surface-2)!important;transform:none!important}
+
+/* Section hierarchy is typography + dividers, not containers. */
+.shakhHomeSection{margin-top:32px!important}
+.shakhSectionHeader{margin-bottom:10px!important}
+.shakhSectionHeader>div>span{
+  padding:0!important;background:none!important;border:0!important;
+  color:var(--shv-muted)!important;font-size:7px!important;letter-spacing:.55px!important;
+}
+.shakhSectionHeader h2{margin:4px 0 1px!important;font-size:19px!important;letter-spacing:-.25px!important}
+.shakhSectionHeader p{font-size:8px!important;color:var(--shv-muted)!important}
+.shakhSectionHeader>button{
+  min-height:30px!important;padding:0 9px!important;border-radius:7px!important;
+  background:transparent!important;border:1px solid var(--shv-line)!important;font-size:7px!important;
+}
+.shakhMarketplaceMeta{min-width:auto!important;padding:0!important;border:0!important;background:transparent!important;text-align:right!important}
+.shakhMarketplaceMeta strong{display:inline!important;font-size:15px!important;color:var(--shv-text)!important}
+.shakhMarketplaceMeta small{margin-inline-start:4px!important}
+
+/* Offers become editorial rows. */
+.shakhOffersGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:0!important;border-top:1px solid var(--shv-line)!important;
+}
+.shakhOfferCard{
+  grid-template-columns:82px 1fr!important;
+  border:0!important;border-bottom:1px solid var(--shv-line)!important;
+  border-radius:0!important;background:transparent!important;box-shadow:none!important;
+}
+.shakhOfferMedia{min-height:88px!important;margin:9px 0!important;border-radius:7px!important;background:var(--shv-surface-2)!important}
+.shakhOfferBody{padding:12px!important}
+.shakhOfferBody h3{font-size:10px!important}
+.shakhOfferBody p{font-size:7.5px!important}
+.shakhOfferBody>span{font-size:6.5px!important}
+
+/* Feed is a native section, not a giant card. */
+.shakhFeedFrame{
+  padding:0!important;border:0!important;border-top:1px solid var(--shv-line)!important;
+  border-radius:0!important;background:transparent!important;box-shadow:none!important;
+}
+
+/* Product catalog: grid structure, no floating cards. */
+.shakhProductGrid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;
+  border-top:1px solid var(--shv-line)!important;border-inline-start:1px solid var(--shv-line)!important;
+}
+.shakhProductCard{
+  border:0!important;border-inline-end:1px solid var(--shv-line)!important;
+  border-bottom:1px solid var(--shv-line)!important;border-radius:0!important;
+  background:var(--shv-surface)!important;box-shadow:none!important;
+  transition:background-color .15s ease!important;
+}
+.shakhProductCard:hover{
+  transform:none!important;border-color:var(--shv-line)!important;
+  box-shadow:none!important;background:var(--shv-surface-2)!important;
+}
+.shakhProductMedia{height:200px!important;background:var(--shv-surface-2)!important}
+.shakhProductBody{padding:11px!important}
+.shakhProductBody h3{font-size:10.5px!important}
+.shakhProductBody p{font-size:7.5px!important}
+.shakhProductFooter{margin-top:8px!important}
+.shakhProductFooter strong{font-size:12px!important}
+.shakhProductFooter button{
+  min-height:29px!important;border-radius:7px!important;background:var(--shv-brand)!important;
+  border-color:var(--shv-brand)!important;color:#fff!important;font-size:7px!important;
+}
+
+/* Hard-remove legacy hero/banner visual blocks wherever still mounted. */
+.hero,.heroOrb,.shakhHomeHero,.shakhHomeHeroCopy,.shakhHomeHeroPanel{display:none!important}
+
+/* Dashboard: one primary surface, metrics as a reading row. */
+.shakhDashboardShell{
+  border-radius:16px!important;box-shadow:0 28px 90px rgba(0,0,0,.25)!important;
+}
+.shakhDashboardTopbar{min-height:60px!important;padding:9px 14px!important}
+.shakhDashboardBrand{width:38px!important;height:38px!important;flex-basis:38px!important;border-radius:9px!important}
+.shakhDashboardTitleBlock h1{font-size:16px!important}
+.shakhDashboardTitleBlock p{display:none!important}
+.shakhDashboardAccount{min-width:130px!important;padding-inline-start:10px!important}
+.shakhDashboardAccount strong{font-size:8px!important}
+.shakhDashboardAccount small,.shakhDashboardAccount span{font-size:6.5px!important}
+.shakhDashboardBody{grid-template-columns:minmax(0,1fr) 230px!important}
+.shakhDashboardSidebar{padding:11px 7px!important}
+.shakhDashboardNav{gap:1px!important}
+.shakhDashboardGroupLabel{padding:8px 6px 2px!important;font-size:7px!important}
+.shakhDashboardNavItem{
+  grid-template-columns:30px minmax(0,1fr) auto!important;
+  min-height:42px!important;padding:5px 6px!important;border-radius:8px!important;
+}
+.shakhDashboardNavIcon{width:30px!important;height:30px!important;border-radius:7px!important;background:transparent!important}
+.shakhDashboardNavCopy strong{font-size:8.5px!important}
+.shakhDashboardNavCopy small,.shakhDashboardNavArrow{display:none!important}
+.shakhDashboardNavItem:hover{transform:none!important;background:var(--shv-surface-2)!important;border-color:transparent!important}
+.shakhDashboardNavItem.is-active{background:var(--shv-brand-soft)!important;border-color:transparent!important}
+.shakhDashboardNavItem.is-active .shakhDashboardNavIcon{background:transparent!important;color:var(--shv-brand)!important}
+
+.shakhDashboardToolbar{
+  padding:8px 16px!important;background:color-mix(in srgb,var(--shv-bg) 95%,transparent)!important;
+  border-bottom:1px solid var(--shv-line)!important;
+}
+.shakhDashboardToolbar small{font-size:6.5px!important}
+.shakhDashboardToolbar strong{font-size:9.5px!important}
+.shakhDashboardHome,.shakhDashboardModule{padding:18px!important}
+
+/* KPI strip: no cards, no shadows. */
+.shakhDashboardKpis{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;
+  margin:0 0 20px!important;border-top:1px solid var(--shv-line)!important;
+  border-bottom:1px solid var(--shv-line)!important;background:transparent!important;
+}
+.shakhDashboardKpis article{
+  min-height:82px!important;padding:13px 15px!important;border:0!important;
+  border-inline-end:1px solid var(--shv-line)!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+}
+.shakhDashboardKpis article:last-child{border-inline-end:0!important}
+.shakhDashboardKpis article span,.shakhDashboardKpis article small{font-size:7px!important;color:var(--shv-muted)!important}
+.shakhDashboardKpis article strong{font-size:19px!important;letter-spacing:-.03em!important}
+.shakhDashboardHomeContent{min-width:0!important}
+
+/* Flatten dashboard module wrappers while retaining all controls/data. */
+.shakhDashboardModule .shakhModuleHero{
+  padding:0 0 13px!important;border:0!important;border-bottom:1px solid var(--shv-line)!important;
+  border-radius:0!important;background:transparent!important;box-shadow:none!important;
+}
+.shakhModuleHero h2{font-size:20px!important}
+.shakhModuleRefresh{min-height:31px!important;border-radius:7px!important;font-size:7px!important}
+.shakhModuleMetrics{
+  grid-template-columns:repeat(5,1fr)!important;gap:0!important;margin-top:0!important;
+  border:0!important;border-bottom:1px solid var(--shv-line)!important;border-radius:0!important;background:transparent!important;
+}
+.shakhModuleMetrics article{
+  min-height:70px!important;padding:11px 12px!important;
+  border-inline-end:1px solid var(--shv-line)!important;background:transparent!important;
+}
+.shakhModuleMetrics article:last-child{border-inline-end:0!important}
+.shakhModuleMetrics strong{font-size:15px!important}
+.shakhModuleGrid{grid-template-columns:minmax(210px,.62fr) minmax(0,1.38fr)!important;gap:0!important;margin-top:0!important}
+.shakhModuleCard{
+  padding:13px 0!important;border:0!important;border-bottom:1px solid var(--shv-line)!important;
+  border-radius:0!important;background:transparent!important;box-shadow:none!important;
+}
+.shakhModuleGrid .shakhModuleCard+.shakhModuleCard{padding-inline-start:17px!important;border-inline-start:1px solid var(--shv-line)!important}
+.shakhModuleActions{gap:0!important}
+.shakhModuleActions button{
+  min-height:37px!important;border:0!important;border-bottom:1px solid var(--shv-line)!important;
+  border-radius:0!important;background:transparent!important;font-size:8px!important;
+}
+.shakhModuleActions button:hover{background:var(--shv-surface-2)!important}
+.shakhModuleList{gap:0!important}
+.shakhModuleList article{
+  padding:9px 0!important;border:0!important;border-bottom:1px solid var(--shv-line)!important;
+  border-radius:0!important;background:transparent!important;
+}
+
+/* Generic dashboard panels: tables/lists carry structure, not nested cards. */
+.shakhDashboardModule [class*="Card"],
+.shakhDashboardModule [class*="Panel"]{box-shadow:none!important}
+.shakhDashboardModule table{border-collapse:collapse!important}
+.shakhDashboardModule th{background:var(--shv-surface-2)!important;color:var(--shv-muted)!important;font-size:8px!important}
+.shakhDashboardModule td{border-color:var(--shv-line)!important;font-size:8.5px!important}
+
+/* Footer: compact single-level utility bar. */
+.shakhGlobalFooter{
+  margin-top:48px!important;padding:0 14px 12px!important;
+  background:var(--shv-text)!important;color:#fff!important;
+}
+.shakhFooterCompact{
+  min-height:58px!important;padding:9px 0!important;
+  grid-template-columns:auto 1fr auto!important;gap:14px!important;
+}
+.shakhFooterLogo{width:30px!important;height:30px!important;border-radius:7px!important}
+.shakhFooterIdentity strong{font-size:11px!important}
+.shakhFooterIdentity small{font-size:6.5px!important;color:#aeb8c5!important}
+.shakhFooterLinks{gap:1px 10px!important}
+.shakhFooterLinks button{min-height:24px!important;padding:0!important;color:#aeb8c5!important;font-size:7px!important}
+.shakhFooterLinks button:hover{color:#fff!important}
+.shakhFooterSupport{gap:8px!important}
+.shakhFooterSupport span,.shakhFooterSupport a{font-size:7px!important;color:#aeb8c5!important}
+.shakhFooterUtility{padding:6px 0!important;border-top:1px solid rgba(255,255,255,.08)!important;border-bottom:1px solid rgba(255,255,255,.08)!important}
+.shakhFooterUtility .pwaPanel{margin:0!important;padding:5px 7px!important;background:rgba(255,255,255,.04)!important;border:0!important}
+.shakhFooterBottom{padding-top:7px!important;font-size:6.5px!important}
+.shakhFooterBottom button{width:25px!important;height:25px!important;border-radius:7px!important}
+
+/* Dark mode stays neutral; no black/gradient overload. */
+html[data-theme='dark'] .shakhGlobalFooter{background:#0d141d!important}
+html[data-theme='dark'] .shakhHomeIntro,
+html[data-theme='dark'] .shakhHomeCategoryRail,
+html[data-theme='dark'] .shakhDashboardKpis article,
+html[data-theme='dark'] .shakhModuleMetrics article{background:transparent!important}
+
+/* Mobile hierarchy. */
+@media(max-width:900px){
+  .shakhHomeIntro{align-items:flex-start!important;flex-direction:column!important}
+  .shakhHomeIntroActions{width:100%!important}
+  .shakhHomeIntroActions>*{flex:1!important}
+  .shakhOffersGrid{grid-template-columns:1fr!important}
+  .shakhProductGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .shakhDashboardBody{grid-template-columns:minmax(0,1fr) 210px!important}
+  .shakhDashboardKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .shakhDashboardKpis article:nth-child(2){border-inline-end:0!important}
+  .shakhDashboardKpis article:nth-child(n+3){border-top:1px solid var(--shv-line)!important}
+  .shakhModuleMetrics{grid-template-columns:repeat(3,1fr)!important}
+  .shakhModuleGrid{grid-template-columns:1fr!important}
+  .shakhModuleGrid .shakhModuleCard+.shakhModuleCard{padding-inline-start:0!important;border-inline-start:0!important}
+}
+@media(max-width:700px){
+  .shakhHome{padding-inline:12px!important}
+  .shakhHomeIntro{margin-top:19px!important;padding-bottom:15px!important}
+  .shakhHomeIntro h1{font-size:27px!important}
+  .shakhHomeIntro p{font-size:9px!important}
+  .shakhHomeCategoryRail button{min-width:94px!important}
+  .shakhHomeSection{margin-top:27px!important}
+  .shakhSectionHeader h2{font-size:17px!important}
+  .shakhProductGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .shakhProductMedia{height:158px!important}
+  .shakhDashboardShell{width:100vw!important;height:100vh!important;border-radius:0!important}
+  .shakhDashboardBody{grid-template-columns:1fr!important;grid-template-areas:"main"!important}
+  .shakhDashboardSidebar{
+    position:fixed!important;inset-block:0!important;inset-inline-end:0!important;
+    width:min(84vw,310px)!important;z-index:120!important;transform:translateX(105%)!important;
+    transition:transform .2s ease!important;
+  }
+  .shakhDashboardSidebar.is-open{transform:translateX(0)!important}
+  .shakhDashboardMenuButton{display:grid!important}
+  .shakhDashboardSidebarClose{display:grid!important}
+  .shakhDashboardScrim{position:fixed!important;inset:0!important;z-index:110!important;background:rgba(0,0,0,.48)!important;border:0!important}
+  .shakhDashboardHome,.shakhDashboardModule{padding:12px!important}
+  .shakhDashboardToolbar{padding:8px 12px!important}
+  .shakhDashboardKpis{grid-template-columns:1fr 1fr!important}
+  .shakhDashboardKpis article{min-height:70px!important;padding:10px!important}
+  .shakhDashboardKpis article strong{font-size:17px!important}
+  .shakhModuleMetrics{grid-template-columns:1fr 1fr!important}
+  .shakhModuleMetrics article{min-height:62px!important;padding:9px!important}
+  .shakhFooterCompact{grid-template-columns:1fr!important;gap:7px!important;padding:11px 0!important}
+  .shakhFooterLinks{justify-content:flex-start!important}
+  .shakhFooterSupport{justify-content:flex-start!important}
+  .shakhFooterBottom{flex-direction:column!important;align-items:flex-start!important;gap:6px!important}
+}
+@media(max-width:430px){
+  .shakhProductMedia{height:142px!important}
+  .shakhDashboardKpis{grid-template-columns:1fr!important}
+  .shakhDashboardKpis article{border-inline-end:0!important;border-top:1px solid var(--shv-line)!important}
+  .shakhDashboardKpis article:first-child{border-top:0!important}
+  .shakhModuleMetrics{grid-template-columns:1fr!important}
+}
