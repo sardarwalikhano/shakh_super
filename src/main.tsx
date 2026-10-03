@@ -40,6 +40,8 @@ import JewelryOrdersPanel from './components/JewelryOrdersPanel';
 import BeautyControlCenter from './components/BeautyControlCenter';
 import BeautyOrdersPanel from './components/BeautyOrdersPanel';
 import CarDealerControlCenter from './components/CarDealerControlCenter';
+import UmrahAgencyControlCenter from './components/UmrahAgencyControlCenter';
+import UmrahAgencyOrdersPanel from './components/UmrahAgencyOrdersPanel';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -405,6 +407,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
    if(role==='electronics_vendor')return <ElectronicsOrdersPanel userId={user.id}/>;
    if(role==='jewelry_vendor')return <JewelryOrdersPanel userId={user.id}/>;
    if(role==='beauty_vendor')return <BeautyOrdersPanel userId={user.id}/>;
+   if(role==='umrah_agency')return <UmrahAgencyOrdersPanel userId={user.id}/>;
    if(role==='vendor')return <VendorOrdersPanel userId={user.id}/>;
    return <CustomerOrdersPanel userId={user.id}/>;
   }
@@ -522,6 +525,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     ? <BeautyControlCenter userId={user.id} onNavigate={openDashboard} />
     : role==='car_dealer'
     ? <CarDealerControlCenter userId={user.id} onNavigate={openDashboard} />
+    : role==='umrah_agency'
+    ? <UmrahAgencyControlCenter userId={user.id} onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
