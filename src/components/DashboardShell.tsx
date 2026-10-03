@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import './dashboard-shell.css';
 import UmrahAgencyModule from './UmrahAgencyModule';
+import SupportModule from './SupportModule';
 import { supabase } from '../lib/supabase';
 
 export type DashboardView =
@@ -461,7 +462,7 @@ export default function DashboardShell({
                 <div className="dashboardShellHomeContent">{homeContent}</div>
               </div>
             ) : (
-              <div className="dashboardShellModule">{view === 'cars' && role === 'car_dealer' ? <CarDealerModule /> : view === 'umrah' && role === 'umrah_agency' ? <UmrahAgencyModule /> : children}</div>
+              <div className="dashboardShellModule">{view === 'cars' && role === 'car_dealer' ? <CarDealerModule /> : view === 'umrah' && role === 'umrah_agency' ? <UmrahAgencyModule /> : view === 'support' ? <SupportModule role={role} /> : children}</div>
             )}
           </main>
         </div>
