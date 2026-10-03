@@ -35,6 +35,8 @@ import FashionControlCenter from './components/FashionControlCenter';
 import FashionOrdersPanel from './components/FashionOrdersPanel';
 import ElectronicsControlCenter from './components/ElectronicsControlCenter';
 import ElectronicsOrdersPanel from './components/ElectronicsOrdersPanel';
+import JewelryControlCenter from './components/JewelryControlCenter';
+import JewelryOrdersPanel from './components/JewelryOrdersPanel';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -398,6 +400,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
    if(role==='supermarket_vendor')return <SupermarketOrdersPanel userId={user.id}/>;
    if(role==='fashion_vendor')return <FashionOrdersPanel userId={user.id}/>;
    if(role==='electronics_vendor')return <ElectronicsOrdersPanel userId={user.id}/>;
+   if(role==='jewelry_vendor')return <JewelryOrdersPanel userId={user.id}/>;
    if(role==='vendor')return <VendorOrdersPanel userId={user.id}/>;
    return <CustomerOrdersPanel userId={user.id}/>;
   }
@@ -509,6 +512,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     ? <FashionControlCenter userId={user.id} onNavigate={openDashboard} />
     : role==='electronics_vendor'
     ? <ElectronicsControlCenter userId={user.id} onNavigate={openDashboard} />
+    : role==='jewelry_vendor'
+    ? <JewelryControlCenter userId={user.id} onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
