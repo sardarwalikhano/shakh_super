@@ -466,11 +466,87 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   onLogin={()=>{setAuthMode('login');setAuth(true)}}
   onOpenCart={()=>setCartOpen(true)}
  />
- <main><section className="hero"><div><span className="eyebrow">بازاڕی زیندووی شاخ</span><h1>هەموو شتێک،<strong> لە یەک شوێن.</strong></h1><p>خواردن، سوپرمارکێت، جل و بەرگ، ئۆتۆمبێل و گەشتەکانی حەج و عومرە لە یەک پلاتفۆرم.</p><button className="primary" onClick={()=>document.querySelector('.section')?.scrollIntoView({behavior:'smooth'})}>دەستپێبکە <ArrowLeft/></button></div><div className="heroOrb" aria-hidden="true"><img src="/shakh-logo.svg?v=1.9.8" alt="" /></div></section>
- {promotions.length>0&&<section className="section promotionsSection" aria-label="پرۆمۆشنەکانی شاخ"><div className="title"><div><span>پرۆمۆشنەکانی شاخ</span><h2>داشکاندن و ئۆفەری چالاک</h2></div></div><div className="promotionsGrid">{promotions.map(p=><article className="promotionCard" key={p.id}>{p.image_url&&<img src={p.image_url} alt={p.title} loading="lazy" decoding="async"/>}<div><b>{p.title}</b>{p.description&&<p>{p.description}</p>}{p.ends_at&&<small>تا {new Date(p.ends_at).toLocaleDateString('ku-IQ')}</small>}</div></article>)}</div></section>}
- <PostsFeed onAddToCart={openProductForCart}/><section className="section"><div className="title"><span>بازاڕی شاخ</span><h2>بەرهەمە بەردەستەکان</h2></div>{!filtered.length?<div className="empty"><PackageCheck size={40}/><h3>هێشتا بەرهەمێک بەردەست نییە</h3><p>کاتێک خاوەن دوکان بەرهەم زیاد بکات، لێرە بە شێوەی زیندوو دەردەکەوێت.</p></div>:<div className="grid">{filtered.map(p=>{const price=Number(p.sale_price_iqd??p.price_iqd);return <article className="card" key={p.id} tabIndex={0} role="button" aria-label={'بەرهەمی '+p.name_ku+' بکەرەوە'} onClick={()=>{setSelectedReferralCode(null);setSelectedProduct(p)}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedProduct(p)}}} style={{cursor:'pointer'}}><div className="pic">{p.image_url?<img src={p.image_url} alt={p.name_ku}/>:<span>🛍️</span>}</div><div className="body"><small>{p.category||'بازاڕ'} · {p.store_name||'دوکان'}</small><h3>{p.name_ku}</h3><small>{p.product_type||''}{p.brand?' · '+p.brand:''}{p.size?' · '+p.size:''}</small><div className="buy"><b>{price.toLocaleString('en-US')} د.ع</b><button disabled={busy||!p.is_available||Number(p.stock||0)<=0} onClick={e=>{e.stopPropagation();void openProductForCart(p.id)}}>{Number(p.stock||0)<=0?'ستۆکی نەماوە':'+ زیادکردن'}</button></div></div></article>})}</div>}</section>
- <section className="features"><button type="button" onClick={()=>openDashboard('delivery')}><Truck/><b>گەیاندنی خێرا</b><small>بەدواداچوونی داواکاری</small></button>{['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor','beauty_vendor','super_admin','admin'].includes(role)&&<button type="button" onClick={()=>openDashboard('delivery_zones')}><MapPin/><b>ناوچەی گەیاندن</b><small>سنوری خزمەتگوزاریی شاخ</small></button>}<button type="button" onClick={()=>openDashboard('store')}><Store/><b>دوکان و پێشانگا</b><small>بازاڕ و فرۆشتنی ڕاستەوخۆ</small></button><button type="button" onClick={()=>openDashboard('cars')}><Car/><b>SHAKH Cars</b><small>پێشانگا، پۆستکردن و پەسەندکردن</small></button><button type="button" onClick={()=>openDashboard('umrah')}><Plane/><b>حەج و عومرە</b><small>تەنها حجزکردنی گەشت</small></button><button type="button" onClick={()=>openDashboard('wallet')}><Wallet/><b>جزدان</b><small>پارە و خاڵەکان</small></button></section>
- <GlobalFooter user={user} onOpenDashboard={openDashboard} onOpenPrivacy={()=>setPrivacyOpen(true)} /></main>
+ <main className="shakhHome">
+  <section className="shakhHomeHero" aria-labelledby="shakh-home-title">
+    <div className="shakhHomeHeroCopy">
+      <span className="shakhHomeKicker">SHAKH • بازاڕی زیندوو</span>
+      <h1 id="shakh-home-title">هەموو پێویستییەکانت، <strong>لە یەک پلاتفۆرم.</strong></h1>
+      <p>خواردن، بازاڕ، جل و بەرگ، ئەلیکترۆنیات، ئۆتۆمبێل، حەج و عومرە و گەیاندن؛ بە داتای ڕاستەقینە و خزمەتگوزارییەکانی شاخ.</p>
+      <div className="shakhHomeHeroActions">
+        <button type="button" className="shakhPrimaryAction" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}>بینینی بازاڕ <ArrowLeft size={17}/></button>
+        <button type="button" className="shakhSecondaryAction" onClick={()=>openDashboard('services')}>هەموو خزمەتگوزارییەکان</button>
+      </div>
+      <div className="shakhHomeTrust">
+        <span><span className="shakhTrustDot is-green"></span>داتا لە Supabase</span>
+        <span><span className="shakhTrustDot is-blue"></span>ڕووکاری RTL</span>
+        <span><span className="shakhTrustDot is-orange"></span>گیراوی موبایل</span>
+      </div>
+    </div>
+    <div className="shakhHomeHeroPanel" aria-label="پوختەی شاخ">
+      <div className="shakhHeroPanelLogo"><img src="/shakh-logo.svg?v=1.9.8" alt="شاخ" /></div>
+      <div className="shakhHeroPanelStats">
+        <article><small>بەرهەمە بەردەستەکان</small><strong>{products.length.toLocaleString('ku-IQ')}</strong></article>
+        <article><small>پرۆمۆشنە چالاکەکان</small><strong>{promotions.length.toLocaleString('ku-IQ')}</strong></article>
+        <article><small>ژمارەی سەلە</small><strong>{cart.reduce((sum,item)=>sum+item.quantity,0).toLocaleString('ku-IQ')}</strong></article>
+      </div>
+    </div>
+  </section>
+
+  <nav className="shakhHomeCategoryRail" aria-label="بەشە سەرەکییەکان">
+    <button type="button" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}><Store size={17}/><span>بازاڕ</span><small>بەرهەم</small></button>
+    <button type="button" onClick={()=>document.getElementById('shakh-live-feed')?.scrollIntoView({behavior:'smooth'})}><MessageCircle size={17}/><span>پۆست</span><small>ئۆفەر</small></button>
+    <button type="button" onClick={()=>openDashboard('cars')}><Car size={17}/><span>Cars</span><small>ئۆتۆمبێل</small></button>
+    <button type="button" onClick={()=>openDashboard('umrah')}><Plane size={17}/><span>عومرە</span><small>پەکەج</small></button>
+    <button type="button" onClick={()=>openDashboard('delivery')}><Truck size={17}/><span>گەیاندن</span><small>شوێنکەوتن</small></button>
+    <button type="button" onClick={()=>openDashboard('wallet')}><Wallet size={17}/><span>جزدان</span><small>داهات و خاڵ</small></button>
+  </nav>
+
+  {promotions.length>0&&<section id="shakh-offers" className="shakhHomeSection shakhOffersSection" aria-label="پرۆمۆشنەکانی شاخ">
+    <div className="shakhSectionHeader"><div><span>OFFERS</span><h2>ئۆفەرەکانی ئێستا</h2><p>تەنها پرۆمۆشنە چالاکەکان لێرە پیشان دەدرێن.</p></div><button type="button" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}>چوون بۆ بازاڕ <ArrowLeft size={15}/></button></div>
+    <div className="shakhOffersGrid">{promotions.map(p=><article className="shakhOfferCard" key={p.id}>
+      <div className="shakhOfferMedia">{p.image_url?<img src={p.image_url} alt={p.title} loading="lazy" decoding="async"/>:<span>٪</span>}</div>
+      <div className="shakhOfferBody"><span>ئۆفەر</span><h3>{p.title}</h3>{p.description&&<p>{p.description}</p>}{p.ends_at&&<small>کۆتایی: {new Date(p.ends_at).toLocaleDateString('ku-IQ')}</small>}</div>
+    </article>)}</div>
+  </section>}
+
+  <section id="shakh-live-feed" className="shakhHomeSection shakhFeedSection">
+    <div className="shakhSectionHeader"><div><span>LIVE FEED</span><h2>پۆست و بازاڕی زیندوو</h2><p>بڵاوکراوەکان و ناوەڕۆکی ڕاستەقینەی بەکارهێنەران و فرۆشیاران.</p></div></div>
+    <div className="shakhFeedFrame"><PostsFeed onAddToCart={openProductForCart}/></div>
+  </section>
+
+  <section id="shakh-marketplace" className="shakhHomeSection shakhMarketplaceSection">
+    <div className="shakhSectionHeader">
+      <div><span>MARKETPLACE</span><h2>بازاڕی شاخ</h2><p>بەرهەمە بەردەستەکان، لەسەر داتای ڕاستەقینەی سیستەم.</p></div>
+      <div className="shakhMarketplaceMeta"><strong>{filtered.length.toLocaleString('ku-IQ')}</strong><small>بەرهەم</small></div>
+    </div>
+    {!filtered.length?<div className="shakhEmptyState"><PackageCheck size={28}/><h3>هێشتا بەرهەمێک نەدۆزرایەوە</h3><p>کاتێک بەرهەمێک بەردەست بێت، لێرە پیشان دەدرێت.</p></div>:<div className="shakhProductGrid">{filtered.map(p=>{
+      const price=Number(p.sale_price_iqd??p.price_iqd);
+      return <article className="shakhProductCard" key={p.id} tabIndex={0} role="button" aria-label={'بەرهەمی '+p.name_ku+' بکەرەوە'} onClick={()=>{setSelectedReferralCode(null);setSelectedProduct(p)}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedProduct(p)}}}>
+        <div className="shakhProductMedia"><div className="shakhProductBadge">{p.is_available?'بەردەست':'نەماوە'}</div>{p.image_url?<img src={p.image_url} alt={p.name_ku} loading="lazy" decoding="async"/>:<span>🛍️</span>}</div>
+        <div className="shakhProductBody">
+          <span className="shakhProductEyebrow">{p.category||'بازاڕ'} · {p.store_name||'دوکان'}</span>
+          <h3>{p.name_ku}</h3>
+          <p>{p.product_type||'بەرهەم'}{p.brand?' · '+p.brand:''}{p.size?' · '+p.size:''}</p>
+          <div className="shakhProductFooter"><strong>{price.toLocaleString('en-US')} د.ع</strong><button type="button" disabled={busy||!p.is_available||Number(p.stock||0)<=0} onClick={e=>{e.stopPropagation();void openProductForCart(p.id)}}>{Number(p.stock||0)<=0?'ستۆکی نەماوە':'زیادکردن'}</button></div>
+        </div>
+      </article>;
+    })}</div>}
+  </section>
+
+  <section id="shakh-services" className="shakhHomeSection shakhServicesSection">
+    <div className="shakhSectionHeader"><div><span>SERVICES</span><h2>خزمەتگوزارییەکان</h2><p>بۆ کڕیار و بەڕێوبەرەکان، بەشە سەرەکییەکان لە یەک شوێن.</p></div></div>
+    <div className="shakhServicesGrid">
+      <button type="button" onClick={()=>openDashboard('delivery')}><Truck size={22}/><div><strong>گەیاندن</strong><small>شوێنکەوتن و دۆخی داواکاری</small></div><ArrowLeft size={15}/></button>
+      <button type="button" onClick={()=>openDashboard('store')}><Store size={22}/><div><strong>دوکان و بازار</strong><small>فڕۆشتن و بەرهەم</small></div><ArrowLeft size={15}/></button>
+      <button type="button" onClick={()=>openDashboard('cars')}><Car size={22}/><div><strong>SHAKH Cars</strong><small>پێشانگا و ئۆتۆمبێل</small></div><ArrowLeft size={15}/></button>
+      <button type="button" onClick={()=>openDashboard('umrah')}><Plane size={22}/><div><strong>حەج و عومرە</strong><small>پەکەج و حجز</small></div><ArrowLeft size={15}/></button>
+      <button type="button" onClick={()=>openDashboard('wallet')}><Wallet size={22}/><div><strong>جزدان</strong><small>باڵانس و خاڵ</small></div><ArrowLeft size={15}/></button>
+      <button type="button" onClick={()=>openDashboard('support')}><MessageCircle size={22}/><div><strong>پشتگیری</strong><small>تیکەت و پەیوەندی</small></div><ArrowLeft size={15}/></button>
+    </div>
+  </section>
+
+  <GlobalFooter user={user} onOpenDashboard={openDashboard} onOpenPrivacy={()=>setPrivacyOpen(true)} />
+</main>
  <nav className="mobileBottomNav" aria-label="ناوبەری خێرای مۆبایل">
   <button type="button" className={!dashboard?'active':''} onClick={()=>{void closeDashboard();window.scrollTo({top:0,behavior:'smooth'})}}><Home size={18}/><span>سەرەکی</span></button>
   <button type="button" className={dashboard&&dashboardView==='orders'?'active':''} onClick={()=>user?openDashboard('orders'):(setAuthMode('login'),setAuth(true))}><PackageCheck size={18}/><span>داواکاری</span></button>
