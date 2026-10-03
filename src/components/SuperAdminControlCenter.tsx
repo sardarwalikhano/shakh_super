@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Activity, Bell, Car, ClipboardList, LifeBuoy, Package, RefreshCw,
+  Activity, Bell, Car, CheckCircle2, Clock3, ClipboardList, LifeBuoy, Package, RefreshCw,
   ShieldCheck, Store, Truck, Users, WalletCards, Zap,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -26,6 +26,37 @@ type RecentOrder = {
   created_at: string;
 };
 
+type TrendPoint = {
+  key: string;
+  label: string;
+  count: number;
+  revenue: number;
+};
+
+const makeTrend = (rows: RecentOrder[]): TrendPoint[] => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - (6 - index));
+    return {
+      key: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+      label: date.toLocaleDateString('ku-IQ', { weekday: 'short' }),
+      count: 0,
+      revenue: 0,
+    };
+  });
+  const map = new Map(days.map((day) => [day.key, day]));
+  rows.forEach((row) => {
+    const date = new Date(row.created_at);
+    const point = map.get(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`);
+    if (!point) return;
+    point.count += 1;
+    point.revenue += Number(row.total_iqd || 0);
+  });
+  return days;
+};
+
 const initialMetrics: Metrics = {
   users: 0,
   stores: 0,
@@ -40,14 +71,19 @@ const initialMetrics: Metrics = {
 export default function SuperAdminControlCenter({ onNavigate }: Props) {
   const [metrics, setMetrics] = useState<Metrics>(initialMetrics);
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [trendRows, setTrendRows] = useState<TrendPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
+  const [realtimeStatus, setRealtimeStatus] = useState('CONNECTING');
 
   const load = useCallback(async () => {
     setLoading(true);
     setMessage('');
     try {
+      const since = new Date();
+      since.setDate(since.getDate() - 6);
+
       const [
         users,
         stores,
@@ -67,7 +103,7 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
         supabase.from('captains').select('user_id', { count: 'exact', head: true }).eq('is_online', true),
         supabase.from('support_tickets').select('id', { count: 'exact', head: true }),
         supabase.from('notifications').select('id', { count: 'exact', head: true }).eq('is_read', false),
-        supabase.from('orders').select('id,status,total_iqd,created_at').order('created_at', { ascending: false }).limit(8),
+        supabase.from('orders').select('id,status,total_iqd,created_at').gte('created_at', since.toISOString()).order('created_at', { ascending: false }).limit(200),
       ]);
 
       const firstError = [users, stores, products, orders, activeOrders, onlineCaptains, tickets, unreadNotifications, recentOrders]
@@ -84,7 +120,9 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
         tickets: tickets.count ?? 0,
         unreadNotifications: unreadNotifications.count ?? 0,
       });
-      setRecentOrders((recentOrders.data ?? []) as RecentOrder[]);
+      const rows = (recentOrders.data ?? []) as RecentOrder[];
+      setRecentOrders(rows.slice(0, 8));
+      setTrendRows(makeTrend(rows));
       setSyncedAt(new Date());
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'نەتوانرا داتای ناوەندی کۆنترۆڵ وەرگیرێت.');
@@ -103,7 +141,8 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'captains' }, () => void load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'support_tickets' }, () => void load())
-      .subscribe();
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => void load())
+      .subscribe((status) => setRealtimeStatus(status));
     return () => { void supabase.removeChannel(channel); };
   }, [load]);
 
@@ -118,6 +157,11 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
     delivered: 'گەیەندراوە',
     cancelled: 'هەڵوەشێنراوەتەوە',
   };
+
+  const trendMax = Math.max(1, ...trendRows.map((point) => point.count));
+  const trendOrderCount = trendRows.reduce((sum, point) => sum + point.count, 0);
+  const trendRevenue = trendRows.reduce((sum, point) => sum + point.revenue, 0);
+  const realtimeReady = realtimeStatus === 'SUBSCRIBED';
 
   const statCards = useMemo(() => [
     { label: 'بەکارهێنەران', value: metrics.users, icon: Users, tone: 'orange' },
@@ -137,7 +181,9 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
           <span className="shakhSuperAdminEyebrow"><ShieldCheck size={15} /> ناوەندی کۆنترۆڵی بەڕێوبەری باڵا</span>
           <div className="shakhSuperAdminTitleRow">
             <h2 id="super-admin-center-title">SHAKH Command Center</h2>
-            <span className="shakhSuperAdminLiveBadge" role="status"><i /> LIVE</span>
+            <span className={'shakhSuperAdminLiveBadge ' + (realtimeReady ? 'is-live' : 'is-warn')} role="status" aria-live="polite">
+              {realtimeReady ? <CheckCircle2 size={12} /> : <Clock3 size={12} />} {realtimeReady ? 'LIVE' : 'CONNECTING'}
+            </span>
           </div>
           <p>پوختەی ڕاستەقینەی پلاتفۆرم بۆ چاودێری بەکارهێنەر، بازار، ئۆردەر و گەیاندن.</p>
         </div>
@@ -203,6 +249,38 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
           </div>
         </section>
       </div>
+
+      <section className="shakhSuperAdminTrendPanel" aria-labelledby="super-admin-trend-title">
+        <div className="shakhSuperAdminPanelHead">
+          <div>
+            <span>٧ ڕۆژی ڕابردوو</span>
+            <h3 id="super-admin-trend-title">هەستی ئۆردەر</h3>
+          </div>
+          <div className="shakhSuperAdminTrendSummary">
+            <strong>{loading ? '—' : trendOrderCount.toLocaleString('ku-IQ')}</strong>
+            <small>{loading ? '—' : trendRevenue.toLocaleString('ku-IQ') + ' د.ع'}</small>
+          </div>
+        </div>
+        {loading ? (
+          <div className="shakhSuperAdminTrendSkeleton" aria-label="هەستی ئۆردەر بار دەکرێت">
+            {Array.from({ length: 7 }, (_, index) => <span key={index} />)}
+          </div>
+        ) : trendOrderCount === 0 ? (
+          <div className="shakhSuperAdminEmpty">لەم ٧ ڕۆژەی ڕابردوودا هیچ ئۆردەرێکی نوێ تۆمار نەکراوە.</div>
+        ) : (
+          <div className="shakhSuperAdminTrendBars" aria-label={'کۆی ' + trendOrderCount.toLocaleString('ku-IQ') + ' ئۆردەر لە ٧ ڕۆژی ڕابردوو'}>
+            {trendRows.map((point) => (
+              <div className="shakhSuperAdminTrendBarItem" key={point.key} title={point.count.toLocaleString('ku-IQ') + ' ئۆردەر · ' + point.revenue.toLocaleString('ku-IQ') + ' د.ع'}>
+                <div className="shakhSuperAdminTrendBarTrack">
+                  <span style={{ height: Math.max(point.count ? 12 : 4, (point.count / trendMax) * 100) + '%' }} />
+                </div>
+                <strong>{point.count.toLocaleString('ku-IQ')}</strong>
+                <small>{point.label}</small>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       <div className="shakhSuperAdminWorkspace">
         <div className="shakhSuperAdminWorkspaceHead">
