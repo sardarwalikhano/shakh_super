@@ -98,6 +98,7 @@ export default function DashboardShell({
   const isCustomer = role === 'customer';
   const isCarDealer = role === 'car_dealer';
   const isUmrahAgency = role === 'umrah_agency';
+  const showGenericStats = role === 'customer';
 
   const navItems: NavItem[] = [
     {
@@ -378,7 +379,7 @@ export default function DashboardShell({
 
             {view === 'home' ? (
               <div className="dashboardShellOverview">
-                <section className="dashboardShellStats" aria-label="پوختەی داواکاری">
+                {showGenericStats && <section className="dashboardShellStats" aria-label="پوختەی داواکاری">
                   <div className="dashboardShellStat">
                     <span>هەموو ئۆردەر</span>
                     <strong>{orders.length.toLocaleString('ku-IQ')}</strong>
@@ -399,8 +400,8 @@ export default function DashboardShell({
                     <strong>{money(totalValue)}</strong>
                     <small>لە زانیاریی بەردەست</small>
                   </div>
-                </section>
-
+                </section>}
+                
                 <div className="dashboardShellHomeContent">{homeContent}</div>
               </div>
             ) : (
@@ -409,12 +410,6 @@ export default function DashboardShell({
           </main>
         </div>
 
-        {menuOpen && <button
-          type="button"
-          className="dashboardShellDrawerScrim"
-          aria-label="داخستنی ناوبەری"
-          onClick={() => setMenuOpen(false)}
-        />}
       </section>
     </div>
   );
