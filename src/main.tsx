@@ -39,6 +39,7 @@ import JewelryControlCenter from './components/JewelryControlCenter';
 import JewelryOrdersPanel from './components/JewelryOrdersPanel';
 import BeautyControlCenter from './components/BeautyControlCenter';
 import BeautyOrdersPanel from './components/BeautyOrdersPanel';
+import CarDealerControlCenter from './components/CarDealerControlCenter';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -519,6 +520,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     ? <JewelryControlCenter userId={user.id} onNavigate={openDashboard} />
     : role==='beauty_vendor'
     ? <BeautyControlCenter userId={user.id} onNavigate={openDashboard} />
+    : role==='car_dealer'
+    ? <CarDealerControlCenter userId={user.id} onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
