@@ -1,5 +1,6 @@
 import './support-module.css';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { FormEvent } from 'react';
 import {
   AlertCircle,
   Plus,
@@ -192,7 +193,7 @@ export default function SupportModule({ role = 'support' }: { role?: string }) {
     setSaving(false);
   };
 
-  const createTicket = async (event: React.FormEvent) => {
+  const createTicket = async (event: FormEvent) => {
     event.preventDefault();
     if (!subject.trim() || !message.trim() || saving) return;
     setSaving(true);
