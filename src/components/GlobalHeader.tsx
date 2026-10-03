@@ -108,6 +108,13 @@ export default function GlobalHeader({
           </button>
         </div>
       </div>
+      <nav className="shakhHeaderQuickNav" aria-label="بەشەکانی شاخ">
+        <button type="button" onClick={() => document.getElementById('shakh-marketplace')?.scrollIntoView({ behavior: 'smooth' })}>بازاڕ</button>
+        <button type="button" onClick={() => document.getElementById('shakh-live-feed')?.scrollIntoView({ behavior: 'smooth' })}>پۆست و ئۆفەر</button>
+        <button type="button" onClick={() => document.getElementById('shakh-services')?.scrollIntoView({ behavior: 'smooth' })}>خزمەتگوزاری</button>
+        <button type="button" onClick={() => onOpenDashboard(user ? 'cars' : undefined)}>SHAKH Cars</button>
+        <button type="button" onClick={() => onOpenDashboard(user ? 'umrah' : undefined)}>حەج و عومرە</button>
+      </nav>
       <div className="shakhMobileSearch">
         <div className="shakhHeaderSearch">
           <Search size={17} aria-hidden="true" />
