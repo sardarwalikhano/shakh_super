@@ -57,15 +57,16 @@ export default function RestaurantControlCenter({ userId, onNavigate }: Props) {
       const start = new Date(); start.setHours(0, 0, 0, 0);
       const end = new Date(start); end.setDate(end.getDate() + 1);
 
-      const [menuItems, productRows, pendingOrders, activeOrders, todaySales, notifications] = await Promise.all([
+      const notifications = unreadQuery;
+      const [menuItems, productRows, pendingOrders, activeOrders, todaySales] = await Promise.all([
         supabase.from('products').select('id', { count: 'exact', head: true }).in('store_id', storeIds),
         supabase.from('products').select('stock,unlimited_stock,variants').in('store_id', storeIds),
         supabase.from('orders').select('id', { count: 'exact', head: true }).in('store_id', storeIds).eq('status', 'pending'),
         supabase.from('orders').select('id', { count: 'exact', head: true }).in('store_id', storeIds).not('status', 'in', '("delivered","cancelled")'),
         supabase.from('orders').select('subtotal_iqd').in('store_id', storeIds).eq('status', 'delivered').gte('created_at', start.toISOString()).lt('created_at', end.toISOString()),
-        notifications = unreadQuery,
       ]);
-      const error = [menuItems, productRows, pendingOrders, activeOrders, todaySales, notifications].find((result) => result.error)?.error;
+      const notificationResult = await notifications;
+      const error = [menuItems, productRows, pendingOrders, activeOrders, todaySales, notificationResult].find((result) => result.error)?.error;
       if (error) throw error;
 
       let lowStock = 0, outOfStock = 0;
@@ -85,7 +86,7 @@ export default function RestaurantControlCenter({ userId, onNavigate }: Props) {
         pendingOrders: pendingOrders.count || 0,
         activeOrders: activeOrders.count || 0,
         salesToday,
-        unreadNotifications: notifications.count || 0,
+        unreadNotifications: notificationResult.count || 0,
       });
       setSyncedAt(new Date());
     } catch (error) {
