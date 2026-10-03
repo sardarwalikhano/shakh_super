@@ -17,6 +17,9 @@ type Metrics = {
   activeOrders: number;
   onlineCaptains: number;
   openTickets: number;
+  pendingPosts: number;
+  vehicleReview: number;
+  umrahReview: number;
 };
 
 type RecentOrder = {
@@ -78,6 +81,9 @@ const initialMetrics: Metrics = {
   activeOrders: 0,
   onlineCaptains: 0,
   openTickets: 0,
+  pendingPosts: 0,
+  vehicleReview: 0,
+  umrahReview: 0,
 };
 
 const VENDOR_ROLES = [
@@ -117,6 +123,9 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         activeOrders,
         onlineCaptains,
         openTickets,
+        pendingPosts,
+        vehicleReview,
+        umrahReview,
         recentOrders,
       ] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
@@ -127,6 +136,9 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         supabase.from('orders').select('id', { count: 'exact', head: true }).not('status', 'in', '("delivered","cancelled")'),
         supabase.from('captains').select('user_id', { count: 'exact', head: true }).eq('is_online', true),
         supabase.from('support_tickets').select('id', { count: 'exact', head: true }).in('status', ['open', 'in_progress']),
+        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+        supabase.from('vehicle_listings').select('id', { count: 'exact', head: true }).in('status', ['pending_payment_verification', 'pending_approval']),
+        supabase.from('umrah_trips').select('id', { count: 'exact', head: true }).in('status', ['pending_payment_verification', 'pending_approval']),
         supabase.from('orders').select('id,status,total_iqd,created_at').gte('created_at', since.toISOString()).order('created_at', { ascending: false }).limit(200),
       ]);
 
@@ -139,6 +151,9 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         activeOrders,
         onlineCaptains,
         openTickets,
+        pendingPosts,
+        vehicleReview,
+        umrahReview,
         recentOrders,
       ].find((result) => result && 'error' in result && result.error)?.error;
 
@@ -154,6 +169,9 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         activeOrders: activeOrders.count ?? 0,
         onlineCaptains: onlineCaptains.count ?? 0,
         openTickets: openTickets.count ?? 0,
+        pendingPosts: pendingPosts.count ?? 0,
+        vehicleReview: vehicleReview.count ?? 0,
+        umrahReview: umrahReview.count ?? 0,
       });
       setRecentOrders(rows.slice(0, 8));
       setTrendRows(makeTrend(rows));
@@ -283,6 +301,38 @@ export default function AdminControlCenter({ onNavigate }: Props) {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="shakhAdminReviewQueue" aria-labelledby="admin-review-queue-title">
+        <div className="shakhAdminPanelHead">
+          <div>
+            <span>ئەرکی چاوپێخستنی Admin</span>
+            <h3 id="admin-review-queue-title">Review Queue</h3>
+          </div>
+          <small>تەنها داتا لە Supabase</small>
+        </div>
+        <div className="shakhAdminReviewGrid">
+          <button type="button" onClick={() => onNavigate('manage_posts')}>
+            <span className="shakhAdminReviewIcon is-posts"><ClipboardList /></span>
+            <span><b>پۆستە چاوەڕوانەکان</b><small>{metrics.pendingPosts.toLocaleString('ku-IQ')} پۆست</small></span>
+            <em>پشکنین</em>
+          </button>
+          <button type="button" onClick={() => onNavigate('cars')}>
+            <span className="shakhAdminReviewIcon is-cars"><Car /></span>
+            <span><b>پۆستی ئۆتۆمبێل</b><small>{metrics.vehicleReview.toLocaleString('ku-IQ')} لە چاوەڕوانیدا</small></span>
+            <em>پشکنین</em>
+          </button>
+          <button type="button" onClick={() => onNavigate('umrah')}>
+            <span className="shakhAdminReviewIcon is-umrah"><Plane /></span>
+            <span><b>پەکەجی عومرە</b><small>{metrics.umrahReview.toLocaleString('ku-IQ')} لە چاوەڕوانیدا</small></span>
+            <em>پشکنین</em>
+          </button>
+          <button type="button" onClick={() => onNavigate('support')}>
+            <span className="shakhAdminReviewIcon is-support"><LifeBuoy /></span>
+            <span><b>تیکەتی پشتگیری</b><small>{metrics.openTickets.toLocaleString('ku-IQ')} کراوە</small></span>
+            <em>پشکنین</em>
+          </button>
+        </div>
       </section>
 
       <div className="shakhAdminWorkspace">
