@@ -9,37 +9,28 @@ type Props = {
 
 export default function GlobalFooter({ user, onOpenDashboard, onOpenPrivacy }: Props) {
   return (
-    <footer className="shakhGlobalFooter">
-      <div className="shakhFooterTop">
-        <div className="shakhFooterBrandBlock">
+    <footer className="shakhGlobalFooter" dir="rtl">
+      <div className="shakhFooterCompact">
+        <div className="shakhFooterIdentity">
           <span className="shakhFooterLogo"><img src="/shakh-logo.svg?v=1.9.8" alt="شاخ" /></span>
           <div>
             <strong>SHAKH</strong>
-            <small>لەگەڵ شاخ دەگەیتە لوتکە</small>
+            <small>بازاڕ، گەیاندن و خزمەتگوزاری</small>
           </div>
-          <p>بازاڕ، گەیاندن، ئۆتۆمبێل و خزمەتگوزارییەکان لە یەک پلاتفۆرم.</p>
         </div>
 
-        <div className="shakhFooterColumn">
-          <span>خزمەتگوزاری</span>
-          <button type="button" onClick={() => onOpenDashboard('store')}>دوکان و بازاڕ</button>
+        <nav className="shakhFooterLinks" aria-label="بەستەرەکانی شاخ">
+          <button type="button" onClick={() => onOpenDashboard('store')}>بازاڕ</button>
           <button type="button" onClick={() => onOpenDashboard('delivery')}>گەیاندن</button>
-          <button type="button" onClick={() => onOpenDashboard('cars')}>SHAKH Cars</button>
-          <button type="button" onClick={() => onOpenDashboard('umrah')}>حەج و عومرە</button>
-        </div>
+          <button type="button" onClick={() => onOpenDashboard('cars')}>Cars</button>
+          <button type="button" onClick={() => onOpenDashboard('umrah')}>عومرە</button>
+          <button type="button" onClick={() => user ? onOpenDashboard('orders') : window.scrollTo({ top: 0, behavior: 'smooth' })}>ئۆردەرەکان</button>
+          <button type="button" onClick={onOpenPrivacy}><ShieldCheck size={14}/> پاراستن</button>
+        </nav>
 
-        <div className="shakhFooterColumn">
-          <span>هەژمار</span>
-          <button type="button" onClick={() => (user ? onOpenDashboard('orders') : window.scrollTo({ top: 0, behavior: 'smooth' }))}>داواکارییەکان</button>
-          <button type="button" onClick={() => (user ? onOpenDashboard('store') : window.scrollTo({ top: 0, behavior: 'smooth' }))}>بەشەکان</button>
-          <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>سەرەکی</button>
-        </div>
-
-        <div className="shakhFooterColumn">
-          <span>پشتگیری و پاراستن</span>
-          <div className="shakhFooterContact"><Headphones size={16} /> <b>پشتگیری شاخ</b></div>
-          <a href="tel:+9647504796924"><MessageCircle size={15} /> 07504796924</a>
-          <button type="button" onClick={onOpenPrivacy}><ShieldCheck size={15} /> سیاسەتی پاراستنی نهێنی</button>
+        <div className="shakhFooterSupport">
+          <span><Headphones size={14}/> پشتگیری</span>
+          <a href="tel:+9647504796924"><MessageCircle size={14}/> 07504796924</a>
         </div>
       </div>
 
@@ -50,10 +41,10 @@ export default function GlobalFooter({ user, onOpenDashboard, onOpenPrivacy }: P
       <div className="shakhFooterBottom">
         <span>© ٢٠٢٦ شاخ — هەموو مافەکان پارێزراون</span>
         <div>
-          <span><MapPin size={13} /> هەولێر</span>
+          <span><MapPin size={12}/> هەولێر</span>
           <span>وشانی ١.٩.٨</span>
           <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="سەرەوە">
-            <ArrowUp size={14} />
+            <ArrowUp size={14}/>
           </button>
         </div>
       </div>
