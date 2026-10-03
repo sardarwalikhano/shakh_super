@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AlertCircle,
+  Plus,
   CheckCircle2,
   Clock3,
   Headphones,
@@ -55,7 +56,8 @@ function formatDate(value: string | null) {
   }).format(new Date(value));
 }
 
-export default function SupportModule() {
+export default function SupportModule({ role = 'support' }: { role?: string }) {
+  const canManage = role === 'support' || role === 'admin' || role === 'super_admin';
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'in_progress' | 'resolved' | 'closed'>('all');
@@ -65,16 +67,33 @@ export default function SupportModule() {
   const [refreshing, setRefreshing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [showNew, setShowNew] = useState(false);
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
 
   const loadTickets = useCallback(async (silent = false) => {
     if (silent) setRefreshing(true);
     else setLoading(true);
     setError('');
 
-    const { data, error: ticketError } = await supabase
+    const { data: authData } = await supabase.auth.getUser();
+    const currentUserId = authData.user?.id;
+    if (!currentUserId) {
+      setError('هەژمارەکەت نەدۆزرایەوە. تکایە دووبارە بچۆ ژوورەوە.');
+      setTickets([]);
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
+
+    let ticketQuery = supabase
       .from('support_tickets')
       .select('id,user_id,subject,message,status,created_at,updated_at')
       .order('updated_at', { ascending: false });
+
+    if (!canManage) ticketQuery = ticketQuery.eq('user_id', currentUserId);
+
+    const { data, error: ticketError } = await ticketQuery;
 
     if (ticketError) {
       setError(ticketError.message);
@@ -172,6 +191,35 @@ export default function SupportModule() {
     setSaving(false);
   };
 
+  const createTicket = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!subject.trim() || !message.trim() || saving) return;
+    setSaving(true);
+    setError('');
+    const { data: authData } = await supabase.auth.getUser();
+    const currentUserId = authData.user?.id;
+    if (!currentUserId) {
+      setError('هەژمارەکەت نەدۆزرایەوە.');
+      setSaving(false);
+      return;
+    }
+    const { error: insertError } = await supabase.from('support_tickets').insert({
+      user_id: currentUserId,
+      subject: subject.trim(),
+      message: message.trim(),
+      status: 'open',
+    });
+    if (insertError) {
+      setError(insertError.message);
+    } else {
+      setSubject('');
+      setMessage('');
+      setShowNew(false);
+      await loadTickets(true);
+    }
+    setSaving(false);
+  };
+
   const activeTickets = filteredTickets;
 
   return (
@@ -180,12 +228,17 @@ export default function SupportModule() {
         <div>
           <span>SHAKH • CUSTOMER SERVICE</span>
           <h2>ناوەندی پشتیوانی و خزمەتگوزاری</h2>
-          <p>بەڕێوەبردنی تیکەتەکانی کڕیاران لەسەر داتای ڕاستەقینەی سیستەم.</p>
+          <p>{canManage ? 'بەڕێوەبردنی تیکەتەکانی کڕیاران لەسەر داتای ڕاستەقینەی سیستەم.' : 'کێشەکەت تۆمار بکە و دۆخی تیکەتەکەت بەدواداچوون بکە.'}</p>
         </div>
-        <button type="button" onClick={() => void loadTickets(true)} disabled={refreshing}>
+        <div className="supportHeroActions">
+          <button type="button" onClick={() => void loadTickets(true)} disabled={refreshing}>
           <RefreshCw size={16} className={refreshing ? 'supportSpin' : ''} />
           نوێکردنەوە
-        </button>
+          </button>
+          <button type="button" className="supportCreateButton" onClick={() => setShowNew(true)}>
+            <Plus size={16} /> تیکەتی نوێ
+          </button>
+        </div>
       </header>
 
       {error && (
@@ -258,7 +311,7 @@ export default function SupportModule() {
                     <div className="supportTicketIcon"><Headphones size={17} /></div>
                     <div className="supportTicketCopy">
                       <strong>{ticket.subject}</strong>
-                      <small>{profile?.full_name || profile?.email || 'بەکارهێنەر'} • {formatDate(ticket.updated_at || ticket.created_at)}</small>
+                      <small>{canManage ? (profile?.full_name || profile?.email || 'بەکارهێنەر') : 'تیکەتی من'} • {formatDate(ticket.updated_at || ticket.created_at)}</small>
                       <p>{ticket.message}</p>
                     </div>
                     <span className={'supportStatus ' + (STATUS_CLASS[status] ?? '')}>
@@ -308,7 +361,7 @@ export default function SupportModule() {
                 <span>نوێکراوەتەوە: {formatDate(selected.updated_at)}</span>
               </div>
 
-              <div className="supportActions">
+              {canManage && <div className="supportActions">
                 <small>گۆڕینی دۆخ</small>
                 <div>
                   <button type="button" onClick={() => void updateStatus('in_progress')} disabled={saving || selected.status === 'in_progress'}>
@@ -324,11 +377,35 @@ export default function SupportModule() {
                     <Ticket size={14} /> کردنەوە
                   </button>
                 </div>
-              </div>
+              </div>}
             </div>
           )}
         </aside>
       </div>
+
+      {showNew && (
+        <div className="supportModalBackdrop" role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setShowNew(false);
+        }}>
+          <form className="supportModal" onSubmit={createTicket}>
+            <button type="button" className="supportModalClose" onClick={() => setShowNew(false)} aria-label="داخستن"><XCircle size={18} /></button>
+            <div className="supportModalIcon"><Ticket size={22} /></div>
+            <span>SUPPORT TICKET</span>
+            <h3>تیکەتی نوێ دروست بکە</h3>
+            <p>بابەت و وردەکاری کێشەکە بنووسە بۆ تیمی پشتگیری.</p>
+            <label>بابەت
+              <input required maxLength={160} value={subject} onChange={(event) => setSubject(event.target.value)} placeholder="بابەتی کێشەکە" />
+            </label>
+            <label>پەیام
+              <textarea required maxLength={4000} rows={6} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="کێشەکە بە وردی باس بکە..." />
+            </label>
+            <div className="supportModalActions">
+              <button type="button" onClick={() => setShowNew(false)}>پاشگەزبوونەوە</button>
+              <button type="submit" disabled={saving}><Ticket size={15} /> {saving ? 'دەنێردرێت...' : 'ناردنی تیکەت'}</button>
+            </div>
+          </form>
+        </div>
+      )}
     </section>
   );
 }
