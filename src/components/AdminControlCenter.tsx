@@ -295,6 +295,10 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         </div>
 
         <div className="shakhAdminActionGrid">
+          <button type="button" onClick={() => onNavigate('users')}>
+            <Users />
+            <span><b>بەکارهێنەران</b><small>{metrics.users.toLocaleString('ku-IQ')} هەژمار</small></span>
+          </button>
           <button type="button" onClick={() => onNavigate('orders')}>
             <ClipboardList />
             <span><b>ناوەندی ئۆردەر</b><small>{metrics.activeOrders.toLocaleString('ku-IQ')} چالاک</small></span>
