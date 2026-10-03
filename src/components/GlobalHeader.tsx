@@ -11,7 +11,7 @@ type Props = {
   onToggleTheme: () => void | Promise<void>;
   unreadNotifications: number;
   cartCount: number;
-  onOpenDashboard: (view?: 'home' | 'notifications' | 'profile') => void;
+  onOpenDashboard: (view?: 'home' | 'notifications' | 'profile' | 'cars' | 'umrah') => void;
   onLogin: () => void;
   onOpenCart: () => void;
 };
