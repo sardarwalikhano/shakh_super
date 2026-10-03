@@ -141,6 +141,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
 
  const submit=async()=>{
   const uploadedPaths:string[]=[];
+  const uploadBucket=isProductListing&&!isCustomer?'products':'posts';
   try{
    if(!title.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');
    if(isPriceVisible&&(!/^\d+$/.test(price)||Number(price)<=0))return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
@@ -213,7 +214,8 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    onSaved?.();
   }catch(error:unknown){
    if(uploadedPaths.length)await supabase.storage.from('posts').remove(uploadedPaths);
-   setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');
+   const e=error as {message?:string;details?:string;hint?:string;code?:string};
+   setMessage([e?.message,e?.details,e?.hint,e?.code ? 'کۆد: '+e.code : ''].filter(Boolean).join(' — ')||'پۆستکردن سەرکەوتوو نەبوو.');
   }finally{setBusy(false)}
  };
  const selectField=(label:string,value:string,options:string[],onChange:(value:string)=>void)=>

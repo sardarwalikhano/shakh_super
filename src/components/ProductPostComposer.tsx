@@ -162,7 +162,8 @@ export default function ProductPostComposer({userId,role,onSaved}:Props){
    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId).eq('store_id',createdStoreId||storeId);
    if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
    if(createdStoreId)await supabase.from('stores').delete().eq('id',createdStoreId).eq('owner_id',userId);
-   setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');
+   const e=error as {message?:string;details?:string;hint?:string;code?:string};
+   setMessage([e?.message,e?.details,e?.hint,e?.code ? 'کۆد: '+e.code : ''].filter(Boolean).join(' — ')||'پۆستکردن سەرکەوتوو نەبوو.');
   }finally{setBusy(false)}
  };
  return <section className="orderCard postComposer" aria-label="پۆستکردنی بەرهەم" aria-busy={busy}>

@@ -176,7 +176,8 @@ export default function ShakhStorePostComposer({userId,initialSection='marketpla
    if(createdProductId)await supabase.from('products').delete().eq('id',createdProductId);
    if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
    if(createdStoreId)await supabase.from('stores').delete().eq('id',createdStoreId).eq('owner_id',userId);
-   setMessage(error instanceof Error?error.message:'بڵاوکردنەوەی پۆست سەرکەوتوو نەبوو.');
+   const e=error as {message?:string;details?:string;hint?:string;code?:string};
+   setMessage([e?.message,e?.details,e?.hint,e?.code ? 'کۆد: '+e.code : ''].filter(Boolean).join(' — ')||'بڵاوکردنەوەی پۆست سەرکەوتوو نەبوو.');
   }finally{setBusy(false)}
  };
 
