@@ -1216,3 +1216,166 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   .shakhDashboardKpis{grid-template-columns:1fr!important}
   .shakhModuleMetrics{grid-template-columns:1fr!important}
 }
+
+/* =========================================================
+   SHAKH COMPLETE VISUAL REDESIGN — FINAL OVERRIDE
+   Visual layer only. Existing data, business logic, routes,
+   authentication, authorization and Supabase behavior stay intact.
+   ========================================================= */
+
+:root{
+  --sx-bg:#f6f7f9;--sx-surface:#fff;--sx-surface-2:#fafbfc;
+  --sx-text:#111827;--sx-muted:#667085;--sx-line:#e6e8ec;
+  --sx-brand:#f26a21;--sx-brand-soft:#fff3eb;--sx-blue:#2563a8;--sx-green:#198754;
+}
+html[data-theme="dark"],html.dark{
+  --sx-bg:#0b1118;--sx-surface:#111923;--sx-surface-2:#151f2b;
+  --sx-text:#f1f5f9;--sx-muted:#98a6b8;--sx-line:#24303e;
+  --sx-brand:#ff7b32;--sx-brand-soft:#2a1b12;--sx-blue:#78aee4;--sx-green:#5dc99b;
+}
+
+.shakhApp{background:var(--sx-bg)!important;color:var(--sx-text)!important}
+.shakhApp main.shakhHome{width:min(1280px,calc(100% - 32px))!important;margin:auto!important}
+
+/* HEADER — compact, low-noise */
+.shakhGlobalHeader{
+  padding:7px 16px 0!important;background:color-mix(in srgb,var(--sx-surface) 95%,transparent)!important;
+  border-bottom:1px solid var(--sx-line)!important;box-shadow:none!important;backdrop-filter:blur(18px)!important;
+}
+.shakhHeaderInner{min-height:54px!important;grid-template-columns:auto minmax(220px,1fr) auto!important;gap:14px!important}
+.shakhBrandLogo{width:36px!important;height:36px!important;box-shadow:none!important}
+.shakhBrandText strong{font-size:14px!important}.shakhBrandText small{font-size:8px!important;color:var(--sx-muted)!important}
+.shakhHeaderSearch{min-height:39px!important;border:1px solid var(--sx-line)!important;border-radius:9px!important;background:var(--sx-surface-2)!important;box-shadow:none!important}
+.shakhHeaderSearch:focus-within{border-color:var(--sx-brand)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--sx-brand) 9%,transparent)!important}
+.shakhHeaderActions{gap:4px!important}
+.shakhHeaderAction,.shakhIconAction,.shakhDashboardAction{min-height:37px!important;height:37px!important;border-radius:9px!important;box-shadow:none!important}
+.shakhHeaderAction,.shakhIconAction{border-color:transparent!important;background:transparent!important}
+.shakhHeaderAction:hover,.shakhIconAction:hover{border-color:var(--sx-line)!important;background:var(--sx-surface-2)!important;color:var(--sx-brand)!important}
+.shakhDashboardAction{padding:0 11px!important;background:var(--sx-text)!important;color:var(--sx-surface)!important;border-color:var(--sx-text)!important}
+.shakhDashboardAction:hover{background:var(--sx-brand)!important;border-color:var(--sx-brand)!important;transform:none!important}
+.shakhHeaderQuickNav{min-height:32px!important;padding-bottom:5px!important;gap:2px!important}
+.shakhHeaderQuickNav button{min-height:28px!important;padding:0 9px!important;border-radius:7px!important;background:transparent!important;color:var(--sx-muted)!important;font-size:8px!important}
+.shakhHeaderQuickNav button:hover{background:var(--sx-brand-soft)!important;color:var(--sx-brand)!important}
+.shakhMobileSearch{display:none!important}
+
+/* HERO — removed completely. Category rail retains its navigation actions. */
+.shakhHomeIntro{display:none!important}
+.shakhHome{padding-top:16px!important}
+.shakhHomeCategoryRail{
+  margin:0 0 30px!important;display:flex!important;gap:0!important;overflow-x:auto!important;
+  border-top:1px solid var(--sx-line)!important;border-bottom:1px solid var(--sx-line)!important;
+  border-radius:0!important;background:var(--sx-surface)!important;box-shadow:none!important;
+}
+.shakhHomeCategoryRail button{
+  min-width:120px!important;min-height:64px!important;flex:1 0 120px!important;
+  display:grid!important;grid-template-columns:auto 1fr!important;grid-template-rows:1fr 1fr!important;
+  padding:9px 12px!important;border:0!important;border-inline-start:1px solid var(--sx-line)!important;
+  border-radius:0!important;background:transparent!important;color:var(--sx-text)!important;
+}
+.shakhHomeCategoryRail button:first-child{border-inline-start:0!important}
+.shakhHomeCategoryRail svg{grid-row:1/3!important;align-self:center!important;color:var(--sx-brand)!important}
+.shakhHomeCategoryRail span{font-size:9px!important;font-weight:950!important}
+.shakhHomeCategoryRail small{font-size:7px!important;color:var(--sx-muted)!important}
+.shakhHomeCategoryRail button:hover{background:var(--sx-brand-soft)!important}
+
+/* TYPOGRAPHY / SECTION HIERARCHY */
+.shakhHomeSection{margin-top:40px!important}
+.shakhSectionHeader{margin-bottom:12px!important;padding-bottom:10px!important;border-bottom:1px solid var(--sx-line)!important}
+.shakhSectionHeader>div>span{font-size:7px!important;color:var(--sx-brand)!important;font-weight:950!important;letter-spacing:.7px!important}
+.shakhSectionHeader h2{margin:3px 0 1px!important;font-size:19px!important;line-height:1.25!important;letter-spacing:-.3px!important}
+.shakhSectionHeader p{margin:0!important;color:var(--sx-muted)!important;font-size:8px!important}
+
+/* OFFER / PRODUCT surfaces: fewer visual boxes */
+.shakhOffersGrid{gap:9px!important}
+.shakhOfferCard{grid-template-columns:88px minmax(0,1fr)!important;min-height:88px!important;border:1px solid var(--sx-line)!important;border-radius:11px!important;box-shadow:none!important;background:var(--sx-surface)!important}
+.shakhOfferMedia{min-height:88px!important}.shakhOfferBody{padding:9px!important}.shakhOfferBody h3{font-size:10px!important}.shakhOfferBody p{font-size:7px!important}.shakhOfferBody small{font-size:6.5px!important}
+.shakhFeedFrame{border:1px solid var(--sx-line)!important;border-radius:14px!important;box-shadow:none!important;background:var(--sx-surface)!important}
+.shakhProductGrid{gap:9px!important}
+.shakhProductCard{border:1px solid var(--sx-line)!important;border-radius:11px!important;box-shadow:none!important;background:var(--sx-surface)!important}
+.shakhProductCard:hover{border-color:color-mix(in srgb,var(--sx-brand) 38%,var(--sx-line))!important;transform:translateY(-1px)!important;box-shadow:none!important}
+.shakhProductMedia{height:176px!important;background:var(--sx-surface-2)!important}
+.shakhProductBody{padding:10px!important}.shakhProductEyebrow{font-size:6.5px!important}.shakhProductBody h3{font-size:10px!important}.shakhProductBody p{font-size:7px!important}
+.shakhProductFooter{margin-top:9px!important;padding-top:8px!important;border-top:1px solid var(--sx-line)!important}.shakhProductFooter strong{font-size:11px!important;color:var(--sx-brand)!important}
+.shakhProductFooter button{min-height:30px!important;padding:0 8px!important;border-radius:7px!important;font-size:7px!important;background:var(--sx-brand)!important}
+
+/* SERVICES — structured list, not card grid */
+.shakhServicesGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:1px!important;border:1px solid var(--sx-line)!important;border-radius:14px!important;background:var(--sx-line)!important;overflow:hidden!important}
+.shakhServicesGrid button{min-height:66px!important;padding:11px 13px!important;border:0!important;border-radius:0!important;background:var(--sx-surface)!important;color:var(--sx-text)!important}
+.shakhServicesGrid button:hover{background:var(--sx-surface-2)!important}.shakhServicesGrid button>svg:first-child{color:var(--sx-brand)!important}
+.shakhServicesGrid strong{font-size:9px!important}.shakhServicesGrid small{font-size:6.5px!important;color:var(--sx-muted)!important}
+
+/* FOOTER — compact */
+.shakhGlobalFooter{margin-top:38px!important;padding:16px 0 10px!important;border-top:1px solid var(--sx-line)!important;border-radius:0!important;background:var(--sx-surface)!important}
+.shakhFooterCompact{min-height:54px!important;grid-template-columns:auto 1fr auto!important;gap:18px!important;padding:0!important}
+.shakhFooterLogo{width:30px!important;height:30px!important;background:transparent!important}
+.shakhFooterIdentity strong{font-size:10px!important}.shakhFooterIdentity small{font-size:6.5px!important;color:var(--sx-muted)!important}
+.shakhFooterLinks{gap:2px!important}.shakhFooterLinks button{min-height:25px!important;padding:0 6px!important;font-size:7px!important;background:transparent!important}
+.shakhFooterLinks button:hover{background:var(--sx-brand-soft)!important;color:var(--sx-brand)!important}
+.shakhFooterSupport{gap:7px!important;font-size:7px!important}.shakhFooterUtility{display:none!important}
+.shakhFooterBottom{margin-top:7px!important;padding-top:7px!important;font-size:6.5px!important;border-top:1px solid var(--sx-line)!important}
+
+/* DASHBOARD — one application shell, data bands, restrained navigation */
+.shakhDashboardBackdrop{padding:0!important;background:rgba(5,12,20,.68)!important;backdrop-filter:blur(12px)!important}
+.shakhDashboardShell{width:min(1440px,100vw)!important;height:min(94vh,940px)!important;border-radius:16px!important;border:1px solid var(--sx-line)!important;background:var(--sx-bg)!important;box-shadow:0 32px 100px rgba(0,0,0,.28)!important}
+.shakhDashboardTopbar{min-height:62px!important;padding:9px 14px!important;background:var(--sx-surface)!important;border-bottom:1px solid var(--sx-line)!important}
+.shakhDashboardBrand{width:36px!important;height:36px!important;flex-basis:36px!important;border-radius:8px!important}
+.shakhDashboardTitleBlock>span{font-size:7px!important;color:var(--sx-brand)!important}.shakhDashboardTitleBlock h1{font-size:16px!important}.shakhDashboardTitleBlock p{display:none!important}
+.shakhDashboardMenuButton,.shakhDashboardIconButton,.shakhDashboardSidebarClose{width:34px!important;height:34px!important;border-radius:8px!important;border-color:var(--sx-line)!important;background:transparent!important}
+.shakhDashboardAccount{min-width:110px!important;border-inline-start:1px solid var(--sx-line)!important}.shakhDashboardAccount small,.shakhDashboardAccount span{font-size:6.5px!important;color:var(--sx-muted)!important}.shakhDashboardAccount strong{font-size:9px!important}
+.shakhDashboardBody{grid-template-columns:218px minmax(0,1fr)!important;grid-template-areas:"sidebar main"!important}
+.shakhDashboardSidebar{padding:10px 8px!important;background:var(--sx-surface)!important;border-inline-end:1px solid var(--sx-line)!important;border-inline-start:0!important}
+.shakhDashboardSidebarHeader{padding:3px 6px 8px!important;border-bottom:1px solid var(--sx-line)!important}.shakhDashboardSidebarHeader small{font-size:6.5px!important;color:var(--sx-muted)!important}.shakhDashboardSidebarHeader strong{font-size:11px!important}
+.shakhDashboardNav{gap:1px!important}.shakhDashboardGroupLabel{margin:9px 6px 3px!important;font-size:6.5px!important;color:var(--sx-muted)!important}
+.shakhDashboardNavItem{grid-template-columns:28px minmax(0,1fr) auto!important;min-height:37px!important;padding:5px 6px!important;border:0!important;border-radius:8px!important;gap:7px!important}
+.shakhDashboardNavItem:hover{transform:none!important;background:var(--sx-surface-2)!important;border-color:transparent!important}
+.shakhDashboardNavItem.is-active{background:var(--sx-brand-soft)!important;border-color:transparent!important}
+.shakhDashboardNavIcon{width:28px!important;height:28px!important;border-radius:7px!important;background:transparent!important;color:var(--sx-muted)!important}
+.shakhDashboardNavItem.is-active .shakhDashboardNavIcon{background:transparent!important;color:var(--sx-brand)!important}
+.shakhDashboardNavCopy strong{font-size:8.5px!important}.shakhDashboardNavCopy small{display:none!important}.shakhDashboardNavArrow{display:none!important}
+.shakhDashboardNavBadge{min-width:18px!important;height:18px!important;font-size:6.5px!important}
+.shakhDashboardSidebarFooter{padding:8px 6px 2px!important;border-top:1px solid var(--sx-line)!important}.shakhDashboardSidebarFooter strong{font-size:7.5px!important}.shakhDashboardSidebarFooter small{font-size:6px!important}
+.shakhDashboardToolbar{min-height:46px!important;padding:8px 16px!important;background:var(--sx-bg)!important;border-bottom:1px solid var(--sx-line)!important;box-shadow:none!important}
+.shakhDashboardToolbar small{font-size:6px!important;color:var(--sx-muted)!important}.shakhDashboardToolbar strong{font-size:9px!important}
+.shakhDashboardHome,.shakhDashboardModule{padding:16px!important}
+
+/* KPI row = one information band */
+.shakhDashboardKpis{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:0 0 20px!important;border-top:1px solid var(--sx-line)!important;border-bottom:1px solid var(--sx-line)!important;border-radius:0!important;background:transparent!important}
+.shakhDashboardKpis article{min-height:86px!important;padding:13px 15px!important;border:0!important;border-inline-start:1px solid var(--sx-line)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.shakhDashboardKpis article:first-child{border-inline-start:0!important}.shakhDashboardKpis article span,.shakhDashboardKpis article small{font-size:6.5px!important;color:var(--sx-muted)!important}
+.shakhDashboardKpis article strong{font-size:21px!important;color:var(--sx-text)!important}.shakhDashboardKpis article[data-tone="brand"] strong{color:var(--sx-brand)!important}.shakhDashboardKpis article[data-tone="green"] strong{color:var(--sx-green)!important}.shakhDashboardKpis article[data-tone="blue"] strong{color:var(--sx-blue)!important}
+.shakhDashboardHomeContent{margin-top:20px!important}
+
+/* Remove redundant visual containers inside modules while retaining their DOM/functionality */
+.shakhDashboardModule :where(.card,.panel,.surface,[class*="Card"],[class*="Panel"]){
+  border-color:var(--sx-line)!important;box-shadow:none!important;
+}
+.shakhDashboardModule :where(table){border-collapse:collapse!important}.shakhDashboardModule :where(th,td){border-color:var(--sx-line)!important}
+.shakhDashboardModule :where(input,select,textarea){border-radius:8px!important;box-shadow:none!important;background:var(--sx-surface)!important;color:var(--sx-text)!important}
+
+/* MOBILE */
+@media(max-width:980px){
+ .shakhHeaderInner{grid-template-columns:auto minmax(160px,1fr) auto!important;gap:9px!important}
+ .shakhHeaderAction span,.shakhDashboardAction span{display:none!important}.shakhHeaderAction{width:37px!important;padding:0!important}
+ .shakhDashboardBody{grid-template-columns:200px minmax(0,1fr)!important}
+ .shakhFooterCompact{grid-template-columns:auto 1fr!important}.shakhFooterSupport{display:none!important}
+}
+@media(max-width:860px){
+ .shakhDashboardShell{width:100vw!important;height:100dvh!important;border-radius:0!important;border:0!important}
+ .shakhDashboardBody{grid-template-columns:1fr!important;grid-template-areas:"main"!important}
+ .shakhDashboardSidebar{position:fixed!important;inset-block:0!important;inset-inline-start:0!important;width:min(300px,86vw)!important;z-index:120!important;transform:translateX(-105%)!important;transition:transform .2s ease!important;box-shadow:20px 0 60px rgba(0,0,0,.2)!important}
+ .shakhDashboardSidebar.is-open{transform:translateX(0)!important}.shakhDashboardMenuButton{display:grid!important}.shakhDashboardSidebarClose{display:grid!important}
+ .shakhDashboardKpis{grid-template-columns:1fr 1fr!important}.shakhDashboardKpis article:nth-child(odd){border-inline-start:0!important}.shakhDashboardKpis article:nth-child(n+3){border-top:1px solid var(--sx-line)!important}
+}
+@media(max-width:640px){
+ .shakhGlobalHeader{padding:6px 10px 0!important}.shakhHeaderInner{min-height:46px!important;grid-template-columns:auto 1fr auto!important}.shakhBrandText{display:none!important}.shakhHeaderSearch{display:none!important}
+ .shakhMobileSearch{display:block!important;padding:0 10px 7px!important}.shakhMobileSearch .shakhHeaderSearch{display:flex!important}
+ .shakhHeaderQuickNav{padding-inline:10px!important;overflow-x:auto!important;scrollbar-width:none!important}.shakhHeaderQuickNav::-webkit-scrollbar{display:none}.shakhHeaderQuickNav button{flex:0 0 auto!important}
+ .shakhApp main.shakhHome{width:calc(100% - 18px)!important}.shakhHomeCategoryRail{margin-bottom:22px!important}.shakhHomeCategoryRail button{min-width:104px!important;flex-basis:104px!important}
+ .shakhSectionHeader h2{font-size:17px!important}.shakhServicesGrid{grid-template-columns:1fr!important}.shakhProductGrid{grid-template-columns:1fr 1fr!important;gap:7px!important}.shakhProductMedia{height:140px!important}
+ .shakhFooterCompact{grid-template-columns:1fr!important;gap:8px!important}.shakhFooterLinks{justify-content:flex-start!important;overflow-x:auto!important;flex-wrap:nowrap!important}.shakhFooterLinks button{flex:0 0 auto!important}.shakhFooterBottom{align-items:flex-start!important;flex-direction:column!important}
+ .shakhDashboardHome,.shakhDashboardModule{padding:12px!important}.shakhDashboardKpis article{min-height:72px!important;padding:10px!important}.shakhDashboardKpis article strong{font-size:18px!important}
+}
+@media(max-width:430px){
+ .shakhHomeCategoryRail button{min-width:96px!important;flex-basis:96px!important}.shakhProductMedia{height:125px!important}.shakhProductFooter strong{font-size:10px!important}
+ .shakhDashboardKpis{grid-template-columns:1fr!important}.shakhDashboardKpis article,.shakhDashboardKpis article:first-child{border-inline-start:0!important;border-top:1px solid var(--sx-line)!important}.shakhDashboardKpis article:first-child{border-top:0!important}
+}
