@@ -19,6 +19,7 @@ import {
   X,
 } from 'lucide-react';
 import './dashboard-shell.css';
+import { supabase } from '../lib/supabase';
 
 export type DashboardView =
   | 'home'
