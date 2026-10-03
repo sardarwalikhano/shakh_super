@@ -2,5 +2,6 @@
   "version": "v2.1.0",
   "name": "شاخ",
   "release": "SHAKH reference commerce UI v2.1.0 — canonical locked storefront visual layer",
-  "updated_at": "2026-10-03"
+  "updated_at": "2026-10-03",
+  "deployment_trigger": "reference-commerce-v10"
 }
