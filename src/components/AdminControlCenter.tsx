@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Activity, Bell, Car, ClipboardList, LifeBuoy, MapPinned, Package,
+  Activity, Bell, Car, CheckCircle2, ClipboardList, Clock3, LifeBuoy, MapPinned, Package,
   Plane, RefreshCw, Settings2, ShieldCheck, Store, Truck, Users,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -17,6 +17,56 @@ type Metrics = {
   activeOrders: number;
   onlineCaptains: number;
   openTickets: number;
+};
+
+type RecentOrder = {
+  id: string;
+  status: string;
+  total_iqd: number | null;
+  created_at: string;
+};
+
+type TrendPoint = {
+  key: string;
+  label: string;
+  count: number;
+  revenue: number;
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  pending: 'چاوەڕوان',
+  accepted: 'قبوڵکراو',
+  preparing: 'لە ئامادەکردندایە',
+  ready_for_pickup: 'ئامادەی وەرگرتن',
+  assigned_to_captain: 'کاپتن دیاریکراوە',
+  picked_up: 'وەرگیراوە',
+  on_the_way: 'لە ڕێگادایە',
+  delivered: 'گەیەندراوە',
+  cancelled: 'هەڵوەشێنراوەتەوە',
+};
+
+const makeTrend = (rows: RecentOrder[]): TrendPoint[] => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - (6 - index));
+    return {
+      key: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+      label: date.toLocaleDateString('ku-IQ', { weekday: 'short' }),
+      count: 0,
+      revenue: 0,
+    };
+  });
+  const map = new Map(days.map((day) => [day.key, day]));
+  rows.forEach((row) => {
+    const date = new Date(row.created_at);
+    const point = map.get(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`);
+    if (!point) return;
+    point.count += 1;
+    point.revenue += Number(row.total_iqd ?? 0);
+  });
+  return days;
 };
 
 const initialMetrics: Metrics = {
@@ -67,6 +117,7 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         activeOrders,
         onlineCaptains,
         openTickets,
+        recentOrders,
       ] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('profiles').select('id', { count: 'exact', head: true }).in('role', VENDOR_ROLES),
@@ -76,6 +127,7 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         supabase.from('orders').select('id', { count: 'exact', head: true }).not('status', 'in', '("delivered","cancelled")'),
         supabase.from('captains').select('user_id', { count: 'exact', head: true }).eq('is_online', true),
         supabase.from('support_tickets').select('id', { count: 'exact', head: true }).in('status', ['open', 'in_progress']),
+        supabase.from('orders').select('id,status,total_iqd,created_at').gte('created_at', since.toISOString()).order('created_at', { ascending: false }).limit(200),
       ]);
 
       const firstError = [
@@ -88,7 +140,7 @@ export default function AdminControlCenter({ onNavigate }: Props) {
         onlineCaptains,
         openTickets,
         recentOrders,
-      ].find((result) => result.error)?.error;
+      ].find((result) => result && 'error' in result && result.error)?.error;
 
       if (firstError) throw firstError;
 
