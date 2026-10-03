@@ -42,6 +42,7 @@ import BeautyOrdersPanel from './components/BeautyOrdersPanel';
 import CarDealerControlCenter from './components/CarDealerControlCenter';
 import UmrahAgencyControlCenter from './components/UmrahAgencyControlCenter';
 import UmrahAgencyOrdersPanel from './components/UmrahAgencyOrdersPanel';
+import SupportControlCenter from './components/SupportControlCenter';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -353,7 +354,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   }else if(dashboardDirty&&!window.confirm('گۆڕانکارییەکانی پرۆفایل پاشەکەوت نەکراون. دڵنیایت دەتەوێت داشبۆرد دابخەیت؟'))return;
   setDashboard(false);setDashboardView('home');setDashboardDirty(false);
  };
- const roleLabel=role==='super_admin'?'بەڕێوبەری باڵا':role==='admin'?'بەڕێوبەر':['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role)?'خاوەن دوکان':role==='captain'?'کاپتن':role==='car_dealer'?'پێشانگای ئۆتۆمبێل':role==='umrah_agency'?'کۆمپانیای حەج و عومرە':role==='beauty_vendor'?'جوانکاری':'کڕیار';
+ const roleLabel=role==='super_admin'?'بەڕێوبەری باڵا':role==='admin'?'بەڕێوبەر':['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor'].includes(role)?'خاوەن دوکان':role==='captain'?'کاپتن':role==='car_dealer'?'پێشانگای ئۆتۆمبێل':role==='umrah_agency'?'کۆمپانیای حەج و عومرە':role==='beauty_vendor'?'جوانکاری':role==='support'?'پشتگیری':'کڕیار';
  const dashboardModule=()=>{
   if(!user)return null;
   if(dashboardView==='services'){
@@ -527,6 +528,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     ? <CarDealerControlCenter userId={user.id} onNavigate={openDashboard} />
     : role==='umrah_agency'
     ? <UmrahAgencyControlCenter userId={user.id} onNavigate={openDashboard} />
+    : role==='support'
+    ? <SupportControlCenter userId={user.id} onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
