@@ -21,6 +21,7 @@ import DeliveryZoneManager from './components/DeliveryZoneManager';
 import SettingsPanel from './components/SettingsPanel';
 import InteractiveMapPicker from './components/InteractiveMapPicker';
 import DashboardShell,{type DashboardView} from './components/DashboardShell';
+import SuperAdminControlCenter from './components/SuperAdminControlCenter';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
