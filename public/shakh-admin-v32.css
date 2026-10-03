@@ -1,0 +1,368 @@
+/* SHAKH — Admin V32
+   Additive Phase 2 refinement. Existing Admin V18 styles remain intact. */
+
+.shakhAdminCenter{
+  --admin-primary:var(--shakh-primary,var(--shakh-orange,var(--orange,#ff6b16)));
+  --admin-secondary:var(--shakh-blue,#163f6b);
+  --admin-green:var(--shakh-green,#168f68);
+  --admin-surface:var(--shakh-surface,#fff);
+  --admin-surface-2:var(--shakh-surface-2,#f8fafc);
+  --admin-text:var(--shakh-text,#10233f);
+  --admin-muted:var(--shakh-muted,#708097);
+  --admin-line:var(--shakh-line,#e5eaf1);
+}
+
+.shakhAdminCenter .shakhAdminHeroActions{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex:0 0 auto;
+}
+
+.shakhAdminLiveStatus{
+  min-height:34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding-inline:10px;
+  border:1px solid color-mix(in srgb,var(--admin-green) 24%,var(--admin-line));
+  border-radius:999px;
+  background:color-mix(in srgb,var(--admin-green) 8%,var(--admin-surface));
+  color:var(--admin-green);
+  font-size:9px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.shakhAdminLiveStatus.is-warn{
+  color:#9a6a17;
+  border-color:#eadcbf;
+  background:#fffaf0;
+}
+
+.shakhAdminTrendPanel,
+.shakhAdminRecentPanel{
+  min-width:0;
+  padding:17px;
+  border:1px solid var(--admin-line);
+  border-radius:22px;
+  background:var(--admin-surface);
+  box-shadow:0 12px 35px rgba(16,35,63,.055);
+}
+
+.shakhAdminPanelHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.shakhAdminPanelHead>div:first-child{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+
+.shakhAdminPanelHead span{
+  color:var(--admin-primary);
+  font-size:9px;
+  font-weight:950;
+}
+
+.shakhAdminPanelHead h3{
+  margin:0;
+  color:var(--admin-text);
+  font-size:17px;
+  line-height:1.4;
+}
+
+.shakhAdminTrendSummary{
+  display:grid;
+  justify-items:end;
+  gap:1px;
+  text-align:end;
+}
+
+.shakhAdminTrendSummary strong{
+  color:var(--admin-text);
+  font-size:19px;
+  font-weight:950;
+  font-variant-numeric:tabular-nums;
+}
+
+.shakhAdminTrendSummary small{
+  color:var(--admin-muted);
+  font-size:8px;
+}
+
+.shakhAdminTrendBars{
+  min-height:190px;
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:8px;
+  align-items:end;
+  padding-top:14px;
+  border-top:1px solid var(--admin-line);
+}
+
+.shakhAdminTrendBarItem{
+  min-width:0;
+  height:174px;
+  display:grid;
+  grid-template-rows:1fr auto auto;
+  align-items:end;
+  gap:4px;
+  text-align:center;
+}
+
+.shakhAdminTrendBarTrack{
+  position:relative;
+  height:140px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding-inline:3px;
+}
+
+.shakhAdminTrendBarTrack::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:10px;
+  background:linear-gradient(to top,#f5f8fb,#fbfcfe);
+}
+
+.shakhAdminTrendBarTrack span{
+  position:relative;
+  z-index:1;
+  width:min(28px,72%);
+  min-height:4px;
+  border-radius:9px 9px 5px 5px;
+  background:linear-gradient(180deg,#ffb06e,#ff6b16);
+  box-shadow:0 8px 18px rgba(255,107,22,.16);
+  transition:height .2s ease;
+}
+
+.shakhAdminTrendBarItem strong{
+  color:var(--admin-text);
+  font-size:10px;
+  font-variant-numeric:tabular-nums;
+}
+
+.shakhAdminTrendBarItem small{
+  color:var(--admin-muted);
+  font-size:8px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.shakhAdminTrendSkeleton{
+  min-height:190px;
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:8px;
+  align-items:end;
+  padding-top:14px;
+  border-top:1px solid var(--admin-line);
+}
+
+.shakhAdminTrendSkeleton span{
+  min-height:35px;
+  border-radius:9px;
+  background:linear-gradient(90deg,#eef2f7,#f8fafc,#eef2f7);
+  background-size:220% 100%;
+  animation:shakh-admin-v32-skeleton 1.3s ease-in-out infinite;
+}
+
+@keyframes shakh-admin-v32-skeleton{
+  0%{background-position:100% 0}
+  100%{background-position:0 0}
+}
+
+.shakhAdminTextAction{
+  min-height:34px;
+  padding-inline:10px;
+  border:1px solid var(--admin-line);
+  border-radius:11px;
+  background:var(--admin-surface);
+  color:var(--admin-secondary);
+  font-size:9px;
+  font-weight:950;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.shakhAdminTextAction:hover{
+  color:var(--admin-primary);
+  border-color:color-mix(in srgb,var(--admin-primary) 28%,var(--admin-line));
+}
+
+.shakhAdminRecentList{
+  display:grid;
+  overflow:hidden;
+}
+
+.shakhAdminRecentRow{
+  width:100%;
+  min-height:62px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:12px;
+  padding:10px 2px;
+  border:0;
+  border-top:1px solid var(--admin-line);
+  background:transparent;
+  color:var(--admin-text);
+  text-align:right;
+  cursor:pointer;
+  transition:background-color .18s ease,transform .18s ease;
+}
+
+.shakhAdminRecentRow:hover{
+  background:linear-gradient(90deg,transparent,rgba(255,107,22,.055));
+  transform:translateX(-2px);
+}
+
+.shakhAdminRecentRow>span{
+  min-width:0;
+  display:grid;
+  gap:2px;
+}
+
+.shakhAdminRecentRow strong{
+  font-size:11px;
+}
+
+.shakhAdminRecentRow small{
+  color:var(--admin-muted);
+  font-size:8px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.shakhAdminRecentRow em{
+  padding:5px 8px;
+  border-radius:999px;
+  border:1px solid rgba(255,107,22,.17);
+  background:#fff8f2;
+  color:#b65d0d;
+  font-size:8px;
+  font-style:normal;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.shakhAdminRecentRow>b{
+  color:#bf5707;
+  font-size:10px;
+  white-space:nowrap;
+}
+
+.shakhAdminCenter button:focus-visible{
+  outline:3px solid rgba(255,107,22,.23);
+  outline-offset:2px;
+}
+
+html[data-theme='dark'] .shakhAdminCenter{
+  --admin-surface:#0d1d32;
+  --admin-surface-2:#11253e;
+  --admin-text:#edf5ff;
+  --admin-muted:#9aadc4;
+  --admin-line:#20364f;
+}
+
+html[data-theme='dark'] .shakhAdminLiveStatus{
+  background:#102b20;
+  border-color:#29563f;
+}
+
+html[data-theme='dark'] .shakhAdminLiveStatus.is-warn{
+  background:#302813;
+  border-color:#58461f;
+}
+
+html[data-theme='dark'] .shakhAdminTrendBarTrack::before{
+  background:linear-gradient(to top,#11253e,#142b46);
+}
+
+html[data-theme='dark'] .shakhAdminRecentRow:hover{
+  background:linear-gradient(90deg,transparent,rgba(255,107,22,.09));
+}
+
+html[data-theme='dark'] .shakhAdminRecentRow em{
+  background:#1f2b36;
+  border-color:#4a3a2d;
+  color:#ffbd82;
+}
+
+@media(max-width:760px){
+  .shakhAdminCenter .shakhAdminHeroActions{
+    width:100%;
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .shakhAdminLiveStatus,
+  .shakhAdminCenter .shakhAdminRefresh{
+    width:100%;
+    justify-content:center;
+  }
+
+  .shakhAdminTrendPanel,
+  .shakhAdminRecentPanel{
+    padding:12px;
+    border-radius:18px;
+  }
+
+  .shakhAdminTrendBars,
+  .shakhAdminTrendSkeleton{
+    gap:5px;
+  }
+
+  .shakhAdminTrendBarItem{
+    height:150px;
+  }
+
+  .shakhAdminTrendBarTrack{
+    height:118px;
+    padding-inline:1px;
+  }
+
+  .shakhAdminTrendBarTrack span{
+    width:min(20px,74%);
+  }
+
+  .shakhAdminRecentRow{
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:8px;
+  }
+
+  .shakhAdminRecentRow em{
+    grid-column:1 / -1;
+    justify-self:start;
+  }
+}
+
+@media(max-width:520px){
+  .shakhAdminTrendSummary small{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .shakhAdminRecentRow:hover{transform:none}
+  .shakhAdminTrendBarTrack span{transition:none}
+  .shakhAdminTrendSkeleton span{animation:none}
+}
+
+@media(forced-colors:active){
+  .shakhAdminTrendPanel,
+  .shakhAdminRecentPanel,
+  .shakhAdminLiveStatus,
+  .shakhAdminTextAction,
+  .shakhAdminRecentRow em{
+    border-color:ButtonText;
+  }
+}
