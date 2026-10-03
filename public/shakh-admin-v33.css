@@ -1,0 +1,460 @@
+/* SHAKH — Admin Users V33
+   Additive read-only administration surface. */
+
+.shakhAdminUsers{
+  --admin-users-primary:var(--shakh-orange,var(--orange,#ff6b16));
+  --admin-users-secondary:var(--shakh-blue,#163f6b);
+  --admin-users-surface:#fff;
+  --admin-users-surface-2:#f7f9fc;
+  --admin-users-text:var(--shakh-text,#10233f);
+  --admin-users-muted:var(--shakh-muted,#708097);
+  --admin-users-line:var(--shakh-line,#e5eaf1);
+  display:grid;
+  gap:14px;
+  color:var(--admin-users-text);
+}
+
+.shakhAdminUsersHero{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:20px;
+  border:1px solid var(--admin-users-line);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 100% 0,rgba(255,107,22,.10),transparent 32%),
+    linear-gradient(135deg,var(--admin-users-surface),#f8fbff);
+  box-shadow:0 15px 42px rgba(16,35,63,.07);
+}
+
+.shakhAdminUsersHero>div:first-child{
+  min-width:0;
+}
+
+.shakhAdminUsersEyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:27px;
+  padding-inline:9px;
+  border:1px solid rgba(255,107,22,.18);
+  border-radius:999px;
+  background:rgba(255,107,22,.07);
+  color:var(--admin-users-primary);
+  font-size:9px;
+  font-weight:950;
+}
+
+.shakhAdminUsersHero h2{
+  margin:8px 0 4px;
+  font-size:clamp(21px,3vw,31px);
+  line-height:1.25;
+}
+
+.shakhAdminUsersHero p{
+  max-width:70ch;
+  margin:0;
+  color:var(--admin-users-muted);
+  font-size:11px;
+  line-height:1.8;
+}
+
+.shakhAdminUsersHeroActions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+.shakhAdminUsersBack,
+.shakhAdminUsersRefresh{
+  min-height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding-inline:13px;
+  border:1px solid var(--admin-users-line);
+  border-radius:13px;
+  background:var(--admin-users-surface);
+  color:var(--admin-users-text);
+  font-weight:900;
+  cursor:pointer;
+}
+
+.shakhAdminUsersRefresh:hover,
+.shakhAdminUsersBack:hover{
+  color:var(--admin-users-primary);
+  border-color:rgba(255,107,22,.27);
+}
+
+.shakhAdminUsersRefresh .is-spinning{
+  animation:shakh-admin-users-spin 1s linear infinite;
+}
+
+@keyframes shakh-admin-users-spin{
+  to{transform:rotate(360deg)}
+}
+
+.shakhAdminUsersToolbar{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 180px auto;
+  gap:9px;
+  align-items:stretch;
+  padding:12px;
+  border:1px solid var(--admin-users-line);
+  border-radius:19px;
+  background:var(--admin-users-surface);
+  box-shadow:0 10px 30px rgba(16,35,63,.045);
+}
+
+.shakhAdminUsersSearch{
+  min-width:0;
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding-inline:12px;
+  border:1px solid var(--admin-users-line);
+  border-radius:13px;
+  background:var(--admin-users-surface-2);
+  color:var(--admin-users-muted);
+}
+
+.shakhAdminUsersSearch:focus-within{
+  border-color:rgba(255,107,22,.36);
+  box-shadow:0 0 0 4px rgba(255,107,22,.08);
+}
+
+.shakhAdminUsersSearch input{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--admin-users-text);
+}
+
+.shakhAdminUsersRoleFilter{
+  display:grid;
+  gap:4px;
+}
+
+.shakhAdminUsersRoleFilter span{
+  color:var(--admin-users-muted);
+  font-size:8px;
+  font-weight:900;
+}
+
+.shakhAdminUsersRoleFilter select{
+  min-height:46px;
+  width:100%;
+  padding-inline:10px;
+  border:1px solid var(--admin-users-line);
+  border-radius:13px;
+  background:var(--admin-users-surface);
+  color:var(--admin-users-text);
+  font-weight:800;
+  outline:0;
+}
+
+.shakhAdminUsersRoleFilter select:focus{
+  border-color:rgba(255,107,22,.36);
+  box-shadow:0 0 0 4px rgba(255,107,22,.08);
+}
+
+.shakhAdminUsersCount{
+  min-width:118px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding-inline:12px;
+  border:1px solid var(--admin-users-line);
+  border-radius:13px;
+  background:linear-gradient(145deg,#fffaf5,#f8fbff);
+}
+
+.shakhAdminUsersCount svg{
+  color:var(--admin-users-primary);
+}
+
+.shakhAdminUsersCount strong{
+  font-size:20px;
+  font-variant-numeric:tabular-nums;
+}
+
+.shakhAdminUsersCount small{
+  color:var(--admin-users-muted);
+  font-size:8px;
+  white-space:nowrap;
+}
+
+.shakhAdminUsersTableWrap{
+  overflow:hidden;
+  border:1px solid var(--admin-users-line);
+  border-radius:22px;
+  background:var(--admin-users-surface);
+  box-shadow:0 12px 35px rgba(16,35,63,.05);
+}
+
+.shakhAdminUsersTableHeader,
+.shakhAdminUsersRow{
+  min-width:780px;
+  display:grid;
+  grid-template-columns:minmax(240px,1.35fr) minmax(145px,.8fr) minmax(170px,.9fr) 110px 120px;
+  gap:10px;
+  align-items:center;
+}
+
+.shakhAdminUsersTableHeader{
+  padding:10px 14px;
+  border-bottom:1px solid var(--admin-users-line);
+  background:var(--admin-users-surface-2);
+  color:var(--admin-users-muted);
+  font-size:8px;
+  font-weight:950;
+}
+
+.shakhAdminUsersRows{
+  display:grid;
+}
+
+.shakhAdminUsersRow{
+  padding:12px 14px;
+  border-bottom:1px solid var(--admin-users-line);
+  background:var(--admin-users-surface);
+}
+
+.shakhAdminUsersRow:last-child{
+  border-bottom:0;
+}
+
+.shakhAdminUsersIdentity{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.shakhAdminUsersAvatar{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:linear-gradient(145deg,#fff0e1,#eaf3ff);
+  color:var(--admin-users-secondary);
+  font-weight:950;
+}
+
+.shakhAdminUsersIdentity>div{
+  min-width:0;
+  display:grid;
+  gap:2px;
+}
+
+.shakhAdminUsersIdentity strong{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:10px;
+}
+
+.shakhAdminUsersIdentity small,
+.shakhAdminUsersContact small{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--admin-users-muted);
+  font-size:8px;
+}
+
+.shakhAdminUsersRole{
+  width:max-content;
+  max-width:100%;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:6px 8px;
+  border:1px solid rgba(22,63,107,.10);
+  border-radius:999px;
+  background:rgba(22,63,107,.05);
+  color:var(--admin-users-secondary);
+  font-size:8px;
+  font-weight:950;
+}
+
+.shakhAdminUsersContact{
+  min-width:0;
+  display:grid;
+  gap:2px;
+}
+
+.shakhAdminUsersContact span,
+.shakhAdminUsersCity,
+.shakhAdminUsersRow time{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--admin-users-text);
+  font-size:9px;
+}
+
+.shakhAdminUsersCity{
+  color:var(--admin-users-muted);
+}
+
+.shakhAdminUsersRow time{
+  color:var(--admin-users-muted);
+  font-size:8px;
+}
+
+.shakhAdminUsersEmpty{
+  min-height:240px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:7px;
+  padding:30px;
+  text-align:center;
+  color:var(--admin-users-muted);
+}
+
+.shakhAdminUsersEmpty svg{
+  color:var(--admin-users-primary);
+}
+
+.shakhAdminUsersEmpty strong{
+  color:var(--admin-users-text);
+}
+
+.shakhAdminUsersEmpty small{
+  font-size:9px;
+}
+
+.shakhAdminUsersSkeleton{
+  display:grid;
+  gap:1px;
+  background:var(--admin-users-line);
+}
+
+.shakhAdminUsersSkeleton span{
+  min-height:67px;
+  background:linear-gradient(90deg,#f3f6f9,#fbfcfe,#f3f6f9);
+  background-size:220% 100%;
+  animation:shakh-admin-users-skeleton 1.35s ease-in-out infinite;
+}
+
+@keyframes shakh-admin-users-skeleton{
+  0%{background-position:100% 0}
+  100%{background-position:0 0}
+}
+
+.shakhAdminUsersFooter{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:0 3px;
+  color:var(--admin-users-muted);
+  font-size:8px;
+}
+
+.shakhAdminUsersFooter span{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+
+.shakhAdminUsersFooter span svg{
+  color:var(--admin-users-primary);
+}
+
+.shakhAdminUsers:focus-within button:focus-visible,
+.shakhAdminUsers:focus-within select:focus-visible,
+.shakhAdminUsers:focus-within input:focus-visible{
+  outline:3px solid rgba(255,107,22,.20);
+  outline-offset:2px;
+}
+
+html[data-theme='dark'] .shakhAdminUsers{
+  --admin-users-surface:#0d1d32;
+  --admin-users-surface-2:#11253e;
+  --admin-users-text:#edf5ff;
+  --admin-users-muted:#9aadc4;
+  --admin-users-line:#20364f;
+  --admin-users-secondary:#9fc3e9;
+}
+
+html[data-theme='dark'] .shakhAdminUsersHero{
+  background:
+    radial-gradient(circle at 100% 0,rgba(255,107,22,.12),transparent 33%),
+    linear-gradient(135deg,#0d1d32,#10243b);
+}
+
+html[data-theme='dark'] .shakhAdminUsersCount{
+  background:linear-gradient(145deg,#15263b,#0f2238);
+}
+
+html[data-theme='dark'] .shakhAdminUsersRole{
+  border-color:#27415e;
+  background:#102842;
+}
+
+html[data-theme='dark'] .shakhAdminUsersSkeleton span{
+  background:linear-gradient(90deg,#13263d,#18314d,#13263d);
+}
+
+@media(max-width:900px){
+  .shakhAdminUsersToolbar{
+    grid-template-columns:minmax(0,1fr) 170px;
+  }
+  .shakhAdminUsersCount{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding:10px 12px;
+  }
+}
+
+@media(max-width:620px){
+  .shakhAdminUsersHero{
+    flex-direction:column;
+    padding:14px;
+    border-radius:19px;
+  }
+  .shakhAdminUsersHeroActions{
+    width:100%;
+  }
+  .shakhAdminUsersHeroActions>*{
+    flex:1;
+  }
+  .shakhAdminUsersToolbar{
+    grid-template-columns:1fr;
+    padding:10px;
+    border-radius:17px;
+  }
+  .shakhAdminUsersCount{
+    grid-column:auto;
+    justify-content:flex-start;
+  }
+  .shakhAdminUsersTableWrap{
+    overflow-x:auto;
+    border-radius:18px;
+  }
+  .shakhAdminUsersTableHeader,
+  .shakhAdminUsersRow{
+    min-width:720px;
+  }
+  .shakhAdminUsersFooter{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .shakhAdminUsersRefresh .is-spinning{animation:none}
+  .shakhAdminUsersSkeleton span{animation:none}
+}
