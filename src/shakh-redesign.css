@@ -281,3 +281,126 @@ button,a{ -webkit-tap-highlight-color:transparent }
 @media(max-width:1100px){.shakhHomeHero{grid-template-columns:1fr}.shakhHomeHeroPanel{min-height:280px}.shakhHomeCategoryRail{grid-template-columns:repeat(3,1fr)}.shakhProductGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.shakhOffersGrid{grid-template-columns:1fr 1fr}.shakhServicesGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.shakhHome{padding:0 12px}.shakhHeaderQuickNav{padding-inline:12px}.shakhHomeHero{min-height:0}.shakhHomeHeroCopy{padding:27px 20px;border-radius:22px}.shakhHomeHeroCopy h1{font-size:39px}.shakhHomeHeroCopy>p{font-size:12px}.shakhHomeHeroActions{flex-direction:column;align-items:stretch}.shakhPrimaryAction,.shakhSecondaryAction{justify-content:center}.shakhHomeHeroPanel{min-height:240px;border-radius:22px}.shakhHeroPanelLogo{width:100px;height:100px}.shakhHeroPanelStats article{min-height:76px}.shakhHomeCategoryRail{grid-template-columns:repeat(2,1fr)}.shakhSectionHeader{align-items:flex-start;flex-direction:column}.shakhOffersGrid,.shakhServicesGrid{grid-template-columns:1fr}.shakhProductGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.shakhProductMedia{height:165px}.shakhProductBody{padding:10px}.shakhProductBody h3{font-size:11px}.shakhProductFooter{align-items:stretch;flex-direction:column}.shakhProductFooter button{width:100%}.shakhFeedFrame{padding:10px}.shakhHomeTrust{gap:9px;flex-direction:column}}
 @media(max-width:430px){.shakhHomeCategoryRail{grid-template-columns:1fr 1fr}.shakhHeroPanelStats{grid-template-columns:1fr}.shakhHomeHeroPanel{padding:14px}.shakhProductGrid{grid-template-columns:1fr 1fr}.shakhProductMedia{height:145px}}
+
+
+/* =========================================================
+   SHAKH — COMPLETE VISUAL REDESIGN v2
+   Visual layer only. Existing application logic is preserved.
+   ========================================================= */
+
+:root{
+  --shakh-canvas:#f7f8fa;
+  --shakh-surface:#ffffff;
+  --shakh-surface-2:#f3f5f7;
+  --shakh-text:#101820;
+  --shakh-muted:#6d7782;
+  --shakh-line:#e2e6ea;
+  --shakh-brand:#f26a21;
+  --shakh-blue:#245d8f;
+  --shakh-green:#16805b;
+  --shakh-brand-soft:#fff3ec;
+  --shakh-blue-soft:#edf4f9;
+  --shakh-green-soft:#edf8f3;
+  --shakh-shadow-sm:0 1px 2px rgba(16,24,32,.035);
+  --shakh-shadow-md:0 10px 30px rgba(16,24,32,.075);
+}
+html[data-theme="dark"],html.dark{
+  --shakh-canvas:#0b1117;
+  --shakh-surface:#111820;
+  --shakh-surface-2:#151e27;
+  --shakh-text:#eef2f5;
+  --shakh-muted:#9ba7b2;
+  --shakh-line:#26323d;
+  --shakh-brand:#ff7b32;
+  --shakh-blue:#79a9ce;
+  --shakh-green:#57bd91;
+  --shakh-brand-soft:#2b1d15;
+  --shakh-blue-soft:#162532;
+  --shakh-green-soft:#152a22;
+  --shakh-shadow-sm:0 1px 2px rgba(0,0,0,.2);
+  --shakh-shadow-md:0 16px 38px rgba(0,0,0,.24);
+}
+
+body{background:var(--shakh-canvas);color:var(--shakh-text)}
+.app{background:var(--shakh-canvas)}
+.app>header{padding:0 20px;background:var(--shakh-surface);border-bottom:1px solid var(--shakh-line);backdrop-filter:none}
+.shakhHome{max-width:1320px!important;padding-inline:20px}
+.shakhHomeHero{display:none!important}
+
+.shakhHeaderInner{min-height:64px!important;max-width:1320px!important}
+.shakhBrandLogo{width:38px!important;height:38px!important;border-radius:10px!important;background:transparent!important;border:0!important}
+.shakhBrandText strong{font-size:14px!important;letter-spacing:.2px}
+.shakhBrandText small{font-size:8px!important;color:var(--shakh-muted)!important}
+.shakhHeaderSearch{min-height:40px!important;border:1px solid var(--shakh-line)!important;border-radius:10px!important;background:var(--shakh-surface-2)!important;box-shadow:none!important}
+.shakhHeaderSearch:focus-within{border-color:var(--shakh-brand)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--shakh-brand) 9%,transparent)!important}
+.shakhHeaderAction,.shakhIconAction,.shakhDashboardAction{min-height:40px!important;border-radius:10px!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+.shakhHeaderAction:hover,.shakhIconAction:hover{background:var(--shakh-surface-2)!important;color:var(--shakh-brand)!important}
+.shakhDashboardAction{padding-inline:11px!important;background:var(--shakh-brand)!important;border-color:var(--shakh-brand)!important;color:#fff!important}
+.shakhHeaderQuickNav{max-width:1320px!important;margin:0 auto!important;padding:0!important;min-height:38px!important;border-top:1px solid var(--shakh-line)!important;gap:20px!important}
+.shakhHeaderQuickNav button{font-size:9px!important;color:var(--shakh-muted)!important;border-bottom:2px solid transparent!important;border-radius:0!important;padding:0 1px!important}
+.shakhHeaderQuickNav button:hover{color:var(--shakh-text)!important;border-bottom-color:var(--shakh-brand)!important}
+
+.shakhSection{padding-top:30px!important}
+.shakhSectionHeader{margin-bottom:12px!important}
+.shakhSectionHeader>div>span{font-size:8px!important;color:var(--shakh-brand)!important}
+.shakhSectionHeader h2{font-size:20px!important;letter-spacing:-.2px!important}
+.shakhSectionHeader p{font-size:9px!important;color:var(--shakh-muted)!important}
+.shakhHomeCategoryRail{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:1px!important;background:var(--shakh-line)!important;border:1px solid var(--shakh-line)!important;border-radius:14px!important;overflow:hidden!important}
+.shakhHomeCategoryRail button{min-height:78px!important;border:0!important;border-radius:0!important;background:var(--shakh-surface)!important;box-shadow:none!important;padding:12px!important}
+.shakhHomeCategoryRail button:hover{background:var(--shakh-surface-2)!important;transform:none!important}
+.shakhHomeCategoryRail button svg{background:transparent!important;color:var(--shakh-brand)!important;padding:0!important;width:22px!important;height:22px!important}
+.shakhHomeCategoryRail button strong{font-size:9px!important}
+.shakhHomeCategoryRail button small{font-size:7px!important}
+
+.shakhOffersGrid{gap:1px!important;background:var(--shakh-line)!important;border:1px solid var(--shakh-line)!important;border-radius:14px!important;overflow:hidden!important}
+.shakhOfferCard{border:0!important;border-radius:0!important;box-shadow:none!important;background:var(--shakh-surface)!important}
+.shakhOfferCard:hover{transform:none!important;background:var(--shakh-surface-2)!important}
+.shakhOfferCard img{height:145px!important}
+.shakhOfferBody{padding:12px!important}
+.shakhOfferBody h3{font-size:11px!important}
+.shakhOfferBody p{font-size:8px!important}
+
+.shakhProductGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:1px!important;background:var(--shakh-line)!important;border:1px solid var(--shakh-line)!important;border-radius:14px!important;overflow:hidden!important}
+.shakhProductCard{border:0!important;border-radius:0!important;box-shadow:none!important;background:var(--shakh-surface)!important}
+.shakhProductCard:hover{transform:none!important;box-shadow:none!important;background:var(--shakh-surface-2)!important}
+.shakhProductMedia{height:190px!important}
+.shakhProductBody{padding:12px!important}
+.shakhProductBody h3{font-size:11px!important}
+.shakhProductFooter button{border-radius:8px!important;min-height:32px!important;background:transparent!important}
+
+.shakhServicesGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:1px!important;background:var(--shakh-line)!important;border:1px solid var(--shakh-line)!important;border-radius:14px!important;overflow:hidden!important}
+.shakhServicesGrid button{border:0!important;border-radius:0!important;box-shadow:none!important;background:var(--shakh-surface)!important;min-height:78px!important;padding:11px!important}
+.shakhServicesGrid button:hover{transform:none!important;box-shadow:none!important;background:var(--shakh-surface-2)!important}
+.shakhServicesGrid button>svg:first-child{background:transparent!important;padding:0!important;width:25px!important;height:25px!important}
+
+.shakhGlobalFooter{margin:38px auto 12px!important;max-width:1320px!important;border:1px solid var(--shakh-line)!important;border-radius:14px!important;background:var(--shakh-surface)!important;box-shadow:none!important}
+.shakhFooterCompact{padding:14px 16px!important;min-height:58px!important;display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;gap:18px!important}
+.shakhFooterIdentity{gap:8px!important}
+.shakhFooterLogo{width:34px!important;height:34px!important;border-radius:9px!important;background:var(--shakh-surface-2)!important}
+.shakhFooterLogo img{width:25px!important;height:25px!important}
+.shakhFooterIdentity strong{font-size:11px!important}
+.shakhFooterIdentity small{font-size:7px!important}
+.shakhFooterLinks{gap:12px!important;justify-content:center!important}
+.shakhFooterLinks button{font-size:8px!important;color:var(--shakh-muted)!important;padding:3px!important}
+.shakhFooterSupport{font-size:8px!important;gap:10px!important}
+.shakhFooterUtility{padding:0 16px!important;border-top:1px solid var(--shakh-line)!important}
+.shakhFooterBottom{min-height:36px!important;padding:8px 16px!important;border-top:1px solid var(--shakh-line)!important;font-size:7px!important}
+.shakhFooterBottom button{width:26px!important;height:26px!important;border-radius:8px!important}
+
+@media(max-width:1000px){
+ .shakhHomeCategoryRail{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .shakhProductGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .shakhFooterCompact{grid-template-columns:1fr auto!important}.shakhFooterLinks{justify-content:flex-start}
+}
+@media(max-width:700px){
+ .app>header{padding:0 12px}
+ .shakhHome{padding-inline:12px}
+ .shakhHeaderQuickNav{gap:14px!important;overflow:auto!important}
+ .shakhHeaderQuickNav button{white-space:nowrap}
+ .shakhHomeCategoryRail{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .shakhProductGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .shakhServicesGrid{grid-template-columns:1fr!important}
+ .shakhFooterCompact{grid-template-columns:1fr!important;gap:10px!important}
+ .shakhFooterLinks{flex-wrap:wrap!important;justify-content:flex-start!important}
+ .shakhFooterSupport{justify-content:flex-start!important}
+}
