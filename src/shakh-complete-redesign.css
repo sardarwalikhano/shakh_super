@@ -1,0 +1,1016 @@
+
+/* SHAKH complete visual redesign
+   Visual-only layer: existing component logic, data flow and interactions remain unchanged. */
+
+:root {
+  --sh-redesign-bg: #f7f8fa;
+  --sh-redesign-surface: #ffffff;
+  --sh-redesign-surface-soft: #fbfcfd;
+  --sh-redesign-text: #132238;
+  --sh-redesign-muted: #6d7b8d;
+  --sh-redesign-line: #e6eaf0;
+  --sh-redesign-orange: #f36b21;
+  --sh-redesign-orange-soft: #fff2e9;
+  --sh-redesign-blue: #245b91;
+  --sh-redesign-green: #17815f;
+  --sh-redesign-radius: 14px;
+  --sh-redesign-content: 1240px;
+}
+
+html[data-theme='dark'] {
+  --sh-redesign-bg: #0b1119;
+  --sh-redesign-surface: #101923;
+  --sh-redesign-surface-soft: #131e29;
+  --sh-redesign-text: #edf3f9;
+  --sh-redesign-muted: #98a8b9;
+  --sh-redesign-line: #22303e;
+  --sh-redesign-orange: #ff8745;
+  --sh-redesign-orange-soft: #2c1c13;
+  --sh-redesign-blue: #79aee0;
+  --sh-redesign-green: #46bd8f;
+}
+
+/* ---------- Global rhythm / surfaces ---------- */
+.shakhApp {
+  background: var(--sh-redesign-bg);
+  color: var(--sh-redesign-text);
+}
+
+.shakhApp :where(section, article, aside, div) {
+  box-sizing: border-box;
+}
+
+.shakhHome {
+  width: min(100%, var(--sh-redesign-content));
+  margin: 0 auto;
+  padding: 22px 22px 44px;
+}
+
+/* ---------- Compact header ---------- */
+.shakhGlobalHeader {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: color-mix(in srgb, var(--sh-redesign-surface) 94%, transparent);
+  border-bottom: 1px solid var(--sh-redesign-line);
+  box-shadow: none;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.shakhHeaderInner {
+  width: min(100%, var(--sh-redesign-content));
+  min-height: 62px;
+  margin: 0 auto;
+  padding: 8px 22px;
+  display: grid;
+  grid-template-columns: auto minmax(220px, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+}
+
+.shakhBrand {
+  gap: 9px;
+}
+
+.shakhBrandLogo {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.shakhBrandText strong {
+  font-size: 15px;
+  letter-spacing: .8px;
+}
+
+.shakhBrandText small {
+  font-size: 8px;
+  color: var(--sh-redesign-muted);
+}
+
+.shakhHeaderSearch {
+  min-height: 40px;
+  border: 1px solid var(--sh-redesign-line);
+  border-radius: 10px;
+  background: var(--sh-redesign-surface-soft);
+  box-shadow: none;
+}
+
+.shakhHeaderSearch:focus-within {
+  border-color: color-mix(in srgb, var(--sh-redesign-orange) 50%, var(--sh-redesign-line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sh-redesign-orange) 8%, transparent);
+}
+
+.shakhHeaderActions {
+  gap: 5px;
+}
+
+.shakhHeaderAction,
+.shakhIconAction,
+.shakhDashboardAction {
+  min-height: 38px;
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+.shakhHeaderAction {
+  padding-inline: 9px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--sh-redesign-muted);
+}
+
+.shakhHeaderAction:hover {
+  background: var(--sh-redesign-surface-soft);
+  color: var(--sh-redesign-text);
+}
+
+.shakhIconAction {
+  width: 38px;
+  border-color: transparent;
+  background: transparent;
+}
+
+.shakhIconAction:hover {
+  border-color: var(--sh-redesign-line);
+  background: var(--sh-redesign-surface-soft);
+}
+
+.shakhDashboardAction {
+  padding-inline: 12px;
+  border: 1px solid var(--sh-redesign-text);
+  background: var(--sh-redesign-text);
+  color: var(--sh-redesign-surface);
+}
+
+.shakhDashboardAction:hover {
+  transform: none;
+  opacity: .92;
+}
+
+.shakhHeaderQuickNav {
+  width: min(100%, var(--sh-redesign-content));
+  margin: 0 auto;
+  padding: 0 22px 7px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+}
+
+.shakhHeaderQuickNav button {
+  min-height: 28px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--sh-redesign-muted);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.shakhHeaderQuickNav button:hover {
+  background: var(--sh-redesign-orange-soft);
+  color: var(--sh-redesign-orange);
+}
+
+.shakhMobileSearch {
+  display: none;
+}
+
+/* ---------- Homepage: no hero, structured intro ---------- */
+.shakhHomeIntro {
+  min-height: 118px;
+  margin-bottom: 18px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  border-bottom: 1px solid var(--sh-redesign-line);
+  background: transparent;
+}
+
+.shakhHomeIntro > div:first-child {
+  min-width: 0;
+}
+
+.shakhHomeIntro > div:first-child > span {
+  color: var(--sh-redesign-orange);
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: .7px;
+}
+
+.shakhHomeIntro h1 {
+  margin: 6px 0 3px;
+  color: var(--sh-redesign-text);
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.2;
+  letter-spacing: -.9px;
+  font-weight: 950;
+}
+
+.shakhHomeIntro p {
+  margin: 0;
+  color: var(--sh-redesign-muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.shakhHomeIntroActions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 7px;
+}
+
+.shakhHomeIntroActions button {
+  min-height: 38px;
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+.shakhHomeCategoryRail {
+  margin: 0 0 34px;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  border-top: 1px solid var(--sh-redesign-line);
+  border-bottom: 1px solid var(--sh-redesign-line);
+  background: var(--sh-redesign-surface);
+}
+
+.shakhHomeCategoryRail button {
+  min-width: 120px;
+  min-height: 64px;
+  flex: 1 0 120px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr 1fr;
+  align-content: center;
+  column-gap: 8px;
+  padding: 9px 12px;
+  border: 0;
+  border-inline-start: 1px solid var(--sh-redesign-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--sh-redesign-text);
+  text-align: right;
+}
+
+.shakhHomeCategoryRail button:first-child {
+  border-inline-start: 0;
+}
+
+.shakhHomeCategoryRail button svg {
+  grid-row: 1 / 3;
+  align-self: center;
+  color: var(--sh-redesign-orange);
+}
+
+.shakhHomeCategoryRail button span {
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.shakhHomeCategoryRail button small {
+  color: var(--sh-redesign-muted);
+  font-size: 7px;
+}
+
+.shakhHomeCategoryRail button:hover {
+  background: var(--sh-redesign-orange-soft);
+}
+
+/* ---------- Section hierarchy ---------- */
+.shakhHomeSection {
+  margin-top: 42px;
+}
+
+.shakhSectionHeader {
+  margin-bottom: 14px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--sh-redesign-line);
+}
+
+.shakhSectionHeader > div:first-child > span {
+  color: var(--sh-redesign-orange);
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: .8px;
+}
+
+.shakhSectionHeader h2 {
+  margin: 4px 0 2px;
+  color: var(--sh-redesign-text);
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 950;
+  letter-spacing: -.35px;
+}
+
+.shakhSectionHeader p {
+  margin: 0;
+  color: var(--sh-redesign-muted);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+/* Flatten the most common legacy card treatments without changing interactions. */
+.shakhApp :where(.shakhOffersGrid, .shakhProductGrid, .shakhServicesGrid, .shakhFeedFrame) {
+  box-shadow: none;
+}
+
+.shakhApp :where(.shakhOfferCard, .shakhProductCard, .shakhServicesGrid > button) {
+  border: 1px solid var(--sh-redesign-line) !important;
+  border-radius: var(--sh-redesign-radius) !important;
+  box-shadow: none !important;
+  background: var(--sh-redesign-surface) !important;
+}
+
+.shakhApp :where(.shakhOfferCard:hover, .shakhProductCard:hover, .shakhServicesGrid > button:hover) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--sh-redesign-orange) 35%, var(--sh-redesign-line)) !important;
+}
+
+/* ---------- Dashboard: new composition ---------- */
+.shakhDashboardBackdrop {
+  padding: 0;
+  background: rgba(7, 15, 25, .64);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.shakhDashboardShell {
+  width: min(1440px, 100vw);
+  height: min(94vh, 940px);
+  border: 1px solid var(--sh-redesign-line);
+  border-radius: 18px;
+  background: var(--sh-redesign-bg);
+  box-shadow: 0 30px 100px rgba(0,0,0,.24);
+}
+
+.shakhDashboardTopbar {
+  min-height: 66px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--sh-redesign-line);
+  background: var(--sh-redesign-surface);
+}
+
+.shakhDashboardIdentity {
+  gap: 10px;
+}
+
+.shakhDashboardBrand {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--sh-redesign-orange-soft);
+}
+
+.shakhDashboardMenuButton,
+.shakhDashboardIconButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border-color: var(--sh-redesign-line);
+  background: transparent;
+  box-shadow: none;
+}
+
+.shakhDashboardTitleBlock > span {
+  color: var(--sh-redesign-orange);
+  font-size: 8px;
+  letter-spacing: .6px;
+}
+
+.shakhDashboardTitleBlock h1 {
+  margin-top: 1px;
+  font-size: 18px;
+  letter-spacing: -.3px;
+}
+
+.shakhDashboardTitleBlock p {
+  display: none;
+}
+
+.shakhDashboardTopActions {
+  gap: 5px;
+}
+
+.shakhDashboardAccount {
+  min-width: 120px;
+  padding-inline-start: 10px;
+  border-inline-start: 1px solid var(--sh-redesign-line);
+}
+
+.shakhDashboardAccount small,
+.shakhDashboardAccount span {
+  color: var(--sh-redesign-muted);
+  font-size: 7px;
+}
+
+.shakhDashboardAccount strong {
+  font-size: 10px;
+}
+
+.shakhDashboardBody {
+  grid-template-columns: 226px minmax(0,1fr);
+  grid-template-areas: "sidebar main";
+}
+
+.shakhDashboardSidebar {
+  padding: 12px 9px;
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--sh-redesign-line);
+  background: var(--sh-redesign-surface);
+}
+
+.shakhDashboardSidebarHeader {
+  padding: 4px 7px 10px;
+  border-bottom: 1px solid var(--sh-redesign-line);
+}
+
+.shakhDashboardSidebarHeader small {
+  font-size: 7px;
+  color: var(--sh-redesign-muted);
+}
+
+.shakhDashboardSidebarHeader strong {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+.shakhDashboardNav {
+  gap: 1px;
+  padding-top: 7px;
+}
+
+.shakhDashboardGroupLabel {
+  margin: 10px 7px 3px;
+  color: var(--sh-redesign-muted);
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.shakhDashboardNavItem {
+  grid-template-columns: 28px minmax(0,1fr) auto;
+  gap: 7px;
+  min-height: 38px;
+  padding: 6px 7px;
+  border: 0;
+  border-radius: 8px;
+}
+
+.shakhDashboardNavItem:hover {
+  transform: none;
+  background: var(--sh-redesign-surface-soft);
+  border-color: transparent;
+}
+
+.shakhDashboardNavItem.is-active {
+  background: var(--sh-redesign-orange-soft);
+  border-color: transparent;
+}
+
+.shakhDashboardNavItem.is-active::before {
+  inset-inline-end: auto;
+  inset-inline-start: -9px;
+  width: 2px;
+  height: 22px;
+  border-radius: 0 2px 2px 0;
+}
+
+.shakhDashboardNavIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--sh-redesign-muted);
+}
+
+.shakhDashboardNavItem.is-active .shakhDashboardNavIcon {
+  background: transparent;
+  color: var(--sh-redesign-orange);
+}
+
+.shakhDashboardNavCopy strong {
+  font-size: 9px;
+}
+
+.shakhDashboardNavCopy small {
+  display: none;
+}
+
+.shakhDashboardNavArrow {
+  display: none;
+}
+
+.shakhDashboardNavBadge {
+  min-width: 19px;
+  height: 19px;
+  font-size: 7px;
+  background: var(--sh-redesign-orange);
+}
+
+.shakhDashboardSidebarFooter {
+  padding: 9px 7px 2px;
+}
+
+.shakhDashboardSidebarFooter strong {
+  font-size: 8px;
+}
+
+.shakhDashboardSidebarFooter small {
+  font-size: 7px;
+}
+
+.shakhDashboardMain {
+  background: var(--sh-redesign-bg);
+}
+
+.shakhDashboardToolbar {
+  min-height: 50px;
+  padding: 9px 18px;
+  border-bottom: 1px solid var(--sh-redesign-line);
+  background: color-mix(in srgb, var(--sh-redesign-bg) 94%, transparent);
+  box-shadow: none;
+}
+
+.shakhDashboardToolbar span {
+  font-size: 7px;
+}
+
+.shakhDashboardToolbar strong {
+  font-size: 11px;
+}
+
+.shakhDashboardHome,
+.shakhDashboardModule {
+  padding: 18px;
+}
+
+.shakhDashboardKpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 0;
+  border-top: 1px solid var(--sh-redesign-line);
+  border-bottom: 1px solid var(--sh-redesign-line);
+  background: transparent;
+}
+
+.shakhDashboardKpis article {
+  min-width: 0;
+  min-height: 94px;
+  padding: 15px 17px;
+  border: 0 !important;
+  border-inline-start: 1px solid var(--sh-redesign-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.shakhDashboardKpis article:first-child {
+  border-inline-start: 0 !important;
+}
+
+.shakhDashboardKpis article span,
+.shakhDashboardKpis article small {
+  color: var(--sh-redesign-muted);
+  font-size: 7px;
+}
+
+.shakhDashboardKpis article strong {
+  display: block;
+  margin: 5px 0 1px;
+  color: var(--sh-redesign-text);
+  font-size: 23px;
+  line-height: 1.1;
+  font-weight: 950;
+}
+
+.shakhDashboardKpis article[data-tone="brand"] strong {
+  color: var(--sh-redesign-orange);
+}
+
+.shakhDashboardKpis article[data-tone="green"] strong {
+  color: var(--sh-redesign-green);
+}
+
+.shakhDashboardKpis article[data-tone="blue"] strong {
+  color: var(--sh-redesign-blue);
+}
+
+.shakhDashboardHomeContent {
+  margin-top: 24px;
+}
+
+.shakhDashboardRecentOrders,
+.shakhDashboardRecentList,
+.shakhDashboardRecentRow {
+  box-shadow: none !important;
+}
+
+.shakhDashboardRecentOrdersHead {
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--sh-redesign-line);
+}
+
+.shakhDashboardRecentOrdersHead h2 {
+  font-size: 17px;
+}
+
+/* Flatten legacy module shells inside the new dashboard. */
+.shakhDashboardModule :where(.dashboardHeader,.customer-orders-panel__header,.customer-tracking__header,.vendor-dashboard__header,.notification-center__header,.profilePanelHero,.walletHead,.postHubHeader,.postsManagementHead,.settingsCardHeader) {
+  border: 0 !important;
+  border-bottom: 1px solid var(--sh-redesign-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.shakhDashboardModule :where(.orderCard,.customer-orders-panel__card,.customer-orders-panel__detail,.tracking-card__top,.settingsCard,.walletBalanceCard,.notification-list,.notification-item,.deliveryZoneEditorCard,.liveDeliveryMapCard,.etaCard,.postHubGrid,.postHubSelectedForm) {
+  box-shadow: none !important;
+  border-color: var(--sh-redesign-line) !important;
+  border-radius: 12px !important;
+}
+
+.shakhDashboardModule :where(.dashboardGrid,.customer-orders-panel__grid,.settingsGrid,.profileFormGrid,.profileStats,.walletMiniStats,.notification-center__list,.postsManagementList) {
+  gap: 8px;
+}
+
+/* ---------- Compact footer ---------- */
+.shakhGlobalFooter {
+  width: min(100%, var(--sh-redesign-content));
+  margin: 0 auto;
+  padding: 18px 22px 12px;
+  border-top: 1px solid var(--sh-redesign-line);
+  background: var(--sh-redesign-surface);
+  color: var(--sh-redesign-text);
+}
+
+.shakhFooterCompact {
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: 22px;
+}
+
+.shakhFooterIdentity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.shakhFooterLogo {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--sh-redesign-orange-soft);
+}
+
+.shakhFooterLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.shakhFooterIdentity strong {
+  display: block;
+  font-size: 11px;
+  letter-spacing: .6px;
+}
+
+.shakhFooterIdentity small {
+  display: block;
+  margin-top: 1px;
+  color: var(--sh-redesign-muted);
+  font-size: 7px;
+}
+
+.shakhFooterLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3px;
+}
+
+.shakhFooterLinks button {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sh-redesign-muted);
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.shakhFooterLinks button:hover {
+  color: var(--sh-redesign-orange);
+  background: var(--sh-redesign-orange-soft);
+}
+
+.shakhFooterSupport {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+  color: var(--sh-redesign-muted);
+  font-size: 8px;
+}
+
+.shakhFooterSupport span,
+.shakhFooterSupport a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.shakhFooterSupport a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shakhFooterUtility {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 0;
+  margin-top: 3px;
+}
+
+.shakhFooterBottom {
+  margin-top: 9px;
+  padding-top: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--sh-redesign-line);
+  color: var(--sh-redesign-muted);
+  font-size: 7px;
+}
+
+.shakhFooterBottom > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.shakhFooterBottom span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.shakhFooterBottom button {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sh-redesign-line);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--sh-redesign-text);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .shakhHeaderInner {
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+  }
+
+  .shakhHeaderSearch {
+    min-width: 0;
+  }
+
+  .shakhHeaderAction span {
+    display: none;
+  }
+
+  .shakhHome {
+    padding-inline: 15px;
+  }
+
+  .shakhHomeIntro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .shakhHomeIntroActions {
+    width: 100%;
+  }
+
+  .shakhHomeIntroActions button {
+    flex: 1;
+  }
+
+  .shakhDashboardKpis {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .shakhDashboardKpis article:nth-child(3) {
+    border-top: 1px solid var(--sh-redesign-line);
+  }
+
+  .shakhDashboardKpis article:nth-child(odd) {
+    border-inline-start: 0 !important;
+  }
+
+  .shakhDashboardKpis article:nth-child(even) {
+    border-inline-start: 1px solid var(--sh-redesign-line) !important;
+  }
+
+  .shakhFooterCompact {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .shakhFooterIdentity {
+    min-width: 0;
+  }
+
+  .shakhFooterLinks {
+    justify-content: flex-start;
+  }
+
+  .shakhFooterSupport {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 860px) {
+  .shakhDashboardShell {
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+    border: 0;
+  }
+
+  .shakhDashboardBody {
+    grid-template-columns: 1fr;
+    grid-template-areas: "main";
+  }
+
+  .shakhDashboardSidebar {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 25;
+    width: min(300px, 86vw);
+    border-inline-end: 1px solid var(--sh-redesign-line);
+    transform: translateX(-105%);
+    transition: transform .2s ease;
+  }
+
+  .shakhDashboardSidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .shakhDashboardScrim {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: block;
+    border: 0;
+    background: rgba(4, 12, 21, .52);
+  }
+
+  .shakhDashboardMenuButton {
+    display: grid;
+  }
+
+  .shakhDashboardAccount {
+    display: none;
+  }
+
+  .shakhDashboardHome,
+  .shakhDashboardModule {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .shakhHeaderInner {
+    min-height: 58px;
+    padding: 7px 13px;
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .shakhBrandText {
+    display: none;
+  }
+
+  .shakhHeaderSearch {
+    display: none;
+  }
+
+  .shakhMobileSearch {
+    display: block;
+    padding: 0 13px 8px;
+  }
+
+  .shakhMobileSearch .shakhHeaderSearch {
+    display: flex;
+    width: 100%;
+  }
+
+  .shakhHeaderQuickNav {
+    padding-inline: 13px;
+    overflow-x: auto;
+  }
+
+  .shakhHeaderQuickNav button {
+    flex: 0 0 auto;
+  }
+
+  .shakhDashboardAction span {
+    display: none;
+  }
+
+  .shakhDashboardAction {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .shakhHome {
+    padding: 12px 12px 30px;
+  }
+
+  .shakhHomeIntro {
+    padding: 17px 4px 16px;
+    margin-bottom: 12px;
+  }
+
+  .shakhHomeIntro h1 {
+    font-size: 25px;
+  }
+
+  .shakhHomeCategoryRail {
+    margin-bottom: 25px;
+  }
+
+  .shakhHomeCategoryRail button {
+    min-width: 106px;
+    flex-basis: 106px;
+  }
+
+  .shakhSectionHeader h2 {
+    font-size: 18px;
+  }
+
+  .shakhDashboardKpis {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .shakhDashboardKpis article {
+    min-height: 82px;
+    padding: 12px;
+  }
+
+  .shakhDashboardKpis article strong {
+    font-size: 20px;
+  }
+
+  .shakhFooterLinks {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 2px;
+  }
+
+  .shakhFooterLinks button {
+    flex: 0 0 auto;
+  }
+
+  .shakhFooterBottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shakhApp *,
+  .shakhApp *::before,
+  .shakhApp *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
