@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Bell, CalendarDays, CheckCircle2, Clock3, FileText, LifeBuoy, Plane,
   Plus, RefreshCw, Settings2, ShieldCheck, Store, UserRound, WalletCards,
-  UsersRound, XCircle,
+  UsersRound, CircleDollarSign,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { DashboardView } from './DashboardShell';
@@ -128,7 +128,7 @@ export default function UmrahAgencyControlCenter({ userId, onNavigate }: Props) 
     { label: 'چاوەڕوانی پەسەند', value: metrics.pendingApproval, icon: Clock3, tone: 'blue' },
     { label: 'کۆی حجزەکان', value: metrics.bookings, icon: UsersRound, tone: 'teal' },
     { label: 'حجزە چاوەڕوانەکان', value: metrics.pendingBookings, icon: CalendarDays, tone: 'rose' },
-    { label: 'پارەی پشتڕاستکراو', value: money(metrics.paymentVerifiedAmount), icon: CircleMoney, tone: 'gold', money: true },
+    { label: 'پارەی پشتڕاستکراو', value: money(metrics.paymentVerifiedAmount), icon: CircleDollarSign, tone: 'gold', money: true },
   ], [metrics]);
 
   return <section className="shakhUmrahAgencyCenter" aria-labelledby="umrah-agency-center-title" dir="rtl">
