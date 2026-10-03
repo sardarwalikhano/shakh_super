@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import './dashboard-shell.css';
 import UmrahAgencyModule from './UmrahAgencyModule';
+import SupportModule from './SupportModule';
 import { supabase } from '../lib/supabase';
 
 export type DashboardView =
@@ -144,6 +145,7 @@ export default function DashboardShell({
   const isCustomer = role === 'customer';
   const isCarDealer = role === 'car_dealer';
   const isUmrahAgency = role === 'umrah_agency';
+  const isSupport = role === 'support';
   const showGenericStats = role === 'customer';
 
   const navItems: NavItem[] = [
@@ -461,7 +463,7 @@ export default function DashboardShell({
                 <div className="dashboardShellHomeContent">{homeContent}</div>
               </div>
             ) : (
-              <div className="dashboardShellModule">{view === 'cars' && role === 'car_dealer' ? <CarDealerModule /> : view === 'umrah' && role === 'umrah_agency' ? <UmrahAgencyModule /> : children}</div>
+              <div className="dashboardShellModule">{view === 'cars' && role === 'car_dealer' ? <CarDealerModule /> : view === 'umrah' && role === 'umrah_agency' ? <UmrahAgencyModule /> : view === 'support' && (isSupport || isAdmin) ? <SupportModule /> : children}</div>
             )}
           </main>
         </div>
