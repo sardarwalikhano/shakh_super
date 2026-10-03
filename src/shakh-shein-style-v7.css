@@ -1,0 +1,847 @@
+/*
+  SHAKH — SHEIN-STYLE COMPLETE UI v7
+  Visual-only layer. No product/data/business logic is changed.
+  Reference principles: compact commerce header, announcement strip, text/category nav,
+  circular category discovery, promotional merchandising, dense image-first product grid,
+  simple filters, and restrained flat surfaces.
+*/
+
+:root{
+  --s7-black:#111111;
+  --s7-black-2:#252525;
+  --s7-white:#ffffff;
+  --s7-bg:#fafafa;
+  --s7-soft:#f5f5f5;
+  --s7-line:#e8e8e8;
+  --s7-muted:#777;
+  --s7-brand:#ff6a00;
+  --s7-red:#ff3b30;
+  --s7-green:#168a5b;
+  --s7-radius:0px;
+}
+html[data-theme='dark'],html.dark{
+  --s7-black:#f5f5f5;
+  --s7-black-2:#d6d6d6;
+  --s7-white:#111;
+  --s7-bg:#0f0f10;
+  --s7-soft:#181819;
+  --s7-line:#2b2b2d;
+  --s7-muted:#a5a5a7;
+  --s7-brand:#ff7a1a;
+  --s7-red:#ff6d63;
+  --s7-green:#68c69a;
+}
+
+/* ==========================================================================
+   GLOBAL RETAIL CANVAS
+   ========================================================================== */
+html,body,#root,.app{
+  background:var(--s7-white)!important;
+  color:var(--s7-black)!important;
+}
+.app{
+  background-image:none!important;
+}
+.app>main{
+  width:min(1540px,calc(100% - 28px))!important;
+  max-width:none!important;
+  margin-inline:auto!important;
+}
+.hero,.shakhHomeHero{
+  display:none!important;
+}
+
+/* ==========================================================================
+   ANNOUNCEMENT / RETAIL HEADER
+   ========================================================================== */
+.shakhGlobalHeader{
+  position:sticky!important;
+  top:0!important;
+  z-index:100!important;
+  background:var(--s7-white)!important;
+  border:0!important;
+  box-shadow:0 1px 0 var(--s7-line)!important;
+  backdrop-filter:none!important;
+}
+.shakhHeaderInner{
+  width:min(1540px,calc(100% - 28px))!important;
+  min-height:64px!important;
+  padding:8px 0!important;
+  grid-template-columns:auto minmax(320px,1fr) auto!important;
+  gap:22px!important;
+}
+.shakhBrand{
+  min-width:150px!important;
+  gap:7px!important;
+}
+.shakhBrandLogo{
+  width:35px!important;
+  height:35px!important;
+  border-radius:0!important;
+  background:var(--s7-soft)!important;
+  border:1px solid var(--s7-line)!important;
+}
+.shakhBrandText strong{
+  font-size:17px!important;
+  font-weight:950!important;
+  letter-spacing:.04em!important;
+}
+.shakhBrandText small{
+  font-size:7px!important;
+  color:var(--s7-muted)!important;
+}
+.shakhHeaderSearch{
+  height:42px!important;
+  border:1px solid var(--s7-black-2)!important;
+  border-radius:0!important;
+  background:var(--s7-white)!important;
+  box-shadow:none!important;
+}
+.shakhHeaderSearch input{
+  font-size:12px!important;
+}
+.shakhHeaderSearch:focus-within{
+  border-color:var(--s7-brand)!important;
+  box-shadow:none!important;
+}
+.shakhHeaderActions{
+  gap:0!important;
+}
+.shakhHeaderAction,.shakhIconAction,.shakhDashboardAction{
+  min-height:38px!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+}
+.shakhHeaderAction,.shakhIconAction{
+  background:transparent!important;
+  border:0!important;
+  color:var(--s7-black)!important;
+}
+.shakhHeaderAction:hover,.shakhIconAction:hover{
+  transform:none!important;
+  background:var(--s7-soft)!important;
+  border:0!important;
+  color:var(--s7-black)!important;
+}
+.shakhDashboardAction{
+  margin-inline-start:5px!important;
+  padding:0 13px!important;
+  background:var(--s7-black)!important;
+  border:1px solid var(--s7-black)!important;
+  color:var(--s7-white)!important;
+}
+.shakhActionBadge{
+  background:var(--s7-brand)!important;
+  color:#fff!important;
+}
+
+/* thin promo strip without inventing discounts/claims */
+.shakhGlobalHeader::before{
+  content:"SHAKH  •  بەرهەمە نوێکان  •  ئۆفەرەکان  •  بازاڕ  •  گەیاندن";
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:24px!important;
+  padding:0 12px!important;
+  background:var(--s7-black)!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:750!important;
+  letter-spacing:.15px!important;
+}
+.shakhHeaderQuickNav{
+  width:min(1540px,calc(100% - 28px))!important;
+  min-height:39px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  border-top:1px solid var(--s7-line)!important;
+  border-bottom:1px solid var(--s7-line)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  overflow:auto!important;
+  scrollbar-width:none!important;
+}
+.shakhHeaderQuickNav::-webkit-scrollbar{display:none!important}
+.shakhHeaderQuickNav button{
+  min-height:38px!important;
+  padding:0 17px!important;
+  border:0!important;
+  border-bottom:2px solid transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--s7-black)!important;
+  font-size:10px!important;
+  font-weight:750!important;
+  white-space:nowrap!important;
+}
+.shakhHeaderQuickNav button:hover{
+  transform:none!important;
+  border-bottom-color:var(--s7-black)!important;
+  color:var(--s7-black)!important;
+  background:transparent!important;
+}
+
+/* ==========================================================================
+   HOME — SHEIN-LIKE MERCHANDISING ORDER
+   ========================================================================== */
+.section{
+  padding:18px 0 0!important;
+}
+.title{
+  margin:0 0 10px!important;
+  padding:0 0 7px!important;
+  border-bottom:1px solid var(--s7-line)!important;
+}
+.title h2{
+  margin:0!important;
+  font-size:18px!important;
+  line-height:1.35!important;
+  font-weight:850!important;
+}
+.title span{
+  padding:0!important;
+  background:none!important;
+  color:var(--s7-muted)!important;
+  font-size:8px!important;
+}
+
+/* category rail */
+.features{
+  margin:14px 0 4px!important;
+  display:grid!important;
+  grid-template-columns:repeat(8,minmax(0,1fr))!important;
+  gap:9px!important;
+}
+.features>button{
+  min-height:108px!important;
+  padding:6px 4px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--s7-black)!important;
+  text-align:center!important;
+  align-items:center!important;
+  justify-items:center!important;
+}
+.features>button:hover{
+  transform:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.features>button svg{
+  width:62px!important;
+  height:62px!important;
+  padding:17px!important;
+  margin-bottom:5px!important;
+  border-radius:50%!important;
+  background:#f1f1f1!important;
+  color:var(--s7-black)!important;
+}
+.features>button b{
+  font-size:10px!important;
+  font-weight:750!important;
+}
+.features>button small{
+  margin-top:1px!important;
+  font-size:7px!important;
+  color:var(--s7-muted)!important;
+}
+
+/* promo merchandising */
+.promotionsGrid{
+  display:grid!important;
+  grid-template-columns:2fr 1fr 1fr!important;
+  grid-template-rows:1fr 1fr!important;
+  gap:3px!important;
+}
+.promotionCard{
+  border:0!important;
+  border-radius:0!important;
+  background:var(--s7-soft)!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+.promotionCard:first-child{
+  grid-row:1 / span 2!important;
+}
+.promotionCard img{
+  width:100%!important;
+  height:100%!important;
+  min-height:165px!important;
+  object-fit:cover!important;
+}
+.promotionCard>div{
+  padding:8px 9px!important;
+}
+.promotionCard b{font-size:11px!important;font-weight:850!important}
+.promotionCard p{font-size:8px!important;line-height:1.55!important;color:var(--s7-muted)!important}
+.promotionCard small{font-size:7px!important;color:var(--s7-brand)!important}
+
+/* product discovery */
+.grid{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  column-gap:6px!important;
+  row-gap:16px!important;
+}
+.card{
+  min-width:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.card:hover{
+  transform:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.card .pic{
+  height:300px!important;
+  border-radius:0!important;
+  background:var(--s7-soft)!important;
+  overflow:hidden!important;
+}
+.card .pic img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  transition:transform .18s ease!important;
+}
+.card:hover .pic img{transform:scale(1.015)!important}
+.card .body{
+  padding:8px 1px 0!important;
+}
+.card .body>small{
+  font-size:8px!important;
+  line-height:1.5!important;
+  color:var(--s7-muted)!important;
+}
+.card h3{
+  margin:3px 0 3px!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+  font-weight:650!important;
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow:hidden!important;
+}
+.card .buy{
+  margin-top:4px!important;
+  gap:6px!important;
+}
+.card .buy b{
+  color:var(--s7-black)!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+.card .buy button{
+  min-height:28px!important;
+  padding:0 8px!important;
+  border-radius:0!important;
+  border:1px solid var(--s7-black)!important;
+  background:var(--s7-black)!important;
+  color:var(--s7-white)!important;
+  font-size:8px!important;
+  box-shadow:none!important;
+}
+.card .buy button:hover{
+  transform:none!important;
+  background:var(--s7-brand)!important;
+  border-color:var(--s7-brand)!important;
+}
+
+/* ==========================================================================
+   FILTER / CONTENT CONTROLS
+   ========================================================================== */
+.postFeedFilters{
+  display:flex!important;
+  align-items:center!important;
+  gap:0!important;
+  padding:0!important;
+  margin:0 0 10px!important;
+  border:0!important;
+  border-bottom:1px solid var(--s7-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.postFeedFilters button{
+  min-height:35px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-bottom:2px solid transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--s7-muted)!important;
+  font-size:9px!important;
+}
+.postFeedFilters button.active{
+  background:transparent!important;
+  color:var(--s7-black)!important;
+  border-bottom-color:var(--s7-black)!important;
+}
+.postAdvancedFilter{
+  margin:0 0 10px!important;
+  padding:10px!important;
+  border:1px solid var(--s7-line)!important;
+  border-radius:0!important;
+  background:var(--s7-soft)!important;
+  box-shadow:none!important;
+}
+.postField input,.postField select{
+  min-height:35px!important;
+  border-radius:0!important;
+  border:1px solid var(--s7-line)!important;
+  background:var(--s7-white)!important;
+}
+.postFeedGrid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px 6px!important;
+}
+.postFeedCard{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.postFeedCard:hover{
+  transform:none!important;
+  box-shadow:none!important;
+}
+.postMediaCarousel{
+  border-radius:0!important;
+  background:var(--s7-soft)!important;
+}
+.postFeedBody{
+  padding:7px 1px!important;
+}
+.postFeedBody h3{
+  font-size:11px!important;
+  line-height:1.5!important;
+  margin:3px 0!important;
+}
+.postFeedBody p{
+  font-size:9px!important;
+  line-height:1.6!important;
+  color:var(--s7-muted)!important;
+}
+.postSpecChips{gap:3px!important}
+.postSpecChips span{
+  padding:2px 5px!important;
+  border-radius:0!important;
+  border:1px solid var(--s7-line)!important;
+  background:var(--s7-soft)!important;
+  font-size:7px!important;
+}
+.postFeedFooter strong{font-size:10px!important}
+
+/* ==========================================================================
+   DASHBOARD — FASHION-COMMERCE BACKOFFICE
+   ========================================================================== */
+.shakhDashboardBackdrop{
+  padding:0!important;
+  background:rgba(0,0,0,.48)!important;
+  backdrop-filter:none!important;
+}
+.shakhDashboardShell{
+  width:min(1540px,100vw)!important;
+  height:min(950px,100vh)!important;
+  border-radius:0!important;
+  border:0!important;
+  background:var(--s7-white)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardTopbar{
+  min-height:60px!important;
+  padding:7px 12px!important;
+  background:var(--s7-white)!important;
+  border-bottom:1px solid var(--s7-line)!important;
+}
+.shakhDashboardTitleBlock h1{
+  font-size:16px!important;
+  font-weight:900!important;
+}
+.shakhDashboardTitleBlock>span{
+  color:var(--s7-muted)!important;
+  font-size:7px!important;
+}
+.shakhDashboardTitleBlock p{
+  font-size:8px!important;
+  color:var(--s7-muted)!important;
+}
+.shakhDashboardBrand{
+  width:34px!important;height:34px!important;flex-basis:34px!important;
+  border-radius:0!important;
+  background:var(--s7-soft)!important;
+  border:1px solid var(--s7-line)!important;
+}
+.shakhDashboardBody{
+  grid-template-columns:245px minmax(0,1fr)!important;
+  grid-template-areas:"sidebar main"!important;
+}
+.shakhDashboardSidebar{
+  grid-area:sidebar!important;
+  order:initial!important;
+  background:var(--s7-white)!important;
+  border-right:1px solid var(--s7-line)!important;
+  border-inline-start:0!important;
+  padding:7px!important;
+}
+.shakhDashboardSidebarHeader{
+  padding:6px 7px 9px!important;
+  border-bottom:1px solid var(--s7-line)!important;
+}
+.shakhDashboardSidebarHeader small{
+  font-size:7px!important;
+  color:var(--s7-muted)!important;
+}
+.shakhDashboardSidebarHeader strong{
+  font-size:12px!important;
+}
+.shakhDashboardGroupLabel{
+  padding:11px 7px 4px!important;
+  font-size:7px!important;
+  color:var(--s7-muted)!important;
+  text-transform:none!important;
+}
+.shakhDashboardNav{
+  gap:0!important;
+  padding-top:3px!important;
+}
+.shakhDashboardNavItem{
+  min-height:38px!important;
+  grid-template-columns:29px minmax(0,1fr) auto!important;
+  gap:7px!important;
+  padding:4px 6px!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.shakhDashboardNavItem:hover{
+  transform:none!important;
+  background:var(--s7-soft)!important;
+  border:0!important;
+}
+.shakhDashboardNavItem.is-active{
+  background:var(--s7-soft)!important;
+  border-inline-start:2px solid var(--s7-black)!important;
+}
+.shakhDashboardNavIcon{
+  width:29px!important;height:29px!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--s7-muted)!important;
+}
+.shakhDashboardNavItem.is-active .shakhDashboardNavIcon{
+  background:transparent!important;
+  color:var(--s7-black)!important;
+}
+.shakhDashboardNavCopy strong{
+  font-size:10px!important;
+  font-weight:750!important;
+}
+.shakhDashboardNavCopy small{
+  display:none!important;
+}
+.shakhDashboardSidebarFooter{
+  padding:8px!important;
+  border-top:1px solid var(--s7-line)!important;
+}
+.shakhDashboardSidebarFooter strong{font-size:8px!important}
+.shakhDashboardSidebarFooter small{font-size:7px!important;color:var(--s7-muted)!important}
+
+/* dashboard workspace */
+.shakhDashboardMain{
+  background:var(--s7-bg)!important;
+}
+.shakhDashboardToolbar{
+  min-height:46px!important;
+  padding:6px 14px!important;
+  background:var(--s7-white)!important;
+  border-bottom:1px solid var(--s7-line)!important;
+}
+.shakhDashboardToolbar strong{font-size:11px!important}
+.shakhDashboardToolbar small{font-size:7px!important}
+.shakhDashboardHome,.shakhDashboardModule{
+  padding:15px!important;
+}
+.shakhDashboardMain h1{
+  font-size:23px!important;
+  font-weight:900!important;
+}
+.shakhDashboardMain h2{
+  font-size:19px!important;
+  font-weight:900!important;
+}
+.shakhDashboardMain h3{
+  font-size:15px!important;
+  font-weight:850!important;
+}
+.shakhDashboardMain p{
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.shakhDashboardMain small{
+  font-size:9px!important;
+  color:var(--s7-muted)!important;
+}
+
+/* KPI strip */
+.shakhDashboardKpis,.shakhSuperAdminStats,.shakhModuleMetrics,[class*="shakh"][class*="Stats"]{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:1px!important;
+  border:1px solid var(--s7-line)!important;
+  border-radius:0!important;
+  background:var(--s7-line)!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+.shakhDashboardKpis article,.shakhSuperAdminStats .shakhSuperAdminStat,.shakhModuleMetrics article,[class*="shakh"][class*="Stat"]{
+  min-height:76px!important;
+  padding:11px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:var(--s7-white)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardKpis article span,
+.shakhDashboardKpis article small,
+.shakhSuperAdminStat small,
+.shakhModuleMetrics small,
+[class*="Stat"] small{
+  font-size:9px!important;
+  color:var(--s7-muted)!important;
+}
+.shakhDashboardKpis article strong,
+.shakhSuperAdminStat strong,
+.shakhModuleMetrics strong,
+[class*="Stat"] strong{
+  margin-top:4px!important;
+  font-size:19px!important;
+  font-weight:950!important;
+  color:var(--s7-black)!important;
+}
+
+/* all role modules */
+.shakhModuleHero{
+  margin:0 0 14px!important;
+  padding:0 0 11px!important;
+  border:0!important;
+  border-bottom:1px solid var(--s7-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.shakhModuleHero h2{
+  font-size:20px!important;
+  font-weight:900!important;
+}
+.shakhModuleHero p{
+  font-size:10px!important;
+  color:var(--s7-muted)!important;
+}
+.shakhModuleRefresh{
+  min-height:32px!important;
+  border-radius:0!important;
+  border:1px solid var(--s7-line)!important;
+  background:var(--s7-white)!important;
+  box-shadow:none!important;
+}
+
+/* Role cards -> flat commerce work surfaces */
+.shakhDashboardMain [class*="Card"],
+.shakhDashboardMain [class*="Panel"],
+.shakhDashboardMain .card{
+  border:1px solid var(--s7-line)!important;
+  border-radius:0!important;
+  background:var(--s7-white)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardMain [class*="Card"] [class*="Card"],
+.shakhDashboardMain [class*="Panel"] [class*="Panel"]{
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+
+/* tables/lists */
+.shakhDashboardMain table{
+  border-collapse:collapse!important;
+}
+.shakhDashboardMain th{
+  padding:9px!important;
+  font-size:9px!important;
+  color:var(--s7-muted)!important;
+  background:var(--s7-soft)!important;
+  border-bottom:1px solid var(--s7-line)!important;
+}
+.shakhDashboardMain td{
+  padding:10px 9px!important;
+  font-size:10px!important;
+  border-bottom:1px solid var(--s7-line)!important;
+}
+.shakhDashboardRecentList,
+.shakhSuperAdminRecentList,
+.shakhModuleList{
+  border:1px solid var(--s7-line)!important;
+  border-radius:0!important;
+  background:var(--s7-line)!important;
+  gap:1px!important;
+}
+.shakhDashboardRecentRow,
+.shakhSuperAdminRecentRow,
+.shakhModuleList article{
+  background:var(--s7-white)!important;
+  border:0!important;
+  border-radius:0!important;
+  min-height:42px!important;
+}
+
+/* controls */
+.shakhDashboardMain label{
+  font-size:10px!important;
+  font-weight:750!important;
+}
+.shakhDashboardMain input:not([type="checkbox"]):not([type="radio"]),
+.shakhDashboardMain select,
+.shakhDashboardMain textarea{
+  min-height:37px!important;
+  border:1px solid var(--s7-line)!important;
+  border-radius:0!important;
+  background:var(--s7-white)!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+}
+
+/* ==========================================================================
+   FOOTER — TINY RETAIL FOOTER
+   ========================================================================== */
+.shakhGlobalFooter{
+  width:min(1540px,calc(100% - 28px))!important;
+  margin:20px auto 8px!important;
+  background:var(--s7-white)!important;
+  border-top:1px solid var(--s7-line)!important;
+}
+.shakhFooterCompact{
+  min-height:44px!important;
+  padding:7px 0!important;
+  grid-template-columns:auto 1fr auto!important;
+  gap:15px!important;
+}
+.shakhFooterIdentity strong{font-size:9px!important}
+.shakhFooterIdentity small{font-size:6px!important;color:var(--s7-muted)!important}
+.shakhFooterLinks{gap:2px 10px!important}
+.shakhFooterLinks button{
+  min-height:22px!important;
+  font-size:7px!important;
+  color:var(--s7-muted)!important;
+}
+.shakhFooterSupport{
+  font-size:7px!important;
+  color:var(--s7-muted)!important;
+}
+.shakhFooterBottom{
+  min-height:27px!important;
+  padding:4px 0 0!important;
+  font-size:6px!important;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media(max-width:1200px){
+  .features{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  .grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .postFeedGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:900px){
+  .shakhHeaderInner{
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+    gap:10px!important;
+  }
+  .features{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .promotionsGrid{
+    grid-template-columns:1fr 1fr!important;
+    grid-template-rows:auto!important;
+  }
+  .promotionCard:first-child{grid-row:auto!important;grid-column:1 / span 2!important}
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .postFeedGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  .app>main{width:calc(100% - 16px)!important}
+  .shakhHeaderInner{
+    width:calc(100% - 16px)!important;
+    grid-template-columns:auto 1fr auto!important;
+    min-height:52px!important;
+  }
+  .shakhBrandText small{display:none!important}
+  .shakhHeaderSearch{display:none!important}
+  .shakhHeaderAction{display:none!important}
+  .shakhDashboardAction{
+    min-width:36px!important;
+    padding:0 9px!important;
+  }
+  .shakhDashboardAction span{display:none!important}
+  .shakhMobileSearch{
+    display:block!important;
+    width:calc(100% - 16px)!important;
+    margin:0 auto!important;
+    padding:6px 0!important;
+  }
+  .shakhMobileSearch .shakhHeaderSearch{
+    display:flex!important;
+    width:100%!important;
+  }
+  .shakhHeaderQuickNav{
+    width:100%!important;
+  }
+  .shakhHeaderQuickNav button{
+    padding:0 12px!important;
+    font-size:9px!important;
+  }
+  .features{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .features>button{min-height:94px!important}
+  .features>button svg{width:52px!important;height:52px!important;padding:14px!important}
+  .promotionsGrid{grid-template-columns:1fr!important}
+  .promotionCard:first-child{grid-column:auto!important}
+  .promotionCard img{min-height:150px!important}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px 5px!important}
+  .card .pic{height:235px!important}
+  .postFeedGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .shakhDashboardBody{grid-template-columns:1fr!important;grid-template-areas:"main"!important}
+  .shakhDashboardSidebar{
+    position:fixed!important;
+    inset-block:0!important;
+    inset-inline-start:0!important;
+    width:min(290px,84vw)!important;
+    z-index:120!important;
+    transform:translateX(-105%)!important;
+    box-shadow:20px 0 55px rgba(0,0,0,.16)!important;
+  }
+  .shakhDashboardSidebar.is-open{transform:translateX(0)!important}
+  .shakhDashboardKpis,.shakhSuperAdminStats,.shakhModuleMetrics,[class*="shakh"][class*="Stats"]{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+@media(max-width:430px){
+  .features{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .features>button b{font-size:8px!important}
+  .features>button small{font-size:6px!important}
+  .features>button svg{width:46px!important;height:46px!important;padding:12px!important}
+  .card .pic{height:205px!important}
+  .shakhDashboardKpis,.shakhSuperAdminStats,.shakhModuleMetrics,[class*="shakh"][class*="Stats"]{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{transition:none!important;animation:none!important}
+}
