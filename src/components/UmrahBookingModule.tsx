@@ -23,9 +23,24 @@ export default function UmrahBookingModule({ userId, role }: Props) {
     let postingQuery=supabase.from('umrah_posting_payments').select('id,trip_id,agency_id,payer_id,amount_iqd,payment_method,status,receipt_url,created_at').order('created_at',{ascending:false}).limit(100);
     if(!isAdmin)postingQuery=postingQuery.eq('payer_id',userId);
     const {data:postingData}=await postingQuery; setPostingPayments((postingData||[]) as PostingPayment[]);
-    const tripQuery = isAdmin ? supabase.from('umrah_trips').select('*').order('departure_date') : supabase.from('umrah_trips').select('*').eq('status','approved').order('departure_date');
+    let tripQuery = supabase.from('umrah_trips').select('*').order('departure_date');
+    if (isAdmin) {
+      // Admins can review every trip.
+    } else if (role === 'umrah_agency' && agency) {
+      tripQuery = tripQuery.eq('agency_id', agency.id);
+    } else {
+      tripQuery = tripQuery.eq('status','approved');
+    }
     const {data: t}=await tripQuery; setTrips((t||[]) as Trip[]);
-    const bookingQuery = isAdmin ? supabase.from('umrah_bookings').select('*').order('created_at',{ascending:false}) : supabase.from('umrah_bookings').select('*').eq('customer_id',userId).order('created_at',{ascending:false});
+
+    let bookingQuery = supabase.from('umrah_bookings').select('*').order('created_at',{ascending:false});
+    if (isAdmin) {
+      // Admins can review every booking.
+    } else if (role === 'umrah_agency' && agency) {
+      bookingQuery = bookingQuery.eq('agency_id', agency.id);
+    } else {
+      bookingQuery = bookingQuery.eq('customer_id',userId);
+    }
     const {data: b}=await bookingQuery; setBookings((b||[]) as Booking[]);
     if(isAdmin){ const {data:p}=await supabase.from('umrah_payment_records').select('*').order('created_at',{ascending:false}); setPayments((p||[]) as Payment[]); }
     setLoading(false);
