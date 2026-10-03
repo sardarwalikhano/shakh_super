@@ -1150,3 +1150,100 @@ html[data-theme="dark"] .dashboardShellDirty{background:#332510;color:#f3c36e}
 @media(max-width:980px){.postFeedGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.postAdvancedGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.postFeedGrid{grid-template-columns:1fr 1fr;gap:8px}.postFeedBody{padding:10px}.postFeedFooter{align-items:stretch;flex-direction:column}.postFeedFooter button{width:100%}.postAdvancedGrid{grid-template-columns:1fr}.postDetailsModal{grid-template-columns:1fr;max-height:94vh}.postDetailsMainImage{min-height:270px;max-height:330px}.postDetailsBody{padding:16px}}
 @media(max-width:430px){.postFeedGrid{grid-template-columns:1fr}.postDetailsMainImage{min-height:240px}}
+
+/* Core surfaces for remaining feature pages — legacy visual tokens are retired. */
+:where(.dashboard,.customer-orders-panel,.customer-tracking,.vendor-dashboard,.settingsPanel,.profilePanel,.walletPanel,.notification-center,.postPublishingHub,.postsManagement,.deliveryZoneManager,.orderMonitorControls,.platformOrderMonitor){
+  min-width:0;
+  color:var(--sh-text);
+}
+:where(.dashboard,.customer-orders-panel,.customer-tracking,.vendor-dashboard,.settingsPanel,.profilePanel,.walletPanel,.notification-center,.postPublishingHub,.postsManagement,.deliveryZoneManager,.platformOrderMonitor) :where(h1,h2,h3,h4){color:var(--sh-text)}
+:where(.dashboard,.customer-orders-panel,.customer-tracking,.vendor-dashboard,.settingsPanel,.profilePanel,.walletPanel,.notification-center,.postPublishingHub,.postsManagement,.deliveryZoneManager,.platformOrderMonitor) :where(p,small,span){color:var(--sh-muted)}
+:where(.dashboard,.customer-orders-panel,.customer-tracking,.vendor-dashboard,.settingsPanel,.profilePanel,.walletPanel,.notification-center,.postPublishingHub,.postsManagement,.deliveryZoneManager,.platformOrderMonitor) :where(button,input,textarea,select){
+  font:inherit;
+}
+:where(.dashboard,.customer-orders-panel,.customer-tracking,.vendor-dashboard,.settingsPanel,.profilePanel,.walletPanel,.notification-center,.postPublishingHub,.postsManagement,.deliveryZoneManager,.platformOrderMonitor) :where(button:not(.primary):not(.danger)){
+  min-height:38px;
+  padding:0 10px;
+  border:1px solid var(--sh-line);
+  border-radius:11px;
+  background:var(--sh-surface);
+  color:var(--sh-text);
+  cursor:pointer;
+}
+:where(.dashboard,.customer-orders-panel,.customer-tracking,.vendor-dashboard,.settingsPanel,.profilePanel,.walletPanel,.notification-center,.postPublishingHub,.postsManagement,.deliveryZoneManager,.platformOrderMonitor) :where(button:hover:not(:disabled)){
+  border-color:color-mix(in srgb,var(--sh-brand) 36%,var(--sh-line));
+  color:var(--sh-brand);
+}
+:where(.dashboard,.customer-orders-panel,.customer-tracking,.vendor-dashboard,.settingsPanel,.profilePanel,.walletPanel,.notification-center,.postPublishingHub,.postsManagement,.deliveryZoneManager,.platformOrderMonitor) :where(input,textarea,select){
+  min-height:42px;
+  padding:0 11px;
+  border:1px solid var(--sh-line);
+  border-radius:11px;
+  background:var(--sh-surface-2);
+  color:var(--sh-text);
+  outline:0;
+}
+:where(.dashboard,.customer-orders-panel,.customer-tracking,.vendor-dashboard,.settingsPanel,.profilePanel,.walletPanel,.notification-center,.postPublishingHub,.postsManagement,.deliveryZoneManager,.platformOrderMonitor) :where(input,textarea,select):focus{
+  border-color:var(--sh-brand);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--sh-brand) 9%,transparent);
+}
+.dashboardHeader,.customer-orders-panel__header,.customer-tracking__header,.vendor-dashboard__header,.notification-center__header,.profilePanelHero,.walletHead,.postHubHeader,.postsManagementHead,.settingsCardHeader{
+  padding:16px;
+  border:1px solid var(--sh-line);
+  border-radius:20px;
+  background:linear-gradient(145deg,var(--sh-surface),var(--sh-surface-2));
+  box-shadow:var(--sh-shadow-sm);
+}
+.dashboardHeader h2,.customer-orders-panel__header h2,.customer-tracking__header h2,.vendor-dashboard__header h2,.profilePanelHero h2,.walletHead h2,.postHubHeader h2,.postsManagementHead h2{margin:5px 0 3px;font-size:22px}
+.orderCard,.customer-orders-panel__card,.customer-orders-panel__detail,.tracking-card__top,.settingsCard,.profileSectionTitle,.walletBalanceCard,.notification-list,.notification-item,.deliveryZoneEditorCard,.liveDeliveryMapCard,.etaCard,.postHubGrid,.postHubSelectedForm{
+  border:1px solid var(--sh-line)!important;
+  border-radius:18px!important;
+  background:var(--sh-surface)!important;
+  color:var(--sh-text)!important;
+  box-shadow:var(--sh-shadow-sm)!important;
+}
+.dashboardGrid,.customer-orders-panel__grid,.customer-orders-panel__orders,.settingsGrid,.profileFormGrid,.profileStats,.walletMiniStats,.notification-center__list,.notification-list,.postsManagementList,.postHubGrid,.deliveryZoneEditorCard .dashboardGrid{
+  display:grid;
+  gap:10px;
+}
+.dashboardGrid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.dashboardGrid>.orderCard,.dashboardGrid>.orderMetricCard{min-width:0}
+.orderMonitorStats{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.orderMonitorList{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.customer-orders-panel__grid{grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr)}
+.settingsGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.profileFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.profileStats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.walletMiniStats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.notification-center__list{grid-template-columns:1fr}
+.notification-item{display:flex;align-items:flex-start;gap:10px;padding:12px}
+.settingsCard,.walletBalanceCard{padding:15px}
+.settingsChoiceGrid,.settingsAdminGrid,.profileLanguageGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.settingsSwitch{padding:12px;border:1px solid var(--sh-line);border-radius:13px;background:var(--sh-surface-2)}
+.profileField{display:grid;gap:5px}.profileField label,.profileField span{font-size:8px;color:var(--sh-muted)}
+.profileAvatarWrap{display:flex;align-items:center;gap:12px}.profileAvatar{width:58px;height:58px;border-radius:17px;overflow:hidden;border:2px solid var(--sh-brand-soft);background:var(--sh-surface-2)}
+.profileAvatar img{width:100%;height:100%;object-fit:cover}
+.walletBalanceCard{background:linear-gradient(145deg,var(--sh-brand-soft),var(--sh-surface))!important}
+.walletBalanceCard strong{display:block;margin-top:5px;font-size:30px;color:var(--sh-brand)}
+.walletTransactions{display:grid;gap:7px}.walletTx{display:flex;justify-content:space-between;gap:10px;padding:11px;border:1px solid var(--sh-line);border-radius:12px;background:var(--sh-surface-2)}
+.postHubGrid{grid-template-columns:repeat(2,minmax(0,1fr));padding:14px}
+.postHubGrid>button{min-height:105px;padding:14px;display:flex;align-items:center;gap:10px;text-align:right;border:1px solid var(--sh-line);border-radius:15px;background:var(--sh-surface-2);color:var(--sh-text);cursor:pointer}
+.postHubGrid>button:hover{border-color:var(--sh-brand);background:var(--sh-brand-soft)}
+.postsManagementTools{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.postsSearch{flex:1;min-width:220px}.postsFilters{display:flex;flex-wrap:wrap;gap:6px}
+.postsManagementList{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px}
+.postsManagementItem{display:grid;grid-template-columns:100px minmax(0,1fr);gap:12px;padding:10px;border:1px solid var(--sh-line);border-radius:16px;background:var(--sh-surface);box-shadow:var(--sh-shadow-sm)}
+.postsManagementImage{width:100px;height:90px;border-radius:12px;overflow:hidden;background:var(--sh-surface-2)}.postsManagementImage img{width:100%;height:100%;object-fit:cover}
+.postsManagementBody{min-width:0}.postsManagementMeta{display:flex;flex-wrap:wrap;gap:5px}.postsManagementStatus{padding:4px 7px;border-radius:999px;background:var(--sh-brand-soft);color:var(--sh-brand);font-size:7px;font-weight:900}
+.postsManagementPrice{display:block;margin-top:8px;font-size:12px;color:var(--sh-text)}.postsManagementActions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.deliveryZoneFormGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.deliveryZoneMapWrap,.deliveryZoneMap{overflow:hidden;border-radius:16px;border:1px solid var(--sh-line)}
+.notification-center__header-actions,.vendor-dashboard__actions,.postHubHeader,.postsManagementHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.notification-center__error,.notification-center__empty,.vendor-dashboard__empty,.liveTrackingEmpty,.profilePostsEmpty{
+  padding:35px 18px;text-align:center;border:1px dashed var(--sh-line);border-radius:16px;background:var(--sh-surface-2);color:var(--sh-muted)
+}
+.liveTrackingDot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--sh-green);box-shadow:0 0 0 5px var(--sh-green-soft)}
+.primary{background:var(--sh-brand)!important;border-color:var(--sh-brand)!important;color:#fff!important}
+.danger,.postManagementActions .danger{background:var(--sh-danger)!important;border-color:var(--sh-danger)!important;color:#fff!important}
+.msg{background:var(--sh-surface-2)!important;border-color:var(--sh-line)!important;color:var(--sh-text)!important}
+@media(max-width:900px){.customer-orders-panel__grid,.settingsGrid,.profileFormGrid{grid-template-columns:1fr}.postsManagementList{grid-template-columns:1fr}.postHubGrid{grid-template-columns:1fr}}
+@media(max-width:640px){.dashboardGrid,.orderMonitorList{grid-template-columns:1fr}.profileStats,.walletMiniStats{grid-template-columns:1fr 1fr}.postsManagementItem{grid-template-columns:76px minmax(0,1fr)}.postsManagementImage{width:76px;height:76px}.dashboardHeader,.customer-orders-panel__header,.vendor-dashboard__header,.profilePanelHero,.walletHead,.postHubHeader,.postsManagementHead{padding:13px}.postHubGrid{padding:10px}}
+@media(max-width:430px){.profileStats,.walletMiniStats{grid-template-columns:1fr}.postsManagementItem{grid-template-columns:1fr}.postsManagementImage{width:100%;height:150px}}
