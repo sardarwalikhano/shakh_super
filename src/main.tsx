@@ -26,6 +26,7 @@ import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import './shakh-redesign.css';
 import './shakh-visual-redesign.css';
+import './shakh-clean-ui-v3.css';
 import SuperAdminControlCenter from './components/SuperAdminControlCenter';
 import AdminControlCenter from './components/AdminControlCenter';
 import CustomerControlCenter from './components/CustomerControlCenter';
