@@ -29,6 +29,8 @@ import VendorControlCenter from './components/VendorControlCenter';
 import VendorOrdersPanel from './components/VendorOrdersPanel';
 import RestaurantControlCenter from './components/RestaurantControlCenter';
 import RestaurantOrdersPanel from './components/RestaurantOrdersPanel';
+import SupermarketControlCenter from './components/SupermarketControlCenter';
+import SupermarketOrdersPanel from './components/SupermarketOrdersPanel';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -389,6 +391,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   if(dashboardView==='orders'){
    if(role==='super_admin'||role==='admin')return <SuperAdminOrderMonitor/>;
    if(role==='restaurant_vendor')return <RestaurantOrdersPanel userId={user.id}/>;
+   if(role==='supermarket_vendor')return <SupermarketOrdersPanel userId={user.id}/>;
    if(role==='vendor')return <VendorOrdersPanel userId={user.id}/>;
    return <CustomerOrdersPanel userId={user.id}/>;
   }
@@ -494,6 +497,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     ? <VendorControlCenter userId={user.id} onNavigate={openDashboard} />
     : role==='restaurant_vendor'
     ? <RestaurantControlCenter userId={user.id} onNavigate={openDashboard} />
+    : role==='supermarket_vendor'
+    ? <SupermarketControlCenter userId={user.id} onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
