@@ -19,6 +19,13 @@ type Metrics = {
   unreadNotifications: number;
 };
 
+type RecentOrder = {
+  id: string;
+  status: string;
+  total_iqd: number;
+  created_at: string;
+};
+
 const initialMetrics: Metrics = {
   users: 0,
   stores: 0,
@@ -32,6 +39,7 @@ const initialMetrics: Metrics = {
 
 export default function SuperAdminControlCenter({ onNavigate }: Props) {
   const [metrics, setMetrics] = useState<Metrics>(initialMetrics);
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
@@ -49,6 +57,7 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
         onlineCaptains,
         tickets,
         unreadNotifications,
+        recentOrders,
       ] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('stores').select('id', { count: 'exact', head: true }),
@@ -58,9 +67,10 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
         supabase.from('captains').select('user_id', { count: 'exact', head: true }).eq('is_online', true),
         supabase.from('support_tickets').select('id', { count: 'exact', head: true }),
         supabase.from('notifications').select('id', { count: 'exact', head: true }).eq('is_read', false),
+        supabase.from('orders').select('id,status,total_iqd,created_at').order('created_at', { ascending: false }).limit(8),
       ]);
 
-      const firstError = [users, stores, products, orders, activeOrders, onlineCaptains, tickets, unreadNotifications]
+      const firstError = [users, stores, products, orders, activeOrders, onlineCaptains, tickets, unreadNotifications, recentOrders]
         .find((result) => result.error)?.error;
       if (firstError) throw firstError;
 
@@ -74,6 +84,7 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
         tickets: tickets.count ?? 0,
         unreadNotifications: unreadNotifications.count ?? 0,
       });
+      setRecentOrders((recentOrders.data ?? []) as RecentOrder[]);
       setSyncedAt(new Date());
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'نەتوانرا داتای ناوەندی کۆنترۆڵ وەرگیرێت.');
@@ -96,6 +107,18 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
     return () => { void supabase.removeChannel(channel); };
   }, [load]);
 
+  const recentStatusLabel: Record<string, string> = {
+    pending: 'چاوەڕوان',
+    accepted: 'قبوڵکراو',
+    preparing: 'لە ئامادەکردندایە',
+    ready_for_pickup: 'ئامادەی وەرگرتن',
+    assigned_to_captain: 'کاپتن دیاریکراوە',
+    picked_up: 'وەرگیراوە',
+    on_the_way: 'لە ڕێگادایە',
+    delivered: 'گەیەندراوە',
+    cancelled: 'هەڵوەشێنراوەتەوە',
+  };
+
   const statCards = useMemo(() => [
     { label: 'بەکارهێنەران', value: metrics.users, icon: Users, tone: 'orange' },
     { label: 'دوکانەکان', value: metrics.stores, icon: Store, tone: 'blue' },
@@ -108,11 +131,14 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
   ], [metrics]);
 
   return (
-    <section className="shakhSuperAdminCenter" aria-labelledby="super-admin-center-title">
+    <section className="shakhSuperAdminCenter" aria-labelledby="super-admin-center-title" aria-busy={loading}>
       <div className="shakhSuperAdminHero">
         <div className="shakhSuperAdminHeroCopy">
           <span className="shakhSuperAdminEyebrow"><ShieldCheck size={15} /> ناوەندی کۆنترۆڵی بەڕێوبەری باڵا</span>
-          <h2 id="super-admin-center-title">SHAKH Command Center</h2>
+          <div className="shakhSuperAdminTitleRow">
+            <h2 id="super-admin-center-title">SHAKH Command Center</h2>
+            <span className="shakhSuperAdminLiveBadge" role="status"><i /> LIVE</span>
+          </div>
           <p>پوختەی ڕاستەقینەی پلاتفۆرم بۆ چاودێری بەکارهێنەر، بازار، ئۆردەر و گەیاندن.</p>
         </div>
         <button type="button" className="shakhSuperAdminRefresh" onClick={() => void load()} disabled={loading}>
@@ -127,9 +153,55 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
         {statCards.map(({ label, value, icon: Icon, tone }) => (
           <article className="shakhSuperAdminStat" data-tone={tone} key={label}>
             <span className="shakhSuperAdminStatIcon"><Icon size={19} /></span>
-            <div><small>{label}</small><strong>{value.toLocaleString('ku-IQ')}</strong></div>
+            <div><small>{label}</small><strong>{loading ? '—' : value.toLocaleString('ku-IQ')}</strong></div>
           </article>
         ))}
+      </div>
+
+      <div className="shakhSuperAdminDataGrid">
+        <section className="shakhSuperAdminRecentPanel" aria-labelledby="super-admin-recent-orders-title">
+          <div className="shakhSuperAdminPanelHead">
+            <div>
+              <span>ئۆردەری تازە</span>
+              <h3 id="super-admin-recent-orders-title">نوێترین داواکارییەکان</h3>
+            </div>
+            <small>کۆی {recentOrders.length.toLocaleString('ku-IQ')} دانه‌ی دواوە</small>
+          </div>
+          {loading ? (
+            <div className="shakhSuperAdminTableSkeleton" aria-hidden="true">
+              {Array.from({ length: 5 }).map((_, index) => <div key={index}><i /><i /><i /></div>)}
+            </div>
+          ) : recentOrders.length ? (
+            <div className="shakhSuperAdminRecentTable" role="table" aria-label="نوێترین ئۆردەرەکان">
+              {recentOrders.map((order) => (
+                <div className="shakhSuperAdminRecentRow" role="row" key={order.id}>
+                  <span className="shakhSuperAdminOrderId" role="cell">#{order.id.slice(0, 8)}</span>
+                  <span className="shakhSuperAdminOrderStatus" role="cell">{recentStatusLabel[order.status] ?? order.status}</span>
+                  <strong role="cell">{Number(order.total_iqd || 0).toLocaleString('ku-IQ')} د.ع</strong>
+                  <small role="cell">{new Date(order.created_at).toLocaleDateString('ku-IQ')}</small>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="shakhSuperAdminEmpty">هێشتا هیچ ئۆردەرێکی تازە نییە.</div>
+          )}
+        </section>
+
+        <section className="shakhSuperAdminPulsePanel" aria-labelledby="super-admin-pulse-title">
+          <div className="shakhSuperAdminPanelHead">
+            <div>
+              <span>چاودێری</span>
+              <h3 id="super-admin-pulse-title">Operational Pulse</h3>
+            </div>
+            <small>{loading ? 'داتا وەردەگیرێت...' : 'ڕاستەوخۆ لە Supabase'}</small>
+          </div>
+          <div className="shakhSuperAdminPulseList">
+            <div><span><i className="is-live" /> ئۆردەرە چالاکەکان</span><strong>{loading ? '—' : metrics.activeOrders.toLocaleString('ku-IQ')}</strong></div>
+            <div><span><i className="is-online" /> کاپتنی ئۆنلاین</span><strong>{loading ? '—' : metrics.onlineCaptains.toLocaleString('ku-IQ')}</strong></div>
+            <div><span><i className="is-support" /> تیکەتەکان</span><strong>{loading ? '—' : metrics.tickets.toLocaleString('ku-IQ')}</strong></div>
+            <div><span><i className="is-alert" /> ئاگاداریی نەخوێندراو</span><strong>{loading ? '—' : metrics.unreadNotifications.toLocaleString('ku-IQ')}</strong></div>
+          </div>
+        </section>
       </div>
 
       <div className="shakhSuperAdminWorkspace">
