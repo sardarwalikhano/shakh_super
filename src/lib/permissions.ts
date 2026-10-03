@@ -9,6 +9,7 @@ export const ROLE_PERMISSIONS = {
   vendor: ['orders.read_vendor', 'orders.accept', 'orders.update_vendor_status', 'notifications.read_own'],
   electronics_vendor: ['orders.read_vendor', 'orders.accept', 'orders.update_vendor_status', 'notifications.read_own'],
   jewelry_vendor: ['orders.read_vendor', 'orders.accept', 'orders.update_vendor_status', 'notifications.read_own'],
+  beauty_vendor: ['orders.read_vendor', 'orders.accept', 'orders.update_vendor_status', 'notifications.read_own'],
   car_dealer: ['orders.read_vendor', 'orders.accept', 'orders.update_vendor_status', 'notifications.read_own'],
   umrah_agency: ['orders.read_vendor', 'orders.accept', 'orders.update_vendor_status', 'notifications.read_own'],
   support: ['orders.read_support', 'notifications.read_support'],
