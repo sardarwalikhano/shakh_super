@@ -473,24 +473,26 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   onClose={closeDashboard}
   onRefresh={()=>loadOrders(user)}
   homeContent={
-   <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
-    <div className="dashboardShellRecentOrdersHead">
-     <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
-     <button type="button" onClick={()=>openDashboard('orders')}>هەمووی ببینە</button>
-    </div>
-    {!orders.length
-      ? <div className="dashboardShellRecentEmpty">هێشتا هیچ ئۆردەرێکت نییە.</div>
-      : <div className="dashboardShellRecentList">
-       {orders.slice(0,6).map((order)=>(
-        <button type="button" className="dashboardShellRecentRow" key={order.id} onClick={()=>openDashboard('orders')}>
-         <span className="dashboardShellRecentId">#{order.id.slice(0,8)}</span>
-         <span className="dashboardShellRecentStatus">{order.status==='pending'?'چاوەڕوان':dashboardStatusLabel[order.status]||order.status}</span>
-         <strong>{Number(order.total_iqd).toLocaleString('ku-IQ')} د.ع</strong>
-         <small>{new Date(order.created_at).toLocaleString('ku-IQ')}</small>
-        </button>
-       ))}
-      </div>}
-   </section>
+   role==='super_admin'
+    ? <SuperAdminControlCenter onNavigate={openDashboard} />
+    : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
+      <div className="dashboardShellRecentOrdersHead">
+       <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
+       <button type="button" onClick={()=>openDashboard('orders')}>هەمووی ببینە</button>
+      </div>
+      {!orders.length
+        ? <div className="dashboardShellRecentEmpty">هێشتا هیچ ئۆردەرێکت نییە.</div>
+        : <div className="dashboardShellRecentList">
+         {orders.slice(0,6).map((order)=>(
+          <button type="button" className="dashboardShellRecentRow" key={order.id} onClick={()=>openDashboard('orders')}>
+           <span className="dashboardShellRecentId">#{order.id.slice(0,8)}</span>
+           <span className="dashboardShellRecentStatus">{order.status==='pending'?'چاوەڕوان':dashboardStatusLabel[order.status]||order.status}</span>
+           <strong>{Number(order.total_iqd).toLocaleString('ku-IQ')} د.ع</strong>
+           <small>{new Date(order.created_at).toLocaleString('ku-IQ')}</small>
+          </button>
+         ))}
+        </div>}
+     </section>
   } >
   {dashboardView!=='home'&&dashboardModule()}
  </DashboardShell>}
