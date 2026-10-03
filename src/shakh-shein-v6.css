@@ -1,0 +1,789 @@
+/*
+  SHAKH — SHEIN-INSPIRED V6
+  Visual system only. Inspired by contemporary fashion/e-commerce information
+  architecture: compact utility header, strong category navigation, promo strip,
+  filterable product discovery, dense product grid, restrained typography.
+  No data, routing, auth, role, Supabase or business logic changes.
+*/
+
+:root{
+  --sv6-bg:#fff;
+  --sv6-soft:#f7f7f7;
+  --sv6-surface:#fff;
+  --sv6-text:#111;
+  --sv6-muted:#6f6f6f;
+  --sv6-line:#e7e7e7;
+  --sv6-brand:#ff6a00;
+  --sv6-brand-soft:#fff1e8;
+  --sv6-success:#198754;
+  --sv6-radius:2px;
+  --sv6-content:1500px;
+}
+html[data-theme='dark'],html.dark{
+  --sv6-bg:#0f0f10;
+  --sv6-soft:#171718;
+  --sv6-surface:#141415;
+  --sv6-text:#f5f5f5;
+  --sv6-muted:#a4a4a6;
+  --sv6-line:#2a2a2c;
+  --sv6-brand:#ff7a1a;
+  --sv6-brand-soft:#2c1c12;
+  --sv6-success:#65c38f;
+}
+
+/* -------------------------------------------------------------------------- */
+/* GLOBAL                                                                     */
+/* -------------------------------------------------------------------------- */
+html,body,#root,.app{
+  background:var(--sv6-bg)!important;
+  color:var(--sv6-text)!important;
+}
+.app{background-image:none!important}
+.app>main{
+  width:min(var(--sv6-content),calc(100% - 32px))!important;
+  max-width:none!important;
+  margin-inline:auto!important;
+  padding-bottom:22px!important;
+}
+.hero,.shakhHomeHero,.brandRibbon{
+  display:none!important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* HEADER — compact retail navigation                                         */
+/* -------------------------------------------------------------------------- */
+.shakhGlobalHeader{
+  position:sticky!important;
+  top:0!important;
+  z-index:100!important;
+  background:var(--sv6-surface)!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+.shakhHeaderInner{
+  width:min(var(--sv6-content),calc(100% - 32px))!important;
+  min-height:58px!important;
+  padding:6px 0!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(280px,1fr) auto!important;
+  gap:16px!important;
+}
+.shakhBrand{
+  min-width:150px!important;
+  gap:8px!important;
+}
+.shakhBrandLogo{
+  width:34px!important;height:34px!important;border-radius:4px!important;
+  background:var(--sv6-brand-soft)!important;
+  border:1px solid #ededed!important;
+}
+.shakhBrandText{gap:0!important}
+.shakhBrandText strong{
+  font-size:16px!important;
+  letter-spacing:.03em!important;
+  font-weight:900!important;
+}
+.shakhBrandText small{
+  font-size:7px!important;
+  color:var(--sv6-muted)!important;
+}
+.shakhHeaderSearch{
+  height:40px!important;
+  border-radius:2px!important;
+  border:1px solid var(--sv6-line)!important;
+  background:var(--sv6-soft)!important;
+  box-shadow:none!important;
+}
+.shakhHeaderSearch input{
+  font-size:12px!important;
+  color:var(--sv6-text)!important;
+}
+.shakhHeaderSearch:focus-within{
+  border-color:var(--sv6-text)!important;
+  box-shadow:none!important;
+}
+.shakhHeaderActions{gap:2px!important}
+.shakhHeaderAction,.shakhIconAction,.shakhDashboardAction{
+  min-height:38px!important;
+  border-radius:2px!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+}
+.shakhHeaderAction,.shakhIconAction{
+  background:transparent!important;
+  border-color:transparent!important;
+  color:var(--sv6-text)!important;
+}
+.shakhHeaderAction:hover,.shakhIconAction:hover{
+  transform:none!important;
+  background:var(--sv6-soft)!important;
+  border-color:transparent!important;
+  color:var(--sv6-text)!important;
+}
+.shakhDashboardAction{
+  padding:0 11px!important;
+  background:var(--sv6-text)!important;
+  border-color:var(--sv6-text)!important;
+  color:var(--sv6-bg)!important;
+}
+
+/* Category nav: simple text navigation, like a retail storefront. */
+.shakhHeaderQuickNav{
+  width:min(var(--sv6-content),calc(100% - 32px))!important;
+  min-height:38px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  border-top:1px solid var(--sv6-line)!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:0!important;
+  overflow:auto!important;
+  scrollbar-width:none!important;
+}
+.shakhHeaderQuickNav::-webkit-scrollbar{display:none!important}
+.shakhHeaderQuickNav button{
+  min-height:37px!important;
+  padding:0 16px!important;
+  border:0!important;
+  border-bottom:2px solid transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--sv6-text)!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  white-space:nowrap!important;
+}
+.shakhHeaderQuickNav button:hover{
+  transform:none!important;
+  background:transparent!important;
+  color:var(--sv6-brand)!important;
+  border-bottom-color:var(--sv6-brand)!important;
+}
+.shakhMobileSearch{display:none!important}
+
+/* -------------------------------------------------------------------------- */
+/* HOME DISCOVERY — editorial commerce                                        */
+/* -------------------------------------------------------------------------- */
+.section{padding:22px 0 0!important}
+.title{
+  margin:0 0 12px!important;
+  padding:0 0 8px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+}
+.title span{
+  font-size:8px!important;
+  color:var(--sv6-muted)!important;
+  font-weight:700!important;
+  text-transform:uppercase!important;
+}
+.title h2{
+  margin:0!important;
+  font-size:18px!important;
+  line-height:1.3!important;
+  font-weight:850!important;
+}
+
+/* Promo row */
+.promotionsGrid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:3px!important;
+  margin-bottom:3px!important;
+}
+.promotionCard{
+  border:0!important;
+  border-radius:0!important;
+  background:var(--sv6-soft)!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+.promotionCard img{
+  display:block!important;
+  width:100%!important;
+  height:180px!important;
+  object-fit:cover!important;
+}
+.promotionCard>div{padding:10px 11px!important}
+.promotionCard b{font-size:11px!important;font-weight:850!important}
+.promotionCard p{margin:4px 0!important;font-size:9px!important;line-height:1.6!important;color:var(--sv6-muted)!important}
+.promotionCard small{font-size:8px!important;color:var(--sv6-brand)!important}
+
+/* Feature/category tiles become a horizontal category rail. */
+.features{
+  margin:17px 0 4px!important;
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:3px!important;
+}
+.features>button{
+  min-height:74px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:3px!important;
+  padding:10px!important;
+  border:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:var(--sv6-surface)!important;
+  box-shadow:none!important;
+  color:var(--sv6-text)!important;
+}
+.features>button:hover{
+  transform:none!important;
+  border-color:var(--sv6-text)!important;
+  box-shadow:none!important;
+}
+.features>button svg{color:var(--sv6-brand)!important;width:18px!important;height:18px!important}
+.features>button b{font-size:11px!important;font-weight:800!important}
+.features>button small{font-size:8px!important;color:var(--sv6-muted)!important}
+
+/* Product grid: denser, image-first, very little chrome. */
+.grid{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:14px 6px!important;
+}
+.card{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.card:hover{
+  transform:none!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+.card .pic{
+  height:285px!important;
+  border-radius:0!important;
+  background:var(--sv6-soft)!important;
+  overflow:hidden!important;
+}
+.card .pic img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  transition:transform .18s ease!important;
+}
+.card:hover .pic img{transform:scale(1.012)!important}
+.card .body{padding:7px 1px 0!important}
+.card .body>small{
+  display:block!important;
+  margin:0!important;
+  font-size:8px!important;
+  color:var(--sv6-muted)!important;
+  line-height:1.6!important;
+}
+.card h3{
+  margin:3px 0 2px!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+  font-weight:700!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+.card .buy{
+  margin-top:5px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+.card .buy b{
+  font-size:13px!important;
+  color:var(--sv6-text)!important;
+  font-weight:850!important;
+}
+.card .buy button{
+  min-height:29px!important;
+  padding:0 8px!important;
+  border-radius:0!important;
+  border:1px solid var(--sv6-text)!important;
+  background:var(--sv6-text)!important;
+  color:var(--sv6-bg)!important;
+  font-size:8px!important;
+  box-shadow:none!important;
+}
+.card .buy button:hover{
+  transform:none!important;
+  background:var(--sv6-brand)!important;
+  border-color:var(--sv6-brand)!important;
+  box-shadow:none!important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* PRODUCT / CART / AUTH surfaces                                              */
+/* -------------------------------------------------------------------------- */
+.productDetailsModal{
+  width:min(980px,100%)!important;
+  border-radius:0!important;
+  border:0!important;
+  box-shadow:none!important;
+  background:var(--sv6-surface)!important;
+}
+.productDetailsImage{
+  min-height:580px!important;
+  background:var(--sv6-soft)!important;
+}
+.productDetailsBody{padding:26px!important}
+.productDetailsBody h2{
+  font-size:25px!important;font-weight:850!important
+}
+.productDetailsPriceRow{padding:13px 0!important}
+.productDetailsPriceRow strong{font-size:21px!important;color:var(--sv6-brand)!important}
+.productDetailsStats{gap:2px!important}
+.productDetailsStats>div{
+  border:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.productVariantBox{
+  border:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:var(--sv6-soft)!important;
+}
+.variantChoiceChip,.shoeSizeChip{
+  min-height:34px!important;
+  border-radius:0!important;
+  border:1px solid var(--sv6-line)!important;
+  background:var(--sv6-surface)!important;
+}
+.variantChoiceChip.active,.shoeSizeChip.active{
+  border-color:var(--sv6-text)!important;
+  background:var(--sv6-text)!important;
+  color:var(--sv6-bg)!important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* DASHBOARDS — ecommerce operations style, not consumer-card maze            */
+/* -------------------------------------------------------------------------- */
+.shakhDashboardBackdrop{
+  padding:0!important;
+  background:rgba(0,0,0,.56)!important;
+  backdrop-filter:blur(8px)!important;
+}
+.shakhDashboardShell{
+  width:min(1520px,100vw)!important;
+  height:min(940px,100vh)!important;
+  border-radius:0!important;
+  border:0!important;
+  background:var(--sv6-bg)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardTopbar{
+  min-height:58px!important;
+  padding:7px 14px!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+  background:var(--sv6-surface)!important;
+}
+.shakhDashboardTitleBlock h1{
+  margin:2px 0!important;
+  font-size:16px!important;
+  font-weight:850!important;
+}
+.shakhDashboardTitleBlock>span{
+  font-size:7px!important;
+  color:var(--sv6-muted)!important;
+}
+.shakhDashboardTitleBlock p{font-size:8px!important;color:var(--sv6-muted)!important}
+.shakhDashboardBrand{
+  width:34px!important;height:34px!important;
+  flex-basis:34px!important;
+  border-radius:3px!important;
+  background:var(--sv6-brand-soft)!important;
+  border:1px solid var(--sv6-line)!important;
+}
+.shakhDashboardBody{
+  grid-template-columns:250px minmax(0,1fr)!important;
+  grid-template-areas:"sidebar main"!important;
+}
+.shakhDashboardSidebar{
+  grid-area:sidebar!important;
+  order:initial!important;
+  padding:9px 7px!important;
+  background:var(--sv6-surface)!important;
+  border-right:1px solid var(--sv6-line)!important;
+  border-inline-start:0!important;
+}
+.shakhDashboardSidebarHeader{
+  padding:6px 8px 9px!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+}
+.shakhDashboardSidebarHeader small{font-size:7px!important;color:var(--sv6-muted)!important}
+.shakhDashboardSidebarHeader strong{font-size:12px!important}
+.shakhDashboardNav{gap:0!important;padding-top:4px!important}
+.shakhDashboardGroupLabel{
+  padding:11px 8px 4px!important;
+  color:var(--sv6-muted)!important;
+  font-size:7px!important;
+  font-weight:800!important;
+}
+.shakhDashboardNavItem{
+  min-height:37px!important;
+  grid-template-columns:28px minmax(0,1fr) auto!important;
+  gap:7px!important;
+  padding:4px 6px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.shakhDashboardNavItem:hover{
+  transform:none!important;
+  background:var(--sv6-soft)!important;
+  border:0!important;
+}
+.shakhDashboardNavItem.is-active{
+  background:var(--sv6-brand-soft)!important;
+  border-inline-start:2px solid var(--sv6-brand)!important;
+}
+.shakhDashboardNavIcon{
+  width:28px!important;height:28px!important;
+  border-radius:2px!important;
+  background:transparent!important;
+  color:var(--sv6-muted)!important;
+}
+.shakhDashboardNavItem.is-active .shakhDashboardNavIcon{
+  background:transparent!important;
+  color:var(--sv6-brand)!important;
+}
+.shakhDashboardNavCopy strong{
+  font-size:11px!important;
+  font-weight:750!important;
+}
+.shakhDashboardNavCopy small{display:none!important}
+.shakhDashboardNavArrow{opacity:.2!important}
+.shakhDashboardNavBadge{
+  min-width:18px!important;height:18px!important;
+  font-size:7px!important;
+  border-radius:999px!important;
+}
+.shakhDashboardSidebarFooter{
+  margin-top:auto!important;
+  padding:8px!important;
+  border-top:1px solid var(--sv6-line)!important;
+}
+
+/* Dashboard content typography */
+.shakhDashboardMain{
+  background:var(--sv6-bg)!important;
+}
+.shakhDashboardToolbar{
+  min-height:46px!important;
+  padding:7px 14px!important;
+  background:var(--sv6-bg)!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+}
+.shakhDashboardToolbar strong{font-size:11px!important}
+.shakhDashboardToolbar small{font-size:7px!important;color:var(--sv6-muted)!important}
+.shakhDashboardHome,.shakhDashboardModule{padding:15px!important}
+.shakhDashboardMain h1,.shakhDashboardMain h2,.shakhDashboardMain h3,.shakhDashboardMain h4{
+  color:var(--sv6-text)!important;
+}
+.shakhDashboardMain h1{font-size:23px!important;line-height:1.3!important}
+.shakhDashboardMain h2{font-size:19px!important;line-height:1.35!important}
+.shakhDashboardMain h3{font-size:15px!important;line-height:1.45!important}
+.shakhDashboardMain p,.shakhDashboardMain li{
+  font-size:12px!important;
+  line-height:1.8!important;
+  color:var(--sv6-text)!important;
+}
+.shakhDashboardMain small{
+  font-size:10px!important;
+  color:var(--sv6-muted)!important;
+}
+
+/* Dashboard KPI rows: compact and textual */
+.shakhDashboardKpis,.shakhSuperAdminStats,.shakhModuleMetrics,[class*="shakh"][class*="Stats"]{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:1px!important;
+  border:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:var(--sv6-line)!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+.shakhDashboardKpis article,.shakhSuperAdminStats .shakhSuperAdminStat,.shakhModuleMetrics article,[class*="shakh"][class*="Stat"]{
+  min-height:78px!important;
+  padding:11px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:var(--sv6-surface)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardKpis article span,.shakhDashboardKpis article small,
+.shakhSuperAdminStat small,.shakhModuleMetrics small,[class*="Stat"] small{
+  font-size:10px!important;color:var(--sv6-muted)!important
+}
+.shakhDashboardKpis article strong,.shakhSuperAdminStat strong,.shakhModuleMetrics strong,[class*="Stat"] strong{
+  margin-top:4px!important;font-size:20px!important;font-weight:900!important;color:var(--sv6-text)!important
+}
+
+/* Role section headers */
+.shakhDashboardMain [class*="HeroCopy"] h1,
+.shakhDashboardMain [class*="HeroCopy"] h2,
+.shakhModuleHero h2{
+  font-size:20px!important;
+  font-weight:900!important;
+}
+.shakhDashboardMain [class*="HeroCopy"] p,
+.shakhModuleHero p{
+  font-size:11px!important;
+  color:var(--sv6-muted)!important;
+}
+.shakhModuleHero{
+  margin:0 0 14px!important;
+  padding:0 0 10px!important;
+  border:0!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Surface/card reset inside dashboards */
+.shakhDashboardMain .card,
+.shakhDashboardMain [class*="Card"],
+.shakhDashboardMain [class*="Panel"]{
+  border-color:var(--sv6-line)!important;
+  border-radius:0!important;
+  background:var(--sv6-surface)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardMain [class*="Card"] [class*="Card"],
+.shakhDashboardMain [class*="Panel"] [class*="Panel"]{
+  border-inline:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+
+/* Lists & tables */
+.shakhDashboardMain table{border-collapse:collapse!important}
+.shakhDashboardMain th{
+  padding:9px!important;
+  background:var(--sv6-soft)!important;
+  color:var(--sv6-muted)!important;
+  font-size:10px!important;
+  text-align:start!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+}
+.shakhDashboardMain td{
+  padding:10px 9px!important;
+  font-size:11px!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+}
+.shakhDashboardRecentList,.shakhSuperAdminRecentList,.shakhModuleList{
+  border:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:var(--sv6-line)!important;
+  gap:1px!important;
+  overflow:hidden!important;
+}
+.shakhDashboardRecentRow,.shakhSuperAdminRecentRow,.shakhModuleList article{
+  min-height:43px!important;
+  padding:9px 10px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:var(--sv6-surface)!important;
+}
+
+/* Posts */
+.postFeedFilters{
+  display:flex!important;
+  gap:0!important;
+  padding:0!important;
+  margin-bottom:10px!important;
+  border:0!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.postFeedFilters button{
+  min-height:34px!important;
+  padding:0 11px!important;
+  border:0!important;
+  border-bottom:2px solid transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--sv6-muted)!important;
+  font-size:10px!important;
+}
+.postFeedFilters button.active{
+  background:transparent!important;
+  color:var(--sv6-text)!important;
+  border-bottom-color:var(--sv6-text)!important;
+}
+.postFeedGrid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px 6px!important;
+}
+.postFeedCard{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.postFeedCard:hover{box-shadow:none!important;transform:none!important}
+.postFeedBody{padding:7px 1px!important}
+.postFeedBody h3{font-size:11px!important;margin:4px 0 2px!important}
+.postFeedBody p{font-size:9px!important;color:var(--sv6-muted)!important}
+.postFeedPublisher{
+  padding-top:6px!important;
+  border-top:1px solid var(--sv6-line)!important;
+  font-size:8px!important;
+}
+.postSpecChips span{
+  padding:2px 5px!important;
+  border:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:var(--sv6-soft)!important;
+  font-size:7px!important;
+}
+
+/* Footer — retail compact */
+.shakhGlobalFooter{
+  width:min(var(--sv6-content),calc(100% - 32px))!important;
+  margin:22px auto 10px!important;
+  padding:0!important;
+  background:var(--sv6-surface)!important;
+  border-top:1px solid var(--sv6-line)!important;
+}
+.shakhFooterCompact{
+  min-height:48px!important;
+  padding:8px 0!important;
+  grid-template-columns:auto 1fr auto!important;
+  gap:15px!important;
+  border-bottom:1px solid var(--sv6-line)!important;
+}
+.shakhFooterLogo{width:26px!important;height:26px!important;border-radius:3px!important}
+.shakhFooterIdentity strong{font-size:9px!important}
+.shakhFooterIdentity small{font-size:7px!important;color:var(--sv6-muted)!important}
+.shakhFooterLinks{gap:3px 11px!important}
+.shakhFooterLinks button{font-size:7px!important;color:var(--sv6-muted)!important}
+.shakhFooterSupport{font-size:7px!important;color:var(--sv6-muted)!important}
+.shakhFooterUtility{display:none!important}
+.shakhFooterBottom{
+  min-height:28px!important;
+  padding:5px 0 0!important;
+  font-size:6.5px!important;
+  color:var(--sv6-muted)!important;
+}
+
+/* Forms */
+.shakhDashboardMain input:not([type="checkbox"]):not([type="radio"]),
+.shakhDashboardMain select,
+.shakhDashboardMain textarea{
+  min-height:38px!important;
+  border:1px solid var(--sv6-line)!important;
+  border-radius:0!important;
+  background:var(--sv6-surface)!important;
+  color:var(--sv6-text)!important;
+  box-shadow:none!important;
+  font-size:11px!important;
+}
+.shakhDashboardMain label{
+  font-size:11px!important;
+  font-weight:750!important;
+  color:var(--sv6-text)!important;
+}
+.primary{
+  min-height:38px!important;
+  padding:0 13px!important;
+  border-radius:0!important;
+  background:var(--sv6-brand)!important;
+  border-color:var(--sv6-brand)!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+}
+.primary:hover{
+  transform:none!important;
+  background:#e95f00!important;
+  box-shadow:none!important;
+}
+
+/* Mobile */
+@media(max-width:1100px){
+  .grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .postFeedGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .features{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .promotionsGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+  .app>main{width:calc(100% - 20px)!important}
+  .shakhHeaderInner{
+    width:calc(100% - 20px)!important;
+    min-height:54px!important;
+    grid-template-columns:auto 1fr auto!important;
+    gap:7px!important;
+  }
+  .shakhBrand{min-width:0!important}
+  .shakhBrandText small{display:none!important}
+  .shakhHeaderSearch{display:none!important}
+  .shakhHeaderAction{display:none!important}
+  .shakhHeaderActions{gap:0!important}
+  .shakhDashboardAction{min-width:36px!important;padding:0 9px!important}
+  .shakhDashboardAction span{display:none!important}
+  .shakhHeaderQuickNav{
+    width:100%!important;
+    min-height:36px!important;
+  }
+  .shakhHeaderQuickNav button{
+    min-height:35px!important;
+    padding:0 12px!important;
+    font-size:9px!important;
+  }
+  .shakhMobileSearch{
+    display:block!important;
+    width:calc(100% - 20px)!important;
+    margin:0 auto!important;
+    padding:6px 0!important;
+  }
+  .shakhMobileSearch .shakhHeaderSearch{
+    display:flex!important;
+    width:100%!important;
+    height:38px!important;
+  }
+  .promotionsGrid{grid-template-columns:1fr!important}
+  .promotionCard img{height:150px!important}
+  .features{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px 5px!important}
+  .card .pic{height:235px!important}
+  .postFeedGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .shakhDashboardBody{grid-template-columns:1fr!important;grid-template-areas:"main"!important}
+  .shakhDashboardSidebar{
+    position:fixed!important;
+    inset-block:0!important;
+    inset-inline-start:0!important;
+    width:min(290px,84vw)!important;
+    z-index:120!important;
+    transform:translateX(-105%)!important;
+    border-right:1px solid var(--sv6-line)!important;
+    box-shadow:18px 0 50px rgba(0,0,0,.15)!important;
+  }
+  .shakhDashboardSidebar.is-open{transform:translateX(0)!important}
+  .shakhDashboardMenuButton{display:grid!important}
+  .shakhDashboardKpis,.shakhSuperAdminStats,.shakhModuleMetrics,[class*="shakh"][class*="Stats"]{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:430px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .card .pic{height:205px!important}
+  .shakhDashboardKpis,.shakhSuperAdminStats,.shakhModuleMetrics,[class*="shakh"][class*="Stats"]{
+    grid-template-columns:1fr!important
+  }
+}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{transition:none!important;animation:none!important}
+}
