@@ -1144,3 +1144,5 @@ html[data-theme='dark'] .shakhModuleMetrics article{background:transparent!impor
   .shakhDashboardKpis article:first-child{border-top:0!important}
   .shakhModuleMetrics{grid-template-columns:1fr!important}
 }
+
+/* SHAKH visual redesign finalization: build verification trigger. */
