@@ -82,6 +82,7 @@ export default function SuperAdminControlCenter({ onNavigate }: Props) {
     setMessage('');
     try {
       const since = new Date();
+      since.setHours(0, 0, 0, 0);
       since.setDate(since.getDate() - 6);
 
       const [
