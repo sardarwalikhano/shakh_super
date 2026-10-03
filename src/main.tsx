@@ -420,7 +420,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   if(dashboardView==='store'){
    if(['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor','beauty_vendor'].includes(role))return <VendorDashboard userId={user.id} role={role} onRefresh={()=>void loadProducts()} productCount={products.length} pendingOrders={orders.filter(o=>o.status==='pending').length} todaySales={orders.reduce((s,o)=>s+Number(o.total_iqd||0),0)}/>;
    if(role==='car_dealer')return <VehicleShowroomModule userId={user.id} role={role}/>;
-   if(role==='umrah_agency')return <UmrahBookingModule userId={user.id} role={role}/>;
+   if(role==='umrah_agency')return <UmrahAgencyOrdersPanel userId={user.id}/>;
    if(role==='super_admin'||role==='admin')return <SuperAdminOrderMonitor/>;
    return <CustomerOrdersPanel userId={user.id}/>;
   }
