@@ -25,6 +25,8 @@ import SuperAdminControlCenter from './components/SuperAdminControlCenter';
 import AdminControlCenter from './components/AdminControlCenter';
 import CustomerControlCenter from './components/CustomerControlCenter';
 import CaptainControlCenter from './components/CaptainControlCenter';
+import VendorControlCenter from './components/VendorControlCenter';
+import VendorOrdersPanel from './components/VendorOrdersPanel';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -384,6 +386,7 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   }
   if(dashboardView==='orders'){
    if(role==='super_admin'||role==='admin')return <SuperAdminOrderMonitor/>;
+   if(role==='vendor')return <VendorOrdersPanel userId={user.id}/>;
    return <CustomerOrdersPanel userId={user.id}/>;
   }
   if(dashboardView==='delivery'){
@@ -484,6 +487,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     ? <CustomerControlCenter userId={user.id} onNavigate={openDashboard} />
     : role==='captain'
     ? <CaptainControlCenter onNavigate={openDashboard} />
+    : role==='vendor'
+    ? <VendorControlCenter userId={user.id} onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
