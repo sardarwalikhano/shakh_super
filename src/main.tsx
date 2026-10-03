@@ -22,6 +22,7 @@ import SettingsPanel from './components/SettingsPanel';
 import InteractiveMapPicker from './components/InteractiveMapPicker';
 import DashboardShell,{type DashboardView} from './components/DashboardShell';
 import SuperAdminControlCenter from './components/SuperAdminControlCenter';
+import AdminControlCenter from './components/AdminControlCenter';
 import {reverseGeocodeExactLocation} from './lib/geocoding';
 import {applyTheme,getCurrentTheme,type ThemePreference} from './lib/theme';
 
@@ -475,6 +476,8 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   homeContent={
    role==='super_admin'
     ? <SuperAdminControlCenter onNavigate={openDashboard} />
+    : role==='admin'
+    ? <AdminControlCenter onNavigate={openDashboard} />
     : <section className="dashboardShellRecentOrders" aria-labelledby="dashboard-recent-orders-title">
       <div className="dashboardShellRecentOrdersHead">
        <div><span>بەدواداچوونی</span><h2 id="dashboard-recent-orders-title">نوێترین ئۆردەرەکان</h2></div>
