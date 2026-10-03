@@ -467,7 +467,7 @@ export default function DashboardShell({
                 <div className="dashboardShellHomeContent">{homeContent}</div>
               </div>
             ) : (
-              <div className="dashboardShellModule">{view === 'cars' && role === 'car_dealer' ? <CarDealerModule /> : view === 'umrah' && role === 'umrah_agency' ? <UmrahAgencyModule /> : view === 'support' && (isSupport || isAdmin) ? <SupportModule /> : children}</div>
+              <div className="dashboardShellModule">{view === 'cars' && role === 'car_dealer' ? <CarDealerModule /> : view === 'umrah' && role === 'umrah_agency' ? <UmrahAgencyModule /> : view === 'support' && (isSupport || isAdmin) ? <SupportModule role={role} /> : children}</div>
             )}
           </main>
         </div>
