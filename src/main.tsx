@@ -22,6 +22,9 @@ import SettingsPanel from './components/SettingsPanel';
 import AdminUsersPanel from './components/AdminUsersPanel';
 import InteractiveMapPicker from './components/InteractiveMapPicker';
 import DashboardShell,{type DashboardView} from './components/DashboardShell';
+import GlobalHeader from './components/GlobalHeader';
+import GlobalFooter from './components/GlobalFooter';
+import './shakh-redesign.css';
 import SuperAdminControlCenter from './components/SuperAdminControlCenter';
 import AdminControlCenter from './components/AdminControlCenter';
 import CustomerControlCenter from './components/CustomerControlCenter';
@@ -447,22 +450,26 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   return null;
  };
  useEffect(()=>()=>{locationLookupAbortRef.current?.abort();if(locationLookupTimerRef.current!==null)window.clearTimeout(locationLookupTimerRef.current)},[]);
- return <div className="app" dir="rtl"><header><div className="nav"><a className="logo" href="/" aria-label="SHAKH SUPER — شاخ" onClick={e=>{if(window.location.pathname==='/')e.preventDefault()}}><img className="logoImage" src="/shakh-logo.svg?v=1.9.8" alt="SHAKH SUPER — شاخ" /></a><div className="search"><Search size={18}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="گەڕان لە خواردن، بازاڕ و بەرهەم..."/></div><button type="button" className={locationReady?"locationIndicator ready":"locationIndicator"} onClick={detectLocation} disabled={locating} aria-label="دیاریکردنی شوێنی من"><MapPin size={16}/><span>{locating?"شوێن دەدۆزرێتەوە...":locationReady?"شوێنەکەت دیارە":"دیاریکردنی شوێن"}</span></button><button type="button" className="themeToggleButton" onClick={()=>void toggleTheme()} aria-label={currentTheme==='dark'?'گۆڕین بۆ ڕوون':'گۆڕین بۆ تاریک'} title={currentTheme==='dark'?'ڕوون':'تاریک'}>{currentTheme==='dark'?<Sun size={18}/>:<Moon size={18}/>}<span>{currentTheme==='dark'?'ڕوون':'تاریک'}</span></button><button className="plain" onClick={()=>user?openDashboard('notifications'):(setAuthMode('login'),setAuth(true))} aria-label="ئاگادارکردنەوە" style={{position:'relative'}}><Bell/>{user&&unreadNotifications>0&&<i style={{position:'absolute',top:5,right:5,minWidth:17,height:17,padding:'0 4px',borderRadius:999,background:'#ff4d2e',color:'#fff',fontSize:9,fontWeight:900,display:'grid',placeItems:'center',fontStyle:'normal'}}>{unreadNotifications>99?'99+':unreadNotifications}</i>}</button><button className="cart" onClick={()=>setCartOpen(true)}><ShoppingBag/><i>{cart.reduce((s,i)=>s+i.quantity,0)}</i></button>{user&&<button className="plain" title="داشبۆرد" onClick={()=>openDashboard('home')}><LayoutDashboard/></button>}{user?<button className="loginBtn" onClick={()=>openDashboard('profile')}><UserIcon size={17}/> هەژمار</button>:<button className="loginBtn" onClick={()=>{setAuthMode('login');setAuth(true)}}><UserIcon size={17}/> چوونەژوورەوە</button>}</div></header>
- <div className="brandRibbon" aria-label="SHAKH SUPER"><div className="brandRibbonLogo"><img src="/shakh-logo.svg?v=1.9.8" alt="SHAKH SUPER — شاخ" /></div><div className="brandRibbonCopy"><b>SHAKH SUPER</b><span>لەگەڵ شاخ دەگەیتە لوتکە</span></div></div>
+ return <div className="app shakhApp" dir="rtl">
+ <GlobalHeader
+  user={user}
+  search={search}
+  onSearchChange={setSearch}
+  locationReady={locationReady}
+  locating={locating}
+  onDetectLocation={detectLocation}
+  currentTheme={currentTheme}
+  onToggleTheme={toggleTheme}
+  unreadNotifications={unreadNotifications}
+  cartCount={cart.reduce((sum,item)=>sum+item.quantity,0)}
+  onOpenDashboard={(view)=>openDashboard(view || 'notifications')}
+  onLogin={()=>{setAuthMode('login');setAuth(true)}}
+ />
  <main><section className="hero"><div><span className="eyebrow">بازاڕی زیندووی شاخ</span><h1>هەموو شتێک،<strong> لە یەک شوێن.</strong></h1><p>خواردن، سوپرمارکێت، جل و بەرگ، ئۆتۆمبێل و گەشتەکانی حەج و عومرە لە یەک پلاتفۆرم.</p><button className="primary" onClick={()=>document.querySelector('.section')?.scrollIntoView({behavior:'smooth'})}>دەستپێبکە <ArrowLeft/></button></div><div className="heroOrb" aria-hidden="true"><img src="/shakh-logo.svg?v=1.9.8" alt="" /></div></section>
  {promotions.length>0&&<section className="section promotionsSection" aria-label="پرۆمۆشنەکانی شاخ"><div className="title"><div><span>پرۆمۆشنەکانی شاخ</span><h2>داشکاندن و ئۆفەری چالاک</h2></div></div><div className="promotionsGrid">{promotions.map(p=><article className="promotionCard" key={p.id}>{p.image_url&&<img src={p.image_url} alt={p.title} loading="lazy" decoding="async"/>}<div><b>{p.title}</b>{p.description&&<p>{p.description}</p>}{p.ends_at&&<small>تا {new Date(p.ends_at).toLocaleDateString('ku-IQ')}</small>}</div></article>)}</div></section>}
  <PostsFeed onAddToCart={openProductForCart}/><section className="section"><div className="title"><span>بازاڕی شاخ</span><h2>بەرهەمە بەردەستەکان</h2></div>{!filtered.length?<div className="empty"><PackageCheck size={40}/><h3>هێشتا بەرهەمێک بەردەست نییە</h3><p>کاتێک خاوەن دوکان بەرهەم زیاد بکات، لێرە بە شێوەی زیندوو دەردەکەوێت.</p></div>:<div className="grid">{filtered.map(p=>{const price=Number(p.sale_price_iqd??p.price_iqd);return <article className="card" key={p.id} tabIndex={0} role="button" aria-label={'بەرهەمی '+p.name_ku+' بکەرەوە'} onClick={()=>{setSelectedReferralCode(null);setSelectedProduct(p)}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedProduct(p)}}} style={{cursor:'pointer'}}><div className="pic">{p.image_url?<img src={p.image_url} alt={p.name_ku}/>:<span>🛍️</span>}</div><div className="body"><small>{p.category||'بازاڕ'} · {p.store_name||'دوکان'}</small><h3>{p.name_ku}</h3><small>{p.product_type||''}{p.brand?' · '+p.brand:''}{p.size?' · '+p.size:''}</small><div className="buy"><b>{price.toLocaleString('en-US')} د.ع</b><button disabled={busy||!p.is_available||Number(p.stock||0)<=0} onClick={e=>{e.stopPropagation();void openProductForCart(p.id)}}>{Number(p.stock||0)<=0?'ستۆکی نەماوە':'+ زیادکردن'}</button></div></div></article>})}</div>}</section>
  <section className="features"><button type="button" onClick={()=>openDashboard('delivery')}><Truck/><b>گەیاندنی خێرا</b><small>بەدواداچوونی داواکاری</small></button>{['restaurant_vendor','supermarket_vendor','fashion_vendor','vendor','electronics_vendor','jewelry_vendor','beauty_vendor','super_admin','admin'].includes(role)&&<button type="button" onClick={()=>openDashboard('delivery_zones')}><MapPin/><b>ناوچەی گەیاندن</b><small>سنوری خزمەتگوزاریی شاخ</small></button>}<button type="button" onClick={()=>openDashboard('store')}><Store/><b>دوکان و پێشانگا</b><small>بازاڕ و فرۆشتنی ڕاستەوخۆ</small></button><button type="button" onClick={()=>openDashboard('cars')}><Car/><b>SHAKH Cars</b><small>پێشانگا، پۆستکردن و پەسەندکردن</small></button><button type="button" onClick={()=>openDashboard('umrah')}><Plane/><b>حەج و عومرە</b><small>تەنها حجزکردنی گەشت</small></button><button type="button" onClick={()=>openDashboard('wallet')}><Wallet/><b>جزدان</b><small>پارە و خاڵەکان</small></button></section>
- <footer className="siteFooter" id="footer">
-  <div className="siteFooterGrid">
-   <div><div className="footerBrand"><img src="/shakh-logo.svg?v=1.9.8" alt="لۆگۆی شاخ" /><div><b>شاخ</b><small>بازاڕ و گەیاندنی ڕاستەقینە</small></div></div><p>هەموو داواکارییەکانت لە یەک شوێن؛ بە شێوەیەکی خێرا و ئاسان.</p></div>
-   <div><b>خزمەتگوزارییەکان</b><button type="button" onClick={()=>openDashboard('store')}>دوکان و بازاڕ</button><button type="button" onClick={()=>openDashboard('delivery')}>گەیاندن</button><button type="button" onClick={()=>openDashboard('cars')}>SHAKH Cars</button><button type="button" onClick={()=>openDashboard('umrah')}>حەج و عومرە</button></div>
-   <div><b>بەستەرە خێراکان</b><button type="button" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>سەرەکی</button><button type="button" onClick={()=>user?openDashboard('orders'):(setAuthMode('login'),setAuth(true))}>داواکارییەکان</button><button type="button" onClick={()=>document.getElementById('app-install')?.scrollIntoView({behavior:'smooth'})}>دامەزراندن و ئەپدەیت</button></div>
-   <div><b>پشتگیری</b><p className="footerSupport">هەر کێشەیەکت هەیە، لە بەشی پشتگیریی شاخ بەدواداچوون بکە.</p><div className="footerSupportContacts"><a href="tel:+9647504796924">📞 07504796924</a><a href="https://wa.me/9647504796924" target="_blank" rel="noreferrer">💬 WhatsApp</a></div><button type="button" className="footerPrivacyLink" onClick={()=>setPrivacyOpen(true)}>سیاسەتی پاراستنی نهێنی</button></div>
-  </div>
-  <PwaInstallUpdate/>
-  <div className="siteFooterBottom"><span>© ٢٠٢٦ شاخ — هەموو مافەکان پارێزراون</span><span>وەشان ١.٩.٨</span></div>
- </footer></main>
+ <GlobalFooter user={user} onOpenDashboard={openDashboard} onOpenPrivacy={()=>setPrivacyOpen(true)} /></main>
  <nav className="mobileBottomNav" aria-label="ناوبەری خێرای مۆبایل">
   <button type="button" className={!dashboard?'active':''} onClick={()=>{void closeDashboard();window.scrollTo({top:0,behavior:'smooth'})}}><Home size={18}/><span>سەرەکی</span></button>
   <button type="button" className={dashboard&&dashboardView==='orders'?'active':''} onClick={()=>user?openDashboard('orders'):(setAuthMode('login'),setAuth(true))}><PackageCheck size={18}/><span>داواکاری</span></button>
