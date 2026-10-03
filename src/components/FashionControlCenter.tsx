@@ -34,7 +34,7 @@ function inventoryInfo(product: ProductRow) {
 
 export default function FashionControlCenter({ userId, onNavigate }: Props) {
   const [metrics, setMetrics] = useState<Metrics>(initial);
-  const [storeName, setStoreName] = useState('دوکانی جل و بەرگەکەم');
+  const [storeName, setStoreName] = useState('دوکانەکەت');
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
@@ -49,7 +49,7 @@ export default function FashionControlCenter({ userId, onNavigate }: Props) {
 
       const storeRows = (stores || []) as { id: string; name?: string | null; is_active?: boolean | null }[];
       const storeIds = storeRows.map((store) => store.id);
-      setStoreName(storeRows.find((store) => store.is_active)?.name || storeRows[0]?.name || 'دوکانی جل و بەرگەکەم');
+      setStoreName(storeRows.find((store) => store.is_active)?.name || storeRows[0]?.name || 'دوکانەکەت');
 
       const start = new Date(); start.setHours(0, 0, 0, 0);
       const end = new Date(start); end.setDate(end.getDate() + 1);
