@@ -1168,3 +1168,5 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   .postField input,.postField select,.postField textarea{font-size:12px!important}
   .postPublishButton,.postResetButton,.postPreviewToggle{font-size:11px!important}
 }
+
+/* production trigger: readable typography v8 */
