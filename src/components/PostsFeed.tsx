@@ -95,7 +95,16 @@ export default function PostsFeed({onAddToCart}:Props){
  const pageSize=12,closeButtonRef=useRef<HTMLButtonElement|null>(null),postRailRef=useRef<HTMLDivElement|null>(null);
 
  const load=async()=>{setLoading(true);const referralResult=await supabase.from('posts').select('id,author_id,store_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility,listing_details,post_referral_programs(commission_percent)').eq('status','approved').eq('visibility','public').order('created_at',{ascending:false}).limit(200);if(!referralResult.error){const rows=(referralResult.data||[]).map((row:any)=>({...row,referral_reward_percent:Array.isArray(row.post_referral_programs)?Number(row.post_referral_programs[0]?.commission_percent||0):Number(row.post_referral_programs?.commission_percent||0)}));setPosts(rows as Post[]);setMessage('');setLoading(false);return}const fallbackResult=await supabase.from('posts').select('id,author_id,store_id,title,content,images,price_iqd,city,status,created_at,publisher_name,post_type,publisher_role,label,visibility,listing_details').eq('status','approved').eq('visibility','public').order('created_at',{ascending:false}).limit(200);if(fallbackResult.error){setMessage('نەتوانرا پۆستەکان وەرگیرێن.');setLoading(false);return}setPosts((fallbackResult.data||[]) as Post[]);setMessage('');setLoading(false)};
- useEffect(()=>{void load();const c=supabase.channel('shakh-live-posts').on('postgres_changes',{event:'*',schema:'public',table:'posts'},()=>{void load()}).subscribe();return()=>{void supabase.removeChannel(c)}},[]);
+ useEffect(()=>{
+  void load();
+  const c=supabase.channel('shakh-live-posts').on('postgres_changes',{event:'*',schema:'public',table:'posts'},()=>{void load()}).subscribe();
+  const onCreated=()=>{void load();};
+  window.addEventListener('shakh-post-created',onCreated);
+  return()=>{
+    void supabase.removeChannel(c);
+    window.removeEventListener('shakh-post-created',onCreated);
+  };
+ },[]);
  useEffect(()=>{setPage(1);if(filter!=='fashion'&&filter!=='car')setShowAdvanced(false)},[filter]);
  useEffect(()=>{if(!selectedPost)return;const u=new URL(window.location.href);u.searchParams.set('post',selectedPost.id);u.hash='shakh-posts';window.history.replaceState(null,'',u.pathname+u.search+u.hash)},[selectedPost]);
 
