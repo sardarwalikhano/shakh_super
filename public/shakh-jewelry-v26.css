@@ -1,0 +1,41 @@
+.shakhJewelryCenter{max-width:1240px;margin:0 auto;padding:0;color:var(--dsx-text)}
+.shakhJewelryHero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px;background:var(--dsx-surface);border:1px solid var(--dsx-line);border-radius:20px}
+.shakhJewelryEyebrow{display:inline-flex;align-items:center;gap:7px;color:var(--dsx-brand);font-size:11px;font-weight:900}
+.shakhJewelryHero h2{margin:7px 0 4px;font-size:clamp(22px,3vw,30px);color:var(--dsx-text)}
+.shakhJewelryHero p{margin:0;color:var(--dsx-muted);line-height:1.7}
+.shakhJewelryRefresh{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--dsx-line);background:var(--dsx-surface-alt);color:var(--dsx-text);font-weight:900;cursor:pointer;white-space:nowrap}
+.shakhJewelryRefresh:hover{border-color:var(--dsx-brand);color:var(--dsx-brand)}
+.shakhJewelryRefresh:disabled{opacity:.65;cursor:wait}
+.shakhJewelryStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:10px;background:var(--dsx-line);border:1px solid var(--dsx-line);border-radius:18px;overflow:hidden}
+.shakhJewelryStat{min-width:0;min-height:96px;display:flex;align-items:center;gap:12px;padding:14px;background:var(--dsx-surface)}
+.shakhJewelryStatIcon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--dsx-surface-alt);color:var(--dsx-brand);flex:none}
+.shakhJewelryStat small{display:block;color:var(--dsx-muted);font-size:10px;font-weight:800}
+.shakhJewelryStat strong{display:block;margin-top:3px;color:var(--dsx-text);font-size:19px;line-height:1.2}
+.shakhJewelryStat strong.is-money{font-size:16px}
+.shakhJewelryStat[data-tone="blue"] .shakhJewelryStatIcon,.shakhJewelryStat[data-tone="blue2"] .shakhJewelryStatIcon{color:#2563eb}
+.shakhJewelryStat[data-tone="violet"] .shakhJewelryStatIcon,.shakhJewelryStat[data-tone="violet2"] .shakhJewelryStatIcon{color:#7c3aed}
+.shakhJewelryStat[data-tone="green"] .shakhJewelryStatIcon{color:var(--dsx-green)}
+.shakhJewelryStat[data-tone="teal"] .shakhJewelryStatIcon,.shakhJewelryStat[data-tone="teal2"] .shakhJewelryStatIcon{color:#0f766e}
+.shakhJewelryStat[data-tone="gold"] .shakhJewelryStatIcon{color:#b7791f}
+.shakhJewelryStat[data-tone="amber"] .shakhJewelryStatIcon{color:#d97706}
+.shakhJewelryStat[data-tone="rose"] .shakhJewelryStatIcon{color:#e11d48}
+.shakhJewelryStat[data-tone="slate"] .shakhJewelryStatIcon{color:#475569}
+.shakhJewelryWorkspace{margin-top:10px;padding:16px;background:var(--dsx-surface);border:1px solid var(--dsx-line);border-radius:20px}
+.shakhJewelryWorkspaceHead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px}
+.shakhJewelryWorkspaceHead span{font-size:10px;color:var(--dsx-muted);font-weight:900}
+.shakhJewelryWorkspaceHead h3{margin:5px 0 0;color:var(--dsx-text);font-size:20px}
+.shakhJewelryWorkspaceHead small{color:var(--dsx-muted);font-size:10px}
+.shakhJewelryActionGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.shakhJewelryActionGrid button{display:flex;align-items:center;gap:11px;min-width:0;text-align:right;padding:13px;border:1px solid var(--dsx-line);border-radius:15px;background:var(--dsx-surface-alt);color:var(--dsx-text);cursor:pointer}
+.shakhJewelryActionGrid button:hover{border-color:var(--dsx-brand);transform:translateY(-1px)}
+.shakhJewelryActionGrid svg{width:20px;height:20px;flex:none;color:var(--dsx-brand)}
+.shakhJewelryActionGrid span{display:grid;gap:3px;min-width:0}
+.shakhJewelryActionGrid b{font-size:12px}
+.shakhJewelryActionGrid small{color:var(--dsx-muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jewelryOrdersRoute{min-width:0}
+.jewelryOrdersRouteState{min-height:220px;display:grid;place-items:center;align-content:center;gap:8px;text-align:center;padding:28px;border:1px solid var(--dsx-line);border-radius:18px;background:var(--dsx-surface);color:var(--dsx-muted)}
+.jewelryOrdersRouteState svg{color:var(--dsx-brand)}
+.jewelryOrdersRouteState h3{margin:2px 0;color:var(--dsx-text)}
+.jewelryOrdersRouteState p{margin:0;max-width:520px;line-height:1.7}
+@media(max-width:980px){.shakhJewelryStats{grid-template-columns:repeat(2,minmax(0,1fr))}.shakhJewelryActionGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.shakhJewelryHero{align-items:stretch;flex-direction:column}.shakhJewelryRefresh{width:100%}.shakhJewelryStats{grid-template-columns:1fr}.shakhJewelryActionGrid{grid-template-columns:1fr}.shakhJewelryWorkspace{padding:12px}.shakhJewelryWorkspaceHead{align-items:flex-start;flex-direction:column}}
