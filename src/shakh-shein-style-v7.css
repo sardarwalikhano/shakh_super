@@ -847,3 +847,324 @@ html,body,#root,.app{
 }
 
 /* production trigger */
+
+
+/* ==========================================================================
+   SHAKH V8 — READABLE TYPOGRAPHY
+   Typography/legibility only. No component logic or interaction changes.
+   ========================================================================== */
+html,body,#root,.app{
+  font-size:16px!important;
+}
+body{
+  line-height:1.55!important;
+}
+.shakhHeaderSearch input{
+  font-size:14px!important;
+}
+.shakhBrandText strong{
+  font-size:19px!important;
+}
+.shakhBrandText small{
+  font-size:9px!important;
+}
+.shakhHeaderQuickNav button{
+  font-size:12px!important;
+  font-weight:800!important;
+}
+.title h2{
+  font-size:22px!important;
+  line-height:1.45!important;
+}
+.title span{
+  font-size:10px!important;
+}
+.features>button b{
+  font-size:12px!important;
+}
+.features>button small{
+  font-size:9px!important;
+}
+.promotionCard b{
+  font-size:13px!important;
+}
+.promotionCard p{
+  font-size:10px!important;
+  line-height:1.7!important;
+}
+.promotionCard small{
+  font-size:9px!important;
+}
+.card .body>small{
+  font-size:10px!important;
+  line-height:1.6!important;
+}
+.card h3{
+  font-size:13px!important;
+  line-height:1.6!important;
+  font-weight:700!important;
+}
+.card .buy b{
+  font-size:15px!important;
+}
+.card .buy button{
+  min-height:34px!important;
+  padding:0 10px!important;
+  font-size:10px!important;
+}
+.postFeedFilters button{
+  font-size:11px!important;
+}
+.postAdvancedFilter{
+  font-size:13px!important;
+}
+.postField input,.postField select{
+  min-height:40px!important;
+  font-size:13px!important;
+}
+.postFeedBody h3{
+  font-size:13px!important;
+  line-height:1.6!important;
+}
+.postFeedBody p{
+  font-size:11px!important;
+  line-height:1.7!important;
+}
+.postSpecChips span{
+  font-size:9px!important;
+}
+.postFeedFooter strong{
+  font-size:12px!important;
+}
+.shakhDashboardTitleBlock h1{
+  font-size:19px!important;
+}
+.shakhDashboardTitleBlock>span{
+  font-size:9px!important;
+}
+.shakhDashboardTitleBlock p{
+  font-size:10px!important;
+  line-height:1.6!important;
+}
+.shakhDashboardAccount small{
+  font-size:9px!important;
+}
+.shakhDashboardAccount strong{
+  font-size:12px!important;
+}
+.shakhDashboardAccount span{
+  font-size:9px!important;
+}
+.shakhDashboardSidebarHeader small{
+  font-size:9px!important;
+}
+.shakhDashboardSidebarHeader strong{
+  font-size:14px!important;
+}
+.shakhDashboardGroupLabel{
+  font-size:9px!important;
+  padding-top:14px!important;
+}
+.shakhDashboardNavItem{
+  min-height:43px!important;
+}
+.shakhDashboardNavCopy strong{
+  font-size:13px!important;
+  line-height:1.5!important;
+}
+.shakhDashboardNavBadge{
+  font-size:9px!important;
+}
+.shakhDashboardToolbar strong{
+  font-size:13px!important;
+}
+.shakhDashboardToolbar small{
+  font-size:9px!important;
+}
+.shakhDashboardHome,.shakhDashboardModule{
+  line-height:1.6!important;
+}
+.shakhDashboardMain h1{
+  font-size:27px!important;
+  line-height:1.4!important;
+}
+.shakhDashboardMain h2{
+  font-size:22px!important;
+  line-height:1.45!important;
+}
+.shakhDashboardMain h3{
+  font-size:18px!important;
+  line-height:1.5!important;
+}
+.shakhDashboardMain p{
+  font-size:13px!important;
+  line-height:1.85!important;
+}
+.shakhDashboardMain small{
+  font-size:11px!important;
+  line-height:1.7!important;
+}
+.shakhDashboardKpis article span,
+.shakhDashboardKpis article small,
+.shakhSuperAdminStat small,
+.shakhModuleMetrics small,
+[class*="Stat"] small{
+  font-size:11px!important;
+}
+.shakhDashboardKpis article strong,
+.shakhSuperAdminStat strong,
+.shakhModuleMetrics strong,
+[class*="Stat"] strong{
+  font-size:22px!important;
+}
+.shakhModuleHero h2{
+  font-size:23px!important;
+}
+.shakhModuleHero p{
+  font-size:12px!important;
+  line-height:1.8!important;
+}
+.shakhDashboardMain th{
+  font-size:11px!important;
+}
+.shakhDashboardMain td{
+  font-size:12px!important;
+}
+.shakhDashboardMain label{
+  font-size:12px!important;
+}
+.shakhDashboardMain input:not([type="checkbox"]):not([type="radio"]),
+.shakhDashboardMain select,
+.shakhDashboardMain textarea{
+  min-height:41px!important;
+  font-size:12px!important;
+}
+.shakhDashboardSidebarFooter strong{
+  font-size:9px!important;
+}
+.shakhDashboardSidebarFooter small{
+  font-size:8px!important;
+}
+.shakhFooterIdentity strong{
+  font-size:10px!important;
+}
+.shakhFooterIdentity small,.shakhFooterLinks button,.shakhFooterSupport{
+  font-size:8px!important;
+}
+.shakhFooterBottom{
+  font-size:7px!important;
+}
+
+/* Publishing composers and labels */
+.postComposerHead h3{
+  font-size:20px!important;
+  line-height:1.5!important;
+}
+.postComposerHead p{
+  font-size:12px!important;
+  line-height:1.8!important;
+}
+.postComposerHead .eyebrow,
+.postComposerLabel{
+  font-size:12px!important;
+}
+.postCategory b{
+  font-size:12px!important;
+}
+.postCategory small{
+  font-size:10px!important;
+}
+.postField>span,
+.postLabelRow>span{
+  font-size:12px!important;
+  font-weight:800!important;
+}
+.postField>small,
+.postLabelRow>small{
+  font-size:10px!important;
+}
+.postField input,.postField select,.postField textarea{
+  font-size:13px!important;
+  min-height:42px!important;
+}
+.postChoiceChip{
+  font-size:11px!important;
+  min-height:34px!important;
+}
+.postInventoryHeader b{
+  font-size:13px!important;
+}
+.postInventoryHeader small{
+  font-size:10px!important;
+}
+.postInventoryHeader>span{
+  font-size:13px!important;
+}
+.postInventoryMode button{
+  font-size:11px!important;
+}
+.postUploadHead b{
+  font-size:13px!important;
+}
+.postUploadHead small{
+  font-size:10px!important;
+}
+.postUploadDrop b{
+  font-size:12px!important;
+}
+.postUploadDrop small{
+  font-size:10px!important;
+}
+.postPublishButton,.postResetButton,.postPreviewToggle{
+  min-height:42px!important;
+  font-size:12px!important;
+}
+.postComposerMessage{
+  font-size:12px!important;
+  line-height:1.8!important;
+}
+.postLivePreviewTop span{
+  font-size:12px!important;
+}
+.postLivePreviewTop small{
+  font-size:10px!important;
+}
+.postLivePreviewBody h4{
+  font-size:15px!important;
+}
+.postLivePreviewBody p{
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.postPreviewChips span{
+  font-size:9px!important;
+}
+
+/* Accessibility: retain strong focus visibility */
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--s7-brand)!important;
+  outline-offset:2px!important;
+}
+
+@media(max-width:700px){
+  html,body,#root,.app{font-size:15px!important}
+  .title h2{font-size:20px!important}
+  .features>button b{font-size:11px!important}
+  .features>button small{font-size:8px!important}
+  .card h3{font-size:12px!important}
+  .card .buy b{font-size:14px!important}
+  .postFeedBody h3{font-size:12px!important}
+  .postFeedBody p{font-size:10px!important}
+  .shakhDashboardTitleBlock h1{font-size:17px!important}
+  .shakhDashboardMain h1{font-size:23px!important}
+  .shakhDashboardMain h2{font-size:20px!important}
+  .shakhDashboardMain h3{font-size:16px!important}
+  .shakhDashboardMain p{font-size:12px!important}
+  .shakhDashboardMain small{font-size:10px!important}
+  .shakhDashboardNavCopy strong{font-size:12px!important}
+  .shakhDashboardMain th{font-size:10px!important}
+  .shakhDashboardMain td{font-size:11px!important}
+  .postComposerHead h3{font-size:18px!important}
+  .postField input,.postField select,.postField textarea{font-size:12px!important}
+  .postPublishButton,.postResetButton,.postPreviewToggle{font-size:11px!important}
+}
