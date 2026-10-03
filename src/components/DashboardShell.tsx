@@ -19,6 +19,7 @@ import {
   X,
 } from 'lucide-react';
 import './dashboard-shell.css';
+import { supabase } from '../lib/supabase';
 
 export type DashboardView =
   | 'home'
@@ -68,6 +69,48 @@ type Props = {
   children?: React.ReactNode;
 };
 
+
+function CarDealerModule(){
+  const [cars,setCars]=useState<Array<{id:string;title?:string|null;price_iqd?:number|null;city?:string|null;status?:string|null}>>([]);
+  const [loading,setLoading]=useState(true);
+  const load=async()=>{
+    setLoading(true);
+    const {data:userResult}=await supabase.auth.getUser();
+    const userId=userResult.user?.id;
+    if(!userId){setCars([]);setLoading(false);return;}
+    const {data}=await supabase.from('posts').select('id,title,price_iqd,city,status').eq('author_id',userId)
+      .or('section.ilike.%car%,post_type.ilike.%car%,publisher_role.eq.car_dealer')
+      .order('created_at',{ascending:false}).limit(100);
+    setCars(data||[]);setLoading(false);
+  };
+  useEffect(()=>{void load();const ch=supabase.channel('shakh-car-dealer-shell').on('postgres_changes',{event:'*',schema:'public',table:'posts'},()=>void load()).subscribe();return()=>{void supabase.removeChannel(ch);};},[]);
+  const active=cars.filter(c=>!['sold','cancelled','archived','rejected'].includes(String(c.status||'').toLowerCase())).length;
+  const pending=cars.filter(c=>['pending','review','draft'].includes(String(c.status||'').toLowerCase())).length;
+  const sold=cars.filter(c=>String(c.status||'').toLowerCase()==='sold').length;
+  const value=cars.filter(c=>String(c.status||'').toLowerCase()!=='sold').reduce((s,c)=>s+Number(c.price_iqd||0),0);
+  const nav=(view:DashboardView)=>window.dispatchEvent(new CustomEvent('shakh-dashboard-navigate',{detail:view}));
+  return <section className="carDealerCenter" dir="rtl">
+    <div className="carDealerHero"><div><span>SHAKH CARS • CAR DEALER</span><h2>ناوەندی پێشانگای ئۆتۆمبێل</h2><p>بەڕێوەبردنی لیستەکانی ئۆتۆمبێل لەسەر داتای ڕاستەقینەی Supabase.</p></div><button type="button" onClick={()=>void load()} disabled={loading}><RefreshCw size={16}/> نوێکردنەوە</button></div>
+    <div className="carDealerStats">
+      <article><small>هەموو لیستەکان</small><strong>{cars.length.toLocaleString('ku-IQ')}</strong></article>
+      <article><small>چالاک</small><strong>{active.toLocaleString('ku-IQ')}</strong></article>
+      <article><small>چاوەڕوان</small><strong>{pending.toLocaleString('ku-IQ')}</strong></article>
+      <article><small>فرۆشراو</small><strong>{sold.toLocaleString('ku-IQ')}</strong></article>
+      <article><small>بەهای ستۆکی چالاک</small><strong>{value.toLocaleString('ku-IQ')} د.ع</strong></article>
+    </div>
+    <div className="carDealerPanels">
+      <div className="carDealerPanel"><small>دەستگەیشتنی خێرا</small><h3>کارە سەرەکییەکان</h3><div className="carDealerActions">
+        <button type="button" onClick={()=>nav('publish_post')}><Car/> بڵاوکردنەوەی ئۆتۆمبێل</button>
+        <button type="button" onClick={()=>nav('manage_posts')}><ClipboardList/> پۆستەکان</button>
+        <button type="button" onClick={()=>nav('wallet')}><WalletCards/> جزدان و داهات</button>
+        <button type="button" onClick={()=>nav('profile')}><UserRound/> پرۆفایل و پێشانگا</button>
+      </div></div>
+      <div className="carDealerPanel"><div className="carDealerPanelHead"><div><small>ئۆتۆمبێلە نوێکان</small><h3>دواین لیستەکان</h3></div><span>{cars.slice(0,6).length.toLocaleString('ku-IQ')} دانە</span></div>
+        <div className="carDealerList">{cars.slice(0,6).map(car=><article key={car.id}><div><strong>{car.title||'ئۆتۆمبێلی بێ ناونیشان'}</strong><small>{car.city||'شار دیاری نەکراوە'}</small></div><b>{car.price_iqd?Number(car.price_iqd).toLocaleString('ku-IQ')+' د.ع':'نرخ دانەنراوە'}</b></article>)}{!cars.length&&!loading&&<div className="carDealerEmpty"><Car size={24}/><strong>هێشتا هیچ لیستێکی ئۆتۆمبێل نییە</strong><small>لە «بڵاوکردنەوەی ئۆتۆمبێل» یەکەم لیست دروست بکە.</small></div>}</div>
+      </div>
+    </div>
+  </section>;
+}
 
 const money = (value: number) => `${Number(value || 0).toLocaleString('ku-IQ')} د.ع`;
 
@@ -227,6 +270,8 @@ export default function DashboardShell({
   const items = navItems.filter((item) => item.show !== false);
 
   const activeItem = items.find((item) => item.id === view) ?? items[0];
+
+  useEffect(() => { const handler = (event: Event) => { const next = (event as CustomEvent<DashboardView>).detail; if (next) onSelectView(next); }; window.addEventListener('shakh-dashboard-navigate', handler); return () => window.removeEventListener('shakh-dashboard-navigate', handler); }, [onSelectView]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -415,7 +460,7 @@ export default function DashboardShell({
                 <div className="dashboardShellHomeContent">{homeContent}</div>
               </div>
             ) : (
-              <div className="dashboardShellModule">{children}</div>
+              <div className="dashboardShellModule">{view === 'cars' && role === 'car_dealer' ? <CarDealerModule /> : children}</div>
             )}
           </main>
         </div>
