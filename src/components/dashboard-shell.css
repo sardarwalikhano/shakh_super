@@ -8175,3 +8175,131 @@ html[data-theme='dark']{
 @media(prefers-reduced-motion:reduce){
   .dashboardShellModule button,.dashboardShellModule a{transition:none!important}
 }
+
+/* SHAKH DASHBOARD — replacement architecture */
+.shakhDashboardBackdrop{
+  position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:18px;
+  background:rgba(2,11,22,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.shakhDashboardShell{
+  width:min(1560px,97vw);height:min(94vh,960px);display:grid;grid-template-rows:auto minmax(0,1fr);
+  overflow:hidden;border:1px solid var(--shakh-line);border-radius:30px;background:var(--shakh-bg);
+  color:var(--shakh-text);box-shadow:0 44px 130px rgba(0,0,0,.34);
+}
+.shakhDashboardTopbar{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 18px;
+  background:var(--shakh-surface);border-bottom:1px solid var(--shakh-line);
+}
+.shakhDashboardIdentity,.shakhDashboardTopActions{display:flex;align-items:center;gap:12px;min-width:0}
+.shakhDashboardBrand{width:48px;height:48px;border-radius:15px;overflow:hidden;display:grid;place-items:center;flex:0 0 48px;background:var(--shakh-brand-soft);border:1px solid var(--shakh-line)}
+.shakhDashboardBrand img{width:100%;height:100%;object-fit:contain}
+.shakhDashboardTitleBlock{min-width:0}
+.shakhDashboardTitleBlock>span{display:block;color:var(--shakh-brand);font-size:9px;font-weight:950;letter-spacing:.5px;direction:ltr}
+.shakhDashboardTitleBlock h1{margin:4px 0 0;font-size:21px;line-height:1.25}
+.shakhDashboardTitleBlock p{margin:3px 0 0;color:var(--shakh-muted);font-size:9px}
+.shakhDashboardAccount{min-width:150px;display:flex;flex-direction:column;gap:1px;padding-inline-start:14px;border-inline-start:1px solid var(--shakh-line)}
+.shakhDashboardAccount small,.shakhDashboardAccount span{font-size:8px;color:var(--shakh-muted)}
+.shakhDashboardAccount strong{font-size:10px}
+.shakhDashboardMenuButton,.shakhDashboardIconButton,.shakhDashboardSidebarClose{
+  appearance:none;border:1px solid var(--shakh-line);background:var(--shakh-surface-2);color:var(--shakh-text);
+  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;cursor:pointer;transition:.18s
+}
+.shakhDashboardMenuButton{display:none}
+.shakhDashboardIconButton:hover,.shakhDashboardMenuButton:hover,.shakhDashboardSidebarClose:hover{
+  color:var(--shakh-brand);border-color:color-mix(in srgb,var(--shakh-brand) 38%,var(--shakh-line));
+  transform:translateY(-1px);background:var(--shakh-brand-soft)
+}
+.shakhDashboardIconButton.is-close:hover{color:#fff;background:var(--shakh-danger);border-color:var(--shakh-danger)}
+.shakhDashboardBody{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 286px;grid-template-areas:"main sidebar";position:relative}
+.shakhDashboardSidebar{
+  grid-area:sidebar;min-height:0;min-width:0;display:flex;flex-direction:column;gap:12px;
+  padding:16px 12px;background:var(--shakh-surface);border-inline-start:1px solid var(--shakh-line);overflow:auto
+}
+.shakhDashboardSidebarHeader{display:flex;align-items:center;justify-content:space-between;padding:3px 6px 4px}
+.shakhDashboardSidebarHeader small{display:block;color:var(--shakh-muted);font-size:8px}
+.shakhDashboardSidebarHeader strong{display:block;margin-top:2px;font-size:14px}
+.shakhDashboardSidebarClose{display:none;width:34px;height:34px}
+.shakhDashboardNav{display:flex;flex-direction:column;gap:8px}
+.shakhDashboardGroupLabel{font-size:8px;font-weight:950;color:var(--shakh-muted);padding:7px 7px 1px}
+.shakhDashboardNavItem{
+  width:100%;min-width:0;display:grid;grid-template-columns:38px minmax(0,1fr) auto auto;align-items:center;gap:9px;
+  padding:9px;border:1px solid transparent;border-radius:14px;background:transparent;color:var(--shakh-text);
+  text-align:right;cursor:pointer;transition:.18s
+}
+.shakhDashboardNavItem:hover{background:var(--shakh-surface-2);border-color:var(--shakh-line);transform:translateX(-1px)}
+.shakhDashboardNavItem.is-active{background:var(--shakh-brand-soft);border-color:color-mix(in srgb,var(--shakh-brand) 24%,var(--shakh-line))}
+.shakhDashboardNavIcon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--shakh-surface-2);color:var(--shakh-muted)}
+.shakhDashboardNavItem.is-active .shakhDashboardNavIcon{background:var(--shakh-brand);color:#fff}
+.shakhDashboardNavItem[data-tone="green"].is-active .shakhDashboardNavIcon{background:var(--shakh-green)}
+.shakhDashboardNavItem[data-tone="blue"].is-active .shakhDashboardNavIcon{background:var(--shakh-blue);color:#fff}
+.shakhDashboardNavCopy{display:flex;flex-direction:column;gap:2px;min-width:0}
+.shakhDashboardNavCopy strong{font-size:10px;line-height:1.35}
+.shakhDashboardNavCopy small{font-size:7px;line-height:1.6;color:var(--shakh-muted);overflow-wrap:anywhere}
+.shakhDashboardNavBadge{min-width:21px;height:21px;padding:0 6px;display:grid;place-items:center;border-radius:999px;background:var(--shakh-brand);color:#fff;font-size:8px;font-weight:950}
+.shakhDashboardNavArrow{color:#9aaabc}
+.shakhDashboardSidebarFooter{margin-top:auto;border-top:1px solid var(--shakh-line);padding:12px 7px 3px;display:flex;align-items:center;gap:8px}
+.shakhDashboardStatusDot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:var(--shakh-green);box-shadow:0 0 0 5px color-mix(in srgb,var(--shakh-green) 12%,transparent)}
+.shakhDashboardSidebarFooter strong,.shakhDashboardSidebarFooter small{display:block}
+.shakhDashboardSidebarFooter strong{font-size:9px}.shakhDashboardSidebarFooter small{margin-top:2px;color:var(--shakh-muted);font-size:7px}
+.shakhDashboardMain{grid-area:main;min-width:0;min-height:0;overflow:auto;background:var(--shakh-bg)}
+.shakhDashboardToolbar{
+  position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 18px;border-bottom:1px solid var(--shakh-line);
+  background:color-mix(in srgb,var(--shakh-bg) 90%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
+}
+.shakhDashboardToolbar small{display:block;color:var(--shakh-muted);font-size:7px}
+.shakhDashboardToolbar strong{display:block;margin-top:2px;font-size:12px}
+.shakhDashboardToolbarMeta{display:flex;align-items:center;gap:8px}
+.shakhDashboardDirty,.shakhDashboardLive{font-size:7px;font-weight:900;border-radius:999px;padding:6px 9px;white-space:nowrap}
+.shakhDashboardDirty{background:#fff3d9;color:#8f5b00}.shakhDashboardLive{background:color-mix(in srgb,var(--shakh-green) 10%,var(--shakh-surface));color:var(--shakh-green)}
+.shakhDashboardHome,.shakhDashboardModule{min-width:0;padding:18px}
+.shakhDashboardHomeContent{min-width:0}
+.shakhDashboardKpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.shakhDashboardKpis article{padding:14px;border:1px solid var(--shakh-line);border-radius:18px;background:var(--shakh-surface);box-shadow:var(--shakh-shadow-sm);display:flex;flex-direction:column;gap:4px}
+.shakhDashboardKpis article span,.shakhDashboardKpis article small{color:var(--shakh-muted);font-size:8px}
+.shakhDashboardKpis article strong{font-size:20px;line-height:1.25}
+.shakhDashboardKpis article[data-tone="brand"] strong{color:var(--shakh-brand)}
+.shakhDashboardKpis article[data-tone="green"] strong{color:var(--shakh-green)}
+.shakhDashboardKpis article[data-tone="blue"] strong{color:var(--shakh-blue)}
+.shakhModuleHero{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px;border:1px solid var(--shakh-line);border-radius:20px;background:linear-gradient(135deg,var(--shakh-surface),var(--shakh-surface-2))}
+.shakhModuleHero span{color:var(--shakh-brand);font-size:9px;font-weight:950;direction:ltr}
+.shakhModuleHero h2{margin:5px 0 3px;font-size:25px}
+.shakhModuleHero p{margin:0;color:var(--shakh-muted);font-size:9px}
+.shakhModuleRefresh{display:flex;align-items:center;gap:7px;min-height:40px;padding:0 12px;border:1px solid var(--shakh-line);border-radius:12px;background:var(--shakh-surface);font-size:9px;font-weight:900;cursor:pointer}
+.shakhModuleRefresh:hover{border-color:var(--shakh-brand);color:var(--shakh-brand)}
+.shakhModuleMetrics{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;margin-top:10px;border:1px solid var(--shakh-line);border-radius:17px;overflow:hidden;background:var(--shakh-line)}
+.shakhModuleMetrics article{padding:13px;background:var(--shakh-surface);min-height:84px}
+.shakhModuleMetrics small{display:block;color:var(--shakh-muted);font-size:7px}.shakhModuleMetrics strong{display:block;margin-top:7px;font-size:18px}
+.shakhModuleGrid{display:grid;grid-template-columns:minmax(260px,.82fr) minmax(0,1.18fr);gap:10px;margin-top:10px}
+.shakhModuleCard{padding:15px;border:1px solid var(--shakh-line);border-radius:18px;background:var(--shakh-surface);box-shadow:var(--shakh-shadow-sm)}
+.shakhModuleCard>small,.shakhModuleCardHead small{font-size:7px;color:var(--shakh-muted)}
+.shakhModuleCard h3{margin:4px 0 12px;font-size:16px}
+.shakhModuleActions{display:grid;gap:7px}
+.shakhModuleActions button{display:flex;align-items:center;gap:8px;min-height:42px;padding:0 11px;border:1px solid var(--shakh-line);border-radius:11px;background:var(--shakh-surface-2);color:var(--shakh-text);font-size:9px;font-weight:900;cursor:pointer}
+.shakhModuleActions button:hover{border-color:var(--shakh-brand);color:var(--shakh-brand)}
+.shakhModuleCardHead{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:8px}
+.shakhModuleCardHead h3{margin:3px 0 0}.shakhModuleCardHead>span{font-size:8px;color:var(--shakh-muted)}
+.shakhModuleList{display:grid;gap:7px}
+.shakhModuleList article{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid var(--shakh-line);border-radius:12px;background:var(--shakh-surface-2)}
+.shakhModuleList article strong,.shakhModuleList article small{display:block}.shakhModuleList article strong{font-size:9px}.shakhModuleList article small{margin-top:2px;color:var(--shakh-muted);font-size:7px}.shakhModuleList article b{font-size:9px;white-space:nowrap}
+.shakhModuleEmpty{display:grid;place-items:center;gap:6px;text-align:center;padding:35px 15px;color:var(--shakh-muted)}
+.shakhModuleEmpty strong{color:var(--shakh-text);font-size:10px}.shakhModuleEmpty small{font-size:8px}
+.shakhSpin{animation:shakhSpin .8s linear infinite}@keyframes shakhSpin{to{transform:rotate(360deg)}}
+@media(max-width:1050px){
+  .shakhDashboardAccount{display:none}.shakhDashboardShell{width:96vw}.shakhDashboardKpis{grid-template-columns:repeat(2,1fr)}
+  .shakhModuleMetrics{grid-template-columns:repeat(3,1fr)}.shakhModuleGrid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .shakhDashboardBackdrop{padding:0}.shakhDashboardShell{width:100vw;height:100vh;border-radius:0;border-inline:0}
+  .shakhDashboardTopbar{padding:11px 12px}.shakhDashboardMenuButton{display:grid}.shakhDashboardTitleBlock h1{font-size:17px}.shakhDashboardTitleBlock p{display:none}
+  .shakhDashboardBody{grid-template-columns:1fr;grid-template-areas:"main"}
+  .shakhDashboardSidebar{position:fixed;inset-block:0;inset-inline-end:0;width:min(88vw,340px);z-index:120;transform:translateX(105%);transition:transform .22s ease;box-shadow:-22px 0 70px rgba(0,0,0,.30)}
+  .shakhDashboardSidebar.is-open{transform:translateX(0)}.shakhDashboardSidebarClose{display:grid}.shakhDashboardScrim{position:fixed;inset:0;z-index:110;border:0;background:rgba(1,8,18,.55)}
+  .shakhDashboardHome,.shakhDashboardModule{padding:12px}.shakhDashboardToolbar{padding:10px 12px}.shakhDashboardKpis{grid-template-columns:1fr 1fr}
+  .shakhModuleHero{align-items:stretch;flex-direction:column;padding:15px}.shakhModuleHero h2{font-size:21px}
+  .shakhModuleMetrics{grid-template-columns:1fr 1fr}.shakhModuleCard{padding:13px}
+}
+@media(max-width:430px){
+  .shakhDashboardKpis{grid-template-columns:1fr}.shakhModuleMetrics{grid-template-columns:1fr}.shakhDashboardToolbarMeta .shakhDashboardLive{display:none}
+}
+@media(prefers-reduced-motion:reduce){.shakhSpin{animation:none}.shakhDashboardSidebar{transition:none}}
