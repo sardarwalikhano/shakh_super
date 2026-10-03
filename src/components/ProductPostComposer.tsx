@@ -2,7 +2,7 @@ import React,{useEffect,useRef,useState} from 'react';
 import {Eye,ImagePlus,PackagePlus,Send,Sparkles,Store,Tag,Upload,X} from 'lucide-react';
 import {supabase} from '../lib/supabase';
 
-type Role='restaurant_vendor'|'supermarket_vendor'|'fashion_vendor'|'vendor'|'electronics_vendor'|'jewelry_vendor';
+type Role='restaurant_vendor'|'supermarket_vendor'|'fashion_vendor'|'vendor'|'electronics_vendor'|'jewelry_vendor'|'beauty_vendor';
 type Props={userId:string;role:string;onSaved?:()=>void};
 type Config={storeCategory:string;label:string;heading:string;typeLabel:string;brand:boolean;size:boolean;cats:{slug:string;label:string;icon:string}[]};
 type FormState={storeName:string;type:string;brand:string;name:string;size:string;price:string;salePrice:string;stock:string;description:string;available:boolean;city:string};
@@ -20,7 +20,8 @@ const CONFIG:Record<Role,Config>={
  fashion_vendor:{storeCategory:'fashion',label:'جل و بەرگ',heading:'پۆستکردنی جل و بەرگ',typeLabel:'جۆری جل',brand:true,size:true,cats:[{slug:'fashion_men',label:'پیاوان',icon:'👔'},{slug:'fashion_women',label:'ئافرەتان',icon:'👗'},{slug:'fashion_kids',label:'منداڵان',icon:'🧒'}]},
  vendor:{storeCategory:'daily',label:'بازاڕ',heading:'پۆستکردنی بەرهەمی بازاڕ',typeLabel:'جۆری بەرهەم',brand:true,size:true,cats:[{slug:'general_store',label:'بازاڕی گشتی',icon:'🏪'}]},
  electronics_vendor:{storeCategory:'electronics',label:'ئەلیکترۆنیات',heading:'پۆستکردنی ئەلیکترۆنیات',typeLabel:'جۆری ئامێر',brand:true,size:false,cats:[{slug:'electronics_mobile',label:'مۆبایل و تابلێت',icon:'📱'},{slug:'electronics_computers',label:'کۆمپیوتەر',icon:'💻'},{slug:'electronics_home',label:'تەڵەفیزیۆن و ئامێرەکانی ماڵ',icon:'📺'},{slug:'electronics_accessories',label:'ئەکسسوارات ئەلیکترۆنی',icon:'🔌'}]},
- jewelry_vendor:{storeCategory:'jewelry',label:'جواکاری',heading:'پۆستکردنی جواکاری',typeLabel:'جۆری جواکاری',brand:true,size:true,cats:[{slug:'jewelry_gold',label:'زێڕ',icon:'💛'},{slug:'jewelry_silver',label:'زیو',icon:'🤍'},{slug:'jewelry_watches',label:'کاتژمێر',icon:'⌚'},{slug:'jewelry_accessories',label:'ئەکسسوارات',icon:'💎'}]}
+ jewelry_vendor:{storeCategory:'jewelry',label:'جواکاری',heading:'پۆستکردنی جواکاری',typeLabel:'جۆری جواکاری',brand:true,size:true,cats:[{slug:'jewelry_gold',label:'زێڕ',icon:'💛'},{slug:'jewelry_silver',label:'زیو',icon:'🤍'},{slug:'jewelry_watches',label:'کاتژمێر',icon:'⌚'},{slug:'jewelry_accessories',label:'ئەکسسوارات',icon:'💎'}]},
+ beauty_vendor:{storeCategory:'beauty',label:'جوانکاری',heading:'پۆستکردنی بەرهەمی جوانکاری',typeLabel:'جۆری بەرهەم',brand:true,size:false,cats:[{slug:'beauty_cosmetics',label:'کۆسمەتیک',icon:'💄'},{slug:'beauty_skincare',label:'چاودێری پێست',icon:'🧴'},{slug:'beauty_haircare',label:'چاودێری قژ',icon:'💇'},{slug:'beauty_fragrance',label:'بۆن و عەتری',icon:'🌸'},{slug:'beauty_accessories',label:'کەرەستەکانی جوانکاری',icon:'✨'}]}
 };
 const POST_META:Record<string,{postType:string;label:string}>={
  restaurant_vendor:{postType:'food',label:'خواردنگە'},
@@ -28,7 +29,8 @@ const POST_META:Record<string,{postType:string;label:string}>={
  fashion_vendor:{postType:'fashion',label:'جلوبەرگ'},
  vendor:{postType:'marketplace',label:'بازاڕ'},
  electronics_vendor:{postType:'marketplace',label:'ئەلیکترۆنیات'},
- jewelry_vendor:{postType:'marketplace',label:'جواکاری'}
+ jewelry_vendor:{postType:'marketplace',label:'جواکاری'},
+ beauty_vendor:{postType:'marketplace',label:'جوانکاری'}
 };
 const CITIES=['هەولێر','سلێمانی','دهۆک','کەرکووک','بەغدا','مووسڵ','کەربەلا','نەجەف','بەسرە','ئەنبار','دیالە','واسط','میسان','ذی قار','قادسیە','مثنی','بابل','صلاحەدین'];
 const FASHION_OPTIONS={audience:['پیاوان','ئافرەتان','منداڵان','هەمووان'],condition:['نوێ','بەکارهاتوو'],colors:['ڕەش','سپی','خۆڵەمەشی','قاوەیی','شین','سۆر','سەوز','زەرد','پەمەیی','کەسک'],sizes:['XS','S','M','L','XL','XXL','3XL','28','30','32','34','36','38','40','42','44'],types:['تیشێرت','کراس','پانتۆڵ','جین','جاکەت','پۆشاک','جلوبەرگی وەرزشی','پێلاو','جانتا','ئاکسسوارات','کۆمەڵە جلوبەرگ']};
