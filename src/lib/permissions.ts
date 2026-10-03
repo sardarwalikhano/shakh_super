@@ -13,7 +13,7 @@ export const ROLE_PERMISSIONS = {
   car_dealer: ['orders.read_vendor', 'orders.accept', 'orders.update_vendor_status', 'notifications.read_own'],
   umrah_agency: ['orders.read_vendor', 'orders.accept', 'orders.update_vendor_status', 'notifications.read_own'],
   support: ['orders.read_support', 'notifications.read_support'],
-  admin: ['dashboard.read', 'users.read', 'orders.read_all', 'vendors.read', 'captains.read', 'reports.read'],
+  admin: ['dashboard.read', 'users.read', 'orders.read', 'orders.read_all', 'orders.manage', 'vendors.read', 'captains.read', 'reports.read', 'posts.moderate', 'captain.zone.manage', 'support.manage', 'settings.manage', 'wallet.read'],
   super_admin: ['*'],
 } as const;
 
