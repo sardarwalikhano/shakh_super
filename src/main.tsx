@@ -472,26 +472,65 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
   onOpenCart={()=>setCartOpen(true)}
  />
  <main className="shakhHome">
-  <section className="shakhHomeIntro" aria-labelledby="shakh-home-intro-title">
-    <div>
-      <span>SHAKH • بازاڕی زیندوو</span>
-      <h1 id="shakh-home-intro-title">هەموو پێویستییەکانت لە یەک پلاتفۆرم</h1>
-      <p>بازاڕ، پۆست و ئۆفەر، گەیاندن، ئۆتۆمبێل و عومرە لە یەک شوێن.</p>
+  <section className="shakhReferenceHero" aria-labelledby="shakh-reference-hero-title">
+    <div className="shakhReferenceHeroCopy">
+      <span className="shakhReferenceEyebrow">SHAKH SUPER • هەموو شتێک لە یەک شوێن</span>
+      <h1 id="shakh-reference-hero-title">هەموو پێداویستییەکانت لە یەک پلاتفۆرم بە شێوەیەکی خێرا و ئاسان</h1>
+      <p>خواردن، فاشن، بازاڕ، سیارەکان، عومرە، ئەلیکترۆنیک و گەیاندن — هەموو بەشەکان لە شاخ کۆکراونەتەوە.</p>
+      <div className="shakhReferenceHeroActions">
+        <button type="button" className="shakhReferencePrimary" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}>گەڕان لە بازاڕ <ArrowLeft size={17}/></button>
+        <button type="button" className="shakhReferenceSecondary" onClick={()=>document.getElementById('shakh-live-feed')?.scrollIntoView({behavior:'smooth'})}>بینینی پۆست و ئۆفەر</button>
+      </div>
+      <div className="shakhReferenceHeroTrust">
+        <span><Truck size={16}/> گەیاندنی خێرا</span>
+        <span><ShieldCheck size={16}/> پاراستنی پارە</span>
+        <span><MessageCircle size={16}/> پشتگیری ٢٤ کاتژمێر</span>
+      </div>
     </div>
-    <div className="shakhHomeIntroActions">
-      <button type="button" className="shakhPrimaryAction" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}>بینینی بازاڕ <ArrowLeft size={16}/></button>
-      <button type="button" className="shakhSecondaryAction" onClick={()=>openDashboard('services')}>خزمەتگوزارییەکان</button>
+    <div className="shakhReferenceHeroVisual" aria-hidden="true">
+      <div className="shakhReferencePhone">
+        <div className="shakhReferencePhoneTop">SHAKH SUPER</div>
+        <img src="/shakh-logo.svg?v=1.9.8" alt="" />
+        <div className="shakhReferencePhoneGrid">
+          <span><Store size={18}/><b>بازاڕ</b></span>
+          <span><MessageCircle size={18}/><b>پۆست</b></span>
+          <span><Car size={18}/><b>Cars</b></span>
+          <span><Plane size={18}/><b>عومرە</b></span>
+        </div>
+      </div>
+      <div className="shakhReferenceHeroFloat shakhReferenceHeroFloatOne"><Store size={22}/><b>بازاڕی نوێ</b></div>
+      <div className="shakhReferenceHeroFloat shakhReferenceHeroFloatTwo"><Truck size={21}/><b>گەیاندنی خێرا</b></div>
+      <div className="shakhReferenceHeroProducts">
+        {products.slice(0,3).map((p,index)=><div className="shakhReferenceHeroProduct" key={p.id} style={{zIndex:3-index}}>
+          {p.image_url?<img src={p.image_url} alt="" loading="lazy" decoding="async"/>:<span><ShoppingBag size={30}/></span>}
+        </div>)}
+      </div>
+      <div className="shakhReferenceHeroBrand">
+        <img src="/shakh-logo.svg?v=1.9.8" alt="" />
+      </div>
     </div>
   </section>
 
-  <nav className="shakhHomeCategoryRail" aria-label="بەشە سەرەکییەکان">
-    <button type="button" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}><Store size={17}/><span>بازاڕ</span><small>بەرهەم</small></button>
-    <button type="button" onClick={()=>document.getElementById('shakh-live-feed')?.scrollIntoView({behavior:'smooth'})}><MessageCircle size={17}/><span>پۆست</span><small>ئۆفەر</small></button>
-    <button type="button" onClick={()=>openDashboard('cars')}><Car size={17}/><span>Cars</span><small>ئۆتۆمبێل</small></button>
-    <button type="button" onClick={()=>openDashboard('umrah')}><Plane size={17}/><span>عومرە</span><small>پەکەج</small></button>
-    <button type="button" onClick={()=>openDashboard('delivery')}><Truck size={17}/><span>گەیاندن</span><small>شوێنکەوتن</small></button>
-    <button type="button" onClick={()=>openDashboard('wallet')}><Wallet size={17}/><span>جزدان</span><small>داهات و خاڵ</small></button>
+  <nav className="shakhReferenceCategories" aria-label="بەشە سەرەکییەکانی شاخ">
+    <button type="button" onClick={()=>document.getElementById('shakh-offers')?.scrollIntoView({behavior:'smooth'})}><span>🔥</span><b>پێشکەشە</b><small>داشکاندن</small></button>
+    <button type="button" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}><Store size={21}/><b>مارکێت</b><small>کالاکانی ماڵ</small></button>
+    <button type="button" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}><span>👕</span><b>جلی و پۆشاک</b><small>براند و ستایل</small></button>
+    <button type="button" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}><span>🥩</span><b>گوشت و ماسی</b><small>خواردنی تازە</small></button>
+    <button type="button" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}><span>📱</span><b>ئەلکترۆنیک</b><small>مۆبایل و لەبتۆپ</small></button>
+    <button type="button" onClick={()=>openDashboard('umrah')}><Plane size={21}/><b>عومرە</b><small>پەکەج و حجز</small></button>
+    <button type="button" onClick={()=>openDashboard('cars')}><Car size={21}/><b>سیارەکان</b><small>بازاڕی سیارە</small></button>
+    <button type="button" onClick={()=>document.getElementById('shakh-services')?.scrollIntoView({behavior:'smooth'})}><Truck size={21}/><b>گەیاندن</b><small>شوێنکەوتن</small></button>
+    <button type="button" onClick={()=>document.getElementById('shakh-live-feed')?.scrollIntoView({behavior:'smooth'})}><MessageCircle size={21}/><b>پۆست و ئۆفەر</b><small>بازاڕی زیندوو</small></button>
+    <button type="button" onClick={()=>openDashboard('wallet')}><Wallet size={21}/><b>جزدان</b><small>باڵانس و خاڵ</small></button>
   </nav>
+
+  <section className="shakhReferenceInfoStrip" aria-label="خزمەتگوزارییەکانی شاخ">
+    <div><Truck size={23}/><div><b>گەیاندنی خێرا</b><small>بۆ هەموو شوێنەکان</small></div></div>
+    <div><ShieldCheck size={23}/><div><b>پاراستنی پارە</b><small>پارەدانێکی ناسراو</small></div></div>
+    <div><MessageCircle size={23}/><div><b>پشتگیری ٢٤ کاتژمێر</b><small>هاوکاری تایبەتی</small></div></div>
+    <div><span className="shakhReferenceInfoIcon">%</span><div><b>پێشکەش و داشکاندن</b><small>هەر ڕۆژ پێشکەشی نوێ</small></div></div>
+    <div><span className="shakhReferenceInfoIcon">🎁</span><div><b>پوێنت و خەڵات</b><small>دەستپێگەیشتن بە بەرەوپێش</small></div></div>
+  </section>
 
   {promotions.length>0&&<section id="shakh-offers" className="shakhHomeSection shakhOffersSection" aria-label="پرۆمۆشنەکانی شاخ">
     <div className="shakhSectionHeader"><div><span>OFFERS</span><h2>ئۆفەرەکانی ئێستا</h2><p>تەنها پرۆمۆشنە چالاکەکان لێرە پیشان دەدرێن.</p></div><button type="button" onClick={()=>document.getElementById('shakh-marketplace')?.scrollIntoView({behavior:'smooth'})}>چوون بۆ بازاڕ <ArrowLeft size={15}/></button></div>
