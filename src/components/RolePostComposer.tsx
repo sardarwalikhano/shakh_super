@@ -141,6 +141,7 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
 
  const submit=async()=>{
   const uploadedPaths:string[]=[];
+  const uploadBucket=isProductListing&&!isCustomer?'products':'posts';
   try{
    if(!title.trim())return setMessage('سەردێڕ پڕ بکەرەوە.');
    if(isPriceVisible&&(!/^\d+$/.test(price)||Number(price)<=0))return setMessage('نرخ دەبێت ژمارەی دروست و زیاتر لە سفر بێت.');
@@ -178,10 +179,10 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    for(const [index,file] of files.entries()){
     const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
     const path=userId+'/posts/'+Date.now()+'-'+index+'-'+safeName;
-    const {error}=await supabase.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});
+    const {error}=await supabase.storage.from(uploadBucket).upload(path,file,{upsert:false,contentType:file.type});
     if(error)throw error;
     uploadedPaths.push(path);
-    imageUrls.push(supabase.storage.from('products').getPublicUrl(path).data.publicUrl);
+    imageUrls.push(supabase.storage.from(uploadBucket).getPublicUrl(path).data.publicUrl);
    }
 
    const listingDetails=isFashion
@@ -212,8 +213,9 @@ export default function RolePostComposer({userId,role,onSaved,initialType,hideTy
    window.dispatchEvent(new CustomEvent('shakh-post-created',{detail:{postId:createdPost.id}}));
    onSaved?.();
   }catch(error:unknown){
-   if(uploadedPaths.length)await supabase.storage.from('products').remove(uploadedPaths);
-   setMessage(error instanceof Error?error.message:'پۆستکردن سەرکەوتوو نەبوو.');
+   if(uploadedPaths.length)await supabase.storage.from(uploadBucket).remove(uploadedPaths);
+   const e=error as {message?:string;details?:string;hint?:string;code?:string};
+   setMessage([e?.message,e?.details,e?.hint,e?.code ? 'کۆد: '+e.code : ''].filter(Boolean).join(' — ')||'پۆستکردن سەرکەوتوو نەبوو.');
   }finally{setBusy(false)}
  };
  const selectField=(label:string,value:string,options:string[],onChange:(value:string)=>void)=>
