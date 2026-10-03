@@ -594,3 +594,5 @@ html[data-theme='dark'],html.dark{
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
+
+/* production deployment trigger: reference UI v4 */
