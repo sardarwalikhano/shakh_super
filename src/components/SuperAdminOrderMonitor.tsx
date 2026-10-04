@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Activity, Clock3, CreditCard, ListChecks, MapPin, MessageCircle,
   Navigation, Package, RefreshCw, Search, Store, Truck, UserRound,
@@ -221,7 +221,7 @@ export default function SuperAdminOrderMonitor() {
 
       <div className="orderMonitorList dashboardGrid">
         {loading ? <div className="empty">زانیارییەکان بار دەکرێن...</div> : filtered.length === 0 ? <div className="empty">هیچ ئۆردەرێک نەدۆزرایەوە.</div> : filtered.map((order) => (
-          <React.Fragment key={order.id}>
+          <div key={order.id}>
             <button type="button" className={selectedId === order.id ? 'compactOrderRow is-selected' : 'compactOrderRow'} onClick={() => setSelectedId(order.id)}>
               <span className="compactOrderAvatar"><UserRound size={17} /></span>
               <span className="compactOrderIdentity">
@@ -260,7 +260,7 @@ export default function SuperAdminOrderMonitor() {
 
             {order.captain_id && <div className="assignedCaptainCard"><Truck size={16} /><span><b>کاپتنی دیاریکراو:</b> {order.captain_id.slice(0, 8)}</span></div>}
             </article>}
-          </React.Fragment>
+          </div>
         ))}
       </div>
     </section>
