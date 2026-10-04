@@ -40,6 +40,7 @@ export default function CaptainDashboard() {
   const [onlineBusy, setOnlineBusy] = useState(false);
   const [contacts, setContacts] = useState<Record<string, CaptainCustomerContact | null>>({});
   const [contactBusy, setContactBusy] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [locationTrackingOrderId, setLocationTrackingOrderId] = useState<string | null>(null);
   const [captainLocation, setCaptainLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const watchIdsRef = useRef<Record<string, number>>({});
@@ -53,6 +54,18 @@ export default function CaptainDashboard() {
         (order, index, all) => index === all.findIndex((item) => item.id === order.id),
       );
       setOrders(merged);
+      setSelectedId((current) => current && merged.some((order) => order.id === current) ? current : null);
+      const resolvedContacts = await Promise.all(
+        merged.slice(0, 30).map(async (order) => {
+          try { return [order.id, await getCaptainCustomerContact(order.id)] as const; }
+          catch { return [order.id, null] as const; }
+        }),
+      );
+      setContacts((current) => {
+        const next = { ...current };
+        for (const [orderId, contact] of resolvedContacts) next[orderId] = contact;
+        return next;
+      });
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'نەتوانرا ئۆردەرەکان بار بکرێن.');
     } finally {
@@ -299,7 +312,16 @@ export default function CaptainDashboard() {
         ) : activeOrders.length === 0 ? (
           <div className="empty"><PackageCheck size={38}/><h3>هیچ ئۆردەرێکی چالاک نییە</h3><p>کاتێک ئۆردەرێکی ئامادەی گەیاندن هەبێت، لێرە دەردەکەوێت.</p></div>
         ) : activeOrders.map((order) => (
-          <article className="orderCard captainOrderCard" key={order.id}>
+          <React.Fragment key={order.id}>
+            <button type="button" className={selectedId === order.id ? 'compactOrderRow is-selected' : 'compactOrderRow'} onClick={() => setSelectedId(order.id)}>
+              <span className="compactOrderAvatar"><UserRound size={17} /></span>
+              <span className="compactOrderIdentity">
+                <strong>{contacts[order.id]?.full_name || 'کڕیار'}</strong>
+                <small>#{order.id.slice(0, 8)}</small>
+              </span>
+              <span className="compactOrderStatus">{labels[order.status] || order.status}</span>
+            </button>
+            {selectedId === order.id && <article className="orderCard captainOrderCard compactOrderExpanded" key={order.id}>
             <div className="orderCardTop">
               <strong>ئۆردەر #{order.id.slice(0, 8)}</strong>
               <span>{labels[order.status] || order.status}</span>
@@ -411,7 +433,8 @@ export default function CaptainDashboard() {
                 )}
               </>
             )}
-          </article>
+            </article>}
+          </React.Fragment>
         ))}
       </div>
 
@@ -422,7 +445,16 @@ export default function CaptainDashboard() {
           </div>
           <div className="dashboardGrid">
             {completedOrders.slice(0, 20).map((order) => (
-              <article className="orderCard captainOrderCard" key={order.id}>
+              <React.Fragment key={order.id}>
+                <button type="button" className={selectedId === order.id ? 'compactOrderRow is-selected' : 'compactOrderRow'} onClick={() => setSelectedId(order.id)}>
+                  <span className="compactOrderAvatar"><UserRound size={17} /></span>
+                  <span className="compactOrderIdentity">
+                    <strong>{contacts[order.id]?.full_name || 'کڕیار'}</strong>
+                    <small>#{order.id.slice(0, 8)}</small>
+                  </span>
+                  <span className="compactOrderStatus">{labels[order.status]}</span>
+                </button>
+                {selectedId === order.id && <article className="orderCard captainOrderCard compactOrderExpanded" key={order.id}>
                 <div className="orderCardTop"><strong>ئۆردەر #{order.id.slice(0, 8)}</strong><span>{labels[order.status]}</span></div>
                 <div className="orderMeta"><Clock3 size={15}/> گەیەندرا: {new Date(order.delivered_at || order.updated_at || order.created_at).toLocaleString('ku-IQ')}</div>
                 <div className="captainPacketGrid">
@@ -430,7 +462,8 @@ export default function CaptainDashboard() {
                   <div className="captainPacketSection"><div className="platformOrderSectionHead"><MapPin size={15}/><b>گەیاندن</b></div><strong>{order.delivery_address?.address || '—'}</strong><span>{order.delivery_address?.city || ''}{order.delivery_address?.delivery_note ? ' — ' + order.delivery_address.delivery_note : ''}</span></div>
                 </div>
                 <div className="orderTotal">{Number(order.total_iqd || 0).toLocaleString('ku-IQ')} دینار</div>
-              </article>
+                </article>}
+              </React.Fragment>
             ))}
           </div>
         </>
