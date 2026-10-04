@@ -28,12 +28,15 @@ export default function VendorLiveOrders({ storeId }: Props) {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      setOrders(await getVendorOrders(storeId));
+      const nextOrders = await getVendorOrders(storeId);
+      setOrders(nextOrders);
+      setSelectedId((current) => current && nextOrders.some((order) => order.id === current) ? current : null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'نەتوانرا ئۆردەرەکان وەربگیرێن');
     } finally {
@@ -67,78 +70,114 @@ export default function VendorLiveOrders({ storeId }: Props) {
 
   if (loading) return <div dir="rtl"><RefreshCw className="animate-spin" /> ئۆردەرەکان بار دەکرێن...</div>;
 
+  const selected = useMemo(() => orders.find((order) => order.id === selectedId) ?? null, [orders, selectedId]);
+
   return (
-    <section dir="rtl" aria-label="ئۆردەرەکانی دوکان">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+    <section dir="rtl" className="compactOrderRoute" aria-label="ئۆردەرەکانی دوکان">
+      <div className="compactOrderHeader">
         <div>
-          <h3 style={{ margin: 0 }}>ئۆردەرە زیندووەکان</h3>
-          <small>{stats.active.toLocaleString('ku-IQ')} ئۆردەری چالاک</small>
+          <small>بازاڕ و مامەڵە</small>
+          <h3>ئۆردەرەکان</h3>
+          <p>{stats.active.toLocaleString('ku-IQ')} ئۆردەری چالاک</p>
         </div>
-        <button type="button" onClick={() => void load()} disabled={loading} aria-label="نوێکردنەوە"><RefreshCw size={17} /></button>
+        <button type="button" className="plain" onClick={() => void load()} disabled={loading} aria-label="نوێکردنەوە"><RefreshCw size={17} /></button>
       </div>
 
-      <div className="dashCards" style={{ marginTop: 12 }}>
+      <div className="dashCards compactOrderStats" style={{ marginTop: 10 }}>
         <div><b>{stats.active.toLocaleString('ku-IQ')}</b><span>چالاک</span></div>
         <div><b>{stats.sales.toLocaleString('ku-IQ')}</b><span>کۆی بەرهەم</span></div>
         <div><b>{stats.platformFees.toLocaleString('ku-IQ')}</b><span>خزمەتی شاخ</span></div>
       </div>
 
       {error && <p role="alert" className="msg">{error}</p>}
+
       {orders.length === 0 ? (
         <p className="empty">هیچ ئۆردەرێکی ئەم دوکانە نییە.</p>
       ) : (
-        <div className="orderList" style={{ marginTop: 12 }}>
-          {orders.map((order) => (
-            <article className="orderCard" key={order.id}>
-              <div className="orderCardTop">
-                <div>
-                  <strong>#{order.id.slice(0, 8)}</strong>
-                  <small>{new Date(order.created_at).toLocaleString('ku-IQ')}</small>
-                </div>
-                <span>{labels[order.status] ?? order.status}</span>
+        <div className="compactOrderWorkspace">
+          <div className="compactOrderList" aria-label="لیستی ئۆردەرەکان">
+            {orders.map((order) => (
+              <button
+                type="button"
+                key={order.id}
+                className={selectedId === order.id ? 'compactOrderRow is-selected' : 'compactOrderRow'}
+                onClick={() => setSelectedId(order.id)}
+              >
+                <span className="compactOrderAvatar"><UserRound size={17} /></span>
+                <span className="compactOrderIdentity">
+                  <strong>{order.customer?.full_name || 'کڕیار'}</strong>
+                  <small>#{order.id.slice(0, 8)}</small>
+                </span>
+                <span className="compactOrderStatus">{labels[order.status] ?? order.status}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="compactOrderDetail" aria-live="polite">
+            {!selected ? (
+              <div className="compactOrderEmpty">
+                <Package size={34} />
+                <strong>ئۆردەرێک هەڵبژێرە</strong>
+                <span>کاتێک لە لیستەکە کلیک بکەیت، هەموو وردەکارییەکانی ئەو ئۆردەرە لێرە پیشان دەدرێت.</span>
               </div>
-
-              {order.items.length > 0 && (
-                <div style={{ marginTop: 10, display: 'grid', gap: 7 }}>
-                  {order.items.map((item, index) => (
-                    <div key={item.product_id ?? index} style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                      <span>{item.product_name} × {Number(item.quantity).toLocaleString('ku-IQ')}</span>
-                      <b>{(Number(item.unit_price_iqd) * Number(item.quantity)).toLocaleString('ku-IQ')} د.ع</b>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {order.delivery_address?.address && <div className="vendorDeliveryAddressCard"><div><MapPin size={15}/><b>شوێنی وردی گەیاندن</b></div><span>{order.delivery_address.address}{order.delivery_address.city ? ' — ' + order.delivery_address.city : ''}</span>{order.delivery_address.delivery_note && <small>تێبینی: {order.delivery_address.delivery_note}</small>}{order.delivery_address.latitude != null && order.delivery_address.longitude != null && <a className="plain full" href={'https://www.google.com/maps/dir/?api=1&destination='+order.delivery_address.latitude+','+order.delivery_address.longitude} target="_blank" rel="noreferrer">کردنەوەی شوێنی گەیاندن</a>}</div>}
-              {order.store?.latitude != null && order.store?.longitude != null && (
-                <div className="vendorOrderMapCard">
-                  <div className="vendorOrderMapHeader">
-                    <div><MapPin size={16}/><strong>شوێنی دوکان</strong></div>
-                    <small>{order.store.city || 'هەولێر'}</small>
+            ) : (
+              <>
+                <div className="compactOrderDetailHead">
+                  <div>
+                    <small>وردەکاریی ئۆردەر</small>
+                    <h4>{selected.customer?.full_name || 'کڕیار'} · #{selected.id.slice(0, 8)}</h4>
+                    <span>{labels[selected.status] ?? selected.status} · {new Date(selected.created_at).toLocaleString('ku-IQ')}</span>
                   </div>
-                  <LiveDeliveryMap
-                    store={{ latitude: Number(order.store.latitude), longitude: Number(order.store.longitude) }}
-                  />
                 </div>
-              )}
 
-              <div className="summary" style={{ marginTop: 10 }}>
-                <div><span>کۆی بەرهەم</span><b>{Number(order.subtotal_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
-                <div><span>گەیاندن</span><b>{Number(order.delivery_fee_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
-                <div><span>خزمەتی شاخ</span><b>{Number(order.platform_fee_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
-                <div className="grand"><span>کۆی گشتی</span><b>{Number(order.total_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
-              </div>
+                {selected.items.length > 0 && (
+                  <div className="compactOrderSection">
+                    <div className="compactOrderSectionTitle"><Package size={16} /> بەرهەمەکان</div>
+                    {selected.items.map((item, index) => (
+                      <div className="compactOrderLine" key={item.product_id ?? index}>
+                        <span>{item.product_name} × {Number(item.quantity).toLocaleString('ku-IQ')}</span>
+                        <b>{(Number(item.unit_price_iqd) * Number(item.quantity)).toLocaleString('ku-IQ')} د.ع</b>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-              {actions[order.status]?.map((action) => (
-                <button key={action.status} className="primary" type="button" style={{ marginTop: 10 }} disabled={busy === order.id} onClick={() => void changeStatus(order.id, action.status)}>
-                  {action.icon}{action.label}
-                </button>
-              ))}
+                {selected.delivery_address?.address && (
+                  <div className="compactOrderSection">
+                    <div className="compactOrderSectionTitle"><MapPin size={16} /> شوێنی گەیاندن</div>
+                    <div className="compactOrderText"><strong>{selected.delivery_address.address}</strong><span>{selected.delivery_address.city || ''}</span></div>
+                    {selected.delivery_address.delivery_note && <small>{selected.delivery_address.delivery_note}</small>}
+                    {selected.delivery_address.latitude != null && selected.delivery_address.longitude != null && (
+                      <a className="plain full" href={'https://www.google.com/maps/dir/?api=1&destination='+selected.delivery_address.latitude+','+selected.delivery_address.longitude} target="_blank" rel="noreferrer">کردنەوەی شوێنی گەیاندن</a>
+                    )}
+                  </div>
+                )}
 
-              {order.status === 'ready_for_pickup' && <span style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 10 }}><Truck size={16} /> چاوەڕێی کاپتن</span>}
-              {order.status === 'cancelled' && <span style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 10 }}><XCircle size={16} /> هەڵوەشێنراوەتەوە</span>}
-            </article>
-          ))}
+                {selected.store?.latitude != null && selected.store?.longitude != null && (
+                  <div className="compactOrderSection">
+                    <div className="compactOrderSectionTitle"><MapPin size={16} /> شوێنی دوکان</div>
+                    <LiveDeliveryMap store={{ latitude: Number(selected.store.latitude), longitude: Number(selected.store.longitude) }} />
+                  </div>
+                )}
+
+                <div className="compactOrderSection compactOrderSummary">
+                  <div className="compactOrderLine"><span>کۆی بەرهەم</span><b>{Number(selected.subtotal_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
+                  <div className="compactOrderLine"><span>گەیاندن</span><b>{Number(selected.delivery_fee_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
+                  <div className="compactOrderLine"><span>خزمەتی شاخ</span><b>{Number(selected.platform_fee_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
+                  <div className="compactOrderLine is-grand"><span>کۆی گشتی</span><b>{Number(selected.total_iqd).toLocaleString('ku-IQ')} د.ع</b></div>
+                </div>
+
+                {actions[selected.status]?.map((action) => (
+                  <button key={action.status} className="primary full compactOrderAction" type="button" disabled={busy === selected.id} onClick={() => void changeStatus(selected.id, action.status)}>
+                    {action.icon}{action.label}
+                  </button>
+                ))}
+
+                {selected.status === 'ready_for_pickup' && <div className="compactOrderNotice"><Truck size={16} /> چاوەڕێی کاپتن</div>}
+                {selected.status === 'cancelled' && <div className="compactOrderNotice is-danger"><XCircle size={16} /> هەڵوەشێنراوەتەوە</div>}
+              </>
+            )}
+          </div>
         </div>
       )}
     </section>
