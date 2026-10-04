@@ -7,6 +7,7 @@ import './dashboard-shell.css';
 import '../shakh-dashboard-final-v15.css';
 import '../shakh-dashboard-clean-v16.css';
 import '../shakh-dashboard-typography-colors-v17.css';
+import '../shakh-dashboard-unified-content-v18.css';
 import UmrahAgencyModule from './UmrahAgencyModule';
 import SupportModule from './SupportModule';
 import { supabase } from '../lib/supabase';
