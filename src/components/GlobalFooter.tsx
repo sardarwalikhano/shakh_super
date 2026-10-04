@@ -12,7 +12,6 @@ export default function GlobalFooter({ user, onOpenDashboard, onOpenPrivacy }: P
     <footer className="shakhGlobalFooter" dir="rtl">
       <div className="shakhFooterCompact">
         <div className="shakhFooterIdentity">
-          <span className="shakhFooterLogo"><img src="/shakh-logo.svg?v=1.9.8" alt="شاخ" /></span>
           <div>
             <strong>SHAKH</strong>
             <small>بازاڕ، گەیاندن و خزمەتگوزاری</small>
