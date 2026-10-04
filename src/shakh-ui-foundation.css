@@ -20,3 +20,106 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid c
 @media (max-width:900px){.shakhDashboardBody{grid-template-columns:230px minmax(0,1fr)}.shakhDashboardKpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:720px){.modal{padding:8px}.auth{padding:18px;border-radius:14px}.shakhDashboardBackdrop{padding:0}.shakhDashboardShell{width:100vw;height:100dvh;border:0;border-radius:0}.shakhDashboardBody{grid-template-columns:1fr}.shakhDashboardSidebar{position:fixed;inset-block:0;inset-inline-end:0;width:min(86vw,330px);z-index:3;transform:translateX(110%);transition:transform .2s ease;box-shadow:-24px 0 70px rgb(10 18 30 / .18)}.shakhDashboardSidebar.is-open{transform:translateX(0)}.shakhDashboardMain{grid-column:1}.shakhDashboardTopbar{padding:10px}.shakhDashboardHome,.shakhDashboardModule{padding:12px}.shakhDashboardKpis{grid-template-columns:1fr}.shakhDashboardToolbar{padding:10px 12px}}
 html[data-theme="dark"],html.dark{color-scheme:dark;--shakh-bg:#09131f;--shakh-surface:#101c2b;--shakh-line:#263a4e;--shakh-text:#edf3f9;--shakh-muted:#a3b1c1;--shakh-brand:#ff8c4d;--shakh-brand-soft:#2d1b12;--shakh-blue:#8bbcff}html[data-theme="dark"] body{background:var(--shakh-bg)}html[data-theme="dark"] .shakhDashboardSidebar,html[data-theme="dark"] .shakhDashboardToolbar{background:#0f1b29}
+
+
+/* UI SYSTEM V1 — structural styling for the preserved product surfaces */
+:root{
+  --shakh-radius-sm:10px;
+  --shakh-radius-md:14px;
+  --shakh-radius-lg:18px;
+  --shakh-shadow:0 12px 36px rgb(16 34 56 / .08);
+}
+.shakhDashboardIdentity,.shakhDashboardTopActions{display:flex;align-items:center;gap:10px}
+.shakhDashboardIdentity{min-width:0}
+.shakhDashboardBrandText{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:var(--shakh-brand);color:#fff;font-weight:950;letter-spacing:.04em}
+.shakhDashboardMenuButton,.shakhDashboardIconButton,.shakhDashboardSidebarClose{
+  display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--shakh-line);border-radius:10px;background:var(--shakh-surface);color:var(--shakh-text)
+}
+.shakhDashboardIconButton.is-close{color:#b83a46}
+.shakhDashboardTitleBlock{min-width:0}
+.shakhDashboardTitleBlock>span{display:block;font-size:10px;font-weight:800;color:var(--shakh-brand)}
+.shakhDashboardTitleBlock h1{margin:2px 0;font-size:18px;line-height:1.25}
+.shakhDashboardTitleBlock p{margin:0;color:var(--shakh-muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:58ch}
+.shakhDashboardAccount{display:grid;gap:1px;min-width:140px;text-align:end}
+.shakhDashboardAccount small,.shakhDashboardAccount span{font-size:9px;color:var(--shakh-muted)}
+.shakhDashboardAccount strong{font-size:11px}
+.shakhDashboardSidebarHeader{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;padding:4px}
+.shakhDashboardSidebarHeader div{display:grid;gap:1px}
+.shakhDashboardSidebarHeader small,.shakhDashboardGroupLabel{font-size:9px;color:var(--shakh-muted);font-weight:800}
+.shakhDashboardSidebarHeader strong{font-size:13px}
+.shakhDashboardGroupLabel{padding:10px 8px 4px;text-transform:uppercase;letter-spacing:.02em}
+.shakhDashboardNavArrow{opacity:.35}
+.shakhDashboardNavBadge{min-width:22px;height:20px;padding:0 6px;display:grid;place-items:center;border-radius:999px;background:var(--shakh-brand);color:#fff;font-size:9px;font-weight:900}
+.shakhDashboardSidebarFooter{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px;border:1px solid var(--shakh-line);border-radius:12px;background:var(--shakh-surface)}
+.shakhDashboardSidebarFooter div{display:grid;gap:1px}.shakhDashboardSidebarFooter strong{font-size:10px}.shakhDashboardSidebarFooter small{font-size:8px;color:var(--shakh-muted)}
+.shakhDashboardStatusDot{width:8px;height:8px;border-radius:50%;background:#18a56f;box-shadow:0 0 0 4px rgb(24 165 111 / .12)}
+.shakhDashboardScrim{position:fixed;inset:0;z-index:2;border:0;background:rgb(8 18 30 / .35)}
+.shakhDashboardToolbarMeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.shakhDashboardLive{font-size:9px;font-weight:900;color:#13865d}
+.shakhDashboardDirty{padding:5px 8px;border-radius:999px;background:#fff5dc;color:#936800;font-size:8px;font-weight:800}
+.shakhDashboardHomeContent,.shakhDashboardModule .shakhDashboardWorkspace{max-width:1480px;margin:0 auto}
+.shakhDashboardModule .shakhDashboardWorkspace>.dashboard,
+.shakhDashboardModule .shakhDashboardWorkspace>.section,
+.shakhDashboardModule .shakhDashboardWorkspace>.customer-orders-panel,
+.shakhDashboardModule .shakhDashboardWorkspace>.supportCenter,
+.shakhDashboardModule .shakhDashboardWorkspace>.shakh-cars-workspace{width:100%;max-width:none}
+.dashboard,.section,.panel,.card,.orderCard,.shakhModuleCard,.customer-orders-panel__header,.customer-orders-panel__orders,.customer-orders-panel__detail,.customer-orders-panel__notifications,.supportCenter,.shakhCarDealerSurface{
+  color:var(--shakh-text);
+}
+.dashboardHeader,.shakhModuleHero,.customer-orders-panel__header,.supportCenterHeader{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:16px 18px;margin-bottom:12px;border:1px solid var(--shakh-line);
+  border-radius:var(--shakh-radius-md);background:var(--shakh-surface);box-shadow:var(--shakh-shadow)
+}
+.eyebrow,.customer-orders-panel__eyebrow{display:inline-flex;align-items:center;gap:6px;color:var(--shakh-brand);font-size:10px;font-weight:900}
+.dashboardHeader h2,.shakhModuleHero h2,.customer-orders-panel__header h2{margin:4px 0;font-size:22px;line-height:1.25}
+.dashboardHeader p,.shakhModuleHero p,.customer-orders-panel__header p{margin:0;color:var(--shakh-muted);font-size:10px}
+.plain{
+  min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:0 11px;border:1px solid var(--shakh-line);border-radius:10px;background:var(--shakh-surface);color:var(--shakh-text);font-weight:800
+}
+.plain:hover{border-color:#cbd4de;background:#fbfcfd}
+.orderCard,.panel,.card,.supportCenter,.shakhModuleCard,.customer-orders-panel__orders,.customer-orders-panel__detail,.customer-orders-panel__notifications{
+  border:1px solid var(--shakh-line);border-radius:var(--shakh-radius-md);background:var(--shakh-surface);box-shadow:none
+}
+.orderCard{padding:14px}
+.metricIcon,.shakhModuleActions svg,.tracking-card__top>svg{color:var(--shakh-brand)}
+.orderMonitorStats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:12px}
+.orderMetricCard{display:flex;align-items:center;gap:10px}.orderMetricCard>div{display:grid;gap:2px}.orderMetricCard strong{font-size:18px}.orderMetricCard span{font-size:9px;color:var(--shakh-muted)}
+.orderMonitorControls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.orderMonitorSearchWrap{display:flex;align-items:center;gap:8px;min-width:0;flex:1}.orderMonitorSearchWrap input{width:100%;min-height:40px}
+.orderMonitorFilterRow{display:flex;align-items:end;gap:10px}.orderMonitorFilterRow label{display:grid;gap:4px;font-size:9px;color:var(--shakh-muted)}
+.orderMonitorFilterRow select{min-height:40px}
+.resultCount{font-size:9px;color:var(--shakh-muted)}
+.orderMonitorList{grid-template-columns:1fr}
+.compactOrderRow{
+  width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border:1px solid var(--shakh-line);border-radius:12px;background:var(--shakh-surface);color:var(--shakh-text);text-align:start
+}
+.compactOrderRow:hover,.compactOrderRow.is-selected{border-color:color-mix(in srgb,var(--shakh-brand) 40%,var(--shakh-line));background:var(--shakh-brand-soft)}
+.compactOrderAvatar{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:#eef3f8;color:var(--shakh-blue)}
+.compactOrderIdentity{min-width:0;display:grid;flex:1;gap:1px}.compactOrderIdentity strong{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.compactOrderIdentity small{font-size:8px;color:var(--shakh-muted)}
+.compactOrderStatus{padding:4px 7px;border-radius:999px;background:var(--shakh-brand-soft);color:var(--shakh-brand);font-size:8px;font-weight:900}
+.compactOrderExpanded{margin-top:-4px;border-top-left-radius:10px;border-top-right-radius:10px}
+.customer-orders-panel__grid{display:grid;grid-template-columns:minmax(280px,.75fr) minmax(0,1.25fr);gap:12px}
+.customer-orders-panel__orders{padding:8px}.customer-order-card{width:100%;display:grid;gap:3px;margin-bottom:6px;padding:10px;border:1px solid var(--shakh-line);border-radius:10px;background:var(--shakh-surface);color:var(--shakh-text);text-align:start}.customer-order-card:last-child{margin-bottom:0}.customer-order-card.is-selected{border-color:color-mix(in srgb,var(--shakh-brand) 45%,var(--shakh-line));background:var(--shakh-brand-soft)}
+.customer-order-card>div{display:flex;align-items:center;justify-content:space-between;gap:8px}.customer-order-card strong{font-size:10px}.customer-order-card span,.customer-order-card small{font-size:8px;color:var(--shakh-muted)}
+.customer-orders-panel__detail{padding:14px}.tracking-card__top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--shakh-line)}.tracking-card__top span{font-size:9px;color:var(--shakh-muted)}.tracking-card__top h3{margin:2px 0;font-size:19px}
+.summary{display:grid;gap:0;border:1px solid var(--shakh-line);border-radius:12px;overflow:hidden}.summary>div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;border-top:1px solid var(--shakh-line);font-size:10px}.summary>div:first-child{border-top:0}.summary span{color:var(--shakh-muted)}.summary .grand{font-weight:900;background:var(--shakh-brand-soft)}.summary .grand b{color:var(--shakh-brand)}
+.compactOrderEmpty,.empty{min-height:140px;display:grid;place-items:center;align-content:center;gap:7px;padding:20px;text-align:center;color:var(--shakh-muted)}
+.compactOrderEmpty strong,.empty strong{color:var(--shakh-text);font-size:13px}.compactOrderEmpty span,.empty p{max-width:48ch;font-size:9px}
+.shakhModuleMetrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:12px}.shakhModuleMetrics article{padding:12px;border:1px solid var(--shakh-line);border-radius:12px;background:var(--shakh-surface)}.shakhModuleMetrics small{display:block;color:var(--shakh-muted);font-size:8px}.shakhModuleMetrics strong{display:block;margin-top:4px;font-size:16px}
+.shakhModuleGrid{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.2fr);gap:12px}.shakhModuleCard{padding:14px}.shakhModuleCardHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--shakh-line)}.shakhModuleCard h3{margin:3px 0;font-size:15px}.shakhModuleCard small,.shakhModuleCard span{font-size:8px;color:var(--shakh-muted)}
+.shakhModuleActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.shakhModuleActions button{min-height:54px;display:flex;align-items:center;gap:8px;padding:9px;border:1px solid var(--shakh-line);border-radius:10px;background:#fbfcfd;color:var(--shakh-text);font-size:9px;font-weight:800;text-align:start}
+.shakhModuleList{display:grid}.shakhModuleList article{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--shakh-line)}.shakhModuleList article:first-child{border-top:0}.shakhModuleList article div{min-width:0;display:grid;gap:2px}.shakhModuleList article strong{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.shakhModuleList article b{font-size:9px;color:var(--shakh-brand)}
+.supportCenter{padding:14px}.supportCenter button{border-radius:10px}
+.orderStatusBadge{padding:4px 8px;border-radius:999px;background:var(--shakh-brand-soft);color:var(--shakh-brand);font-size:8px;font-weight:900}
+.platformOrderGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:11px 0}.platformOrderSection{padding:10px;border:1px solid var(--shakh-line);border-radius:10px;background:#fbfcfd;display:grid;gap:3px}.platformOrderSectionHead{display:flex;align-items:center;gap:5px;color:var(--shakh-muted);font-size:8px}.platformOrderSection strong{font-size:10px}.platformOrderSection span{font-size:8px;color:var(--shakh-muted)}
+.platformOrderItems,.platformOrderFinance{margin-top:9px;padding:10px;border:1px solid var(--shakh-line);border-radius:10px}.platformOrderItem,.platformOrderFinance>div{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--shakh-line);font-size:9px}.platformOrderItem:first-child,.platformOrderFinance>div:first-child{border-top:0}.platformOrderFinance .grand{font-weight:900}.platformOrderFinance .grand b{color:var(--shakh-brand)}
+.platformOrderMeta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:9px;color:var(--shakh-muted);font-size:8px}
+.whatsappSendButton{min-height:34px;border:1px solid #bdd9cc;border-radius:9px;background:#f0faf5;color:#18734e;padding:0 9px;font-size:8px;font-weight:800}.captainBroadcastList{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+@media(max-width:1050px){.orderMonitorStats,.shakhModuleMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.platformOrderGrid{grid-template-columns:1fr 1fr}.shakhModuleGrid{grid-template-columns:1fr}}
+@media(max-width:760px){.shakhDashboardAccount{display:none}.shakhDashboardTitleBlock p{display:none}.shakhDashboardTitleBlock h1{font-size:16px}.shakhDashboardTopbar{padding:10px}.dashboardHeader,.shakhModuleHero,.customer-orders-panel__header{align-items:flex-start;flex-direction:column}.orderMonitorControls{align-items:stretch;flex-direction:column}.orderMonitorFilterRow{align-items:center;justify-content:space-between}.customer-orders-panel__grid{grid-template-columns:1fr}.platformOrderGrid{grid-template-columns:1fr}.shakhModuleActions{grid-template-columns:1fr}.shakhModuleMetrics{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.orderMonitorStats,.shakhModuleMetrics{grid-template-columns:1fr}.shakhDashboardHome,.shakhDashboardModule{padding:10px}.shakhDashboardNavItem{padding:9px}}
+html[data-theme="dark"] .plain,html[data-theme="dark"] .compactOrderRow,html[data-theme="dark"] .customer-order-card,html[data-theme="dark"] .shakhModuleActions button,html[data-theme="dark"] .platformOrderSection{background:var(--shakh-surface)}
+html[data-theme="dark"] .dirty,.dirty{background:#332913;color:#f0bd59}
