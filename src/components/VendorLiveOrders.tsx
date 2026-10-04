@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, ChefHat, MapPin, Package, RefreshCw, Truck, XCircle } from 'lucide-react';
+import { CheckCircle2, ChefHat, MapPin, Package, RefreshCw, Truck, UserRound, XCircle } from 'lucide-react';
 import { getVendorOrders, subscribeToVendorOrders, updateVendorOrderStatus, type VendorOrder } from '../lib/vendorOrders';
 import LiveDeliveryMap from './LiveDeliveryMap';
 
