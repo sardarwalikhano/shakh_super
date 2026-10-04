@@ -1,5 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, ChefHat, MapPin, Package, RefreshCw, Truck, UserRound, XCircle } from 'lucide-react';
+import {
+  CheckCircle2,
+  ChefHat,
+  MapPin,
+  Package,
+  RefreshCw,
+  Truck,
+  UserRound as UserIcon,
+  XCircle,
+} from 'lucide-react';
 import { getVendorOrders, subscribeToVendorOrders, updateVendorOrderStatus, type VendorOrder } from '../lib/vendorOrders';
 import LiveDeliveryMap from './LiveDeliveryMap';
 
@@ -103,7 +112,7 @@ export default function VendorLiveOrders({ storeId }: Props) {
                 className={selectedId === order.id ? 'compactOrderRow is-selected' : 'compactOrderRow'}
                 onClick={() => setSelectedId(order.id)}
               >
-                <span className="compactOrderAvatar"><UserRound size={17} /></span>
+                <span className="compactOrderAvatar"><UserIcon size={17} /></span>
                 <span className="compactOrderIdentity">
                   <strong>{order.customer?.full_name || 'کڕیار'}</strong>
                   <small>#{order.id.slice(0, 8)}</small>
