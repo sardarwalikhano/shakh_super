@@ -190,7 +190,7 @@ export default function DashboardShell({
         <header className="shakhDashboardTopbar">
           <div className="shakhDashboardIdentity">
             <button type="button" className="shakhDashboardMenuButton" onClick={() => setMenuOpen(true)} aria-label="کردنەوەی ناوبەری داشبۆرد"><Menu size={19}/></button>
-            <span className="shakhDashboardBrand"><img src="/shakh-logo.svg?v=1.9.8" alt="" /></span>
+            <span className="shakhDashboardBrandText" aria-hidden="true">SHAKH</span>
             <div className="shakhDashboardTitleBlock">
               <span>SHAKH • {roleLabel}</span>
               <h1 id="shakh-dashboard-title">{activeItem?.label || roleLabel}</h1>
