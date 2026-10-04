@@ -530,3 +530,362 @@ html[data-theme='dark'] .shakhDashboardModule [class*="OrderId"]{color:var(--f15
   .profileFieldWide{grid-column:auto!important}
   .customer-orders-panel__grid{grid-template-columns:1fr!important}
 }
+
+
+/* ===== V15 CATEGORY / MODULE SYSTEM ===== */
+.dashboardAccountServices{
+  width:100%!important;
+  color:var(--f15-text)!important;
+}
+.dashboardAccountServicesHero{
+  position:relative!important;
+  overflow:hidden!important;
+  margin:0 0 12px!important;
+  padding:18px 20px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  border:1px solid #f0d4c0!important;
+  border-radius:14px!important;
+  background:linear-gradient(135deg,#fff8f2 0%,#fff0e6 48%,#f4f9fd 100%)!important;
+}
+.dashboardAccountServicesHero::after{
+  content:"SHAKH"!important;
+  position:absolute!important;
+  left:-8px!important;
+  bottom:-24px!important;
+  color:rgba(8,44,80,.055)!important;
+  font-size:88px!important;
+  font-weight:950!important;
+  direction:ltr!important;
+  pointer-events:none!important;
+}
+.dashboardAccountServicesHero>div:first-child{position:relative!important;z-index:2!important}
+.dashboardAccountServicesHero>div:first-child>span{
+  display:block!important;
+  margin-bottom:3px!important;
+  color:var(--f15-orange)!important;
+  font-size:9px!important;
+  font-weight:950!important;
+}
+.dashboardAccountServicesHero h2{
+  margin:0!important;
+  color:var(--f15-navy)!important;
+  font-size:24px!important;
+  line-height:1.3!important;
+  font-weight:950!important;
+}
+.dashboardAccountServicesHero p{
+  max-width:760px!important;
+  margin:5px 0 0!important;
+  color:var(--f15-muted)!important;
+  font-size:10px!important;
+  line-height:1.8!important;
+}
+.dashboardAccountServicesCount{
+  position:relative!important;
+  z-index:2!important;
+  min-width:84px!important;
+  padding:9px 12px!important;
+  display:grid!important;
+  justify-items:center!important;
+  border:1px solid var(--f15-line)!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.88)!important;
+}
+.dashboardAccountServicesCount strong{
+  color:var(--f15-orange)!important;
+  font-size:20px!important;
+  line-height:1.2!important;
+  font-weight:950!important;
+}
+.dashboardAccountServicesCount small{font-size:7px!important;color:var(--f15-muted)!important}
+.dashboardAccountServicesGrid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+.dashboardAccountServicesGroupLabel{
+  grid-column:1/-1!important;
+  margin:8px 2px 1px!important;
+  padding:3px 0!important;
+  color:var(--f15-muted)!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  border-bottom:1px solid var(--f15-line)!important;
+}
+.dashboardAccountServiceCard{
+  min-height:82px!important;
+  width:100%!important;
+  padding:10px 11px!important;
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr) 18px!important;
+  align-items:center!important;
+  gap:9px!important;
+  border:1px solid var(--f15-line)!important;
+  border-radius:10px!important;
+  background:var(--f15-card)!important;
+  color:var(--f15-text)!important;
+  text-align:start!important;
+  box-shadow:none!important;
+  transition:transform .16s ease,border-color .16s ease,background-color .16s ease!important;
+}
+.dashboardAccountServiceCard:hover{
+  transform:translateY(-2px)!important;
+  border-color:#efc4a9!important;
+  background:var(--f15-orange-soft)!important;
+}
+.dashboardAccountServiceCardIcon{
+  width:38px!important;height:38px!important;
+  display:grid!important;place-items:center!important;
+  border-radius:10px!important;
+  background:var(--f15-orange-soft)!important;
+  color:var(--f15-orange)!important;
+}
+.dashboardAccountServiceCardCopy{min-width:0!important}
+.dashboardAccountServiceCardCopy strong{
+  display:block!important;
+  color:var(--f15-text)!important;
+  font-size:11px!important;
+  line-height:1.4!important;
+  font-weight:950!important;
+}
+.dashboardAccountServiceCardCopy small{
+  display:block!important;
+  margin-top:2px!important;
+  color:var(--f15-muted)!important;
+  font-size:7px!important;
+  line-height:1.5!important;
+}
+.dashboardAccountServiceCardArrow{
+  display:grid!important;place-items:center!important;
+  color:#97a3b1!important;
+}
+
+/* role-center visual grammar */
+.shakhDashboardHomeContent :is(.shakhModuleHero,.dashboardHeader,.vendor-dashboard__header,.customer-control-header,.captain-control-header,.super-admin-control-header,.admin-control-header,.controlCenterHero){
+  position:relative!important;
+  overflow:hidden!important;
+  margin:0 0 11px!important;
+  padding:17px 19px!important;
+  border:1px solid #efd4c0!important;
+  border-radius:13px!important;
+  background:linear-gradient(135deg,#fff8f2,#fff0e7 52%,#f5f9fd)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardHomeContent :is(.shakhModuleHero,.dashboardHeader,.vendor-dashboard__header,.customer-control-header,.captain-control-header,.super-admin-control-header,.admin-control-header,.controlCenterHero) h2{
+  color:var(--f15-navy)!important;
+  font-size:24px!important;
+  line-height:1.3!important;
+  font-weight:950!important;
+}
+.shakhDashboardHomeContent :is(.shakhModuleHero,.dashboardHeader,.vendor-dashboard__header,.customer-control-header,.captain-control-header,.super-admin-control-header,.admin-control-header,.controlCenterHero) p{
+  color:var(--f15-muted)!important;
+  font-size:9px!important;
+  line-height:1.8!important;
+}
+
+/* metric blocks */
+.shakhDashboardHomeContent :is(.shakhModuleMetrics,.vendor-dashboard__stats,.captainStats,.controlCenterStats,.control-center-stats){
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:1px!important;
+  margin:0 0 11px!important;
+  border:1px solid var(--f15-line)!important;
+  border-radius:11px!important;
+  overflow:hidden!important;
+  background:var(--f15-line)!important;
+}
+.shakhDashboardHomeContent :is(.shakhModuleMetrics>article,.vendor-dashboard__stats>article,.captainStats>.orderCard,.controlCenterStats>article,.control-center-stats>article){
+  min-height:78px!important;
+  padding:11px 12px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  background:var(--f15-card)!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.shakhDashboardHomeContent :is(.shakhModuleMetrics,.vendor-dashboard__stats,.captainStats,.controlCenterStats,.control-center-stats) small{
+  color:var(--f15-muted)!important;
+  font-size:8px!important;
+}
+.shakhDashboardHomeContent :is(.shakhModuleMetrics,.vendor-dashboard__stats,.captainStats,.controlCenterStats,.control-center-stats) strong{
+  margin-top:4px!important;
+  color:var(--f15-navy)!important;
+  font-size:19px!important;
+  line-height:1.25!important;
+  font-weight:950!important;
+}
+
+/* two-column workspace like the reference */
+.shakhDashboardHomeContent :is(.shakhModuleGrid,.vendor-dashboard__layout,.controlCenterGrid,.control-center-grid){
+  display:grid!important;
+  grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr)!important;
+  gap:10px!important;
+}
+.shakhDashboardHomeContent :is(.shakhModuleCard,.dashboardPanel,.vendor-dashboard__panel,.controlCenterPanel,.control-center-panel){
+  min-width:0!important;
+  padding:13px!important;
+  border:1px solid var(--f15-line)!important;
+  border-radius:11px!important;
+  background:var(--f15-card)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardHomeContent :is(.shakhModuleCardHead,.panelHead,.dashboardPanelHead){
+  margin:0 0 9px!important;
+  padding-bottom:9px!important;
+  border-bottom:1px solid var(--f15-line)!important;
+}
+.shakhDashboardHomeContent :is(.shakhModuleCardHead,h3){
+  color:var(--f15-text)!important;
+}
+.shakhDashboardHomeContent .shakhModuleCardHead h3{
+  margin:2px 0 0!important;
+  font-size:15px!important;
+  font-weight:950!important;
+}
+.shakhDashboardHomeContent .shakhModuleCardHead small{
+  color:var(--f15-orange)!important;
+  font-size:8px!important;
+}
+.shakhDashboardHomeContent .shakhModuleActions{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+.shakhDashboardHomeContent .shakhModuleActions button{
+  min-height:58px!important;
+  padding:9px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  border:1px solid var(--f15-line)!important;
+  border-radius:8px!important;
+  background:var(--f15-soft)!important;
+  color:var(--f15-text)!important;
+  font-size:9px!important;
+  font-weight:900!important;
+}
+.shakhDashboardHomeContent .shakhModuleActions button:hover{
+  background:var(--f15-orange-soft)!important;
+  border-color:#efc4a9!important;
+}
+.shakhDashboardHomeContent .shakhModuleActions svg{color:var(--f15-orange)!important}
+.shakhDashboardHomeContent .shakhModuleList{
+  display:grid!important;
+  gap:0!important;
+}
+.shakhDashboardHomeContent .shakhModuleList>article{
+  min-height:48px!important;
+  padding:8px 2px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  border-bottom:1px solid var(--f15-line)!important;
+}
+.shakhDashboardHomeContent .shakhModuleList>article:last-child{border-bottom:0!important}
+.shakhDashboardHomeContent .shakhModuleList strong{
+  display:block!important;
+  color:var(--f15-text)!important;
+  font-size:10px!important;
+}
+.shakhDashboardHomeContent .shakhModuleList small{
+  display:block!important;
+  margin-top:2px!important;
+  color:var(--f15-muted)!important;
+  font-size:7px!important;
+}
+.shakhDashboardHomeContent .shakhModuleList b{
+  color:var(--f15-orange)!important;
+  font-size:10px!important;
+  white-space:nowrap!important;
+}
+.shakhDashboardHomeContent .shakhModuleEmpty,
+.shakhDashboardHomeContent :is(.empty,.vendor-dashboard__empty){
+  min-height:150px!important;
+  display:grid!important;
+  place-items:center!important;
+  align-content:center!important;
+  gap:5px!important;
+  padding:20px!important;
+  text-align:center!important;
+  border:1px dashed var(--f15-line)!important;
+  border-radius:9px!important;
+  background:var(--f15-soft)!important;
+  color:var(--f15-muted)!important;
+}
+.shakhDashboardHomeContent .shakhModuleEmpty strong{color:var(--f15-text)!important;font-size:10px!important}
+.shakhDashboardHomeContent .shakhModuleEmpty small{font-size:8px!important}
+
+/* all clicked category views: same title + surface language */
+.shakhDashboardModule > section,
+.shakhDashboardModule > div,
+.shakhDashboardModule .dashboardAccountSingleModule{
+  min-width:0!important;
+}
+.shakhDashboardModule :is(.postHubHeader,.postsManagementHead,.notification-center__header,.walletHead,.settingsCardHeader,.customer-orders-panel__header,.vendor-dashboard__header){
+  margin:0 0 11px!important;
+  padding:13px 15px!important;
+  border:1px solid var(--f15-line)!important;
+  border-radius:11px!important;
+  background:var(--f15-card)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardModule :is(.postHubHeader,.postsManagementHead,.notification-center__header,.walletHead,.settingsCardHeader,.customer-orders-panel__header,.vendor-dashboard__header) h2{
+  margin:3px 0 2px!important;
+  color:var(--f15-text)!important;
+  font-size:20px!important;
+  line-height:1.35!important;
+  font-weight:950!important;
+}
+.shakhDashboardModule :is(.postHubGrid,.postsManagementGrid,.notification-center__grid,.settingsGrid,.walletGrid,.customer-orders-panel__grid){
+  gap:9px!important;
+}
+.shakhDashboardModule :is(.postHubGrid>button,.notification-item,.settingsCard,.walletBalanceCard,.customer-order-card,.orderCard){
+  border:1px solid var(--f15-line)!important;
+  border-radius:10px!important;
+  background:var(--f15-card)!important;
+  box-shadow:none!important;
+}
+.shakhDashboardModule :is(.postHubGrid>button:hover,.customer-order-card:hover,.notification-item:hover){
+  background:var(--f15-orange-soft)!important;
+  border-color:#efc4a9!important;
+  transform:none!important;
+}
+
+/* keep long Kurdish text readable */
+.shakhDashboardModule,
+.shakhDashboardHomeContent{
+  overflow-wrap:anywhere!important;
+}
+.shakhDashboardModule :is(h1,h2,h3,h4,strong,b,button,label){
+  text-wrap:balance;
+}
+.shakhDashboardModule :is(p,small,span){
+  text-wrap:pretty;
+}
+
+/* compact footer of dashboard shell */
+.shakhDashboardSidebarFooter{margin-top:auto!important}
+
+/* responsive category/dashboard */
+@media(max-width:1050px){
+  .dashboardAccountServicesGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .shakhDashboardHomeContent :is(.shakhModuleGrid,.vendor-dashboard__layout,.controlCenterGrid,.control-center-grid){grid-template-columns:1fr!important}
+  .shakhDashboardHomeContent :is(.shakhModuleMetrics,.vendor-dashboard__stats,.captainStats,.controlCenterStats,.control-center-stats){grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:680px){
+  .dashboardAccountServicesHero{align-items:flex-start!important;flex-direction:column!important;padding:15px!important}
+  .dashboardAccountServicesCount{align-self:flex-start!important}
+  .dashboardAccountServicesGrid{grid-template-columns:1fr!important}
+  .dashboardAccountServiceCard{min-height:72px!important}
+  .shakhDashboardHomeContent :is(.shakhModuleMetrics,.vendor-dashboard__stats,.captainStats,.controlCenterStats,.control-center-stats){grid-template-columns:1fr 1fr!important}
+  .shakhDashboardHomeContent .shakhModuleActions{grid-template-columns:1fr!important}
+}
+@media(max-width:430px){
+  .shakhDashboardHomeContent :is(.shakhModuleMetrics,.vendor-dashboard__stats,.captainStats,.controlCenterStats,.control-center-stats){grid-template-columns:1fr!important}
+}
