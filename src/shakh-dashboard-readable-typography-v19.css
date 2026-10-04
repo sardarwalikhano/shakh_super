@@ -1,0 +1,379 @@
+/*
+  SHAKH — DASHBOARD READABLE TYPOGRAPHY V19
+  Final text hierarchy layer.
+  Presentation only: no state, data, route, role or business logic changes.
+*/
+:root{
+  --v19-title:#0a2d52;
+  --v19-heading:#173e67;
+  --v19-label:#2d70a9;
+  --v19-text:#182536;
+  --v19-muted:#68778a;
+  --v19-primary:#f36b21;
+  --v19-info:#2879bd;
+  --v19-success:#11845b;
+  --v19-warning:#aa7100;
+  --v19-danger:#c33b4b;
+}
+html[data-theme="dark"],html.dark{
+  --v19-title:#f3f7fb;
+  --v19-heading:#dce9f6;
+  --v19-label:#86bee9;
+  --v19-text:#edf3f9;
+  --v19-muted:#a9b6c6;
+  --v19-primary:#ff8b4c;
+  --v19-info:#8dbdff;
+  --v19-success:#5bc99a;
+  --v19-warning:#f2bd59;
+  --v19-danger:#ff8996;
+}
+
+/* Root typography */
+.shakhDashboardWorkspace{
+  font-size:14px!important;
+  line-height:1.65!important;
+  font-family:"Noto Sans Kurdish","Noto Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif!important;
+  color:var(--v19-text)!important;
+}
+.shakhDashboardWorkspace :is(h1,h2,h3,h4,h5,h6,p,span,small,strong,b,label,button,input,select,textarea,th,td){
+  font-family:inherit!important;
+}
+
+/* Page titles */
+.shakhDashboardWorkspace h1{
+  margin:0 0 8px!important;
+  color:var(--v19-title)!important;
+  font-size:28px!important;
+  line-height:1.35!important;
+  font-weight:950!important;
+  letter-spacing:-.25px!important;
+}
+.shakhDashboardWorkspace h2{
+  margin:0 0 7px!important;
+  color:var(--v19-title)!important;
+  font-size:23px!important;
+  line-height:1.4!important;
+  font-weight:950!important;
+}
+.shakhDashboardWorkspace h3{
+  margin:0 0 5px!important;
+  color:var(--v19-heading)!important;
+  font-size:18px!important;
+  line-height:1.45!important;
+  font-weight:950!important;
+}
+.shakhDashboardWorkspace h4{
+  margin:0 0 5px!important;
+  color:var(--v19-heading)!important;
+  font-size:15px!important;
+  line-height:1.5!important;
+  font-weight:900!important;
+}
+
+/* Paragraphs */
+.shakhDashboardWorkspace p{
+  margin:0 0 9px!important;
+  color:var(--v19-muted)!important;
+  font-size:12px!important;
+  line-height:1.9!important;
+  font-weight:500!important;
+  max-width:78ch!important;
+}
+.shakhDashboardWorkspace p:last-child{margin-bottom:0!important}
+
+/* Eyebrows / overlines */
+.shakhDashboardWorkspace :is(
+  .eyebrow,
+  .vendor-dashboard__eyebrow,
+  .customer-orders-panel__eyebrow,
+  .notification-center__eyebrow,
+  .profileEyebrow,
+  .postsManagementHead .eyebrow,
+  .postHubHeader .eyebrow,
+  .profileSectionTitle>div>span
+){
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin-bottom:3px!important;
+  color:var(--v19-label)!important;
+  font-size:10px!important;
+  line-height:1.4!important;
+  font-weight:950!important;
+  letter-spacing:.1px!important;
+}
+
+/* Headline/subhead pairs */
+.shakhDashboardWorkspace :is(
+  .dashboardHeader h2,
+  .vendor-dashboard__header h2,
+  .postHubHeader h2,
+  .postsManagementHead h2,
+  .notification-center__header h2,
+  .walletHead h2,
+  .customer-orders-panel__header h2,
+  .supportHead h2,
+  .dashboardAccountServicesHero h2
+){
+  font-size:23px!important;
+  line-height:1.4!important;
+  font-weight:950!important;
+  color:var(--v19-title)!important;
+}
+.shakhDashboardWorkspace :is(
+  .dashboardHeader p,
+  .vendor-dashboard__header p,
+  .customer-orders-panel__header p,
+  .dashboardAccountServicesHero p,
+  .profileHeroText p,
+  .supportHead p
+){
+  font-size:12px!important;
+  line-height:1.9!important;
+  color:var(--v19-muted)!important;
+}
+
+/* Labels */
+.shakhDashboardWorkspace :is(label,.profileField,.authFieldLabel){
+  display:block!important;
+  color:var(--v19-label)!important;
+  font-size:11px!important;
+  line-height:1.6!important;
+  font-weight:900!important;
+}
+.shakhDashboardWorkspace :is(.profileRequiredMark,.required,.fieldRequired){
+  color:var(--v19-danger)!important;
+  font-size:10px!important;
+  font-weight:950!important;
+}
+
+/* Helper / metadata */
+.shakhDashboardWorkspace :is(
+  small,
+  .meta,
+  .muted,
+  .helper,
+  .description,
+  .postsManagementMeta small,
+  .customer-order-card small,
+  .platformOrderSection>span,
+  .platformOrderMeta,
+  .notification-center__content,
+  .walletTx small,
+  .supportTicket small
+){
+  color:var(--v19-muted)!important;
+  font-size:10px!important;
+  line-height:1.7!important;
+  font-weight:500!important;
+}
+
+/* Strong labels / entity names */
+.shakhDashboardWorkspace :is(
+  .postsManagementMeta span,
+  .platformOrderSectionHead,
+  .shakhModuleCardHead span,
+  .resultCount,
+  .profileSectionTitle>div>span,
+  .dashboardAccountServicesGroupLabel
+){
+  color:var(--v19-label)!important;
+  font-size:10px!important;
+  line-height:1.5!important;
+  font-weight:950!important;
+}
+.shakhDashboardWorkspace :is(
+  .postsManagementBody h3,
+  .platformOrderSection strong,
+  .customer-order-card strong,
+  .postHubCardText b,
+  .dashboardAccountServiceCardCopy strong,
+  .shakhModuleList strong,
+  .supportTicket strong,
+  .notification-center__title-row
+){
+  color:var(--v19-title)!important;
+  font-size:13px!important;
+  line-height:1.55!important;
+  font-weight:950!important;
+}
+
+/* KPI */
+.shakhDashboardWorkspace :is(
+  .shakhDashboardKpis article span,
+  .postsManagementStats span,
+  .vendor-dashboard__stats span,
+  .orderMonitorStats .orderMetricCard span,
+  .shakhModuleMetrics small,
+  .profileStats span,
+  .walletMiniStats span
+){
+  color:var(--v19-label)!important;
+  font-size:10px!important;
+  line-height:1.5!important;
+  font-weight:900!important;
+}
+.shakhDashboardWorkspace :is(
+  .shakhDashboardKpis article strong,
+  .postsManagementStats strong,
+  .vendor-dashboard__stats strong,
+  .orderMonitorStats .orderMetricCard strong,
+  .shakhModuleMetrics strong,
+  .profileStats strong,
+  .walletMiniStats strong
+){
+  color:var(--v19-title)!important;
+  font-size:21px!important;
+  line-height:1.25!important;
+  font-weight:950!important;
+}
+.shakhDashboardWorkspace .shakhDashboardKpis article[data-tone="brand"] strong,
+.shakhDashboardWorkspace .postsManagementPrice,
+.shakhDashboardWorkspace .orderTotal,
+.shakhDashboardWorkspace .platformOrderFinance .grand b{
+  color:var(--v19-primary)!important;
+}
+
+/* Buttons */
+.shakhDashboardWorkspace button{
+  font-size:11px!important;
+  line-height:1.45!important;
+  font-weight:900!important;
+}
+.shakhDashboardWorkspace :is(.primary,button.primary){
+  font-size:11px!important;
+  font-weight:950!important;
+}
+.shakhDashboardWorkspace .postsFilters button{
+  font-size:10px!important;
+  font-weight:900!important;
+}
+.shakhDashboardWorkspace .postHubCardText b,
+.shakhDashboardWorkspace .dashboardAccountServiceCardCopy strong{
+  font-size:12px!important;
+  line-height:1.55!important;
+}
+
+/* Inputs */
+.shakhDashboardWorkspace :is(input,select,textarea){
+  font-size:12px!important;
+  line-height:1.6!important;
+}
+.shakhDashboardWorkspace :is(input,select){
+  min-height:42px!important;
+}
+.shakhDashboardWorkspace textarea{
+  min-height:96px!important;
+}
+.shakhDashboardWorkspace ::placeholder{
+  color:var(--v19-muted)!important;
+  opacity:1!important;
+}
+
+/* Table / list readability */
+.shakhDashboardWorkspace th{
+  font-size:10px!important;
+  line-height:1.5!important;
+  color:var(--v19-label)!important;
+  font-weight:950!important;
+}
+.shakhDashboardWorkspace td{
+  font-size:11px!important;
+  line-height:1.65!important;
+  color:var(--v19-text)!important;
+}
+.shakhDashboardWorkspace :is(
+  .shakhModuleList small,
+  .postsManagementMeta small,
+  .platformOrderSection>span
+){
+  font-size:9.5px!important;
+}
+
+/* Sidebar + toolbar */
+.shakhDashboardTitleBlock h1{
+  font-size:19px!important;
+  line-height:1.35!important;
+}
+.shakhDashboardSidebarHeader strong{
+  font-size:13px!important;
+}
+.shakhDashboardGroupLabel{
+  font-size:9px!important;
+  line-height:1.5!important;
+}
+.shakhDashboardNavCopy strong{
+  font-size:11px!important;
+  line-height:1.45!important;
+}
+.shakhDashboardToolbar strong{
+  font-size:11px!important;
+}
+.shakhDashboardToolbar small{
+  font-size:9px!important;
+}
+
+/* Text spacing inside cards */
+.shakhDashboardWorkspace :is(
+  .profileSectionTitle,
+  .shakhModuleCardHead,
+  .platformOrderSectionHead,
+  .notification-center__header,
+  .postsManagementHead,
+  .postHubHeader
+){
+  line-height:1.5!important;
+}
+.shakhDashboardWorkspace :is(.shakhModuleCard p,.platformOrderSection p,.postsManagementReason){
+  margin-top:3px!important;
+  font-size:10px!important;
+  line-height:1.75!important;
+}
+
+/* Status text */
+.shakhDashboardWorkspace :is(.orderStatusBadge,.postsManagementStatus,.profilePostStatus){
+  font-size:9px!important;
+  line-height:1.4!important;
+  font-weight:950!important;
+}
+
+/* Dark-mode readability */
+html[data-theme="dark"] .shakhDashboardWorkspace :is(h1,h2,h3,h4,strong,b){
+  color:var(--v19-title)!important;
+}
+html[data-theme="dark"] .shakhDashboardWorkspace :is(label,.profileField,.authFieldLabel,.eyebrow,.profileEyebrow,.customer-orders-panel__eyebrow,.notification-center__eyebrow){
+  color:var(--v19-label)!important;
+}
+html[data-theme="dark"] .shakhDashboardWorkspace :is(p,small,.meta,.muted,.helper,.description){
+  color:var(--v19-muted)!important;
+}
+html[data-theme="dark"] .shakhDashboardWorkspace :is(a,.resultCount){
+  color:var(--v19-info)!important;
+}
+
+/* Avoid ugly orphaned words / collisions in Kurdish */
+.shakhDashboardWorkspace :is(
+  h1,h2,h3,h4,p,label,small,strong,b,button,th,td
+){
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  hyphens:none!important;
+  text-wrap:pretty!important;
+}
+
+/* Responsive typography */
+@media(max-width:760px){
+  .shakhDashboardWorkspace{font-size:13px!important}
+  .shakhDashboardWorkspace h1{font-size:24px!important}
+  .shakhDashboardWorkspace h2,
+  .shakhDashboardWorkspace :is(.dashboardHeader h2,.vendor-dashboard__header h2,.postHubHeader h2,.postsManagementHead h2,.notification-center__header h2,.walletHead h2,.customer-orders-panel__header h2,.supportHead h2,.dashboardAccountServicesHero h2){
+    font-size:20px!important;
+  }
+  .shakhDashboardWorkspace h3{font-size:16px!important}
+  .shakhDashboardWorkspace p{font-size:11px!important;line-height:1.85!important}
+  .shakhDashboardWorkspace label{font-size:10px!important}
+  .shakhDashboardWorkspace :is(small,.meta,.muted,.helper,.description){font-size:9px!important}
+  .shakhDashboardWorkspace :is(.shakhDashboardKpis article strong,.postsManagementStats strong,.vendor-dashboard__stats strong,.orderMonitorStats .orderMetricCard strong,.shakhModuleMetrics strong,.profileStats strong,.walletMiniStats strong){
+    font-size:19px!important;
+  }
+}
