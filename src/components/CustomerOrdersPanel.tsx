@@ -373,7 +373,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
 
               {selected.status === 'pending' && <button type="button" className="reset" onClick={() => void cancelOrder(selected.id)} style={{ marginTop: 10 }}>هەڵوەشاندنەوەی ئۆردەر</button>}
             </>
-          ) : <div className="empty">ئۆردەرێک هەڵبژێرە بۆ بینینی Tracking.</div>}
+          )}
         </div>
       </div>
 
