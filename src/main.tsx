@@ -5,9 +5,6 @@ import {Search,ShoppingBag,User as UserIcon,Bell,Store,Truck,Wallet,ArrowLeft,Lo
 import './shakh-design-system.css';
 import './shakh-shein-style-v7.css';
 import './shakh-reference-locked-v10.css';
-import './shakh-dashboard-reference-v11.css';
-import './shakh-dashboard-unified-v12.css';
-import './shakh-dashboard-reference-v13.css';
 import CustomerOrdersPanel from './components/CustomerOrdersPanel';
 import CaptainDashboard from './components/CaptainDashboard';
 import VendorDashboard from './components/VendorDashboard';
