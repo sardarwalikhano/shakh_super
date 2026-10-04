@@ -59,6 +59,7 @@ export default function SuperAdminOrderMonitor() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [captains, setCaptains] = useState<OnlineCaptain[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [captainsLoading, setCaptainsLoading] = useState(false);
 
   const load = useCallback(async () => {
@@ -99,13 +100,15 @@ export default function SuperAdminOrderMonitor() {
         im.set(x.order_id, list);
       });
 
-      setOrders(base.map((row: any) => ({
+      const nextOrders = base.map((row: any) => ({
         ...row,
         customer: cm.get(row.customer_id) ?? null,
         store: sm.get(row.store_id) ?? null,
         delivery_address: am.get(row.address_id) ?? null,
         items: im.get(row.id) ?? [],
-      })) as Order[]);
+      })) as Order[];
+      setOrders(nextOrders);
+      setSelectedId((current) => current && nextOrders.some((order) => order.id === current) ? current : null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'نەتوانرا زانیاریی تەواوی ئۆردەرەکان وەرگیرێت.');
     } finally {
@@ -218,7 +221,16 @@ export default function SuperAdminOrderMonitor() {
 
       <div className="orderMonitorList dashboardGrid">
         {loading ? <div className="empty">زانیارییەکان بار دەکرێن...</div> : filtered.length === 0 ? <div className="empty">هیچ ئۆردەرێک نەدۆزرایەوە.</div> : filtered.map((order) => (
-          <article className="orderCard platformOrderCard" key={order.id}>
+          <React.Fragment key={order.id}>
+            <button type="button" className={selectedId === order.id ? 'compactOrderRow is-selected' : 'compactOrderRow'} onClick={() => setSelectedId(order.id)}>
+              <span className="compactOrderAvatar"><UserRound size={17} /></span>
+              <span className="compactOrderIdentity">
+                <strong>{order.customer?.full_name || 'کڕیار'}</strong>
+                <small>#{order.id.slice(0, 8)}</small>
+              </span>
+              <span className="compactOrderStatus">{STATUS[order.status] || order.status}</span>
+            </button>
+            {selectedId === order.id && <article className="orderCard platformOrderCard compactOrderExpanded">
             <div className="orderCardTop">
               <div><small>ژمارەی ئۆردەر</small><strong>#{order.id.slice(0, 8)}</strong></div>
               <span className="orderStatusBadge">{STATUS[order.status] || order.status}</span>
@@ -247,7 +259,8 @@ export default function SuperAdminOrderMonitor() {
             {order.status === 'ready_for_pickup' && <div className="captainBroadcastBox"><div><b>ئامادەکردنی ئۆردەر بۆ کاپتن</b><small>زانیاریی کڕیار تا کاتی وەرگرتنی ئۆردەر بۆ کاپتن نانێردرێت.</small><small>{captains.length} کاپتن ئێستا ئۆنلاینە.</small></div>{captainsLoading ? <span>بارکردن...</span> : captains.length === 0 ? <span>کاپتنی ئۆنلاین بەردەست نییە.</span> : <div className="captainBroadcastList">{captains.map((captain) => <button type="button" className="whatsappSendButton" key={captain.id} onClick={() => sendToCaptain(order, captain)}><MessageCircle size={15} />{captain.full_name || 'کاپتن'} · واتسئاپ</button>)}</div>}</div>}
 
             {order.captain_id && <div className="assignedCaptainCard"><Truck size={16} /><span><b>کاپتنی دیاریکراو:</b> {order.captain_id.slice(0, 8)}</span></div>}
-          </article>
+            </article>}
+          </React.Fragment>
         ))}
       </div>
     </section>
