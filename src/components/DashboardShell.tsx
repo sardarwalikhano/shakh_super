@@ -212,11 +212,12 @@ export default function DashboardShell({
               <button type="button" className="shakhDashboardSidebarClose" onClick={() => setMenuOpen(false)} aria-label="داخستن"><X size={17}/></button>
             </div>
             <nav className="shakhDashboardNav">
-              {items.map(item => {
+              {items.map((item,index) => {
                 const Icon = item.icon;
                 const active = item.id === view;
+                const showGroup = index === 0 || items[index - 1]?.group !== item.group;
                 return <React.Fragment key={item.id}>
-                  <div className="shakhDashboardGroupLabel">{item.group}</div>
+                  {showGroup && <div className="shakhDashboardGroupLabel">{item.group}</div>}
                   <button type="button" className={active ? 'shakhDashboardNavItem is-active' : 'shakhDashboardNavItem'} data-tone={item.tone || 'neutral'} aria-current={active ? 'page' : undefined} onClick={() => onSelectView(item.id)}>
                     <span className="shakhDashboardNavIcon"><Icon size={17}/></span>
                     <span className="shakhDashboardNavCopy"><strong>{item.label}</strong><small>{item.description}</small></span>
