@@ -129,7 +129,6 @@ export default function PwaInstallUpdate(){
  return <>
   <div id="app-install" className="pwaPanel">
    <div className="pwaPanelMain">
-    <img className="pwaLogo" src="/shakh-logo.svg?v=1.9.8" alt="SHAKH SUPER — شاخ" />
     <div>
      <b>ئەپی شاخ</b>
      <small>وەشانی {version} · دامەزراندن و ئەپدەیتی خۆکار</small>
@@ -160,7 +159,6 @@ export default function PwaInstallUpdate(){
 
   {installHelp&&<div className="modal"><div className="auth" style={{maxWidth:460}}>
    <button className="x" onClick={()=>setInstallHelp(false)}>×</button>
-   <img className="pwaHelpLogo" src="/shakh-logo.svg?v=1.9.8" alt="SHAKH SUPER — شاخ" />
    <h2>دامەزراندنی ئەپی شاخ</h2>
    <p>لە Android، ئەگەر وێبگەڕەکە دوکمەی دامەزراندن پیشان بدات، «دامەزراندنی ئەپ» هەڵبژێرە تا شاخ وەک ئەپ دابمەزرێت. لە iPhone/iPad ـدا لە Safari دوگمەی Share بکە و «Add to Home Screen / زیادکردن بۆ شاشەی سەرەتا» هەڵبژێرە.</p>
    <button className="primary full" onClick={()=>setInstallHelp(false)}>باشە</button>
