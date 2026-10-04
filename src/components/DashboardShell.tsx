@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import './dashboard-shell.css';
 import '../shakh-dashboard-final-v15.css';
+import '../shakh-dashboard-clean-v16.css';
 import UmrahAgencyModule from './UmrahAgencyModule';
 import SupportModule from './SupportModule';
 import { supabase } from '../lib/supabase';
@@ -241,23 +242,27 @@ export default function DashboardShell({
             </div>
             {view === 'home' ? (
               <div className="shakhDashboardHome">
-                {isCustomer && <section className="shakhDashboardKpis" aria-label="پوختەی داواکاری">
-                  <article><span>هەموو ئۆردەر</span><strong>{orders.length.toLocaleString('ku-IQ')}</strong><small>کۆی داواکارییەکان</small></article>
-                  <article data-tone="brand"><span>لە چاوەڕوانی</span><strong>{activeOrders.toLocaleString('ku-IQ')}</strong><small>ئۆردەری نەگەیەنراو</small></article>
-                  <article data-tone="green"><span>گەیەندراو</span><strong>{deliveredOrders.toLocaleString('ku-IQ')}</strong><small>ئۆردەری تەواوکراو</small></article>
-                  <article data-tone="blue"><span>کۆی نرخی ئۆردەر</span><strong>{money(totalValue)}</strong><small>لە زانیاریی بەردەست</small></article>
-                </section>}
-                <div className="shakhDashboardHomeContent">{homeContent}</div>
+                <div className="shakhDashboardWorkspace" data-view="home" data-role={role}>
+                  {isCustomer && <section className="shakhDashboardKpis" aria-label="پوختەی داواکاری">
+                    <article><span>هەموو ئۆردەر</span><strong>{orders.length.toLocaleString('ku-IQ')}</strong><small>کۆی داواکارییەکان</small></article>
+                    <article data-tone="brand"><span>لە چاوەڕوانی</span><strong>{activeOrders.toLocaleString('ku-IQ')}</strong><small>ئۆردەری نەگەیەنراو</small></article>
+                    <article data-tone="green"><span>گەیەندراو</span><strong>{deliveredOrders.toLocaleString('ku-IQ')}</strong><small>ئۆردەری تەواوکراو</small></article>
+                    <article data-tone="blue"><span>کۆی نرخی ئۆردەر</span><strong>{money(totalValue)}</strong><small>لە زانیاریی بەردەست</small></article>
+                  </section>}
+                  <div className="shakhDashboardHomeContent">{homeContent}</div>
+                </div>
               </div>
             ) : (
               <div className="shakhDashboardModule">
-                {view === 'cars' && role === 'car_dealer'
-                  ? <CarDealerModule />
-                  : view === 'umrah' && role === 'umrah_agency'
-                  ? <UmrahAgencyModule />
-                  : view === 'support'
-                  ? <SupportModule role={role} />
-                  : children}
+                <div className="shakhDashboardWorkspace" data-view={view} data-role={role}>
+                  {view === 'cars' && role === 'car_dealer'
+                    ? <CarDealerModule />
+                    : view === 'umrah' && role === 'umrah_agency'
+                    ? <UmrahAgencyModule />
+                    : view === 'support'
+                    ? <SupportModule role={role} />
+                    : children}
+                </div>
               </div>
             )}
           </main>
