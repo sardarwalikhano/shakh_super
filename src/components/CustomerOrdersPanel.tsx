@@ -155,7 +155,7 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
         })),
       })) as CustomerOrder[];
       setOrders(nextOrders);
-      setSelectedId((current) => current && nextOrders.some((order) => order.id === current) ? current : nextOrders[0]?.id ?? null);
+      setSelectedId((current) => current && nextOrders.some((order) => order.id === current) ? current : null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'نەتوانرا زانیارییەکان بار بکرێن.');
     } finally {
@@ -275,15 +275,20 @@ export default function CustomerOrdersPanel({ userId }: { userId: string }) {
         <div className="customer-orders-panel__orders">
           {loading ? <div className="empty">چاوەڕوان بە...</div> : orders.length === 0 ? <div className="empty"><Package size={38} /><strong>هێشتا هیچ ئۆردەرێکت نییە</strong></div> : orders.map((order) => (
             <button key={order.id} type="button" className={`customer-order-card ${selectedId === order.id ? 'is-selected' : ''}`} onClick={() => setSelectedId(order.id)}>
-              <div><strong>#{order.id.slice(0, 8)}</strong><span>{statusLabel(order.status)}</span></div>
-              <small><Clock3 size={14} /> {new Date(order.created_at).toLocaleString('ku-IQ')}</small>
-              <b>{Number(order.total_iqd).toLocaleString('ku-IQ')} دینار</b>
+              <div><strong>کڕیار: من</strong><span>#{order.id.slice(0, 8)}</span></div>
+              <small>{statusLabel(order.status)}</small>
             </button>
           ))}
         </div>
 
         <div className="customer-orders-panel__detail">
-          {selected ? (
+          {!selected ? (
+            <div className="compactOrderEmpty">
+              <Package size={34} />
+              <strong>ئۆردەرێک هەڵبژێرە</strong>
+              <span>لە لیستی لاپەڕەکە کلیک لەسەر ئۆردەر بکە بۆ بینینی هەموو وردەکارییەکان.</span>
+            </div>
+          ) : (
             <>
               <div className="tracking-card__top"><div><span>داواکاری</span><h3>#{selected.id.slice(0, 8)}</h3></div><Truck size={28} /></div>
               {selected.items.length > 0 && (
