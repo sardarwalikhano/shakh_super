@@ -4,6 +4,7 @@ import {
   Menu, Plane, RefreshCw, Settings2, Store, Truck, UserRound, Users, WalletCards, X,
 } from 'lucide-react';
 import './dashboard-shell.css';
+import '../shakh-dashboard-final-v15.css';
 import UmrahAgencyModule from './UmrahAgencyModule';
 import SupportModule from './SupportModule';
 import { supabase } from '../lib/supabase';
