@@ -494,7 +494,6 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
     <div className="shakhReferenceHeroVisual" aria-hidden="true">
       <div className="shakhReferencePhone">
         <div className="shakhReferencePhoneTop">SHAKH SUPER</div>
-        <img src="/shakh-logo.svg?v=1.9.8" alt="" />
         <div className="shakhReferencePhoneGrid">
           <span><Store size={18}/><b>بازاڕ</b></span>
           <span><MessageCircle size={18}/><b>پۆست</b></span>
@@ -508,9 +507,6 @@ const ensureOrderContact=async()=>{if(!supabase||!user)return false;const {data,
         {products.slice(0,3).map((p,index)=><div className="shakhReferenceHeroProduct" key={p.id} style={{zIndex:3-index}}>
           {p.image_url?<img src={p.image_url} alt="" loading="lazy" decoding="async"/>:<span><ShoppingBag size={30}/></span>}
         </div>)}
-      </div>
-      <div className="shakhReferenceHeroBrand">
-        <img src="/shakh-logo.svg?v=1.9.8" alt="" />
       </div>
     </div>
   </section>
