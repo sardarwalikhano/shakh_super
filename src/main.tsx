@@ -2,9 +2,6 @@ import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createClient,User} from '@supabase/supabase-js';
 import {Search,ShoppingBag,User as UserIcon,Bell,Store,Truck,Wallet,ArrowLeft,LogOut,Minus,Plus,Trash2,X,MapPin,PackageCheck,LayoutDashboard,RefreshCw,Car,Plane,Home,MessageCircle,ShieldCheck,Settings,Moon,Sun,ClipboardList} from 'lucide-react';
-import './shakh-design-system.css';
-import './shakh-shein-style-v7.css';
-import './shakh-reference-locked-v10.css';
 import CustomerOrdersPanel from './components/CustomerOrdersPanel';
 import CaptainDashboard from './components/CaptainDashboard';
 import VendorDashboard from './components/VendorDashboard';
@@ -26,6 +23,7 @@ import InteractiveMapPicker from './components/InteractiveMapPicker';
 import DashboardShell,{type DashboardView} from './components/DashboardShell';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
+import './shakh-ui-foundation.css';
 
 
 

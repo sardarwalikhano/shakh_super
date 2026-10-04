@@ -2,7 +2,6 @@ import React,{useEffect,useState} from 'react';
 import { Package, ShoppingBag, TrendingUp, Store, Plus, RefreshCw } from 'lucide-react';
 import VendorLiveOrders from './VendorLiveOrders';
 import { supabase } from '../lib/supabase';
-import './vendor-dashboard.css';
 import ProductPostComposer from './ProductPostComposer';
 import ProductManagement from './ProductManagement';
 import StoreLocationManager from './StoreLocationManager';
